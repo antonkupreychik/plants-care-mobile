@@ -178,7 +178,7 @@ void main() {
   });
 
   group('PlantCardScreen log-care action', () {
-    testWidgets('should_show_comingSoon_snackbar_when_log_care_tapped',
+    testWidgets('should_open_log_care_sheet_when_log_care_tapped',
         (tester) async {
       await tester.pumpWidget(_wrap(
         detail: () async => const Plant(id: _plantId, name: 'Фикус'),
@@ -186,10 +186,18 @@ void main() {
       await tester.pumpAndSettle();
 
       final l10n = _l10n(tester);
-      await tester.tap(find.text(l10n.plantCardLogCare));
-      await tester.pump(); // показать snackbar
 
-      expect(find.text(l10n.comingSoon), findsOneWidget);
+      // До тапа sheet не открыт — его контролов на экране нет.
+      expect(find.text(l10n.careSheetSubmit), findsNothing);
+
+      await tester.tap(find.text(l10n.plantCardLogCare));
+      await tester.pumpAndSettle(); // проиграть анимацию открытия sheet
+
+      // Открылся sheet отметки ухода (а не comingSoon snackbar):
+      // присутствуют его маркеры — лейбл «Тип ухода» и кнопка «Отметить».
+      expect(find.text(l10n.careSheetTypeLabel.toUpperCase()), findsOneWidget);
+      expect(find.text(l10n.careSheetSubmit), findsOneWidget);
+      expect(find.text(l10n.comingSoon), findsNothing);
     });
   });
 

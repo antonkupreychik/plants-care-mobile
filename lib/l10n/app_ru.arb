@@ -342,5 +342,92 @@
   "careDoneUnknown": "Уход выполнен",
   "@careDoneUnknown": {
     "description": "Запись истории: нераспознанный тип ухода"
+  },
+
+  "careSheetOverline": "Отметить уход",
+  "@careSheetOverline": {
+    "description": "Надзаголовок-капс в шапке sheet отметки ухода"
+  },
+
+  "careSheetTitle": "Что сделали?",
+  "@careSheetTitle": {
+    "description": "Заголовок sheet отметки ухода (без имени растения)"
+  },
+
+  "careSheetTitleFor": "Уход за {plant}",
+  "@careSheetTitleFor": {
+    "description": "Заголовок sheet отметки ухода с именем растения",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "careSheetClose": "Закрыть",
+  "@careSheetClose": {
+    "description": "Подпись/семантика кнопки закрытия sheet ухода"
+  },
+
+  "careSheetTypeLabel": "Тип ухода",
+  "@careSheetTypeLabel": {
+    "description": "Метка группы выбора типа ухода"
+  },
+
+  "careKindWater": "Полить",
+  "@careKindWater": {
+    "description": "Тип ухода (выбор в sheet): полив"
+  },
+
+  "careKindSpray": "Опрыскать",
+  "@careKindSpray": {
+    "description": "Тип ухода (выбор в sheet): опрыскивание"
+  },
+
+  "careKindFertilize": "Удобрить",
+  "@careKindFertilize": {
+    "description": "Тип ухода (выбор в sheet): подкормка"
+  },
+
+  "careSheetWhenLabel": "Когда выполнили",
+  "@careSheetWhenLabel": {
+    "description": "Метка строки выбора даты/времени выполнения ухода"
+  },
+
+  "careSheetWhenNow": "Сейчас",
+  "@careSheetWhenNow": {
+    "description": "Подпись «сейчас» для момента выполнения ухода по умолчанию"
+  },
+
+  "careSheetWhenValue": "{date}, {time}",
+  "@careSheetWhenValue": {
+    "description": "Выбранный момент выполнения ухода (локальная TZ)",
+    "placeholders": {
+      "date": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+
+  "careSheetNoteLabel": "Заметка",
+  "@careSheetNoteLabel": {
+    "description": "Метка необязательного поля заметки в sheet ухода"
+  },
+
+  "careSheetNoteHint": "Например: полил(а) до поддона",
+  "@careSheetNoteHint": {
+    "description": "Подсказка-плейсхолдер для поля заметки"
+  },
+
+  "careSheetNoteOptional": "необязательно",
+  "@careSheetNoteOptional": {
+    "description": "Подпись: поле заметки необязательно"
+  },
+
+  "careSheetSubmit": "Отметить",
+  "@careSheetSubmit": {
+    "description": "Кнопка подтверждения отметки ухода"
+  },
+
+  "careSheetSubmitted": "Уход отмечен",
+  "@careSheetSubmitted": {
+    "description": "Снэкбар-подтверждение после успешной отметки ухода"
   }
 }

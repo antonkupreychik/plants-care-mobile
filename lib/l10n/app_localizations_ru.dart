@@ -273,4 +273,56 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get careDoneUnknown => 'Уход выполнен';
+
+  @override
+  String get careSheetOverline => 'Отметить уход';
+
+  @override
+  String get careSheetTitle => 'Что сделали?';
+
+  @override
+  String careSheetTitleFor(String plant) {
+    return 'Уход за $plant';
+  }
+
+  @override
+  String get careSheetClose => 'Закрыть';
+
+  @override
+  String get careSheetTypeLabel => 'Тип ухода';
+
+  @override
+  String get careKindWater => 'Полить';
+
+  @override
+  String get careKindSpray => 'Опрыскать';
+
+  @override
+  String get careKindFertilize => 'Удобрить';
+
+  @override
+  String get careSheetWhenLabel => 'Когда выполнили';
+
+  @override
+  String get careSheetWhenNow => 'Сейчас';
+
+  @override
+  String careSheetWhenValue(String date, String time) {
+    return '$date, $time';
+  }
+
+  @override
+  String get careSheetNoteLabel => 'Заметка';
+
+  @override
+  String get careSheetNoteHint => 'Например: полил(а) до поддона';
+
+  @override
+  String get careSheetNoteOptional => 'необязательно';
+
+  @override
+  String get careSheetSubmit => 'Отметить';
+
+  @override
+  String get careSheetSubmitted => 'Уход отмечен';
 }
