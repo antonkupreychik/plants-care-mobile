@@ -1,21 +1,21 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:plantcate_mobile/core/api/generated/clients/locations_client.dart';
-import 'package:plantcate_mobile/core/api/generated/clients/plants_client.dart';
-import 'package:plantcate_mobile/core/api/generated/clients/today_client.dart';
-import 'package:plantcate_mobile/core/api/generated/models/location_dto.dart';
-import 'package:plantcate_mobile/core/api/generated/models/page_response_plant_dto.dart';
-import 'package:plantcate_mobile/core/api/generated/models/plant_dto.dart';
-import 'package:plantcate_mobile/core/api/generated/models/task_dto.dart';
-import 'package:plantcate_mobile/core/api/generated/models/today_response.dart';
-import 'package:plantcate_mobile/core/api/generated/plants_care_api.dart';
-import 'package:plantcate_mobile/core/error/api_error.dart';
-import 'package:plantcate_mobile/core/error/result.dart';
-import 'package:plantcate_mobile/core/network/auth_scope.dart';
-import 'package:plantcate_mobile/core/network/request_extra.dart';
-import 'package:plantcate_mobile/features/home/data/home_repository_impl.dart';
-import 'package:plantcate_mobile/features/home/domain/care_task_type.dart';
+import 'package:plantcare_mobile/core/api/generated/clients/locations_client.dart';
+import 'package:plantcare_mobile/core/api/generated/clients/plants_client.dart';
+import 'package:plantcare_mobile/core/api/generated/clients/today_client.dart';
+import 'package:plantcare_mobile/core/api/generated/models/location_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/page_response_plant_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/plant_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/task_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/today_response.dart';
+import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
+import 'package:plantcare_mobile/core/error/api_error.dart';
+import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/core/network/auth_scope.dart';
+import 'package:plantcare_mobile/core/network/request_extra.dart';
+import 'package:plantcare_mobile/features/home/data/home_repository_impl.dart';
+import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
 
 class _MockApi extends Mock implements PlantsCareApi {}
 

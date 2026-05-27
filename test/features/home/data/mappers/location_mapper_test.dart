@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plantcate_mobile/core/api/generated/models/location_dto.dart';
-import 'package:plantcate_mobile/features/home/data/mappers/location_mapper.dart';
+import 'package:plantcare_mobile/core/api/generated/models/location_dto.dart';
+import 'package:plantcare_mobile/features/home/data/mappers/location_mapper.dart';
 
 void main() {
   group('LocationDtoMapper.toDomain', () {

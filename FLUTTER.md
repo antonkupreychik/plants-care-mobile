@@ -12,7 +12,7 @@
 
 Мобильный клиент к существующему Spring Boot бэкенду (`antonkupreychik/plants-care`).
 Второй клиент рядом с Telegram-ботом. Backend, доменная модель, шедулер — переиспользуются
-(см. backend CLAUDE.md и ADR-001…010). API-контракт: `design_handoff_plantcate/api-contract.md`.
+(см. backend CLAUDE.md и ADR-001…010). API-контракт: `design_handoff_plantcare/api-contract.md`.
 
 ---
 
@@ -170,7 +170,7 @@ Sprint 1 фичи: `home` (01), `plant_card` (02), `care_event` (06 sheet), `aut
 
 - dev / prod, entrypoint'ы `main_dev.dart` / `main_prod.dart`.
 - Конфиг через `--dart-define` (НЕ `.env` в репозитории): `API_URL`, dev-only `CHAT_ID`/`USER_ID`.
-- bundle id: `com.<org>.plantcate.dev` / `com.<org>.plantcate`.
+- bundle id: `com.<org>.plantcare.dev` / `com.<org>.plantcare`.
 - Локальные dart-define — в `run-dev.sh` / launch.json (`.gitignore`); в CI — из секретов.
 
 ---
@@ -244,7 +244,7 @@ Sprint 1 фичи: `home` (01), `plant_card` (02), `care_event` (06 sheet), `aut
 ## Источники правды
 
 - `docs/adr/` — MADR-001…014 (архитектурные решения мобилки).
-- `design_handoff_plantcate/api-contract.md` — REST-контракт backend (§1–11) + gaps (§12).
-- `design_handoff_plantcate/README.md` — продукт, 24 экрана, дизайн-токены.
-- `design_handoff_plantcate/SPRINT-1-flutter.md` — план первого спринта.
+- `design_handoff_plantcare/api-contract.md` — REST-контракт backend (§1–11) + gaps (§12).
+- `design_handoff_plantcare/README.md` — продукт, 24 экрана, дизайн-токены.
+- `design_handoff_plantcare/SPRINT-1-flutter.md` — план первого спринта.
 - backend CLAUDE.md + ADR-001…010 (репозиторий `plants-care`) — доменная модель, шедулер.

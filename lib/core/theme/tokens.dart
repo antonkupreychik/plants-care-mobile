@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Дизайн-токены PlantCare — перенос 1:1 из `PC_THEMES`
-/// (`design_handoff_plantcate/design/screens.jsx`, строки 7–48).
+/// (`design_handoff_plantcare/design/screens.jsx`, строки 7–48).
 ///
 /// Источник правды по цветам. Доступ из виджетов:
 /// `Theme.of(context).extension<PcColors>()!`.

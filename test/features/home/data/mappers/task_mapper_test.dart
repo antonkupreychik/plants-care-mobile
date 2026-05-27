@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plantcate_mobile/core/api/generated/models/task_dto.dart';
-import 'package:plantcate_mobile/features/home/data/mappers/task_mapper.dart';
-import 'package:plantcate_mobile/features/home/domain/care_task_type.dart';
+import 'package:plantcare_mobile/core/api/generated/models/task_dto.dart';
+import 'package:plantcare_mobile/features/home/data/mappers/task_mapper.dart';
+import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
 
 void main() {
   group('TaskDtoMapper.toDomain', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plantcate_mobile/features/home/domain/care_task_type.dart';
+import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
 
 void main() {
   group('CareTaskType.fromApi', () {

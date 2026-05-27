@@ -46,8 +46,8 @@ npm install -g eas-cli
 # 4. Android Studio + создать AVD — для Android эмулятора
 
 # 5. Создать проект
-npx create-expo-app@latest plantcate-mobile --template default
-cd plantcate-mobile
+npx create-expo-app@latest plantcare-mobile --template default
+cd plantcare-mobile
 
 # 6. Запустить
 npx expo start
@@ -106,7 +106,7 @@ npx @apidevtools/swagger-cli bundle src/main/resources/openapi/openapi.yaml -o a
 ## 4. Структура проекта (1 час)
 
 ```
-plantcate-mobile/
+plantcare-mobile/
 ├── app/                          ← expo-router
 │   ├── _layout.tsx               ← root layout, QueryProvider, fonts
 │   ├── (tabs)/

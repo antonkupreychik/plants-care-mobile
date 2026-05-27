@@ -1,4 +1,4 @@
-# PlantCate — Backend API Contract
+# PlantCare — Backend API Contract
 
 > Версия: **1.0** · сверено с `openapi.yaml` в репозитории `plants-care@main` на 27 мая 2026.
 

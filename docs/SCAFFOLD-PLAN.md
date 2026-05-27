@@ -1,4 +1,4 @@
-# План каркаса PlantCate Mobile (Sprint 1, шаг 0 «bootstrap»)
+# План каркаса PlantCare Mobile (Sprint 1, шаг 0 «bootstrap»)
 
 > **СТАТУС (2026-05-27): каркас собран + базовый слой core/ + l10n, release APK собирается.**
 > Сделано: `flutter create` в корне; стек MADR-001 (riverpod+codegen, go_router, dio+retry,
@@ -34,7 +34,7 @@
 
 ## 1. flutter create
 ```bash
-flutter create plantcate_mobile --org com.<org> --platforms ios,android
+flutter create plantcare_mobile --org com.<org> --platforms ios,android
 ```
 - Перенести/слить с существующим репозиторием (FLUTTER.md, docs/, design_handoff/ уже в корне — решить: проект в корне или в подпапке).
 - iOS deployment target → **15.0** (Podfile + project.pbxproj) — требование dio/secure_storage 10.x.
@@ -94,7 +94,7 @@ flutter create plantcate_mobile --org com.<org> --platforms ios,android
   `dart run build_runner build`, `flutter analyze`, `flutter test`.
 
 ## 8. Hello-world проверка
-- `main_dev.dart` → MaterialApp.router с одним экраном `/home` (заглушка «PlantCate dev»),
+- `main_dev.dart` → MaterialApp.router с одним экраном `/home` (заглушка «PlantCare dev»),
   применённой темой, загруженными шрифтами, переключением light/dark по системе.
 - Прогон: `flutter run --flavor dev -t lib/main_dev.dart --dart-define=API_URL=...` на iOS-симуляторе.
 - `dart run build_runner build --delete-conflicting-outputs` проходит (даже если генерить пока нечего).

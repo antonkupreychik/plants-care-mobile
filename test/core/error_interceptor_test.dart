@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:plantcate_mobile/core/error/api_error.dart';
-import 'package:plantcate_mobile/core/network/error_interceptor.dart';
+import 'package:plantcare_mobile/core/error/api_error.dart';
+import 'package:plantcare_mobile/core/network/error_interceptor.dart';
 
 class _MockHandler extends Mock implements ErrorInterceptorHandler {}
 

@@ -1,4 +1,4 @@
-# Окружение разработки (PlantCate Mobile)
+# Окружение разработки (PlantCare Mobile)
 
 > Заметки про локальную настройку этой машины. Не про архитектуру (это MADR),
 > а про то, что нужно, чтобы проект собрался здесь.
@@ -41,7 +41,7 @@ handshake`). Доступны github, pub.dev, dl.google.com, plugins.gradle.org
 Без обхода `flutter build apk` падает на резолве Kotlin-плагинов. Настроены
 **два** фикса (оба окруженческие, не в репозитории проекта):
 
-1. **`~/.gradle/init.d/plantcate-maven-central-mirror.init.gradle.kts`** —
+1. **`~/.gradle/init.d/plantcare-maven-central-mirror.init.gradle.kts`** —
    переотображает Maven Central → зеркало во всех билдах (`beforeSettings` +
    `allprojects`).
 2. **`~/development/flutter/packages/flutter_tools/gradle/settings.gradle.kts`** —

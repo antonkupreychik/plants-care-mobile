@@ -1,4 +1,4 @@
-package com.plantcate.plantcate_mobile
+package com.plantcare.plantcare_mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

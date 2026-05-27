@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:plantcate_mobile/core/auth/auth_session.dart';
-import 'package:plantcate_mobile/core/network/auth_interceptor.dart';
-import 'package:plantcate_mobile/core/network/auth_scope.dart';
-import 'package:plantcate_mobile/core/network/request_extra.dart';
+import 'package:plantcare_mobile/core/auth/auth_session.dart';
+import 'package:plantcare_mobile/core/network/auth_interceptor.dart';
+import 'package:plantcare_mobile/core/network/auth_scope.dart';
+import 'package:plantcare_mobile/core/network/request_extra.dart';
 
 class _StubSession implements AuthSession {
   @override

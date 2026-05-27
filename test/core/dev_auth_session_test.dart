@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plantcate_mobile/core/auth/dev_auth_session.dart';
-import 'package:plantcate_mobile/core/env/app_config.dart';
-import 'package:plantcate_mobile/core/network/auth_scope.dart';
+import 'package:plantcare_mobile/core/auth/dev_auth_session.dart';
+import 'package:plantcare_mobile/core/env/app_config.dart';
+import 'package:plantcare_mobile/core/network/auth_scope.dart';
 
 void main() {
   const config = AppConfig(

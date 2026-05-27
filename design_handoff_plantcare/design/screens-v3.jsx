@@ -1,4 +1,4 @@
-// PlantCate — final batch
+// PlantCare — final batch
 // 04a · Шаг 1 (Выбор вида) · 04b · Шаг 2 (Имя + комната) · 04c · Шаг 4 (Место и фото)
 // 06a · Опрыскать (sheet) · 06b · Удобрить (sheet) · 10 · Пустое состояние главной
 
@@ -784,7 +784,7 @@ function HomeEmptyScreen({ theme = 'light' }) {
             }}>
               <window.Icon name="leaf" size={20} color={t.surface} stroke={1.6} />
             </div>
-            <span style={{ fontWeight: 600, letterSpacing: '-0.01em', fontSize: 17 }}>PlantCate</span>
+            <span style={{ fontWeight: 600, letterSpacing: '-0.01em', fontSize: 17 }}>PlantCare</span>
           </div>
           <button style={iconBtnV3(t)}><window.Icon name="user" size={20} color={t.ink} /></button>
         </div>

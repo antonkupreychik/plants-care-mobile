@@ -1,4 +1,4 @@
-// PlantCate screens — Home + Plant Card
+// PlantCare screens — Home + Plant Card
 // Organic / botanical aesthetic. Russian copy. Light + Dark.
 
 // ─────────────────────────────────────────────────────────────
@@ -254,7 +254,7 @@ function HomeScreen({ theme = 'light' }) {
             }}>
               <Icon name="leaf" size={20} color={t.surface} stroke={1.6} />
             </div>
-            <span style={{ fontWeight: 600, letterSpacing: '-0.01em', fontSize: 17 }}>PlantCate</span>
+            <span style={{ fontWeight: 600, letterSpacing: '-0.01em', fontSize: 17 }}>PlantCare</span>
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             <button style={iconBtn(t)}><Icon name="search" size={20} color={t.ink} /></button>

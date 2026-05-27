@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:plantcate_mobile/core/error/api_error.dart';
-import 'package:plantcate_mobile/core/error/result.dart';
-import 'package:plantcate_mobile/features/home/data/home_repository_provider.dart';
-import 'package:plantcate_mobile/features/home/domain/care_task.dart';
-import 'package:plantcate_mobile/features/home/domain/care_task_type.dart';
-import 'package:plantcate_mobile/features/home/domain/garden_location.dart';
-import 'package:plantcate_mobile/features/home/domain/home_repository.dart';
-import 'package:plantcate_mobile/features/home/domain/plant.dart';
-import 'package:plantcate_mobile/features/home/presentation/home_providers.dart';
+import 'package:plantcare_mobile/core/error/api_error.dart';
+import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/features/home/data/home_repository_provider.dart';
+import 'package:plantcare_mobile/features/home/domain/care_task.dart';
+import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
+import 'package:plantcare_mobile/features/home/domain/garden_location.dart';
+import 'package:plantcare_mobile/features/home/domain/home_repository.dart';
+import 'package:plantcare_mobile/features/home/domain/plant.dart';
+import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 
 class _MockRepo extends Mock implements HomeRepository {}
 

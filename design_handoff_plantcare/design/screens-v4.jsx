@@ -1,4 +1,4 @@
-// PlantCate — batch 4 — продвинутые экраны под фичи roadmap
+// PlantCare — batch 4 — продвинутые экраны под фичи roadmap
 
 // ─────────────────────────────────────────────────────────────
 // 11 · ГРАФИК — Календарь ухода на неделю (#52)
@@ -688,7 +688,7 @@ function AIDoctorScreen({ theme = 'light' }) {
 
       <div style={{ padding: '14px 22px 0' }}>
         <div style={{ fontSize: 12, color: t.inkSoft, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-          Доктор PlantCate
+          Доктор PlantCare
         </div>
         <h1 style={{ fontFamily: '"Instrument Serif", serif', fontWeight: 400, fontSize: 36, lineHeight: 1.05, margin: '4px 0 6px', letterSpacing: '-0.01em' }}>
           Что <em style={{ color: t.primary, fontStyle: 'italic' }}>беспокоит</em>?

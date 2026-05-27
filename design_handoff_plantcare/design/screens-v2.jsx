@@ -1,4 +1,4 @@
-// PlantCate — second batch of screens
+// PlantCare — second batch of screens
 // Сегодня · Добавить растение · Уведомление · Полить (action sheet)
 // Reuses PC_THEMES, Icon, plant illustrations from screens.jsx
 
@@ -487,7 +487,7 @@ function NotificationScreen({ theme = 'light' }) {
             <window.Icon name="leaf" size={16} color="#EFE7D4" stroke={1.8} />
           </div>
           <div style={{ flex: 1, fontSize: 12, fontWeight: 600, letterSpacing: '0.02em', opacity: 0.8 }}>
-            PLANTCATE
+            PLANTCARE
           </div>
           <div style={{ fontSize: 12, opacity: 0.55 }}>сейчас</div>
         </div>

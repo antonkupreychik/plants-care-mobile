@@ -1,6 +1,6 @@
-# plantcate_mobile
+# plantcare_mobile
 
-PlantCate — забота о домашних растениях
+PlantCare — забота о домашних растениях
 
 ## Getting Started
 

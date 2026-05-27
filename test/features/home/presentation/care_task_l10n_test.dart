@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:plantcate_mobile/features/home/domain/care_task.dart';
-import 'package:plantcate_mobile/features/home/domain/care_task_type.dart';
-import 'package:plantcate_mobile/features/home/presentation/care_task_l10n.dart';
-import 'package:plantcate_mobile/l10n/app_localizations.dart';
-import 'package:plantcate_mobile/l10n/app_localizations_ru.dart';
+import 'package:plantcare_mobile/features/home/domain/care_task.dart';
+import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
+import 'package:plantcare_mobile/features/home/presentation/care_task_l10n.dart';
+import 'package:plantcare_mobile/l10n/app_localizations.dart';
+import 'package:plantcare_mobile/l10n/app_localizations_ru.dart';
 
 CareTask _task({required DateTime dueAt}) => CareTask(
       scheduleId: 1,

@@ -1,4 +1,4 @@
-// PlantCate — auth screens
+// PlantCare — auth screens
 // 07 Welcome / Войти · 08 Telegram код · 09 С возвращением
 
 // ─────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ function AuthWelcomeScreen({ theme = 'light' }) {
           }}>
             <window.Icon name="leaf" size={20} color={t.surface} stroke={1.6} />
           </div>
-          <span style={{ fontWeight: 600, fontSize: 17, letterSpacing: '-0.01em' }}>PlantCate</span>
+          <span style={{ fontWeight: 600, fontSize: 17, letterSpacing: '-0.01em' }}>PlantCare</span>
         </div>
         <span style={{ fontSize: 13, color: t.inkSoft, fontWeight: 600 }}>RU</span>
       </div>
@@ -247,7 +247,7 @@ function AuthTelegramScreen({ theme = 'light' }) {
         </h2>
         <div style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.45 }}>
           Мы написали вам в{' '}
-          <span style={{ color: '#229ED9', fontWeight: 600 }}>@PlantCateBot</span>.
+          <span style={{ color: '#229ED9', fontWeight: 600 }}>@PlantCareBot</span>.
           Откройте Telegram и скопируйте 6‑значный код.
         </div>
       </div>

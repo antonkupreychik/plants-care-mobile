@@ -1,4 +1,4 @@
-# Handoff: PlantCate — мобильное приложение
+# Handoff: PlantCare — мобильное приложение
 
 > Пакет для разработки на **Expo / React Native** (iOS + Android из одной кодовой базы).
 > Бэкенд: Java / Spring Boot, репозиторий [`antonkupreychik/plants-care`](https://github.com/antonkupreychik/plants-care).
@@ -10,13 +10,13 @@
 
 1. Прочти **`SPRINT-1.md`** — там пошаговый план первой недели: какие пакеты ставить, какие экраны делать в первую очередь, какой auth использовать.
 2. Прочти **`api-contract.md`** — это не моё предположение, а сверка с реальным `openapi.yaml` репозитория `plants-care`. § 1–11 — что есть, § 12 — что просит дизайн и чего пока нет.
-3. Открой `design/PlantCate.html` в браузере — это интерактивный прототип всех 24 экранов в светлой и тёмной теме.
+3. Открой `design/PlantCare.html` в браузере — это интерактивный прототип всех 24 экранов в светлой и тёмной теме.
 
 ---
 
 ## 1. Overview
 
-**PlantCate** — мобильное приложение‑напоминалка по уходу за домашними растениями. Уникальная особенность: каждое растение «говорит» голосом от первого лица.
+**PlantCare** — мобильное приложение‑напоминалка по уходу за домашними растениями. Уникальная особенность: каждое растение «говорит» голосом от первого лица.
 
 Эстетика — ботаническая, тёплая, органическая. Поддерживает светлую и тёмную тему.
 
@@ -253,12 +253,12 @@ Google / Telegram / Гость. **API:** см. § 12.1 в `api-contract.md` — 
 В этом пакете:
 
 ```
-design_handoff_plantcate/
+design_handoff_plantcare/
 ├── README.md                ← этот файл
 ├── SPRINT-1.md              ← пошаговый план первой недели
 ├── api-contract.md          ← REST контракт + список gaps
 └── design/
-    ├── PlantCate.html       ← открыть в браузере, увидеть все 24 экрана
+    ├── PlantCare.html       ← открыть в браузере, увидеть все 24 экрана
     ├── screens.jsx          ← 01 Home, 02 Plant card
     ├── screens-v2.jsx       ← 03 Today, 04 Add step 3, 05 Notification, 06 Water
     ├── screens-v3.jsx       ← 04a/04b/04c мастер, 06a/06b sheets, 10 empty
@@ -279,7 +279,7 @@ design_handoff_plantcate/
 2. **Voice lines:** реплики растений генерим на клиенте по `taskType` + контексту, или бэк отдаёт `voiceLine` поле? Сейчас в API нет.
 3. **Push‑уведомления:** Expo Push Service или прямо FCM + APNs?
 4. **MVP scope:** 5 экранов (Home/Plant/Water/Auth Welcome/Welcome back) или сразу больше?
-5. **Repo:** новый `plantcate-mobile` или монорепо с бэкендом?
+5. **Repo:** новый `plantcare-mobile` или монорепо с бэкендом?
 
 ---
 

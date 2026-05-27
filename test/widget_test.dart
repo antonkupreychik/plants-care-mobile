@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plantcate_mobile/app.dart';
-import 'package:plantcate_mobile/core/clock/clock.dart';
-import 'package:plantcate_mobile/core/clock/clock_provider.dart';
-import 'package:plantcate_mobile/core/env/app_config.dart';
-import 'package:plantcate_mobile/features/home/domain/care_task.dart';
-import 'package:plantcate_mobile/features/home/domain/garden_location.dart';
-import 'package:plantcate_mobile/features/home/domain/plant.dart';
-import 'package:plantcate_mobile/features/home/presentation/home_providers.dart';
-import 'package:plantcate_mobile/features/home/presentation/home_screen.dart';
-import 'package:plantcate_mobile/l10n/app_localizations.dart';
+import 'package:plantcare_mobile/app.dart';
+import 'package:plantcare_mobile/core/clock/clock.dart';
+import 'package:plantcare_mobile/core/clock/clock_provider.dart';
+import 'package:plantcare_mobile/core/env/app_config.dart';
+import 'package:plantcare_mobile/features/home/domain/care_task.dart';
+import 'package:plantcare_mobile/features/home/domain/garden_location.dart';
+import 'package:plantcare_mobile/features/home/domain/plant.dart';
+import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
+import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';
+import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 class _FixedClock implements Clock {
   const _FixedClock(this._now);

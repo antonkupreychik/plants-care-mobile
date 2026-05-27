@@ -35,8 +35,8 @@
 # Xcode из App Store — iOS-симулятор
 # Android Studio + AVD — Android-эмулятор
 
-flutter create plantcate_mobile --org <org> --platforms ios,android
-cd plantcate_mobile
+flutter create plantcare_mobile --org <org> --platforms ios,android
+cd plantcare_mobile
 flutter run   # выбрать устройство
 ```
 
