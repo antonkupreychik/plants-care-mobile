@@ -8,6 +8,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../care_event/data/mappers/task_type_mapper.dart';
+import '../../care_event/presentation/log_care_event_sheet.dart';
 import '../domain/care_task.dart';
 import '../domain/garden_location.dart';
 import '../domain/plant.dart';
@@ -69,7 +71,16 @@ class HomeScreen extends ConsumerWidget {
                     child: _TodaySection(
                       tasks: tasks,
                       now: nowLocal,
-                      onTaskTap: (_) => comingSoon(),
+                      // Тап по задаче /today → sheet ухода с предвыбранным
+                      // типом. Внутренний taskType нормализуем в публичный
+                      // CareEventKind маппером data-слоя (SOIL_CHECK/unknown →
+                      // unknown, контроллер откатит на дефолт).
+                      onTaskTap: (task) => showLogCareEventSheet(
+                        context,
+                        plantId: task.plantId,
+                        presetType: careEventKindFromTaskType(task.type),
+                        plantName: task.plantName,
+                      ),
                       onRetry: () => ref.invalidate(homeTasksProvider),
                     ),
                   ),

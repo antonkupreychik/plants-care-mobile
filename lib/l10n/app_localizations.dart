@@ -471,6 +471,102 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Уход выполнен'**
   String get careDoneUnknown;
+
+  /// Надзаголовок-капс в шапке sheet отметки ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить уход'**
+  String get careSheetOverline;
+
+  /// Заголовок sheet отметки ухода (без имени растения)
+  ///
+  /// In ru, this message translates to:
+  /// **'Что сделали?'**
+  String get careSheetTitle;
+
+  /// Заголовок sheet отметки ухода с именем растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Уход за {plant}'**
+  String careSheetTitleFor(String plant);
+
+  /// Подпись/семантика кнопки закрытия sheet ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Закрыть'**
+  String get careSheetClose;
+
+  /// Метка группы выбора типа ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Тип ухода'**
+  String get careSheetTypeLabel;
+
+  /// Тип ухода (выбор в sheet): полив
+  ///
+  /// In ru, this message translates to:
+  /// **'Полить'**
+  String get careKindWater;
+
+  /// Тип ухода (выбор в sheet): опрыскивание
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскать'**
+  String get careKindSpray;
+
+  /// Тип ухода (выбор в sheet): подкормка
+  ///
+  /// In ru, this message translates to:
+  /// **'Удобрить'**
+  String get careKindFertilize;
+
+  /// Метка строки выбора даты/времени выполнения ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Когда выполнили'**
+  String get careSheetWhenLabel;
+
+  /// Подпись «сейчас» для момента выполнения ухода по умолчанию
+  ///
+  /// In ru, this message translates to:
+  /// **'Сейчас'**
+  String get careSheetWhenNow;
+
+  /// Выбранный момент выполнения ухода (локальная TZ)
+  ///
+  /// In ru, this message translates to:
+  /// **'{date}, {time}'**
+  String careSheetWhenValue(String date, String time);
+
+  /// Метка необязательного поля заметки в sheet ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Заметка'**
+  String get careSheetNoteLabel;
+
+  /// Подсказка-плейсхолдер для поля заметки
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: полил(а) до поддона'**
+  String get careSheetNoteHint;
+
+  /// Подпись: поле заметки необязательно
+  ///
+  /// In ru, this message translates to:
+  /// **'необязательно'**
+  String get careSheetNoteOptional;
+
+  /// Кнопка подтверждения отметки ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить'**
+  String get careSheetSubmit;
+
+  /// Снэкбар-подтверждение после успешной отметки ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Уход отмечен'**
+  String get careSheetSubmitted;
 }
 
 class _AppLocalizationsDelegate

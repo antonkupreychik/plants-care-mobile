@@ -7,6 +7,7 @@ import '../../../core/error/api_error_l10n.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../care_event/presentation/log_care_event_sheet.dart';
 import '../../home/domain/plant.dart';
 import '../domain/care_history_entry.dart';
 import '../domain/streak.dart';
@@ -123,12 +124,19 @@ class PlantCardScreen extends ConsumerWidget {
               ],
             ),
 
-            // Плавающая основная кнопка «Отметить уход» (sheet — фича 06).
+            // Плавающая основная кнопка «Отметить уход» → sheet (фича 06).
+            // Имя растения берём из загруженной детали (если есть) для шапки.
             Positioned(
               left: 22,
               right: 22,
               bottom: 16,
-              child: _LogCareButton(onPressed: comingSoon),
+              child: _LogCareButton(
+                onPressed: () => showLogCareEventSheet(
+                  context,
+                  plantId: plantId,
+                  plantName: detail.value?.name,
+                ),
+              ),
             ),
           ],
         ),
