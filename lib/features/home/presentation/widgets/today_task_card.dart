@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/tokens.dart';
 import '../../../../core/widgets/skeleton_box.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../care_task_l10n.dart';
+import '../../../../core/care/care_task_l10n.dart';
 import '../today_view.dart';
 
 /// Карточка задачи на экране 03 «Сегодня».

@@ -14,7 +14,7 @@ import 'package:plantcare_mobile/features/care_event/domain/logged_care_event.da
 import 'package:plantcare_mobile/features/care_event/presentation/care_event_form_state.dart';
 import 'package:plantcare_mobile/features/care_event/presentation/log_care_event_controller.dart';
 import 'package:plantcare_mobile/features/home/data/home_repository_provider.dart';
-import 'package:plantcare_mobile/features/home/domain/care_task.dart';
+import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/features/home/domain/home_repository.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';

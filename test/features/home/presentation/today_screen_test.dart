@@ -15,8 +15,8 @@ import 'package:plantcare_mobile/features/care_event/data/care_event_repository_
 import 'package:plantcare_mobile/features/care_event/domain/care_event_draft.dart';
 import 'package:plantcare_mobile/features/care_event/domain/care_event_repository.dart';
 import 'package:plantcare_mobile/features/care_event/domain/logged_care_event.dart';
-import 'package:plantcare_mobile/features/home/domain/care_task.dart';
-import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
+import 'package:plantcare_mobile/core/care/care_task.dart';
+import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/today_filter.dart';
 import 'package:plantcare_mobile/features/home/presentation/today_providers.dart';

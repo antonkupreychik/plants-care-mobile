@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../domain/care_task.dart';
-import '../domain/care_task_type.dart';
+import '../../../core/care/care_task.dart';
+import '../../../core/care/care_task_type.dart';
 import 'today_filter.dart';
 
 part 'today_view.freezed.dart';

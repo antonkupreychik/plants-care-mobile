@@ -299,6 +299,34 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String scheduleWeekTasksCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'На этой неделе $count заботы в саду',
+      many: 'На этой неделе $count забот в саду',
+      few: 'На этой неделе $count заботы в саду',
+      one: 'На этой неделе $count забота в саду',
+      zero: 'На этой неделе сад отдыхает',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String scheduleDayTasksCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count задачи',
+      many: '$count задач',
+      few: '$count задачи',
+      one: '$count задача',
+      zero: 'Свободно',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String plantCardAgeDays(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -423,4 +451,132 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get careSheetSubmitted => 'Уход отмечен';
+
+  @override
+  String get scheduleIcsTitle => 'Подписаться в календаре';
+
+  @override
+  String get scheduleIcsSubtitle => 'Google / Apple Calendar — .ics';
+
+  @override
+  String get scheduleToCurrentWeek => 'На текущую неделю';
+
+  @override
+  String get schedulePreviousWeek => 'Предыдущая неделя';
+
+  @override
+  String get scheduleNextWeek => 'Следующая неделя';
+
+  @override
+  String get catalogTitle => 'Каталог';
+
+  @override
+  String get catalogHeading => 'Каталог растений';
+
+  @override
+  String get catalogSearchHint => 'Найти вид…';
+
+  @override
+  String get catalogSearchClear => 'Очистить поиск';
+
+  @override
+  String catalogCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count вида',
+      many: '$count видов',
+      few: '$count вида',
+      one: '$count вид',
+      zero: 'Нет видов',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get catalogEmpty => 'Каталог пуст';
+
+  @override
+  String get catalogEmptyHint => 'Виды растений появятся здесь позже';
+
+  @override
+  String get catalogSearchEmpty => 'Ничего не найдено';
+
+  @override
+  String catalogSearchEmptyHint(String query) {
+    return 'Попробуйте изменить запрос «$query»';
+  }
+
+  @override
+  String get catalogLoadMoreError => 'Не удалось загрузить ещё';
+
+  @override
+  String get speciesDetailOverline => 'Вид';
+
+  @override
+  String get speciesDescriptionTitle => 'Описание';
+
+  @override
+  String get speciesCareTitle => 'Уход';
+
+  @override
+  String get speciesPropsTitle => 'Условия';
+
+  @override
+  String get speciesDifficultyLabel => 'Сложность';
+
+  @override
+  String get speciesLightLabel => 'Свет';
+
+  @override
+  String get speciesDifficultyEasy => 'Лёгкий уход';
+
+  @override
+  String get speciesDifficultyMedium => 'Средний уход';
+
+  @override
+  String get speciesDifficultyHard => 'Сложный уход';
+
+  @override
+  String get speciesDifficultyUnknown => 'Сложность не указана';
+
+  @override
+  String get speciesLightFullSun => 'Прямое солнце';
+
+  @override
+  String get speciesLightBrightIndirect => 'Яркий рассеянный';
+
+  @override
+  String get speciesLightPartialShade => 'Полутень';
+
+  @override
+  String get speciesLightShade => 'Тень';
+
+  @override
+  String get speciesLightUnknown => 'Свет не указан';
+
+  @override
+  String get speciesCareWatering => 'Полив';
+
+  @override
+  String get speciesCareMisting => 'Опрыскивание';
+
+  @override
+  String get speciesCareFertilizing => 'Подкормка';
+
+  @override
+  String get speciesCareSoilCheck => 'Проверка грунта';
+
+  @override
+  String speciesCareEveryDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'каждые $count дня',
+      many: 'каждые $count дней',
+      few: 'каждые $count дня',
+      one: 'каждый $count день',
+    );
+    return '$_temp0';
+  }
 }

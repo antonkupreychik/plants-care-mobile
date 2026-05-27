@@ -1,9 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/care/care_task.dart';
 import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
 import '../data/home_repository_provider.dart';
-import '../domain/care_task.dart';
 import '../domain/garden_location.dart';
 import '../domain/plant.dart';
 

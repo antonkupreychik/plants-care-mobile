@@ -1,14 +1,34 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/tokens.dart';
-import '../../../../l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
+import '../theme/tokens.dart';
 
-/// Нижняя навигация (визуальная). go_router пока знает только `/home`, поэтому
-/// активна вкладка «Сад», остальные инертны (тап → snackbar «скоро»).
-/// Заменится `StatefulShellRoute` в следующих фичах.
-class HomeBottomNav extends StatelessWidget {
-  const HomeBottomNav({super.key, required this.onComingSoon});
+/// Плавающая нижняя навигация приложения (MADR-005).
+///
+/// Визуальный контейнер с 4 табами (Сад / График / Каталог / Профиль). Живёт
+/// overlay над активным branch'ем в `AppShell`. Активный таб определяется
+/// [currentIndex] (= `StatefulNavigationShell.currentIndex`).
+///
+/// Сад/График/Каталог навигируют по branch'ам
+/// ([onSelectGarden]/[onSelectSchedule]/[onSelectCatalog]), Профиль ещё не
+/// реализован — тап вызывает [onComingSoon].
+class AppBottomNav extends StatelessWidget {
+  const AppBottomNav({
+    super.key,
+    required this.currentIndex,
+    required this.onSelectGarden,
+    required this.onSelectSchedule,
+    required this.onSelectCatalog,
+    required this.onComingSoon,
+  });
 
+  /// Индекс активного branch'а (0 — Сад, 1 — График, 2 — Каталог).
+  final int currentIndex;
+  final VoidCallback onSelectGarden;
+  final VoidCallback onSelectSchedule;
+
+  /// Переход в каталог видов (branch 2, экран 12).
+  final VoidCallback onSelectCatalog;
   final VoidCallback onComingSoon;
 
   @override
@@ -36,20 +56,20 @@ class HomeBottomNav extends StatelessWidget {
           _NavItem(
             icon: Icons.home_rounded,
             label: l10n.navGarden,
-            active: true,
-            onTap: () {},
+            active: currentIndex == 0,
+            onTap: onSelectGarden,
           ),
           _NavItem(
             icon: Icons.calendar_today_rounded,
             label: l10n.navSchedule,
-            active: false,
-            onTap: onComingSoon,
+            active: currentIndex == 1,
+            onTap: onSelectSchedule,
           ),
           _NavItem(
             icon: Icons.eco_outlined,
             label: l10n.navCatalog,
-            active: false,
-            onTap: onComingSoon,
+            active: currentIndex == 2,
+            onTap: onSelectCatalog,
           ),
           _NavItem(
             icon: Icons.person_outline_rounded,

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plantcare_mobile/features/home/domain/care_task.dart';
-import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
+import 'package:plantcare_mobile/core/care/care_task.dart';
+import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/features/home/presentation/today_filter.dart';
 import 'package:plantcare_mobile/features/home/presentation/today_view.dart';
 

@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:plantcare_mobile/features/home/domain/care_task.dart';
-import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
-import 'package:plantcare_mobile/features/home/presentation/care_task_l10n.dart';
+import 'package:plantcare_mobile/core/care/care_task.dart';
+import 'package:plantcare_mobile/core/care/care_task_type.dart';
+import 'package:plantcare_mobile/core/care/care_task_l10n.dart';
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
 import 'package:plantcare_mobile/l10n/app_localizations_ru.dart';
 
