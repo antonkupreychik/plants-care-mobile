@@ -73,9 +73,11 @@ lib/
 
 Фича **не** импортит из `presentation/` другой фичи. Если фиче нужны данные другой —
 зависит от её domain-интерфейса, не от экранов. Общее — только через `core/`.
-Sprint 1 фичи: `home` (01), `plant_card` (02), `care_event` (06 sheet), `schedule` (11),
-`auth` (07/09 заглушки). Общий care-task домен (`CareTask`/`CareTaskType`, мапперы) — в
-`core/care/`, т.к. его делят `home` и `schedule`.
+Sprint 1 фичи: `home` (01), `plant_card` (02), `add_plant` (04 — мастер из 4 шагов,
+полноэкранно поверх shell через root navigator `/home/add`; выбор вида и план ухода —
+read-only превью, `speciesId`/расписания backend не сохраняет, G13/G14), `care_event`
+(06 sheet), `schedule` (11), `auth` (07/09 заглушки). Общий care-task домен
+(`CareTask`/`CareTaskType`, мапперы) — в `core/care/`, т.к. его делят `home` и `schedule`.
 
 ---
 
