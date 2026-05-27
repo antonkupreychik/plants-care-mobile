@@ -17,13 +17,19 @@ class TodayCard extends StatelessWidget {
     required this.tasks,
     required this.now,
     required this.onTaskTap,
+    this.onSeeAll,
   });
 
   final List<CareTask> tasks;
   final DateTime now;
 
-  /// Тап по задаче (пока no-op/snackbar — sheet ухода появится в фиче 06).
+  /// Тап по задаче → sheet ухода (фича 06).
   final void Function(CareTask task) onTaskTap;
+
+  /// Тап по заголовку секции → открыть полный экран 03 «Сегодня».
+  /// Опциональный (не ломает существующие вызовы/тесты): если `null`,
+  /// заголовок неинтерактивен.
+  final VoidCallback? onSeeAll;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +43,8 @@ class TodayCard extends StatelessWidget {
           _SectionHead(
             overline: l10n.homeTodayTitle,
             title: l10n.homeTodayTasksCount(tasks.length),
+            onSeeAll: onSeeAll,
+            seeAllLabel: l10n.homeTodaySeeAll,
           ),
           if (tasks.isEmpty)
             Padding(
@@ -107,16 +115,25 @@ class _CardShell extends StatelessWidget {
 }
 
 class _SectionHead extends StatelessWidget {
-  const _SectionHead({required this.overline, required this.title});
+  const _SectionHead({
+    required this.overline,
+    required this.title,
+    this.onSeeAll,
+    this.seeAllLabel,
+  });
 
   final String overline;
   final String title;
+  final VoidCallback? onSeeAll;
+  final String? seeAllLabel;
 
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
-    return Column(
+
+    final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           overline.toUpperCase(),
@@ -130,6 +147,32 @@ class _SectionHead extends StatelessWidget {
         const SizedBox(height: 2),
         Text(title, style: AppTheme.serif(fontSize: 24, color: c.ink)),
       ],
+    );
+
+    if (onSeeAll == null) return content;
+
+    // Ненавязчивый аффорданс «посмотреть все»: тап по заголовку ведёт на
+    // экран 03. Стрелка-шеврон даёт визуальный намёк на переход.
+    return Semantics(
+      button: true,
+      label: seeAllLabel,
+      child: InkWell(
+        onTap: onSeeAll,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 2, bottom: 2),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: content),
+              Padding(
+                padding: const EdgeInsets.only(top: 14),
+                child: Icon(Icons.chevron_right_rounded, size: 22, color: c.inkSoft),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

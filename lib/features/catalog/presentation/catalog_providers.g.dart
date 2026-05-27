@@ -132,7 +132,7 @@ final class SpeciesListProvider
   SpeciesList create() => SpeciesList();
 }
 
-String _$speciesListHash() => r'1e2066a0455c2bbea952b3a21a53cab002dda184';
+String _$speciesListHash() => r'f67d55ecfe16bca85a4739757b7118abda889c0a';
 
 /// Аккумулирующий пагинированный список видов под текущей строкой поиска.
 ///

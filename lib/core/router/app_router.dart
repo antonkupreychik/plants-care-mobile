@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/home/presentation/today_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
 import 'app_shell.dart';
@@ -16,12 +17,12 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 ///
 /// `StatefulShellRoute.indexedStack` с тремя branch'ами под общим [AppShell]:
 /// Сад (`/home`), График (`/schedule`) и Каталог (`/catalog`). Каждый branch
-/// держит свой стек: в саду живёт push-маршрут `/home/plants/:id` (экран 02
-/// «Карточка растения»), в каталоге — `/catalog/:id` (экран 13 «Деталь вида»).
-/// Оба detail-экрана со своей нижней кнопкой/назад рендерятся на
-/// [_rootNavigatorKey] (поверх shell, без плавающего таб-бара).
-/// Профиль ещё не branch — его таб в нижней навигации инертен (coming-soon),
-/// см. [AppBottomNav].
+/// держит свой стек: в саду живут push-маршруты `/home/today` (экран 03
+/// «Сегодня») и `/home/plants/:id` (экран 02 «Карточка растения»), в каталоге —
+/// `/catalog/:id` (экран 13 «Деталь вида»). Detail/drill-in-экраны со своей
+/// нижней кнопкой/назад рендерятся на [_rootNavigatorKey] (поверх shell, без
+/// плавающего таб-бара). Профиль ещё не branch — его таб в нижней навигации
+/// инертен (coming-soon), см. [AppBottomNav].
 ///
 /// Старт — `/home` (экран «Мой сад»), это фиксирует контракт стартового экрана.
 final appRouter = GoRouter(
@@ -39,6 +40,15 @@ final appRouter = GoRouter(
               name: 'home',
               builder: (context, state) => const HomeScreen(),
               routes: [
+                // Экран 03 «Сегодня» (полный список задач). Push поверх shell
+                // (своя кнопка «назад», без таб-бара) — как карточка растения.
+                // Позже может переехать под таб «График» (StatefulShellBranch).
+                GoRoute(
+                  path: 'today',
+                  name: 'today',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const TodayScreen(),
+                ),
                 GoRoute(
                   path: 'plants/:id',
                   name: 'plantCard',

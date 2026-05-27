@@ -63,6 +63,104 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeTasksEmptyHint => 'Можно выдохнуть — все растения политы';
 
   @override
+  String get homeTodaySeeAll => 'Посмотреть все';
+
+  @override
+  String get todayBack => 'Назад';
+
+  @override
+  String todayHeroCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Сегодня $count заботы в саду',
+      many: 'Сегодня $count забот в саду',
+      few: 'Сегодня $count заботы в саду',
+      one: 'Сегодня $count забота в саду',
+      zero: 'Сегодня нет забот в саду',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String todaySummary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count задачи',
+      many: '$count задач',
+      few: '$count задачи',
+      one: '$count задача',
+      zero: 'Нет задач',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String todaySummaryOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count просрочено',
+      many: '$count просрочено',
+      few: '$count просрочены',
+      one: '$count просрочена',
+      zero: 'нет просроченных',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get todayFilterAll => 'Всё';
+
+  @override
+  String get todayFilterWatering => 'Полив';
+
+  @override
+  String get todayFilterMisting => 'Опрыскивание';
+
+  @override
+  String get todayFilterFertilizing => 'Подкормка';
+
+  @override
+  String get todayFilterOverdue => 'Просрочено';
+
+  @override
+  String get todayPhaseMorning => 'Утром';
+
+  @override
+  String get todayPhaseEvening => 'Вечером';
+
+  @override
+  String todaySectionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count заботы',
+      many: '$count забот',
+      few: '$count заботы',
+      one: '$count забота',
+      zero: 'нет забот',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get todayOverdueBadge => 'ПРОСРОЧЕНО';
+
+  @override
+  String get todayEmptyAll => 'На сегодня задач нет';
+
+  @override
+  String get todayEmptyAllHint => 'Можно выдохнуть — все растения политы';
+
+  @override
+  String get todayEmptyFilter => 'Нет задач в этой категории';
+
+  @override
+  String get todayEmptyFilterHint => 'Попробуйте другой фильтр';
+
+  @override
   String get homeGardenTitle => 'Мой сад';
 
   @override

@@ -80,6 +80,7 @@ class HomeScreen extends ConsumerWidget {
                         presetType: careEventKindFromTaskType(task.type),
                         plantName: task.plantName,
                       ),
+                      onSeeAll: () => context.push('/home/today'),
                       onRetry: () => ref.invalidate(homeTasksProvider),
                     ),
                   ),
@@ -137,12 +138,14 @@ class _TodaySection extends StatelessWidget {
     required this.tasks,
     required this.now,
     required this.onTaskTap,
+    required this.onSeeAll,
     required this.onRetry,
   });
 
   final AsyncValue<List<CareTask>> tasks;
   final DateTime now;
   final void Function(CareTask task) onTaskTap;
+  final VoidCallback onSeeAll;
   final VoidCallback onRetry;
 
   @override
@@ -155,7 +158,12 @@ class _TodaySection extends StatelessWidget {
         retryLabel: l10n.retry,
         onRetry: onRetry,
       ),
-      data: (list) => TodayCard(tasks: list, now: now, onTaskTap: onTaskTap),
+      data: (list) => TodayCard(
+        tasks: list,
+        now: now,
+        onTaskTap: onTaskTap,
+        onSeeAll: onSeeAll,
+      ),
     );
   }
 }
