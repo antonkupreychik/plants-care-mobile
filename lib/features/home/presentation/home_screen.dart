@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/clock/clock_provider.dart';
 import '../../../core/error/api_error_l10n.dart';
@@ -97,7 +98,7 @@ class HomeScreen extends ConsumerWidget {
                 _PlantGridSection(
                   plants: plants,
                   onAdd: comingSoon,
-                  onPlantTap: (_) => comingSoon(),
+                  onPlantTap: (plant) => context.push('/home/plants/${plant.id}'),
                   onRetry: () => ref.invalidate(homePlantsProvider),
                 ),
 
