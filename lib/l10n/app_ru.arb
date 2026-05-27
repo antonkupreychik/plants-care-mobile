@@ -74,6 +74,108 @@
     "description": "Подпись к пустому состоянию задач на сегодня"
   },
 
+  "homeTodaySeeAll": "Посмотреть все",
+  "@homeTodaySeeAll": {
+    "description": "Семантика/подсказка: открыть полный экран задач на сегодня"
+  },
+
+  "todayBack": "Назад",
+  "@todayBack": {
+    "description": "Семантика кнопки возврата в шапке экрана «Сегодня»"
+  },
+
+  "todayHeroCount": "{count, plural, =0{Сегодня нет забот в саду} one{Сегодня {count} забота в саду} few{Сегодня {count} заботы в саду} many{Сегодня {count} забот в саду} other{Сегодня {count} заботы в саду}}",
+  "@todayHeroCount": {
+    "description": "Крупный serif-заголовок экрана «Сегодня» с числом задач",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todaySummary": "{count, plural, =0{Нет задач} one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}",
+  "@todaySummary": {
+    "description": "Сводка экрана «Сегодня»: всего задач",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todaySummaryOverdue": "{count, plural, =0{нет просроченных} one{{count} просрочена} few{{count} просрочены} many{{count} просрочено} other{{count} просрочено}}",
+  "@todaySummaryOverdue": {
+    "description": "Сводка экрана «Сегодня»: сколько просрочено",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todayFilterAll": "Всё",
+  "@todayFilterAll": {
+    "description": "Фильтр-пилюля: все задачи"
+  },
+
+  "todayFilterWatering": "Полив",
+  "@todayFilterWatering": {
+    "description": "Фильтр-пилюля: полив"
+  },
+
+  "todayFilterMisting": "Опрыскивание",
+  "@todayFilterMisting": {
+    "description": "Фильтр-пилюля: опрыскивание"
+  },
+
+  "todayFilterFertilizing": "Подкормка",
+  "@todayFilterFertilizing": {
+    "description": "Фильтр-пилюля: подкормка"
+  },
+
+  "todayFilterOverdue": "Просрочено",
+  "@todayFilterOverdue": {
+    "description": "Фильтр-пилюля: просроченные"
+  },
+
+  "todayPhaseMorning": "Утром",
+  "@todayPhaseMorning": {
+    "description": "Заголовок секции задач: утро"
+  },
+
+  "todayPhaseEvening": "Вечером",
+  "@todayPhaseEvening": {
+    "description": "Заголовок секции задач: вечер"
+  },
+
+  "todaySectionCount": "{count, plural, =0{нет забот} one{{count} забота} few{{count} заботы} many{{count} забот} other{{count} заботы}}",
+  "@todaySectionCount": {
+    "description": "Счётчик задач в заголовке секции фазы (утро/вечер)",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todayOverdueBadge": "ПРОСРОЧЕНО",
+  "@todayOverdueBadge": {
+    "description": "Бейдж на карточке задачи: задача просрочена"
+  },
+
+  "todayEmptyAll": "На сегодня задач нет",
+  "@todayEmptyAll": {
+    "description": "Пустое состояние экрана «Сегодня» при фильтре «Всё»"
+  },
+
+  "todayEmptyAllHint": "Можно выдохнуть — все растения политы",
+  "@todayEmptyAllHint": {
+    "description": "Подпись к пустому состоянию при фильтре «Всё»"
+  },
+
+  "todayEmptyFilter": "Нет задач в этой категории",
+  "@todayEmptyFilter": {
+    "description": "Пустое состояние экрана «Сегодня» при активном фильтре"
+  },
+
+  "todayEmptyFilterHint": "Попробуйте другой фильтр",
+  "@todayEmptyFilterHint": {
+    "description": "Подсказка к пустому состоянию при активном фильтре"
+  },
+
   "homeGardenTitle": "Мой сад",
   "@homeGardenTitle": {
     "description": "Заголовок секции с растениями пользователя"

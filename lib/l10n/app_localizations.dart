@@ -178,6 +178,114 @@ abstract class AppLocalizations {
   /// **'Можно выдохнуть — все растения политы'**
   String get homeTasksEmptyHint;
 
+  /// Семантика/подсказка: открыть полный экран задач на сегодня
+  ///
+  /// In ru, this message translates to:
+  /// **'Посмотреть все'**
+  String get homeTodaySeeAll;
+
+  /// Семантика кнопки возврата в шапке экрана «Сегодня»
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get todayBack;
+
+  /// Крупный serif-заголовок экрана «Сегодня» с числом задач
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Сегодня нет забот в саду} one{Сегодня {count} забота в саду} few{Сегодня {count} заботы в саду} many{Сегодня {count} забот в саду} other{Сегодня {count} заботы в саду}}'**
+  String todayHeroCount(int count);
+
+  /// Сводка экрана «Сегодня»: всего задач
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет задач} one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}'**
+  String todaySummary(int count);
+
+  /// Сводка экрана «Сегодня»: сколько просрочено
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{нет просроченных} one{{count} просрочена} few{{count} просрочены} many{{count} просрочено} other{{count} просрочено}}'**
+  String todaySummaryOverdue(int count);
+
+  /// Фильтр-пилюля: все задачи
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё'**
+  String get todayFilterAll;
+
+  /// Фильтр-пилюля: полив
+  ///
+  /// In ru, this message translates to:
+  /// **'Полив'**
+  String get todayFilterWatering;
+
+  /// Фильтр-пилюля: опрыскивание
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскивание'**
+  String get todayFilterMisting;
+
+  /// Фильтр-пилюля: подкормка
+  ///
+  /// In ru, this message translates to:
+  /// **'Подкормка'**
+  String get todayFilterFertilizing;
+
+  /// Фильтр-пилюля: просроченные
+  ///
+  /// In ru, this message translates to:
+  /// **'Просрочено'**
+  String get todayFilterOverdue;
+
+  /// Заголовок секции задач: утро
+  ///
+  /// In ru, this message translates to:
+  /// **'Утром'**
+  String get todayPhaseMorning;
+
+  /// Заголовок секции задач: вечер
+  ///
+  /// In ru, this message translates to:
+  /// **'Вечером'**
+  String get todayPhaseEvening;
+
+  /// Счётчик задач в заголовке секции фазы (утро/вечер)
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{нет забот} one{{count} забота} few{{count} заботы} many{{count} забот} other{{count} заботы}}'**
+  String todaySectionCount(int count);
+
+  /// Бейдж на карточке задачи: задача просрочена
+  ///
+  /// In ru, this message translates to:
+  /// **'ПРОСРОЧЕНО'**
+  String get todayOverdueBadge;
+
+  /// Пустое состояние экрана «Сегодня» при фильтре «Всё»
+  ///
+  /// In ru, this message translates to:
+  /// **'На сегодня задач нет'**
+  String get todayEmptyAll;
+
+  /// Подпись к пустому состоянию при фильтре «Всё»
+  ///
+  /// In ru, this message translates to:
+  /// **'Можно выдохнуть — все растения политы'**
+  String get todayEmptyAllHint;
+
+  /// Пустое состояние экрана «Сегодня» при активном фильтре
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет задач в этой категории'**
+  String get todayEmptyFilter;
+
+  /// Подсказка к пустому состоянию при активном фильтре
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробуйте другой фильтр'**
+  String get todayEmptyFilterHint;
+
   /// Заголовок секции с растениями пользователя
   ///
   /// In ru, this message translates to:
