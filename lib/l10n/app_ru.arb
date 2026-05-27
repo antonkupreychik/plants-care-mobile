@@ -1,0 +1,38 @@
+{
+  "@@locale": "ru",
+
+  "homeOverline": "МОЙ САД",
+  "@homeOverline": {
+    "description": "Надзаголовок-капс над приветствием на главном экране"
+  },
+
+  "appTitle": "PlantCate",
+  "@appTitle": {
+    "description": "Название приложения (hero-заголовок)"
+  },
+
+  "homeSubtitle": "Каркас приложения собран.\nЗдесь скоро вырастет твой сад.",
+  "@homeSubtitle": {
+    "description": "Подпись под названием на экране-заглушке каркаса"
+  },
+
+  "buildOk": "Сборка работает",
+  "@buildOk": {
+    "description": "Заголовок диагностической карточки сборки"
+  },
+
+  "fieldFlavor": "Flavor",
+  "@fieldFlavor": {
+    "description": "Метка строки: окружение сборки (dev/prod)"
+  },
+
+  "fieldApi": "API",
+  "@fieldApi": {
+    "description": "Метка строки: базовый URL API"
+  },
+
+  "fieldDevAuth": "Dev auth",
+  "@fieldDevAuth": {
+    "description": "Метка строки: dev-заголовки идентификации (chat/user)"
+  }
+}

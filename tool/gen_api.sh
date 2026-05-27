@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Пайплайн кодгена API-клиента из OpenAPI (MADR-007).
+#
+#   bundle  : api/openapi/*.yaml (многофайловая спека) → api/openapi.bundled.json
+#   client  : swagger_parser → lib/core/api/generated/ (Retrofit + json_serializable)
+#   .g.dart : build_runner → реализации Retrofit/json
+#
+# Источник правды — статическая курированная спека из репозитория plants-care
+# (api/openapi/, закоммичена). Рантайм /v3/api-docs (springdoc) НЕ годится как
+# вход: он не документирует заголовки X-User-Id/X-Chat-Id и query-параметры
+# (PoC резолвит их мимо OpenAPI-аннотаций) и отдаёт пустую схему для /calendar.
+#
+# Обновить статическую спеку из GitHub: ./tool/gen_api.sh --fetch
+set -euo pipefail
+cd "$(dirname "$0")/.."
+export PATH="$HOME/development/flutter/bin:$PATH"
+
+if [[ "${1:-}" == "--fetch" ]]; then
+  echo "==> fetch OpenAPI files from plants-care@main"
+  BASE="https://raw.githubusercontent.com/antonkupreychik/plants-care/main"
+  PREFIX="src/main/resources/openapi"
+  curl -sS --max-time 30 "https://api.github.com/repos/antonkupreychik/plants-care/git/trees/main?recursive=1" -o /tmp/pc_tree.json
+  python3 - "$PREFIX" <<'PY' > /tmp/pc_paths.txt
+import json,sys
+t=json.load(open('/tmp/pc_tree.json')); pre=sys.argv[1]
+print('\n'.join(i['path'] for i in t['tree']
+      if i['path'].startswith(pre) and i['path'].endswith(('.yaml','.yml'))))
+PY
+  while IFS= read -r p; do
+    [ -z "$p" ] && continue
+    dest="api/openapi/${p#$PREFIX/}"; mkdir -p "$(dirname "$dest")"
+    curl -sS --max-time 30 -o "$dest" "$BASE/$p"
+  done < /tmp/pc_paths.txt
+fi
+
+echo "==> bundle"
+dart run tool/bundle_openapi.dart
+
+echo "==> swagger_parser"
+dart run swagger_parser
+
+echo "==> build_runner"
+dart run build_runner build --delete-conflicting-outputs
+
+echo "==> done. Generated → lib/core/api/generated/"

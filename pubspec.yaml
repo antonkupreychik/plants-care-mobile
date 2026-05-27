@@ -1,0 +1,85 @@
+name: plantcate_mobile
+description: "PlantCate — забота о домашних растениях"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+# Стек MADR-001. Storage (drift/sqlite3) и API-кодген (swagger_parser)
+# подключаются отдельными шагами каркаса.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State / DI (MADR-004) + codegen.
+  flutter_riverpod: ^3.3.1
+  riverpod_annotation: ^4.0.2
+
+  # Навигация (MADR-005).
+  go_router: ^17.2.3
+
+  # Сеть (MADR-006).
+  dio: ^5.9.2
+  dio_smart_retry: ^7.0.1
+
+  # Runtime для сгенерированного API-клиента (swagger_parser → Retrofit на dio).
+  retrofit: ^4.9.1
+
+  # Модели (MADR-002/011): freezed sealed для ApiError/Result.
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.12.0
+
+  # Хранилище токенов dev-слота / JWT позже (MADR-008).
+  flutter_secure_storage: ^10.3.0
+
+  # Идемпотентность care-events (MADR-006).
+  uuid: ^4.5.3
+
+  # Локализация (MADR-012).
+  intl: any
+
+  # Типографика (MADR-001): Instrument Serif + Plus Jakarta Sans.
+  google_fonts: ^8.1.0
+
+  # SVG-иллюстрации из дизайна (MADR-001).
+  flutter_svg: ^2.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Тесты (MADR-014).
+  mocktail: ^1.0.5
+
+  # Для tool/bundle_openapi.dart (сборка многофайловой OpenAPI в один файл).
+  yaml: ^3.1.2
+
+  # Кодген API-клиента из OpenAPI (MADR-007). Версия any — pub подбирает
+  # совместимый analyzer (как с lint-пакетами).
+  swagger_parser: any
+  # Генерит реализацию Retrofit-клиента (.g.dart) из аннотаций swagger_parser.
+  retrofit_generator: any
+
+  # Codegen (MADR-001).
+  build_runner: ^2.15.0
+  riverpod_generator: ^4.0.3
+  freezed: ^3.2.5
+  json_serializable: ^6.14.0
+
+  # custom_lint / riverpod_lint (MADR-004) отложены: на 2026-05 их релизы
+  # тянут analyzer ^7/^8 и конфликтуют с riverpod_generator 4.0.3 +
+  # json_serializable 6.14.0 (analyzer ^9/^12). Вернуть, когда выйдет
+  # custom_lint под analyzer ≥9. Статанализ держит flutter_lints.
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/illustrations/
