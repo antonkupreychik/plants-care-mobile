@@ -157,4 +157,172 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorGeneric => 'Что-то пошло не так. Попробуйте позже';
+
+  @override
+  String get plantCardOverline => 'Карточка';
+
+  @override
+  String get plantCardBack => 'Назад';
+
+  @override
+  String get plantCardMore => 'Ещё';
+
+  @override
+  String plantCardWithMeFor(String duration) {
+    return 'Со мной $duration';
+  }
+
+  @override
+  String plantCardAgeYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count года',
+      many: '$count лет',
+      few: '$count года',
+      one: '$count год',
+      zero: 'меньше года',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String plantCardAgeMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count месяца',
+      many: '$count месяцев',
+      few: '$count месяца',
+      one: '$count месяц',
+      zero: 'меньше месяца',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String plantCardAgeDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count дня',
+      many: '$count дней',
+      few: '$count дня',
+      one: '$count день',
+      zero: 'сегодня',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get plantCardStreakTitle => 'Серия ухода';
+
+  @override
+  String plantCardStreakCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count дня подряд',
+      many: '$count дней подряд',
+      few: '$count дня подряд',
+      one: '$count день подряд',
+      zero: 'Серия прервана',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get plantCardStreakHint => 'Уходов вовремя подряд';
+
+  @override
+  String get plantCardStreakEmpty =>
+      'Серии пока нет — начните ухаживать вовремя';
+
+  @override
+  String get plantCardNotesTitle => 'Заметки';
+
+  @override
+  String get plantCardJournalTitle => 'Дневник ухода';
+
+  @override
+  String get plantCardJournalEmpty => 'Записей пока нет';
+
+  @override
+  String get plantCardJournalEmptyHint =>
+      'Отметьте первый уход — и здесь появится история';
+
+  @override
+  String get plantCardJournalOnTime => 'вовремя';
+
+  @override
+  String get plantCardLogCare => 'Отметить уход';
+
+  @override
+  String plantCardHistoryDate(String date, String time) {
+    return '$date, $time';
+  }
+
+  @override
+  String get careDoneWater => 'Полито';
+
+  @override
+  String get careDoneSpray => 'Опрыскано';
+
+  @override
+  String get careDoneFertilize => 'Удобрено';
+
+  @override
+  String get careDoneUnknown => 'Уход выполнен';
+
+  @override
+  String get careSheetOverline => 'Отметить уход';
+
+  @override
+  String get careSheetTitle => 'Что сделали?';
+
+  @override
+  String careSheetTitleFor(String plant) {
+    return 'Уход за $plant';
+  }
+
+  @override
+  String get careSheetClose => 'Закрыть';
+
+  @override
+  String get careSheetTypeLabel => 'Тип ухода';
+
+  @override
+  String get careKindWater => 'Полить';
+
+  @override
+  String get careKindSpray => 'Опрыскать';
+
+  @override
+  String get careKindFertilize => 'Удобрить';
+
+  @override
+  String get careSheetWhenLabel => 'Когда выполнили';
+
+  @override
+  String get careSheetWhenNow => 'Сейчас';
+
+  @override
+  String careSheetWhenValue(String date, String time) {
+    return '$date, $time';
+  }
+
+  @override
+  String get careSheetNoteLabel => 'Заметка';
+
+  @override
+  String get careSheetNoteHint => 'Например: полил(а) до поддона';
+
+  @override
+  String get careSheetNoteOptional => 'необязательно';
+
+  @override
+  String get careSheetSubmit => 'Отметить';
+
+  @override
+  String get careSheetSubmitted => 'Уход отмечен';
 }
