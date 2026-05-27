@@ -1,0 +1,53 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(60 62) rotate(-40)">
+    <path d="M 0 0 Q -2 -20 -1 -42 Q 0 -50 2 -42 Q 3 -20 1 0 Z" fill="#3F5A2E"/>
+    <ellipse cx="-3" cy="-8" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -8)"/>
+    <ellipse cx="3" cy="-8" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -8)"/>
+    <ellipse cx="-3" cy="-16" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -16)"/>
+    <ellipse cx="3" cy="-16" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -16)"/>
+    <ellipse cx="-3" cy="-24" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -24)"/>
+    <ellipse cx="3" cy="-24" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -24)"/>
+    <ellipse cx="-3" cy="-32" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -32)"/>
+    <ellipse cx="3" cy="-32" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -32)"/>
+  </g>
+  <g transform="translate(60 62) rotate(-20)">
+    <path d="M 0 0 Q -2 -20 -1 -42 Q 0 -50 2 -42 Q 3 -20 1 0 Z" fill="#3F5A2E"/>
+    <ellipse cx="-3" cy="-8" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -8)"/>
+    <ellipse cx="3" cy="-8" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -8)"/>
+    <ellipse cx="-3" cy="-20" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -20)"/>
+    <ellipse cx="3" cy="-20" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -20)"/>
+    <ellipse cx="-3" cy="-32" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -32)"/>
+    <ellipse cx="3" cy="-32" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -32)"/>
+  </g>
+  <g transform="translate(60 62) rotate(0)">
+    <path d="M 0 0 Q -2 -20 -1 -42 Q 0 -50 2 -42 Q 3 -20 1 0 Z" fill="#6F8A4F"/>
+    <ellipse cx="-3" cy="-8" rx="4" ry="1.6" fill="#6F8A4F" transform="rotate(-30 -3 -8)"/>
+    <ellipse cx="3" cy="-8" rx="4" ry="1.6" fill="#6F8A4F" transform="rotate(30 3 -8)"/>
+    <ellipse cx="-3" cy="-20" rx="4" ry="1.6" fill="#6F8A4F" transform="rotate(-30 -3 -20)"/>
+    <ellipse cx="3" cy="-20" rx="4" ry="1.6" fill="#6F8A4F" transform="rotate(30 3 -20)"/>
+    <ellipse cx="-3" cy="-32" rx="4" ry="1.6" fill="#6F8A4F" transform="rotate(-30 -3 -32)"/>
+    <ellipse cx="3" cy="-32" rx="4" ry="1.6" fill="#6F8A4F" transform="rotate(30 3 -32)"/>
+    <ellipse cx="-3" cy="-38" rx="4" ry="1.6" fill="#6F8A4F" transform="rotate(-30 -3 -38)"/>
+    <ellipse cx="3" cy="-38" rx="4" ry="1.6" fill="#6F8A4F" transform="rotate(30 3 -38)"/>
+  </g>
+  <g transform="translate(60 62) rotate(20)">
+    <path d="M 0 0 Q -2 -20 -1 -42 Q 0 -50 2 -42 Q 3 -20 1 0 Z" fill="#3F5A2E"/>
+    <ellipse cx="-3" cy="-8" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -8)"/>
+    <ellipse cx="3" cy="-8" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -8)"/>
+    <ellipse cx="-3" cy="-20" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -20)"/>
+    <ellipse cx="3" cy="-20" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -20)"/>
+    <ellipse cx="-3" cy="-32" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -32)"/>
+    <ellipse cx="3" cy="-32" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -32)"/>
+  </g>
+  <g transform="translate(60 62) rotate(40)">
+    <path d="M 0 0 Q -2 -20 -1 -42 Q 0 -50 2 -42 Q 3 -20 1 0 Z" fill="#3F5A2E"/>
+    <ellipse cx="-3" cy="-8" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -8)"/>
+    <ellipse cx="3" cy="-8" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -8)"/>
+    <ellipse cx="-3" cy="-20" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -20)"/>
+    <ellipse cx="3" cy="-20" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -20)"/>
+    <ellipse cx="-3" cy="-32" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(-30 -3 -32)"/>
+    <ellipse cx="3" cy="-32" rx="4" ry="1.6" fill="#3F5A2E" transform="rotate(30 3 -32)"/>
+  </g>
+  <path d="M 38 62 L 82 62 L 78 96 Q 76 102 70 102 L 50 102 Q 44 102 42 96 Z" fill="#C77B5C"/>
+  <ellipse cx="60" cy="62" rx="22" ry="3" fill="#8A5E48" opacity="0.7"/>
+</svg>

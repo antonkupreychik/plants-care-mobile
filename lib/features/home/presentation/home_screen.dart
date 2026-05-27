@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../core/env/app_config.dart';
+import '../../../core/clock/clock_provider.dart';
+import '../../../core/error/api_error_l10n.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/tokens.dart';
+import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
+import '../domain/care_task.dart';
+import '../domain/garden_location.dart';
+import '../domain/plant.dart';
+import 'home_filter.dart';
+import 'home_providers.dart';
+import 'widgets/garden_empty.dart';
+import 'widgets/home_bottom_nav.dart';
+import 'widgets/home_header.dart';
+import 'widgets/location_chips.dart';
+import 'widgets/plant_card.dart';
+import 'widgets/today_card.dart';
 
-/// Первый экран каркаса. Пока — приветственная заглушка, доказывающая, что
-/// собрано: тема из токенов (light/dark), шрифты (Instrument Serif +
-/// Plus Jakarta Sans), SVG-иллюстрация и проброс конфигурации из `--dart-define`.
+/// Экран 01 «Главная — Мой сад».
 ///
-/// Реальная «Главная — Мой сад» (01) с данными `GET /today` + `/plants`
-/// делается на шаге фич (после сборки каркаса) через flutter-coder.
+/// Потребляет три независимых провайдера ([homeTasksProvider],
+/// [homePlantsProvider], [homeLocationsProvider]) — каждая секция рисует
+/// loading/error/empty/data самостоятельно (провайдеры падают независимо).
+///
+/// Скрыто как заглушки каркаса: алерт «проблемное растение» (BACKEND-GAPS G3),
+/// виджет погоды (G4), кольцо здоровья на карточке (G1), mood/voiceLine (G2).
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -20,154 +34,324 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
-    final config = ref.watch(appConfigProvider);
+    final nowLocal = ref.watch(clockProvider).nowUtc().toLocal();
+
+    void comingSoon() {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
+    }
+
+    final tasks = ref.watch(homeTasksProvider);
+    final plants = ref.watch(homePlantsProvider);
+    final locations = ref.watch(homeLocationsProvider);
 
     return Scaffold(
+      backgroundColor: c.bg,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 32),
-              Text(
-                l10n.homeOverline,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.5,
-                  color: c.inkMute,
-                ),
-              ),
-              const Spacer(),
-              Center(
-                child: SvgPicture.asset(
-                  'assets/illustrations/monstera.svg',
-                  width: 168,
-                  height: 168,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Center(
-                child: Text(
-                  l10n.appTitle,
-                  style: AppTheme.serif(fontSize: 52, color: c.ink),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Center(
-                child: Text(
-                  l10n.homeSubtitle,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    height: 1.4,
-                    color: c.inkSoft,
+        bottom: false,
+        child: Stack(
+          children: [
+            CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: HomeHeader(now: nowLocal, onComingSoon: comingSoon),
                   ),
                 ),
-              ),
-              const Spacer(),
-              _BuildInfoCard(config: config, colors: c),
-              const SizedBox(height: 24),
-            ],
-          ),
+
+                // TODAY — секция задач (своё loading/error/empty/data).
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _TodaySection(
+                      tasks: tasks,
+                      now: nowLocal,
+                      onTaskTap: (_) => comingSoon(),
+                      onRetry: () => ref.invalidate(homeTasksProvider),
+                    ),
+                  ),
+                ),
+
+                // MY GARDEN — заголовок + счётчик.
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 20, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _GardenHeader(plants: plants),
+                  ),
+                ),
+
+                // CHIPS — локации (своё loading/error/data; ошибку прячем тихо).
+                SliverPadding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 14),
+                  sliver: SliverToBoxAdapter(
+                    child: _LocationChipsSection(
+                      locations: locations,
+                      plants: plants,
+                    ),
+                  ),
+                ),
+
+                // GRID — растения (loading/error/empty/data).
+                _PlantGridSection(
+                  plants: plants,
+                  onAdd: comingSoon,
+                  onPlantTap: (_) => comingSoon(),
+                  onRetry: () => ref.invalidate(homePlantsProvider),
+                ),
+
+                // Запас под плавающую навигацию и FAB.
+                const SliverToBoxAdapter(child: SizedBox(height: 120)),
+              ],
+            ),
+
+            // Плавающая нижняя навигация.
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 12,
+              child: HomeBottomNav(onComingSoon: comingSoon),
+            ),
+
+            // FAB «добавить» — пока без перехода (мастер появится в фиче).
+            Positioned(
+              right: 20,
+              bottom: 92,
+              child: _AddFab(onPressed: comingSoon),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-/// Карточка-индикатор: показывает, что проброс flavor + API URL из
-/// `--dart-define` работает (MADR-010). Уйдёт, когда появится реальная Главная.
-class _BuildInfoCard extends StatelessWidget {
-  const _BuildInfoCard({required this.config, required this.colors});
+/// Секция «Сегодня»: skeleton / ошибка / данные (пустой список → подпись
+/// внутри карточки).
+class _TodaySection extends StatelessWidget {
+  const _TodaySection({
+    required this.tasks,
+    required this.now,
+    required this.onTaskTap,
+    required this.onRetry,
+  });
 
-  final AppConfig config;
-  final PcColors colors;
+  final AsyncValue<List<CareTask>> tasks;
+  final DateTime now;
+  final void Function(CareTask task) onTaskTap;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: colors.line),
+    return tasks.when(
+      loading: () => const TodayCardSkeleton(),
+      error: (error, _) => ErrorState(
+        message: l10n.messageForError(error),
+        retryLabel: l10n.retry,
+        onRetry: onRetry,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.check_circle_rounded, size: 20, color: colors.primary),
-              const SizedBox(width: 8),
-              Text(
-                l10n.buildOk,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: colors.ink,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _InfoRow(
-            label: l10n.fieldFlavor,
-            value: config.flavor.name,
-            colors: colors,
-          ),
-          _InfoRow(label: l10n.fieldApi, value: config.apiUrl, colors: colors),
-          _InfoRow(
-            label: l10n.fieldDevAuth,
-            value: config.chatId == null
-                ? '—'
-                : 'chat ${config.chatId} · user ${config.userId ?? "—"}',
-            colors: colors,
-          ),
-        ],
-      ),
+      data: (list) => TodayCard(tasks: list, now: now, onTaskTap: onTaskTap),
     );
   }
 }
 
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    required this.value,
-    required this.colors,
-  });
+/// Заголовок «Мой сад» + счётчик растений (счётчик мягко скрывается, пока
+/// растения грузятся/в ошибке).
+class _GardenHeader extends StatelessWidget {
+  const _GardenHeader({required this.plants});
 
-  final String label;
-  final String value;
-  final PcColors colors;
+  final AsyncValue<List<Plant>> plants;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 76,
-            child: Text(
-              label,
-              style: TextStyle(fontSize: 13, color: colors.inkMute),
-            ),
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    final count = plants.value?.length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.homeGardenTitle.toUpperCase(),
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.7,
+            color: c.inkSoft,
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: colors.inkSoft,
+        ),
+        const SizedBox(height: 2),
+        Text(
+          count == null ? l10n.homeGardenTitle : l10n.homePlantsCount(count),
+          style: AppTheme.serif(fontSize: 24, color: c.ink),
+        ),
+      ],
+    );
+  }
+}
+
+/// Чипы локаций. Ошибку локаций прячем тихо (не критично для сада) — просто
+/// не показываем ленту; растения остаются доступны.
+class _LocationChipsSection extends ConsumerWidget {
+  const _LocationChipsSection({required this.locations, required this.plants});
+
+  final AsyncValue<List<GardenLocation>> locations;
+  final AsyncValue<List<Plant>> plants;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return locations.when(
+      loading: () => const LocationChipsSkeleton(),
+      error: (_, _) => const SizedBox.shrink(),
+      data: (locs) {
+        if (locs.isEmpty) return const SizedBox.shrink();
+        final plantList = plants.value ?? const <Plant>[];
+        final countByLocation = <int, int>{};
+        for (final p in plantList) {
+          final id = p.locationId;
+          if (id != null) {
+            countByLocation[id] = (countByLocation[id] ?? 0) + 1;
+          }
+        }
+        final selected = ref.watch(selectedLocationProvider);
+        return LocationChips(
+          locations: locs,
+          plantCountByLocation: countByLocation,
+          totalPlants: plantList.length,
+          selectedLocationId: selected,
+          onSelected: (id) =>
+              ref.read(selectedLocationProvider.notifier).select(id),
+        );
+      },
+    );
+  }
+}
+
+/// Сетка растений 2×N: skeleton / ошибка / пусто / данные.
+/// Фильтрация по выбранной локации — в UI (растение несёт `locationId`).
+class _PlantGridSection extends ConsumerWidget {
+  const _PlantGridSection({
+    required this.plants,
+    required this.onAdd,
+    required this.onPlantTap,
+    required this.onRetry,
+  });
+
+  final AsyncValue<List<Plant>> plants;
+  final VoidCallback onAdd;
+  final void Function(Plant plant) onPlantTap;
+  final VoidCallback onRetry;
+
+  static const _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
+    mainAxisSpacing: 12,
+    crossAxisSpacing: 12,
+    childAspectRatio: 0.72,
+  );
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+
+    return plants.when(
+      loading: () => const SliverPadding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        sliver: SliverGrid(
+          gridDelegate: _gridDelegate,
+          delegate: SliverChildBuilderDelegate(
+            _skeletonBuilder,
+            childCount: 4,
+          ),
+        ),
+      ),
+      error: (error, _) => SliverPadding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        sliver: SliverToBoxAdapter(
+          child: ErrorState(
+            message: l10n.messageForError(error),
+            retryLabel: l10n.retry,
+            onRetry: onRetry,
+          ),
+        ),
+      ),
+      data: (all) {
+        if (all.isEmpty) {
+          return SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverToBoxAdapter(child: GardenEmpty(onAdd: onAdd)),
+          );
+        }
+        final selected = ref.watch(selectedLocationProvider);
+        final visible = selected == null
+            ? all
+            : all.where((p) => p.locationId == selected).toList();
+
+        if (visible.isEmpty) {
+          // Выбранная комната пуста — мягкая подсказка (не голый экран).
+          return SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                l10n.homeRoomEmpty,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
+          );
+        }
+
+        return SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          sliver: SliverGrid(
+            gridDelegate: _gridDelegate,
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final plant = visible[index];
+                return PlantCard(
+                  plant: plant,
+                  tintWarm: index.isEven,
+                  onTap: () => onPlantTap(plant),
+                );
+              },
+              childCount: visible.length,
+            ),
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  static Widget _skeletonBuilder(BuildContext context, int index) =>
+      const PlantCardSkeleton();
+}
+
+class _AddFab extends StatelessWidget {
+  const _AddFab({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.homeAddPlant,
+      child: Material(
+        color: c.fab,
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        elevation: 6,
+        shadowColor: Colors.black.withValues(alpha: 0.25),
+        child: InkWell(
+          onTap: onPressed,
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: Icon(Icons.add_rounded, size: 26, color: c.fabInk),
+          ),
+        ),
       ),
     );
   }

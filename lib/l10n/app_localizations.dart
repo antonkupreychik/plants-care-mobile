@@ -135,6 +135,210 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Dev auth'**
   String get fieldDevAuth;
+
+  /// Приветствие в шапке главного экрана
+  ///
+  /// In ru, this message translates to:
+  /// **'Привет'**
+  String get homeGreeting;
+
+  /// Подсказка для иконки поиска в шапке
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск'**
+  String get homeSearchTooltip;
+
+  /// Подсказка для иконки уведомлений в шапке
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления'**
+  String get homeNotificationsTooltip;
+
+  /// Надзаголовок карточки задач на сегодня
+  ///
+  /// In ru, this message translates to:
+  /// **'Сегодня'**
+  String get homeTodayTitle;
+
+  /// Количество задач ухода на сегодня
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет забот} one{{count} забота} few{{count} заботы} many{{count} забот} other{{count} заботы}}'**
+  String homeTodayTasksCount(int count);
+
+  /// Пустое состояние секции задач на сегодня
+  ///
+  /// In ru, this message translates to:
+  /// **'На сегодня забот нет'**
+  String get homeTasksEmpty;
+
+  /// Подпись к пустому состоянию задач на сегодня
+  ///
+  /// In ru, this message translates to:
+  /// **'Можно выдохнуть — все растения политы'**
+  String get homeTasksEmptyHint;
+
+  /// Заголовок секции с растениями пользователя
+  ///
+  /// In ru, this message translates to:
+  /// **'Мой сад'**
+  String get homeGardenTitle;
+
+  /// Количество растений в саду
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет растений} one{{count} растение} few{{count} растения} many{{count} растений} other{{count} растения}}'**
+  String homePlantsCount(int count);
+
+  /// Чип «все локации» в фильтре комнат
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get homeLocationAll;
+
+  /// Заголовок пустого состояния списка растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Сад пока пуст'**
+  String get homeGardenEmptyTitle;
+
+  /// Подпись к пустому состоянию списка растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавьте первое растение — и здесь появится ваш сад'**
+  String get homeGardenEmptyHint;
+
+  /// Подпись кнопки добавления растения (FAB / пустое состояние)
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить растение'**
+  String get homeAddPlant;
+
+  /// Подсказка: в выбранной комнате нет растений
+  ///
+  /// In ru, this message translates to:
+  /// **'В этой комнате пока нет растений'**
+  String get homeRoomEmpty;
+
+  /// Действие ухода: полив
+  ///
+  /// In ru, this message translates to:
+  /// **'Полить'**
+  String get careActionWatering;
+
+  /// Действие ухода: опрыскивание
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскать'**
+  String get careActionMisting;
+
+  /// Действие ухода: подкормка
+  ///
+  /// In ru, this message translates to:
+  /// **'Удобрить'**
+  String get careActionFertilizing;
+
+  /// Действие ухода: проверка почвы
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверить почву'**
+  String get careActionSoilCheck;
+
+  /// Действие ухода: нераспознанный тип
+  ///
+  /// In ru, this message translates to:
+  /// **'Уход'**
+  String get careActionUnknown;
+
+  /// Метка времени задачи: просрочена
+  ///
+  /// In ru, this message translates to:
+  /// **'Просрочено'**
+  String get careDueOverdue;
+
+  /// Метка времени задачи: сегодня (без точного времени)
+  ///
+  /// In ru, this message translates to:
+  /// **'Сегодня'**
+  String get careDueToday;
+
+  /// Метка времени задачи с точным временем
+  ///
+  /// In ru, this message translates to:
+  /// **'Сегодня в {time}'**
+  String careDueAt(String time);
+
+  /// Вкладка нижней навигации: сад
+  ///
+  /// In ru, this message translates to:
+  /// **'Сад'**
+  String get navGarden;
+
+  /// Вкладка нижней навигации: график
+  ///
+  /// In ru, this message translates to:
+  /// **'График'**
+  String get navSchedule;
+
+  /// Вкладка нижней навигации: каталог
+  ///
+  /// In ru, this message translates to:
+  /// **'Каталог'**
+  String get navCatalog;
+
+  /// Вкладка нижней навигации: профиль
+  ///
+  /// In ru, this message translates to:
+  /// **'Я'**
+  String get navProfile;
+
+  /// Сообщение-заглушка для ещё не реализованных действий
+  ///
+  /// In ru, this message translates to:
+  /// **'Скоро'**
+  String get comingSoon;
+
+  /// Кнопка повтора загрузки после ошибки
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторить'**
+  String get retry;
+
+  /// Текст сетевой ошибки
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет соединения. Проверьте интернет и попробуйте снова'**
+  String get errorNetwork;
+
+  /// Текст ошибки 404
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные не найдены'**
+  String get errorNotFound;
+
+  /// Текст ошибки 403
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет доступа к этим данным'**
+  String get errorAccessDenied;
+
+  /// Текст ошибки валидации
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверьте введённые данные'**
+  String get errorValidation;
+
+  /// Текст ошибки конфликта
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные изменились. Обновите экран'**
+  String get errorConflict;
+
+  /// Текст общей/неизвестной ошибки
+  ///
+  /// In ru, this message translates to:
+  /// **'Что-то пошло не так. Попробуйте позже'**
+  String get errorGeneric;
 }
 
 class _AppLocalizationsDelegate
