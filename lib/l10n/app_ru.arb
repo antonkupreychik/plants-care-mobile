@@ -213,5 +213,134 @@
   "errorGeneric": "Что-то пошло не так. Попробуйте позже",
   "@errorGeneric": {
     "description": "Текст общей/неизвестной ошибки"
+  },
+
+  "plantCardOverline": "Карточка",
+  "@plantCardOverline": {
+    "description": "Надзаголовок-капс в шапке экрана карточки растения"
+  },
+
+  "plantCardBack": "Назад",
+  "@plantCardBack": {
+    "description": "Подпись/семантика кнопки возврата в шапке карточки"
+  },
+
+  "plantCardMore": "Ещё",
+  "@plantCardMore": {
+    "description": "Подпись/семантика кнопки меню «ещё» в шапке карточки"
+  },
+
+  "plantCardWithMeFor": "Со мной {duration}",
+  "@plantCardWithMeFor": {
+    "description": "Подпись «со мной …» с длительностью владения растением",
+    "placeholders": {
+      "duration": { "type": "String" }
+    }
+  },
+
+  "plantCardAgeYears": "{count, plural, =0{меньше года} one{{count} год} few{{count} года} many{{count} лет} other{{count} года}}",
+  "@plantCardAgeYears": {
+    "description": "Количество лет владения растением",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "plantCardAgeMonths": "{count, plural, =0{меньше месяца} one{{count} месяц} few{{count} месяца} many{{count} месяцев} other{{count} месяца}}",
+  "@plantCardAgeMonths": {
+    "description": "Количество месяцев владения растением",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "plantCardAgeDays": "{count, plural, =0{сегодня} one{{count} день} few{{count} дня} many{{count} дней} other{{count} дня}}",
+  "@plantCardAgeDays": {
+    "description": "Количество дней владения растением",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "plantCardStreakTitle": "Серия ухода",
+  "@plantCardStreakTitle": {
+    "description": "Надзаголовок секции стрика"
+  },
+
+  "plantCardStreakCount": "{count, plural, =0{Серия прервана} one{{count} день подряд} few{{count} дня подряд} many{{count} дней подряд} other{{count} дня подряд}}",
+  "@plantCardStreakCount": {
+    "description": "Длина серии ухода «в срок»",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "plantCardStreakHint": "Уходов вовремя подряд",
+  "@plantCardStreakHint": {
+    "description": "Подпись под счётчиком серии ухода"
+  },
+
+  "plantCardStreakEmpty": "Серии пока нет — начните ухаживать вовремя",
+  "@plantCardStreakEmpty": {
+    "description": "Пустое состояние стрика (count = 0)"
+  },
+
+  "plantCardNotesTitle": "Заметки",
+  "@plantCardNotesTitle": {
+    "description": "Заголовок секции заметок о растении"
+  },
+
+  "plantCardJournalTitle": "Дневник ухода",
+  "@plantCardJournalTitle": {
+    "description": "Заголовок секции истории ухода"
+  },
+
+  "plantCardJournalEmpty": "Записей пока нет",
+  "@plantCardJournalEmpty": {
+    "description": "Заголовок пустого состояния истории ухода"
+  },
+
+  "plantCardJournalEmptyHint": "Отметьте первый уход — и здесь появится история",
+  "@plantCardJournalEmptyHint": {
+    "description": "Подпись к пустому состоянию истории ухода"
+  },
+
+  "plantCardJournalOnTime": "вовремя",
+  "@plantCardJournalOnTime": {
+    "description": "Бейдж записи истории: уход выполнен в срок"
+  },
+
+  "plantCardLogCare": "Отметить уход",
+  "@plantCardLogCare": {
+    "description": "Основная кнопка действия на карточке растения"
+  },
+
+  "plantCardHistoryDate": "{date}, {time}",
+  "@plantCardHistoryDate": {
+    "description": "Дата и время записи истории ухода (локальная TZ)",
+    "placeholders": {
+      "date": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+
+  "careDoneWater": "Полито",
+  "@careDoneWater": {
+    "description": "Запись истории: выполнен полив"
+  },
+
+  "careDoneSpray": "Опрыскано",
+  "@careDoneSpray": {
+    "description": "Запись истории: выполнено опрыскивание"
+  },
+
+  "careDoneFertilize": "Удобрено",
+  "@careDoneFertilize": {
+    "description": "Запись истории: выполнена подкормка"
+  },
+
+  "careDoneUnknown": "Уход выполнен",
+  "@careDoneUnknown": {
+    "description": "Запись истории: нераспознанный тип ухода"
   }
 }

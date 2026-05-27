@@ -339,6 +339,138 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Что-то пошло не так. Попробуйте позже'**
   String get errorGeneric;
+
+  /// Надзаголовок-капс в шапке экрана карточки растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Карточка'**
+  String get plantCardOverline;
+
+  /// Подпись/семантика кнопки возврата в шапке карточки
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get plantCardBack;
+
+  /// Подпись/семантика кнопки меню «ещё» в шапке карточки
+  ///
+  /// In ru, this message translates to:
+  /// **'Ещё'**
+  String get plantCardMore;
+
+  /// Подпись «со мной …» с длительностью владения растением
+  ///
+  /// In ru, this message translates to:
+  /// **'Со мной {duration}'**
+  String plantCardWithMeFor(String duration);
+
+  /// Количество лет владения растением
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{меньше года} one{{count} год} few{{count} года} many{{count} лет} other{{count} года}}'**
+  String plantCardAgeYears(int count);
+
+  /// Количество месяцев владения растением
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{меньше месяца} one{{count} месяц} few{{count} месяца} many{{count} месяцев} other{{count} месяца}}'**
+  String plantCardAgeMonths(int count);
+
+  /// Количество дней владения растением
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{сегодня} one{{count} день} few{{count} дня} many{{count} дней} other{{count} дня}}'**
+  String plantCardAgeDays(int count);
+
+  /// Надзаголовок секции стрика
+  ///
+  /// In ru, this message translates to:
+  /// **'Серия ухода'**
+  String get plantCardStreakTitle;
+
+  /// Длина серии ухода «в срок»
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Серия прервана} one{{count} день подряд} few{{count} дня подряд} many{{count} дней подряд} other{{count} дня подряд}}'**
+  String plantCardStreakCount(int count);
+
+  /// Подпись под счётчиком серии ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Уходов вовремя подряд'**
+  String get plantCardStreakHint;
+
+  /// Пустое состояние стрика (count = 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'Серии пока нет — начните ухаживать вовремя'**
+  String get plantCardStreakEmpty;
+
+  /// Заголовок секции заметок о растении
+  ///
+  /// In ru, this message translates to:
+  /// **'Заметки'**
+  String get plantCardNotesTitle;
+
+  /// Заголовок секции истории ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Дневник ухода'**
+  String get plantCardJournalTitle;
+
+  /// Заголовок пустого состояния истории ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Записей пока нет'**
+  String get plantCardJournalEmpty;
+
+  /// Подпись к пустому состоянию истории ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметьте первый уход — и здесь появится история'**
+  String get plantCardJournalEmptyHint;
+
+  /// Бейдж записи истории: уход выполнен в срок
+  ///
+  /// In ru, this message translates to:
+  /// **'вовремя'**
+  String get plantCardJournalOnTime;
+
+  /// Основная кнопка действия на карточке растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить уход'**
+  String get plantCardLogCare;
+
+  /// Дата и время записи истории ухода (локальная TZ)
+  ///
+  /// In ru, this message translates to:
+  /// **'{date}, {time}'**
+  String plantCardHistoryDate(String date, String time);
+
+  /// Запись истории: выполнен полив
+  ///
+  /// In ru, this message translates to:
+  /// **'Полито'**
+  String get careDoneWater;
+
+  /// Запись истории: выполнено опрыскивание
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскано'**
+  String get careDoneSpray;
+
+  /// Запись истории: выполнена подкормка
+  ///
+  /// In ru, this message translates to:
+  /// **'Удобрено'**
+  String get careDoneFertilize;
+
+  /// Запись истории: нераспознанный тип ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Уход выполнен'**
+  String get careDoneUnknown;
 }
 
 class _AppLocalizationsDelegate
