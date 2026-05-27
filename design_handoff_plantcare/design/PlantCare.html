@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PlantCare — дизайн экранов</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    html, body { margin: 0; padding: 0; background: #f0eee9; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    em { font-style: italic; }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="android-frame.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="screens.jsx"></script>
+  <script type="text/babel" src="screens-v2.jsx"></script>
+  <script type="text/babel" src="screens-auth.jsx"></script>
+  <script type="text/babel" src="screens-v3.jsx"></script>
+  <script type="text/babel" src="screens-v4.jsx"></script>
+
+  <script type="text/babel">
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "theme": "light"
+    }/*EDITMODE-END*/;
+
+    function PhoneShell({ children, theme }) {
+      const t = window.PC_THEMES[theme];
+      return (
+        <div style={{
+          width: 412, height: 892, borderRadius: 44, overflow: 'hidden',
+          background: t.bg,
+          border: `9px solid ${theme === 'dark' ? '#0d100d' : '#2b2e26'}`,
+          boxShadow: theme === 'dark'
+            ? '0 30px 80px rgba(0,0,0,0.4), inset 0 0 0 2px rgba(255,255,255,0.04)'
+            : '0 30px 80px rgba(40,30,15,0.18)',
+          position: 'relative',
+          fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',
+        }}>
+          {/* status bar */}
+          <div style={{
+            height: 44, padding: '0 28px',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            position: 'relative', color: t.ink, fontSize: 14, fontWeight: 600,
+            letterSpacing: '0.02em',
+          }}>
+            <span>9:30</span>
+            {/* punch hole */}
+            <div style={{
+              position: 'absolute', left: '50%', top: 12,
+              transform: 'translateX(-50%)',
+              width: 22, height: 22, borderRadius: 11,
+              background: theme === 'dark' ? '#000' : '#1a1c19',
+            }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              {/* signal */}
+              <svg width="16" height="12" viewBox="0 0 16 12">
+                <rect x="0" y="8" width="3" height="4" rx="0.5" fill={t.ink} />
+                <rect x="4" y="6" width="3" height="6" rx="0.5" fill={t.ink} />
+                <rect x="8" y="3" width="3" height="9" rx="0.5" fill={t.ink} />
+                <rect x="12" y="0" width="3" height="12" rx="0.5" fill={t.ink} opacity="0.4" />
+              </svg>
+              {/* wifi */}
+              <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
+                <path d="M1 4 C 3.5 1.5 10.5 1.5 13 4" stroke={t.ink} strokeWidth="1.6" strokeLinecap="round" />
+                <path d="M3 6.5 C 4.5 5 9.5 5 11 6.5" stroke={t.ink} strokeWidth="1.6" strokeLinecap="round" />
+                <circle cx="7" cy="9.5" r="1.2" fill={t.ink} />
+              </svg>
+              {/* battery */}
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke={t.ink} strokeWidth="1" />
+                <rect x="20" y="3.5" width="1.5" height="4" rx="0.5" fill={t.ink} />
+                <rect x="2" y="2" width="13" height="7" rx="1" fill={t.ink} />
+              </svg>
+            </div>
+          </div>
+          {/* content */}
+          <div style={{ position: 'absolute', inset: '44px 0 0', overflow: 'hidden' }}>
+            {children}
+          </div>
+          {/* gesture pill */}
+          <div style={{
+            position: 'absolute', bottom: 6, left: 0, right: 0,
+            display: 'flex', justifyContent: 'center', pointerEvents: 'none',
+          }}>
+            <div style={{
+              width: 130, height: 4, borderRadius: 2,
+              background: t.ink, opacity: 0.5,
+            }} />
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [tweaks, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
+      const theme = tweaks.theme;
+
+      return (
+        <>
+          <window.DesignCanvas>
+            <window.DCSection
+              id="auth"
+              title="Авторизация"
+              subtitle="Два способа войти — Google и Telegram. Приветствие под бренд, ввод кода от бота, и тёплая посадка после входа.">
+              <window.DCArtboard id="auth-welcome" label="07 · Вход в приложение" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.AuthWelcomeScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="auth-tg" label="08 · Код из Telegram" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.AuthTelegramScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="auth-back" label="09 · Привет — первый вход" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.AuthWelcomeBackScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+            </window.DCSection>
+
+            <window.DCSection
+              id="screens"
+              title="PlantCare — Android"
+              subtitle="Дружелюбное приложение‑напоминалка для домашних растений. Органическая эстетика, тёплая палитра, ботанические иллюстрации.">
+              <window.DCArtboard id="home" label="01 · Главная — Мои растения" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.HomeScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="plant" label="02 · Карточка растения" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.PlantCardScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+            </window.DCSection>
+
+            <window.DCSection
+              id="flows"
+              title="Глубже в продукт"
+              subtitle="Ежедневный сценарий: что делать сегодня, как добавить растение, и моменты, где раскрывается голос — уведомление и подтверждение полива.">
+              <window.DCArtboard id="today" label="03 · Сегодня — все заботы" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.TodayScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="add" label="04 · Добавить растение — шаг 3" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.AddPlantScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="notif" label="05 · Уведомление от Моники" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.NotificationScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="water" label="06 · Полить — лист действия" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.WaterActionScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="spray" label="06a · Опрыскать — лист" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.SprayActionScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="fert" label="06b · Подкормить — лист" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.FertActionScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+            </window.DCSection>
+
+            <window.DCSection
+              id="wizard"
+              title="Мастер добавления"
+              subtitle="Четыре шага знакомства с растением: вид → имя и место → расписание → портрет и подсветка.">
+              <window.DCArtboard id="add-1" label="04a · Шаг 1 — Выбор вида" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.AddPlantStep1Screen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="add-2" label="04b · Шаг 2 — Имя и комната" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.AddPlantStep2Screen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="add-4" label="04c · Шаг 4 — Место и фото" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.AddPlantStep4Screen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+            </window.DCSection>
+
+            <window.DCSection
+              id="states"
+              title="Состояния"
+              subtitle="Пустой сад — что видит человек сразу после первого входа, пока ни одного растения ещё не заведено.">
+              <window.DCArtboard id="home-empty" label="10 · Главная — пустой сад" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.HomeEmptyScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+            </window.DCSection>
+
+            <window.DCSection
+              id="navigation"
+              title="Вкладки навигации"
+              subtitle="Заполняем все табы bottom navigation: график ухода на неделю, справочник 30 видов, профиль с настройками и списком покупок.">
+              <window.DCArtboard id="week-cal" label="11 · График — неделя ухода" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.WeekCalendarScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="catalog" label="12 · Каталог — справочник видов" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.CatalogScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="profile" label="13 · Я — профиль и настройки" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.ProfileScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="shopping" label="19 · Список покупок" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.ShoppingListScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+            </window.DCSection>
+
+            <window.DCSection
+              id="health"
+              title="Здоровье растений"
+              subtitle="Авто‑диагностика проблемного растения и AI‑доктор по фото — главные дифференциаторы продукта.">
+              <window.DCArtboard id="diagnosis" label="15 · Проблемное растение — диагноз" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.PlantDiagnosisScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="ai-doctor" label="16 · AI‑доктор по фото" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.AIDoctorScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+            </window.DCSection>
+
+            <window.DCSection
+              id="memories"
+              title="Истории и связи"
+              subtitle="Эмоциональные хуки: месячный отчёт, архив погибших растений, родословная черенков.">
+              <window.DCArtboard id="report" label="14 · Месячный отчёт" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.MonthlyReportScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="archive" label="17 · Архив — в памяти" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.ArchiveScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+              <window.DCArtboard id="propagation" label="18 · Размножение — родословная" width={430} height={910}>
+                <PhoneShell theme={theme}>
+                  <window.PropagationScreen theme={theme} />
+                </PhoneShell>
+              </window.DCArtboard>
+            </window.DCSection>
+          </window.DesignCanvas>
+
+          <window.TweaksPanel title="Tweaks">
+            <window.TweakSection label="Тема оформления">
+              <window.TweakRadio
+                label="Тема"
+                value={theme}
+                options={['light', 'dark']}
+                onChange={v => setTweak('theme', v)}
+              />
+            </window.TweakSection>
+          </window.TweaksPanel>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

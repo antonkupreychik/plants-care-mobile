@@ -1,0 +1,31 @@
+# Конфиг кодгена API-клиента из OpenAPI (MADR-007).
+# Вход — собранная спека (tool/bundle_openapi.dart → api/openapi.bundled.json).
+# Запуск: dart run swagger_parser  (затем build_runner для .g.dart).
+swagger_parser:
+  schema_path: api/openapi.bundled.json
+  output_directory: lib/core/api/generated
+  language: dart
+
+  # DTO как json_serializable (MADR-002: DTO отдельно от domain, маппинг руками).
+  json_serializer: json_serializable
+
+  default_content_type: "application/json"
+
+  # Per-call @Extras() Map<String,dynamic>? — через него репозиторий передаёт
+  # authScopeExtra(...) (MADR-006: выбор «головы» заголовка по extra,
+  # AuthInterceptor читает options.extra[kAuthScopeExtraKey]).
+  extras_parameter_by_default: true
+
+  # Один корневой клиент, агрегирующий клиенты по тегам.
+  root_client: true
+  root_client_name: PlantsCareApi
+  put_clients_in_folder: true
+  client_postfix: Client
+  export_file: true
+
+  # Имена методов из operationId (listPlants, createCareEvent, ...).
+  path_method_name: false
+
+  # Совместимость при добавлении новых enum-значений на бэке.
+  unknown_enum_value: true
+  enums_to_json: true

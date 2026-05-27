@@ -1,0 +1,217 @@
+{
+  "@@locale": "ru",
+
+  "homeOverline": "МОЙ САД",
+  "@homeOverline": {
+    "description": "Надзаголовок-капс над приветствием на главном экране"
+  },
+
+  "appTitle": "PlantCare",
+  "@appTitle": {
+    "description": "Название приложения (hero-заголовок)"
+  },
+
+  "homeSubtitle": "Каркас приложения собран.\nЗдесь скоро вырастет твой сад.",
+  "@homeSubtitle": {
+    "description": "Подпись под названием на экране-заглушке каркаса"
+  },
+
+  "buildOk": "Сборка работает",
+  "@buildOk": {
+    "description": "Заголовок диагностической карточки сборки"
+  },
+
+  "fieldFlavor": "Flavor",
+  "@fieldFlavor": {
+    "description": "Метка строки: окружение сборки (dev/prod)"
+  },
+
+  "fieldApi": "API",
+  "@fieldApi": {
+    "description": "Метка строки: базовый URL API"
+  },
+
+  "fieldDevAuth": "Dev auth",
+  "@fieldDevAuth": {
+    "description": "Метка строки: dev-заголовки идентификации (chat/user)"
+  },
+
+  "homeGreeting": "Привет",
+  "@homeGreeting": {
+    "description": "Приветствие в шапке главного экрана"
+  },
+
+  "homeSearchTooltip": "Поиск",
+  "@homeSearchTooltip": {
+    "description": "Подсказка для иконки поиска в шапке"
+  },
+
+  "homeNotificationsTooltip": "Уведомления",
+  "@homeNotificationsTooltip": {
+    "description": "Подсказка для иконки уведомлений в шапке"
+  },
+
+  "homeTodayTitle": "Сегодня",
+  "@homeTodayTitle": {
+    "description": "Надзаголовок карточки задач на сегодня"
+  },
+
+  "homeTodayTasksCount": "{count, plural, =0{Нет забот} one{{count} забота} few{{count} заботы} many{{count} забот} other{{count} заботы}}",
+  "@homeTodayTasksCount": {
+    "description": "Количество задач ухода на сегодня",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "homeTasksEmpty": "На сегодня забот нет",
+  "@homeTasksEmpty": {
+    "description": "Пустое состояние секции задач на сегодня"
+  },
+
+  "homeTasksEmptyHint": "Можно выдохнуть — все растения политы",
+  "@homeTasksEmptyHint": {
+    "description": "Подпись к пустому состоянию задач на сегодня"
+  },
+
+  "homeGardenTitle": "Мой сад",
+  "@homeGardenTitle": {
+    "description": "Заголовок секции с растениями пользователя"
+  },
+
+  "homePlantsCount": "{count, plural, =0{Нет растений} one{{count} растение} few{{count} растения} many{{count} растений} other{{count} растения}}",
+  "@homePlantsCount": {
+    "description": "Количество растений в саду",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "homeLocationAll": "Все",
+  "@homeLocationAll": {
+    "description": "Чип «все локации» в фильтре комнат"
+  },
+
+  "homeGardenEmptyTitle": "Сад пока пуст",
+  "@homeGardenEmptyTitle": {
+    "description": "Заголовок пустого состояния списка растений"
+  },
+
+  "homeGardenEmptyHint": "Добавьте первое растение — и здесь появится ваш сад",
+  "@homeGardenEmptyHint": {
+    "description": "Подпись к пустому состоянию списка растений"
+  },
+
+  "homeAddPlant": "Добавить растение",
+  "@homeAddPlant": {
+    "description": "Подпись кнопки добавления растения (FAB / пустое состояние)"
+  },
+
+  "homeRoomEmpty": "В этой комнате пока нет растений",
+  "@homeRoomEmpty": {
+    "description": "Подсказка: в выбранной комнате нет растений"
+  },
+
+  "careActionWatering": "Полить",
+  "@careActionWatering": {
+    "description": "Действие ухода: полив"
+  },
+
+  "careActionMisting": "Опрыскать",
+  "@careActionMisting": {
+    "description": "Действие ухода: опрыскивание"
+  },
+
+  "careActionFertilizing": "Удобрить",
+  "@careActionFertilizing": {
+    "description": "Действие ухода: подкормка"
+  },
+
+  "careActionSoilCheck": "Проверить почву",
+  "@careActionSoilCheck": {
+    "description": "Действие ухода: проверка почвы"
+  },
+
+  "careActionUnknown": "Уход",
+  "@careActionUnknown": {
+    "description": "Действие ухода: нераспознанный тип"
+  },
+
+  "careDueOverdue": "Просрочено",
+  "@careDueOverdue": {
+    "description": "Метка времени задачи: просрочена"
+  },
+
+  "careDueToday": "Сегодня",
+  "@careDueToday": {
+    "description": "Метка времени задачи: сегодня (без точного времени)"
+  },
+
+  "careDueAt": "Сегодня в {time}",
+  "@careDueAt": {
+    "description": "Метка времени задачи с точным временем",
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+
+  "navGarden": "Сад",
+  "@navGarden": {
+    "description": "Вкладка нижней навигации: сад"
+  },
+
+  "navSchedule": "График",
+  "@navSchedule": {
+    "description": "Вкладка нижней навигации: график"
+  },
+
+  "navCatalog": "Каталог",
+  "@navCatalog": {
+    "description": "Вкладка нижней навигации: каталог"
+  },
+
+  "navProfile": "Я",
+  "@navProfile": {
+    "description": "Вкладка нижней навигации: профиль"
+  },
+
+  "comingSoon": "Скоро",
+  "@comingSoon": {
+    "description": "Сообщение-заглушка для ещё не реализованных действий"
+  },
+
+  "retry": "Повторить",
+  "@retry": {
+    "description": "Кнопка повтора загрузки после ошибки"
+  },
+
+  "errorNetwork": "Нет соединения. Проверьте интернет и попробуйте снова",
+  "@errorNetwork": {
+    "description": "Текст сетевой ошибки"
+  },
+
+  "errorNotFound": "Данные не найдены",
+  "@errorNotFound": {
+    "description": "Текст ошибки 404"
+  },
+
+  "errorAccessDenied": "Нет доступа к этим данным",
+  "@errorAccessDenied": {
+    "description": "Текст ошибки 403"
+  },
+
+  "errorValidation": "Проверьте введённые данные",
+  "@errorValidation": {
+    "description": "Текст ошибки валидации"
+  },
+
+  "errorConflict": "Данные изменились. Обновите экран",
+  "@errorConflict": {
+    "description": "Текст ошибки конфликта"
+  },
+
+  "errorGeneric": "Что-то пошло не так. Попробуйте позже",
+  "@errorGeneric": {
+    "description": "Текст общей/неизвестной ошибки"
+  }
+}
