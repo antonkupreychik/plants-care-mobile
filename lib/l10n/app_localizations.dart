@@ -609,6 +609,186 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Следующая неделя'**
   String get scheduleNextWeek;
+
+  /// Надзаголовок-капс в шапке экрана каталога видов
+  ///
+  /// In ru, this message translates to:
+  /// **'Каталог'**
+  String get catalogTitle;
+
+  /// Серифный заголовок экрана каталога видов
+  ///
+  /// In ru, this message translates to:
+  /// **'Каталог растений'**
+  String get catalogHeading;
+
+  /// Плейсхолдер поля поиска по каталогу видов
+  ///
+  /// In ru, this message translates to:
+  /// **'Найти вид…'**
+  String get catalogSearchHint;
+
+  /// Подсказка/семантика кнопки очистки поля поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Очистить поиск'**
+  String get catalogSearchClear;
+
+  /// Количество видов в каталоге под текущим фильтром
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет видов} one{{count} вид} few{{count} вида} many{{count} видов} other{{count} вида}}'**
+  String catalogCount(int count);
+
+  /// Пустое состояние каталога без поискового запроса
+  ///
+  /// In ru, this message translates to:
+  /// **'Каталог пуст'**
+  String get catalogEmpty;
+
+  /// Подпись к пустому состоянию каталога без запроса
+  ///
+  /// In ru, this message translates to:
+  /// **'Виды растений появятся здесь позже'**
+  String get catalogEmptyHint;
+
+  /// Пустое состояние поиска по каталогу (нет результатов)
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не найдено'**
+  String get catalogSearchEmpty;
+
+  /// Подсказка к пустому результату поиска с текстом запроса
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробуйте изменить запрос «{query}»'**
+  String catalogSearchEmptyHint(String query);
+
+  /// Текст компактной плашки ошибки дозагрузки страницы списка
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить ещё'**
+  String get catalogLoadMoreError;
+
+  /// Надзаголовок-капс в шапке экрана детали вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Вид'**
+  String get speciesDetailOverline;
+
+  /// Заголовок секции описания вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Описание'**
+  String get speciesDescriptionTitle;
+
+  /// Заголовок секции рекомендаций по уходу за видом
+  ///
+  /// In ru, this message translates to:
+  /// **'Уход'**
+  String get speciesCareTitle;
+
+  /// Заголовок секции условий содержания (сложность, свет)
+  ///
+  /// In ru, this message translates to:
+  /// **'Условия'**
+  String get speciesPropsTitle;
+
+  /// Метка свойства: сложность ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Сложность'**
+  String get speciesDifficultyLabel;
+
+  /// Метка свойства: предпочтение освещённости
+  ///
+  /// In ru, this message translates to:
+  /// **'Свет'**
+  String get speciesLightLabel;
+
+  /// Сложность ухода: лёгкая
+  ///
+  /// In ru, this message translates to:
+  /// **'Лёгкий уход'**
+  String get speciesDifficultyEasy;
+
+  /// Сложность ухода: средняя
+  ///
+  /// In ru, this message translates to:
+  /// **'Средний уход'**
+  String get speciesDifficultyMedium;
+
+  /// Сложность ухода: высокая
+  ///
+  /// In ru, this message translates to:
+  /// **'Сложный уход'**
+  String get speciesDifficultyHard;
+
+  /// Сложность ухода: неизвестна
+  ///
+  /// In ru, this message translates to:
+  /// **'Сложность не указана'**
+  String get speciesDifficultyUnknown;
+
+  /// Освещённость: прямое яркое солнце
+  ///
+  /// In ru, this message translates to:
+  /// **'Прямое солнце'**
+  String get speciesLightFullSun;
+
+  /// Освещённость: яркий рассеянный свет
+  ///
+  /// In ru, this message translates to:
+  /// **'Яркий рассеянный'**
+  String get speciesLightBrightIndirect;
+
+  /// Освещённость: полутень
+  ///
+  /// In ru, this message translates to:
+  /// **'Полутень'**
+  String get speciesLightPartialShade;
+
+  /// Освещённость: тень / низкая освещённость
+  ///
+  /// In ru, this message translates to:
+  /// **'Тень'**
+  String get speciesLightShade;
+
+  /// Освещённость: неизвестна
+  ///
+  /// In ru, this message translates to:
+  /// **'Свет не указан'**
+  String get speciesLightUnknown;
+
+  /// Метка интервала ухода: полив
+  ///
+  /// In ru, this message translates to:
+  /// **'Полив'**
+  String get speciesCareWatering;
+
+  /// Метка интервала ухода: опрыскивание
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскивание'**
+  String get speciesCareMisting;
+
+  /// Метка интервала ухода: подкормка
+  ///
+  /// In ru, this message translates to:
+  /// **'Подкормка'**
+  String get speciesCareFertilizing;
+
+  /// Метка интервала ухода: проверка грунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверка грунта'**
+  String get speciesCareSoilCheck;
+
+  /// Интервал ухода в днях («каждые N дней»)
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{каждый {count} день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}'**
+  String speciesCareEveryDays(int count);
 }
 
 class _AppLocalizationsDelegate

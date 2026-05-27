@@ -470,5 +470,164 @@
   "scheduleNextWeek": "Следующая неделя",
   "@scheduleNextWeek": {
     "description": "Tooltip/label кнопки листания на следующую неделю"
+  },
+
+  "catalogTitle": "Каталог",
+  "@catalogTitle": {
+    "description": "Надзаголовок-капс в шапке экрана каталога видов"
+  },
+
+  "catalogHeading": "Каталог растений",
+  "@catalogHeading": {
+    "description": "Серифный заголовок экрана каталога видов"
+  },
+
+  "catalogSearchHint": "Найти вид…",
+  "@catalogSearchHint": {
+    "description": "Плейсхолдер поля поиска по каталогу видов"
+  },
+
+  "catalogSearchClear": "Очистить поиск",
+  "@catalogSearchClear": {
+    "description": "Подсказка/семантика кнопки очистки поля поиска"
+  },
+
+  "catalogCount": "{count, plural, =0{Нет видов} one{{count} вид} few{{count} вида} many{{count} видов} other{{count} вида}}",
+  "@catalogCount": {
+    "description": "Количество видов в каталоге под текущим фильтром",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "catalogEmpty": "Каталог пуст",
+  "@catalogEmpty": {
+    "description": "Пустое состояние каталога без поискового запроса"
+  },
+
+  "catalogEmptyHint": "Виды растений появятся здесь позже",
+  "@catalogEmptyHint": {
+    "description": "Подпись к пустому состоянию каталога без запроса"
+  },
+
+  "catalogSearchEmpty": "Ничего не найдено",
+  "@catalogSearchEmpty": {
+    "description": "Пустое состояние поиска по каталогу (нет результатов)"
+  },
+
+  "catalogSearchEmptyHint": "Попробуйте изменить запрос «{query}»",
+  "@catalogSearchEmptyHint": {
+    "description": "Подсказка к пустому результату поиска с текстом запроса",
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+
+  "catalogLoadMoreError": "Не удалось загрузить ещё",
+  "@catalogLoadMoreError": {
+    "description": "Текст компактной плашки ошибки дозагрузки страницы списка"
+  },
+
+  "speciesDetailOverline": "Вид",
+  "@speciesDetailOverline": {
+    "description": "Надзаголовок-капс в шапке экрана детали вида"
+  },
+
+  "speciesDescriptionTitle": "Описание",
+  "@speciesDescriptionTitle": {
+    "description": "Заголовок секции описания вида"
+  },
+
+  "speciesCareTitle": "Уход",
+  "@speciesCareTitle": {
+    "description": "Заголовок секции рекомендаций по уходу за видом"
+  },
+
+  "speciesPropsTitle": "Условия",
+  "@speciesPropsTitle": {
+    "description": "Заголовок секции условий содержания (сложность, свет)"
+  },
+
+  "speciesDifficultyLabel": "Сложность",
+  "@speciesDifficultyLabel": {
+    "description": "Метка свойства: сложность ухода"
+  },
+
+  "speciesLightLabel": "Свет",
+  "@speciesLightLabel": {
+    "description": "Метка свойства: предпочтение освещённости"
+  },
+
+  "speciesDifficultyEasy": "Лёгкий уход",
+  "@speciesDifficultyEasy": {
+    "description": "Сложность ухода: лёгкая"
+  },
+
+  "speciesDifficultyMedium": "Средний уход",
+  "@speciesDifficultyMedium": {
+    "description": "Сложность ухода: средняя"
+  },
+
+  "speciesDifficultyHard": "Сложный уход",
+  "@speciesDifficultyHard": {
+    "description": "Сложность ухода: высокая"
+  },
+
+  "speciesDifficultyUnknown": "Сложность не указана",
+  "@speciesDifficultyUnknown": {
+    "description": "Сложность ухода: неизвестна"
+  },
+
+  "speciesLightFullSun": "Прямое солнце",
+  "@speciesLightFullSun": {
+    "description": "Освещённость: прямое яркое солнце"
+  },
+
+  "speciesLightBrightIndirect": "Яркий рассеянный",
+  "@speciesLightBrightIndirect": {
+    "description": "Освещённость: яркий рассеянный свет"
+  },
+
+  "speciesLightPartialShade": "Полутень",
+  "@speciesLightPartialShade": {
+    "description": "Освещённость: полутень"
+  },
+
+  "speciesLightShade": "Тень",
+  "@speciesLightShade": {
+    "description": "Освещённость: тень / низкая освещённость"
+  },
+
+  "speciesLightUnknown": "Свет не указан",
+  "@speciesLightUnknown": {
+    "description": "Освещённость: неизвестна"
+  },
+
+  "speciesCareWatering": "Полив",
+  "@speciesCareWatering": {
+    "description": "Метка интервала ухода: полив"
+  },
+
+  "speciesCareMisting": "Опрыскивание",
+  "@speciesCareMisting": {
+    "description": "Метка интервала ухода: опрыскивание"
+  },
+
+  "speciesCareFertilizing": "Подкормка",
+  "@speciesCareFertilizing": {
+    "description": "Метка интервала ухода: подкормка"
+  },
+
+  "speciesCareSoilCheck": "Проверка грунта",
+  "@speciesCareSoilCheck": {
+    "description": "Метка интервала ухода: проверка грунта"
+  },
+
+  "speciesCareEveryDays": "{count, plural, one{каждый {count} день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}",
+  "@speciesCareEveryDays": {
+    "description": "Интервал ухода в днях («каждые N дней»)",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
   }
 }

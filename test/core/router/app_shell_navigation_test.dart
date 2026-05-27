@@ -11,6 +11,11 @@ import 'package:plantcare_mobile/core/env/app_config.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/core/widgets/app_bottom_nav.dart';
+import 'package:plantcare_mobile/features/catalog/data/catalog_repository_provider.dart';
+import 'package:plantcare_mobile/features/catalog/domain/catalog_repository.dart';
+import 'package:plantcare_mobile/features/catalog/domain/species_page.dart';
+import 'package:plantcare_mobile/features/catalog/presentation/catalog_providers.dart';
+import 'package:plantcare_mobile/features/catalog/presentation/catalog_screen.dart';
 import 'package:plantcare_mobile/features/home/domain/garden_location.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
@@ -34,6 +39,8 @@ class _FixedClock implements Clock {
 }
 
 class _MockScheduleRepo extends Mock implements ScheduleRepository {}
+
+class _MockCatalogRepo extends Mock implements CatalogRepository {}
 
 const _config = AppConfig(
   flavor: Flavor.dev,
@@ -63,6 +70,19 @@ ScheduleWeek _emptyWeek(DateTime monday) => ScheduleWeek(
 /// провайдерами всех экранов (home/schedule/plant_card) — без сети.
 /// [scheduleRepo] прокидывается, чтобы можно было его проверить/настроить.
 Widget _wrap({ScheduleRepository? scheduleRepo}) {
+  // Catalog: репозиторий-мок отдаёт пустую страницу → CatalogScreen строится
+  // без сети (empty-каталог), не виснет на бесконечном спиннере.
+  final catalogRepo = _MockCatalogRepo();
+  when(() => catalogRepo.searchSpecies(
+        query: any(named: 'query'),
+        offset: any(named: 'offset'),
+        limit: any(named: 'limit'),
+      )).thenAnswer(
+    (_) async => const Result.success(
+      SpeciesPage(items: [], total: 0, offset: 0, limit: kSpeciesPageLimit),
+    ),
+  );
+
   return ProviderScope(
     overrides: [
       appConfigProvider.overrideWithValue(_config),
@@ -75,6 +95,8 @@ Widget _wrap({ScheduleRepository? scheduleRepo}) {
       // Schedule: репозиторий-мок (настраивается в тесте/по умолчанию пуст).
       scheduleRepositoryProvider
           .overrideWithValue(scheduleRepo ?? _MockScheduleRepo()),
+      // Catalog: репозиторий-мок (пустая страница) — без сети.
+      catalogRepositoryProvider.overrideWithValue(catalogRepo),
       // Plant card: три family-секции отдают валидные данные без сети.
       plantDetailProvider(_plantId).overrideWith(
         (ref) async => const Plant(id: _plantId, name: 'Монстера'),
@@ -169,20 +191,21 @@ void main() {
       expect(find.byType(ScheduleScreen), findsNothing);
     });
 
-    testWidgets(
-        'should_show_coming_soon_and_keep_garden_when_catalog_tab_tapped',
-        (tester) async {
+    testWidgets('should_show_catalog_when_catalog_tab_tapped', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
       final l10n = l10nOf(tester);
       await tester.tap(find.text(l10n.navCatalog));
-      await tester.pump(); // прокрутить кадр для snackbar
+      // Не pumpAndSettle: каталог может крутить спиннер во время загрузки.
+      await tester.pump();
+      await tester.pump();
 
-      // Инертный таб: показывает coming-soon, branch не сменился.
-      expect(find.text(l10n.comingSoon), findsOneWidget);
-      expect(find.byType(HomeScreen), findsOneWidget);
-      expect(find.byType(ScheduleScreen), findsNothing);
+      // Активный branch переключился на «Каталог» — живой экран, не заглушка.
+      expect(find.byType(CatalogScreen), findsOneWidget);
+      expect(find.text(l10n.comingSoon), findsNothing);
+      // Таб-бар по-прежнему виден.
+      expect(find.byType(AppBottomNav), findsOneWidget);
     });
 
     testWidgets('should_hide_bottom_nav_when_plant_card_pushed_over_shell',

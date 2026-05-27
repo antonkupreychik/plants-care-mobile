@@ -9,21 +9,26 @@ import '../theme/tokens.dart';
 /// overlay над активным branch'ем в `AppShell`. Активный таб определяется
 /// [currentIndex] (= `StatefulNavigationShell.currentIndex`).
 ///
-/// Сад/График навигируют по branch'ам ([onSelectGarden]/[onSelectSchedule]),
-/// Каталог/Профиль ещё не реализованы — тап вызывает [onComingSoon].
+/// Сад/График/Каталог навигируют по branch'ам
+/// ([onSelectGarden]/[onSelectSchedule]/[onSelectCatalog]), Профиль ещё не
+/// реализован — тап вызывает [onComingSoon].
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({
     super.key,
     required this.currentIndex,
     required this.onSelectGarden,
     required this.onSelectSchedule,
+    required this.onSelectCatalog,
     required this.onComingSoon,
   });
 
-  /// Индекс активного branch'а (0 — Сад, 1 — График).
+  /// Индекс активного branch'а (0 — Сад, 1 — График, 2 — Каталог).
   final int currentIndex;
   final VoidCallback onSelectGarden;
   final VoidCallback onSelectSchedule;
+
+  /// Переход в каталог видов (branch 2, экран 12).
+  final VoidCallback onSelectCatalog;
   final VoidCallback onComingSoon;
 
   @override
@@ -63,8 +68,8 @@ class AppBottomNav extends StatelessWidget {
           _NavItem(
             icon: Icons.eco_outlined,
             label: l10n.navCatalog,
-            active: false,
-            onTap: onComingSoon,
+            active: currentIndex == 2,
+            onTap: onSelectCatalog,
           ),
           _NavItem(
             icon: Icons.person_outline_rounded,
