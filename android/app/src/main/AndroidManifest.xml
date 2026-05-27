@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Нужно для сетевых запросов к API в release-сборке. В debug/profile
+         INTERNET добавляется автоматически Flutter-tool'ом, в release — нет. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="PlantCare"
         android:name="${applicationName}"
