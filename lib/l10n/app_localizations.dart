@@ -748,6 +748,162 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Нет видов} one{{count} вид} few{{count} вида} many{{count} видов} other{{count} вида}}'**
   String catalogCount(int count);
 
+  /// Индикатор текущего шага мастера добавления растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаг {current} из {total}'**
+  String addPlantStepIndicator(int current, int total);
+
+  /// Надзаголовок-капс в шапке мастера добавления растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Новое растение'**
+  String get addPlantOverline;
+
+  /// Подпись/семантика кнопки закрытия мастера
+  ///
+  /// In ru, this message translates to:
+  /// **'Закрыть'**
+  String get addPlantClose;
+
+  /// Подпись/семантика кнопки возврата на предыдущий шаг
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get addPlantBack;
+
+  /// Кнопка перехода к следующему шагу мастера
+  ///
+  /// In ru, this message translates to:
+  /// **'Далее'**
+  String get addPlantNext;
+
+  /// Кнопка пропуска шага выбора вида (вид необязателен)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пропустить'**
+  String get addPlantSkip;
+
+  /// Кнопка завершения мастера: создать растение
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить'**
+  String get addPlantSubmit;
+
+  /// Заголовок шага выбора вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Какое у тебя растение?'**
+  String get addPlantSpeciesTitle;
+
+  /// Подпись под заголовком шага выбора вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Найдём вид, подберём имя и план ухода. Если не знаешь — пропусти.'**
+  String get addPlantSpeciesSubtitle;
+
+  /// Плейсхолдер поля поиска вида
+  ///
+  /// In ru, this message translates to:
+  /// **'монстера, фикус, суккулент…'**
+  String get addPlantSearchHint;
+
+  /// Пустой результат поиска вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не найдено'**
+  String get addPlantSearchEmpty;
+
+  /// Подсказка к пустому результату поиска вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробуйте другой запрос или пропустите выбор вида'**
+  String get addPlantSearchEmptyHint;
+
+  /// Заголовок строки «создать без выбора вида»
+  ///
+  /// In ru, this message translates to:
+  /// **'Не знаю, что это'**
+  String get addPlantSkipSpeciesTitle;
+
+  /// Подсказка к строке «создать без выбора вида»
+  ///
+  /// In ru, this message translates to:
+  /// **'Заведём как «Растение». Позже уточним.'**
+  String get addPlantSkipSpeciesHint;
+
+  /// Заголовок шага ввода имени и комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Как назовём?'**
+  String get addPlantNameTitle;
+
+  /// Подпись под заголовком шага имени
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя помогает запомнить характер растения.'**
+  String get addPlantNameSubtitle;
+
+  /// Метка поля ввода имени растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя растения'**
+  String get addPlantNameLabel;
+
+  /// Плейсхолдер поля имени растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Моника'**
+  String get addPlantNameHint;
+
+  /// Ошибка валидации имени: пусто или слишком длинное
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите имя (до {max} символов)'**
+  String addPlantNameError(int max);
+
+  /// Метка группы выбора комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Где живёт'**
+  String get addPlantRoomLabel;
+
+  /// Чип «не выбирать комнату»
+  ///
+  /// In ru, this message translates to:
+  /// **'Без комнаты'**
+  String get addPlantRoomNone;
+
+  /// Подсказка, когда у пользователя нет комнат
+  ///
+  /// In ru, this message translates to:
+  /// **'Комнат пока нет — растение попадёт в сад'**
+  String get addPlantRoomsEmpty;
+
+  /// Заголовок шага превью плана ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'План ухода'**
+  String get addPlantCarePlanTitle;
+
+  /// Подпись под заголовком шага плана ухода (read-only)
+  ///
+  /// In ru, this message translates to:
+  /// **'Рекомендации по виду. Изменить пока нельзя.'**
+  String get addPlantCarePlanSubtitle;
+
+  /// Бейдж-пометка на шаге плана ухода: план редактировать нельзя
+  ///
+  /// In ru, this message translates to:
+  /// **'Только просмотр'**
+  String get addPlantCarePlanReadOnly;
+
+  /// Интервал пункта плана ухода: каждые N дней
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{каждый день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}'**
+  String addPlantCarePlanEvery(int count);
+
   /// Пустое состояние каталога без поискового запроса
   ///
   /// In ru, this message translates to:
@@ -897,6 +1053,96 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'{count, plural, one{каждый {count} день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}'**
   String speciesCareEveryDays(int count);
+
+  /// Подсказка на шаге плана ухода, когда вид не выбран
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите вид на первом шаге, чтобы увидеть план ухода'**
+  String get addPlantCarePlanEmpty;
+
+  /// Подсказка, когда у выбранного вида нет интервалов ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Для этого вида рекомендаций по уходу нет'**
+  String get addPlantCarePlanNone;
+
+  /// Заголовок шага подтверждения
+  ///
+  /// In ru, this message translates to:
+  /// **'Почти готово'**
+  String get addPlantConfirmTitle;
+
+  /// Подпись под заголовком шага подтверждения
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверьте данные и добавьте растение в сад.'**
+  String get addPlantConfirmSubtitle;
+
+  /// Метка строки саммари: имя растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя'**
+  String get addPlantSummaryName;
+
+  /// Метка строки саммари: комната
+  ///
+  /// In ru, this message translates to:
+  /// **'Комната'**
+  String get addPlantSummaryRoom;
+
+  /// Метка строки саммари: план ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'План ухода'**
+  String get addPlantSummaryCarePlan;
+
+  /// Краткое описание плана ухода в саммари: число пунктов
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{нет рекомендаций} one{{count} пункт} few{{count} пункта} many{{count} пунктов} other{{count} пункта}}'**
+  String addPlantSummaryCarePlanCount(int count);
+
+  /// Метка необязательного поля заметки на шаге подтверждения
+  ///
+  /// In ru, this message translates to:
+  /// **'Заметка'**
+  String get addPlantNoteLabel;
+
+  /// Плейсхолдер поля заметки
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: подарок на день рождения'**
+  String get addPlantNoteHint;
+
+  /// Подпись: поле заметки необязательно
+  ///
+  /// In ru, this message translates to:
+  /// **'необязательно'**
+  String get addPlantNoteOptional;
+
+  /// Снэкбар-подтверждение после успешного создания растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение добавлено'**
+  String get addPlantSubmitted;
+
+  /// Уровень сложности ухода за видом: лёгкий
+  ///
+  /// In ru, this message translates to:
+  /// **'Лёгкий уход'**
+  String get careDifficultyEasy;
+
+  /// Уровень сложности ухода за видом: средний
+  ///
+  /// In ru, this message translates to:
+  /// **'Средний уход'**
+  String get careDifficultyMedium;
+
+  /// Уровень сложности ухода за видом: сложный
+  ///
+  /// In ru, this message translates to:
+  /// **'Сложный уход'**
+  String get careDifficultyHard;
 }
 
 class _AppLocalizationsDelegate

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/add_plant/presentation/add_plant_wizard_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -18,7 +19,8 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 /// `StatefulShellRoute.indexedStack` с тремя branch'ами под общим [AppShell]:
 /// Сад (`/home`), График (`/schedule`) и Каталог (`/catalog`). Каждый branch
 /// держит свой стек: в саду живут push-маршруты `/home/today` (экран 03
-/// «Сегодня») и `/home/plants/:id` (экран 02 «Карточка растения»), в каталоге —
+/// «Сегодня»), `/home/add` (экран 04 «Мастер добавления») и `/home/plants/:id`
+/// (экран 02 «Карточка растения»), в каталоге —
 /// `/catalog/:id` (экран 13 «Деталь вида»). Detail/drill-in-экраны со своей
 /// нижней кнопкой/назад рендерятся на [_rootNavigatorKey] (поверх shell, без
 /// плавающего таб-бара). Профиль ещё не branch — его таб в нижней навигации
@@ -48,6 +50,14 @@ final appRouter = GoRouter(
                   name: 'today',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const TodayScreen(),
+                ),
+                // Мастер добавления растения (экран 04) — полноэкранно поверх
+                // shell (на root-навигаторе, без нижней навигации), как карточка.
+                GoRoute(
+                  path: 'add',
+                  name: 'addPlant',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const AddPlantWizardScreen(),
                 ),
                 GoRoute(
                   path: 'plants/:id',
