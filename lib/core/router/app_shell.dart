@@ -8,8 +8,8 @@ import '../widgets/app_bottom_nav.dart';
 /// Каркас табов (MADR-005): держит активный branch [StatefulNavigationShell]
 /// и общую плавающую нижнюю навигацию overlay над ним.
 ///
-/// Branch 0 — Сад (`/home`), branch 1 — График (`/schedule`). Каталог/Профиль
-/// ещё не branch'и — таб инертен (coming-soon snackbar).
+/// Branch 0 — Сад (`/home`), branch 1 — График (`/schedule`), branch 2 —
+/// Каталог (`/catalog`). Профиль ещё не branch — таб инертен (coming-soon).
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.navigationShell});
 
@@ -47,6 +47,7 @@ class AppShell extends StatelessWidget {
               currentIndex: navigationShell.currentIndex,
               onSelectGarden: () => _goBranch(0),
               onSelectSchedule: () => _goBranch(1),
+              onSelectCatalog: () => _goBranch(2),
               onComingSoon: comingSoon,
             ),
           ),

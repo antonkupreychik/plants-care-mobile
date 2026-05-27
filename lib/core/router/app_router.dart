@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/catalog/presentation/catalog_screen.dart';
+import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
@@ -12,13 +14,14 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 /// Роутер приложения (MADR-005).
 ///
-/// `StatefulShellRoute.indexedStack` с двумя branch'ами под общим [AppShell]:
-/// Сад (`/home`) и График (`/schedule`). Каждый branch держит свой стек: в саду
-/// живёт push-маршрут `/home/plants/:id` (экран 02 «Карточка растения»). Сама
-/// карточка — detail-экран со своей нижней кнопкой действия, поэтому рендерится
-/// на [_rootNavigatorKey] (поверх shell, без плавающего таб-бара).
-/// Каталог/Профиль ещё не branch'и — их табы в нижней навигации инертны
-/// (coming-soon), см. [AppBottomNav].
+/// `StatefulShellRoute.indexedStack` с тремя branch'ами под общим [AppShell]:
+/// Сад (`/home`), График (`/schedule`) и Каталог (`/catalog`). Каждый branch
+/// держит свой стек: в саду живёт push-маршрут `/home/plants/:id` (экран 02
+/// «Карточка растения»), в каталоге — `/catalog/:id` (экран 13 «Деталь вида»).
+/// Оба detail-экрана со своей нижней кнопкой/назад рендерятся на
+/// [_rootNavigatorKey] (поверх shell, без плавающего таб-бара).
+/// Профиль ещё не branch — его таб в нижней навигации инертен (coming-soon),
+/// см. [AppBottomNav].
 ///
 /// Старт — `/home` (экран «Мой сад»), это фиксирует контракт стартового экрана.
 final appRouter = GoRouter(
@@ -60,6 +63,30 @@ final appRouter = GoRouter(
               path: '/schedule',
               name: 'schedule',
               builder: (context, state) => const ScheduleScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/catalog',
+              name: 'catalog',
+              builder: (context, state) => const CatalogScreen(),
+              routes: [
+                GoRoute(
+                  path: ':id',
+                  name: 'speciesDetail',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) {
+                    // `id` валидируется парсингом: некорректный путь → 0
+                    // (деталь покажет ошибку через провайдер). Навигация
+                    // строится из `species.id` (int), так что в норме надёжно.
+                    final id =
+                        int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                    return SpeciesDetailScreen(id: id);
+                  },
+                ),
+              ],
             ),
           ],
         ),
