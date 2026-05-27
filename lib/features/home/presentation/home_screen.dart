@@ -44,6 +44,9 @@ class HomeScreen extends ConsumerWidget {
         ..showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
     }
 
+    // Открыть мастер добавления растения (экран 04) поверх shell.
+    void openAddPlant() => context.push('/home/add');
+
     final tasks = ref.watch(homeTasksProvider);
     final plants = ref.watch(homePlantsProvider);
     final locations = ref.watch(homeLocationsProvider);
@@ -107,7 +110,7 @@ class HomeScreen extends ConsumerWidget {
                 // GRID — растения (loading/error/empty/data).
                 _PlantGridSection(
                   plants: plants,
-                  onAdd: comingSoon,
+                  onAdd: openAddPlant,
                   onPlantTap: (plant) => context.push('/home/plants/${plant.id}'),
                   onRetry: () => ref.invalidate(homePlantsProvider),
                 ),
@@ -117,11 +120,11 @@ class HomeScreen extends ConsumerWidget {
               ],
             ),
 
-            // FAB «добавить» — пока без перехода (мастер появится в фиче).
+            // FAB «добавить» → мастер добавления растения (экран 04).
             Positioned(
               right: 20,
               bottom: 92,
-              child: _AddFab(onPressed: comingSoon),
+              child: _AddFab(onPressed: openAddPlant),
             ),
           ],
         ),

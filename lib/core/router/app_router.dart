@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/add_plant/presentation/add_plant_wizard_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
@@ -36,6 +37,14 @@ final appRouter = GoRouter(
               name: 'home',
               builder: (context, state) => const HomeScreen(),
               routes: [
+                // Мастер добавления растения (экран 04) — полноэкранно поверх
+                // shell (на root-навигаторе, без нижней навигации), как карточка.
+                GoRoute(
+                  path: 'add',
+                  name: 'addPlant',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const AddPlantWizardScreen(),
+                ),
                 GoRoute(
                   path: 'plants/:id',
                   name: 'plantCard',

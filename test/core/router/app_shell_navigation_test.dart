@@ -11,6 +11,9 @@ import 'package:plantcare_mobile/core/env/app_config.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/core/widgets/app_bottom_nav.dart';
+import 'package:plantcare_mobile/features/add_plant/domain/species_summary.dart';
+import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_screen.dart';
+import 'package:plantcare_mobile/features/add_plant/presentation/species_providers.dart';
 import 'package:plantcare_mobile/features/home/domain/garden_location.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
@@ -75,6 +78,9 @@ Widget _wrap({ScheduleRepository? scheduleRepo}) {
       // Schedule: репозиторий-мок (настраивается в тесте/по умолчанию пуст).
       scheduleRepositoryProvider
           .overrideWithValue(scheduleRepo ?? _MockScheduleRepo()),
+      // Add-plant: шаг 1 (поиск видов) без сети.
+      speciesSearchProvider('')
+          .overrideWith((ref) async => const <SpeciesSummary>[]),
       // Plant card: три family-секции отдают валидные данные без сети.
       plantDetailProvider(_plantId).overrideWith(
         (ref) async => const Plant(id: _plantId, name: 'Монстера'),
@@ -199,6 +205,22 @@ void main() {
 
       // Карточка отрисована, таб-бар скрыт (detail-экран на root-навигаторе).
       expect(find.byType(PlantCardScreen), findsOneWidget);
+      expect(find.byType(AppBottomNav), findsNothing);
+    });
+
+    testWidgets('should_open_add_plant_wizard_over_shell_without_bottom_nav',
+        (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppBottomNav), findsOneWidget);
+
+      // Роут /home/add — мастер на root-навигаторе поверх shell.
+      appRouter.go('/home/add');
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AddPlantWizardScreen), findsOneWidget);
+      // Таб-бар скрыт (мастер полноэкранно поверх shell).
       expect(find.byType(AppBottomNav), findsNothing);
     });
   });
