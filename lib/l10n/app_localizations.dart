@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// Название приложения (hero-заголовок)
   ///
   /// In ru, this message translates to:
-  /// **'PlantCate'**
+  /// **'PlantCare'**
   String get appTitle;
 
   /// Подпись под названием на экране-заглушке каркаса

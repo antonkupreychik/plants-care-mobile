@@ -7,8 +7,8 @@ import 'l10n/app_localizations.dart';
 /// Корневой виджет. Тема переключается по системной (light/dark), навигация —
 /// через go_router (MADR-005). Локализация — один локаль `ru` (MADR-012),
 /// все UI-строки через `AppLocalizations`.
-class PlantCateApp extends StatelessWidget {
-  const PlantCateApp({super.key});
+class PlantCareApp extends StatelessWidget {
+  const PlantCareApp({super.key});
 
   @override
   Widget build(BuildContext context) {

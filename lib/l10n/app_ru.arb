@@ -6,7 +6,7 @@
     "description": "Надзаголовок-капс над приветствием на главном экране"
   },
 
-  "appTitle": "PlantCate",
+  "appTitle": "PlantCare",
   "@appTitle": {
     "description": "Название приложения (hero-заголовок)"
   },

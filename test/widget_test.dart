@@ -43,7 +43,7 @@ void main() {
           homeLocationsProvider
               .overrideWith((ref) async => const <GardenLocation>[]),
         ],
-        child: const PlantCateApp(),
+        child: const PlantCareApp(),
       ),
     );
     await tester.pumpAndSettle();

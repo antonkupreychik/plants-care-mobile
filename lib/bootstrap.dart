@@ -16,7 +16,7 @@ void bootstrap(Flavor flavor) {
       overrides: [
         appConfigProvider.overrideWithValue(config),
       ],
-      child: const PlantCateApp(),
+      child: const PlantCareApp(),
     ),
   );
 }

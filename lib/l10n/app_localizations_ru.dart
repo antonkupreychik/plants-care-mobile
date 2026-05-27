@@ -12,7 +12,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeOverline => 'МОЙ САД';
 
   @override
-  String get appTitle => 'PlantCate';
+  String get appTitle => 'PlantCare';
 
   @override
   String get homeSubtitle =>
