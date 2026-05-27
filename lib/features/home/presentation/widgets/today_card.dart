@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/care/care_task.dart';
+import '../../../../core/care/care_task_l10n.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/tokens.dart';
 import '../../../../core/widgets/skeleton_box.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/care_task.dart';
-import '../care_task_l10n.dart';
 
 /// Карточка «Сегодня»: компактный список задач ухода ([CareTask]).
 ///

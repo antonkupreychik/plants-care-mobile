@@ -15,7 +15,7 @@ import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/core/network/auth_scope.dart';
 import 'package:plantcare_mobile/core/network/request_extra.dart';
 import 'package:plantcare_mobile/features/home/data/home_repository_impl.dart';
-import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
+import 'package:plantcare_mobile/core/care/care_task_type.dart';
 
 class _MockApi extends Mock implements PlantsCareApi {}
 

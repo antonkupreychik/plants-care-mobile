@@ -376,6 +376,18 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{меньше месяца} one{{count} месяц} few{{count} месяца} many{{count} месяцев} other{{count} месяца}}'**
   String plantCardAgeMonths(int count);
 
+  /// Hero-заголовок экрана «График»: сумма задач за неделю (0 — свободная неделя)
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{На этой неделе сад отдыхает} one{На этой неделе {count} забота в саду} few{На этой неделе {count} заботы в саду} many{На этой неделе {count} забот в саду} other{На этой неделе {count} заботы в саду}}'**
+  String scheduleWeekTasksCount(int count);
+
+  /// Счётчик задач дня в строке недели (0 — свободный день)
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Свободно} one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}'**
+  String scheduleDayTasksCount(int count);
+
   /// Количество дней владения растением
   ///
   /// In ru, this message translates to:
@@ -567,6 +579,36 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Уход отмечен'**
   String get careSheetSubmitted;
+
+  /// Заголовок карточки экспорта расписания в календарь (.ics)
+  ///
+  /// In ru, this message translates to:
+  /// **'Подписаться в календаре'**
+  String get scheduleIcsTitle;
+
+  /// Подзаголовок карточки экспорта расписания (.ics)
+  ///
+  /// In ru, this message translates to:
+  /// **'Google / Apple Calendar — .ics'**
+  String get scheduleIcsSubtitle;
+
+  /// Подпись (a11y) кнопки сброса на текущую неделю
+  ///
+  /// In ru, this message translates to:
+  /// **'На текущую неделю'**
+  String get scheduleToCurrentWeek;
+
+  /// Tooltip/label кнопки листания на предыдущую неделю
+  ///
+  /// In ru, this message translates to:
+  /// **'Предыдущая неделя'**
+  String get schedulePreviousWeek;
+
+  /// Tooltip/label кнопки листания на следующую неделю
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующая неделя'**
+  String get scheduleNextWeek;
 }
 
 class _AppLocalizationsDelegate

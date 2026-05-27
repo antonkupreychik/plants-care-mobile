@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plantcare_mobile/features/care_event/data/mappers/task_type_mapper.dart';
-import 'package:plantcare_mobile/features/home/domain/care_task_type.dart';
+import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_event_kind.dart';
 
 /// Маппер-ловушка (BACKEND-GAPS G7): внутренний [CareTaskType] из `/today`

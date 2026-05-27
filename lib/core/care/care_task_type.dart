@@ -4,11 +4,16 @@
 /// (поле `TaskDto.taskType`). Это НЕ то же, что enum `POST /care-events`
 /// (`WATER` / `SPRAY` / `FERTILIZE`) — см. BACKEND-GAPS G7. Нормализацию
 /// строки в этот enum делает маппер data-слоя (MADR-002).
+///
+/// Общая доменная модель: `/today` (home) и `/calendar` (schedule) отдают один
+/// и тот же `TaskDto`, поэтому модель живёт в `core/care/` (FLUTTER.md:
+/// «Общее — только через core/»), а не в одной из фич.
 enum CareTaskType {
   watering,
   misting,
   fertilizing,
   soilCheck,
+
   /// Нераспознанный backend-код (контракт мог добавить тип) — UI рисует
   /// нейтрально, не падаем.
   unknown;

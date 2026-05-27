@@ -9,21 +9,24 @@ part of 'dio_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// Сконфигурированный [Dio] (MADR-006). baseUrl = `{apiUrl}/api/v1`.
-/// Порядок интерсепторов: Auth → Retry (сеть/5xx) → Error (последним, чтобы
-/// маппить в [ApiError] уже после исчерпания ретраев).
+/// Порядок интерсепторов: Auth → DateQuery (фикс date-only до ухода в сеть) →
+/// Retry (сеть/5xx) → Error (последним, чтобы маппить в [ApiError] уже после
+/// исчерпания ретраев).
 
 @ProviderFor(dio)
 final dioProvider = DioProvider._();
 
 /// Сконфигурированный [Dio] (MADR-006). baseUrl = `{apiUrl}/api/v1`.
-/// Порядок интерсепторов: Auth → Retry (сеть/5xx) → Error (последним, чтобы
-/// маппить в [ApiError] уже после исчерпания ретраев).
+/// Порядок интерсепторов: Auth → DateQuery (фикс date-only до ухода в сеть) →
+/// Retry (сеть/5xx) → Error (последним, чтобы маппить в [ApiError] уже после
+/// исчерпания ретраев).
 
 final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
     with $Provider<Dio> {
   /// Сконфигурированный [Dio] (MADR-006). baseUrl = `{apiUrl}/api/v1`.
-  /// Порядок интерсепторов: Auth → Retry (сеть/5xx) → Error (последним, чтобы
-  /// маппить в [ApiError] уже после исчерпания ретраев).
+  /// Порядок интерсепторов: Auth → DateQuery (фикс date-only до ухода в сеть) →
+  /// Retry (сеть/5xx) → Error (последним, чтобы маппить в [ApiError] уже после
+  /// исчерпания ретраев).
   DioProvider._()
     : super(
         from: null,
@@ -57,4 +60,4 @@ final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
   }
 }
 
-String _$dioHash() => r'30c1bca7b1698b69e33ed381f334118c0084da73';
+String _$dioHash() => r'd87dd127976f6ad9559b2ec592bb62ab72e92927';
