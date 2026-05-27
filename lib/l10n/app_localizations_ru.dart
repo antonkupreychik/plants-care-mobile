@@ -494,6 +494,103 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String addPlantStepIndicator(int current, int total) {
+    return 'Шаг $current из $total';
+  }
+
+  @override
+  String get addPlantOverline => 'Новое растение';
+
+  @override
+  String get addPlantClose => 'Закрыть';
+
+  @override
+  String get addPlantBack => 'Назад';
+
+  @override
+  String get addPlantNext => 'Далее';
+
+  @override
+  String get addPlantSkip => 'Пропустить';
+
+  @override
+  String get addPlantSubmit => 'Добавить';
+
+  @override
+  String get addPlantSpeciesTitle => 'Какое у тебя растение?';
+
+  @override
+  String get addPlantSpeciesSubtitle =>
+      'Найдём вид, подберём имя и план ухода. Если не знаешь — пропусти.';
+
+  @override
+  String get addPlantSearchHint => 'монстера, фикус, суккулент…';
+
+  @override
+  String get addPlantSearchEmpty => 'Ничего не найдено';
+
+  @override
+  String get addPlantSearchEmptyHint =>
+      'Попробуйте другой запрос или пропустите выбор вида';
+
+  @override
+  String get addPlantSkipSpeciesTitle => 'Не знаю, что это';
+
+  @override
+  String get addPlantSkipSpeciesHint =>
+      'Заведём как «Растение». Позже уточним.';
+
+  @override
+  String get addPlantNameTitle => 'Как назовём?';
+
+  @override
+  String get addPlantNameSubtitle =>
+      'Имя помогает запомнить характер растения.';
+
+  @override
+  String get addPlantNameLabel => 'Имя растения';
+
+  @override
+  String get addPlantNameHint => 'Например: Моника';
+
+  @override
+  String addPlantNameError(int max) {
+    return 'Введите имя (до $max символов)';
+  }
+
+  @override
+  String get addPlantRoomLabel => 'Где живёт';
+
+  @override
+  String get addPlantRoomNone => 'Без комнаты';
+
+  @override
+  String get addPlantRoomsEmpty => 'Комнат пока нет — растение попадёт в сад';
+
+  @override
+  String get addPlantCarePlanTitle => 'План ухода';
+
+  @override
+  String get addPlantCarePlanSubtitle =>
+      'Рекомендации по виду. Изменить пока нельзя.';
+
+  @override
+  String get addPlantCarePlanReadOnly => 'Только просмотр';
+
+  @override
+  String addPlantCarePlanEvery(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'каждые $count дня',
+      many: 'каждые $count дней',
+      few: 'каждые $count дня',
+      one: 'каждый день',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get catalogEmpty => 'Каталог пуст';
 
   @override
@@ -579,4 +676,62 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get addPlantCarePlanEmpty =>
+      'Выберите вид на первом шаге, чтобы увидеть план ухода';
+
+  @override
+  String get addPlantCarePlanNone => 'Для этого вида рекомендаций по уходу нет';
+
+  @override
+  String get addPlantConfirmTitle => 'Почти готово';
+
+  @override
+  String get addPlantConfirmSubtitle =>
+      'Проверьте данные и добавьте растение в сад.';
+
+  @override
+  String get addPlantSummaryName => 'Имя';
+
+  @override
+  String get addPlantSummaryRoom => 'Комната';
+
+  @override
+  String get addPlantSummaryCarePlan => 'План ухода';
+
+  @override
+  String addPlantSummaryCarePlanCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count пункта',
+      many: '$count пунктов',
+      few: '$count пункта',
+      one: '$count пункт',
+      zero: 'нет рекомендаций',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get addPlantNoteLabel => 'Заметка';
+
+  @override
+  String get addPlantNoteHint => 'Например: подарок на день рождения';
+
+  @override
+  String get addPlantNoteOptional => 'необязательно';
+
+  @override
+  String get addPlantSubmitted => 'Растение добавлено';
+
+  @override
+  String get careDifficultyEasy => 'Лёгкий уход';
+
+  @override
+  String get careDifficultyMedium => 'Средний уход';
+
+  @override
+  String get careDifficultyHard => 'Сложный уход';
 }

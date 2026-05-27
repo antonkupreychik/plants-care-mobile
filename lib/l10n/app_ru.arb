@@ -602,6 +602,146 @@
     }
   },
 
+  "addPlantStepIndicator": "Шаг {current} из {total}",
+  "@addPlantStepIndicator": {
+    "description": "Индикатор текущего шага мастера добавления растения",
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "addPlantOverline": "Новое растение",
+  "@addPlantOverline": {
+    "description": "Надзаголовок-капс в шапке мастера добавления растения"
+  },
+
+  "addPlantClose": "Закрыть",
+  "@addPlantClose": {
+    "description": "Подпись/семантика кнопки закрытия мастера"
+  },
+
+  "addPlantBack": "Назад",
+  "@addPlantBack": {
+    "description": "Подпись/семантика кнопки возврата на предыдущий шаг"
+  },
+
+  "addPlantNext": "Далее",
+  "@addPlantNext": {
+    "description": "Кнопка перехода к следующему шагу мастера"
+  },
+
+  "addPlantSkip": "Пропустить",
+  "@addPlantSkip": {
+    "description": "Кнопка пропуска шага выбора вида (вид необязателен)"
+  },
+
+  "addPlantSubmit": "Добавить",
+  "@addPlantSubmit": {
+    "description": "Кнопка завершения мастера: создать растение"
+  },
+
+  "addPlantSpeciesTitle": "Какое у тебя растение?",
+  "@addPlantSpeciesTitle": {
+    "description": "Заголовок шага выбора вида"
+  },
+
+  "addPlantSpeciesSubtitle": "Найдём вид, подберём имя и план ухода. Если не знаешь — пропусти.",
+  "@addPlantSpeciesSubtitle": {
+    "description": "Подпись под заголовком шага выбора вида"
+  },
+
+  "addPlantSearchHint": "монстера, фикус, суккулент…",
+  "@addPlantSearchHint": {
+    "description": "Плейсхолдер поля поиска вида"
+  },
+
+  "addPlantSearchEmpty": "Ничего не найдено",
+  "@addPlantSearchEmpty": {
+    "description": "Пустой результат поиска вида"
+  },
+
+  "addPlantSearchEmptyHint": "Попробуйте другой запрос или пропустите выбор вида",
+  "@addPlantSearchEmptyHint": {
+    "description": "Подсказка к пустому результату поиска вида"
+  },
+
+  "addPlantSkipSpeciesTitle": "Не знаю, что это",
+  "@addPlantSkipSpeciesTitle": {
+    "description": "Заголовок строки «создать без выбора вида»"
+  },
+
+  "addPlantSkipSpeciesHint": "Заведём как «Растение». Позже уточним.",
+  "@addPlantSkipSpeciesHint": {
+    "description": "Подсказка к строке «создать без выбора вида»"
+  },
+
+  "addPlantNameTitle": "Как назовём?",
+  "@addPlantNameTitle": {
+    "description": "Заголовок шага ввода имени и комнаты"
+  },
+
+  "addPlantNameSubtitle": "Имя помогает запомнить характер растения.",
+  "@addPlantNameSubtitle": {
+    "description": "Подпись под заголовком шага имени"
+  },
+
+  "addPlantNameLabel": "Имя растения",
+  "@addPlantNameLabel": {
+    "description": "Метка поля ввода имени растения"
+  },
+
+  "addPlantNameHint": "Например: Моника",
+  "@addPlantNameHint": {
+    "description": "Плейсхолдер поля имени растения"
+  },
+
+  "addPlantNameError": "Введите имя (до {max} символов)",
+  "@addPlantNameError": {
+    "description": "Ошибка валидации имени: пусто или слишком длинное",
+    "placeholders": {
+      "max": { "type": "int" }
+    }
+  },
+
+  "addPlantRoomLabel": "Где живёт",
+  "@addPlantRoomLabel": {
+    "description": "Метка группы выбора комнаты"
+  },
+
+  "addPlantRoomNone": "Без комнаты",
+  "@addPlantRoomNone": {
+    "description": "Чип «не выбирать комнату»"
+  },
+
+  "addPlantRoomsEmpty": "Комнат пока нет — растение попадёт в сад",
+  "@addPlantRoomsEmpty": {
+    "description": "Подсказка, когда у пользователя нет комнат"
+  },
+
+  "addPlantCarePlanTitle": "План ухода",
+  "@addPlantCarePlanTitle": {
+    "description": "Заголовок шага превью плана ухода"
+  },
+
+  "addPlantCarePlanSubtitle": "Рекомендации по виду. Изменить пока нельзя.",
+  "@addPlantCarePlanSubtitle": {
+    "description": "Подпись под заголовком шага плана ухода (read-only)"
+  },
+
+  "addPlantCarePlanReadOnly": "Только просмотр",
+  "@addPlantCarePlanReadOnly": {
+    "description": "Бейдж-пометка на шаге плана ухода: план редактировать нельзя"
+  },
+
+  "addPlantCarePlanEvery": "{count, plural, one{каждый день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}",
+  "@addPlantCarePlanEvery": {
+    "description": "Интервал пункта плана ухода: каждые N дней",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
   "catalogEmpty": "Каталог пуст",
   "@catalogEmpty": {
     "description": "Пустое состояние каталога без поискового запроса"
@@ -731,5 +871,83 @@
     "placeholders": {
       "count": { "type": "int" }
     }
+  },
+
+  "addPlantCarePlanEmpty": "Выберите вид на первом шаге, чтобы увидеть план ухода",
+  "@addPlantCarePlanEmpty": {
+    "description": "Подсказка на шаге плана ухода, когда вид не выбран"
+  },
+
+  "addPlantCarePlanNone": "Для этого вида рекомендаций по уходу нет",
+  "@addPlantCarePlanNone": {
+    "description": "Подсказка, когда у выбранного вида нет интервалов ухода"
+  },
+
+  "addPlantConfirmTitle": "Почти готово",
+  "@addPlantConfirmTitle": {
+    "description": "Заголовок шага подтверждения"
+  },
+
+  "addPlantConfirmSubtitle": "Проверьте данные и добавьте растение в сад.",
+  "@addPlantConfirmSubtitle": {
+    "description": "Подпись под заголовком шага подтверждения"
+  },
+
+  "addPlantSummaryName": "Имя",
+  "@addPlantSummaryName": {
+    "description": "Метка строки саммари: имя растения"
+  },
+
+  "addPlantSummaryRoom": "Комната",
+  "@addPlantSummaryRoom": {
+    "description": "Метка строки саммари: комната"
+  },
+
+  "addPlantSummaryCarePlan": "План ухода",
+  "@addPlantSummaryCarePlan": {
+    "description": "Метка строки саммари: план ухода"
+  },
+
+  "addPlantSummaryCarePlanCount": "{count, plural, =0{нет рекомендаций} one{{count} пункт} few{{count} пункта} many{{count} пунктов} other{{count} пункта}}",
+  "@addPlantSummaryCarePlanCount": {
+    "description": "Краткое описание плана ухода в саммари: число пунктов",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "addPlantNoteLabel": "Заметка",
+  "@addPlantNoteLabel": {
+    "description": "Метка необязательного поля заметки на шаге подтверждения"
+  },
+
+  "addPlantNoteHint": "Например: подарок на день рождения",
+  "@addPlantNoteHint": {
+    "description": "Плейсхолдер поля заметки"
+  },
+
+  "addPlantNoteOptional": "необязательно",
+  "@addPlantNoteOptional": {
+    "description": "Подпись: поле заметки необязательно"
+  },
+
+  "addPlantSubmitted": "Растение добавлено",
+  "@addPlantSubmitted": {
+    "description": "Снэкбар-подтверждение после успешного создания растения"
+  },
+
+  "careDifficultyEasy": "Лёгкий уход",
+  "@careDifficultyEasy": {
+    "description": "Уровень сложности ухода за видом: лёгкий"
+  },
+
+  "careDifficultyMedium": "Средний уход",
+  "@careDifficultyMedium": {
+    "description": "Уровень сложности ухода за видом: средний"
+  },
+
+  "careDifficultyHard": "Сложный уход",
+  "@careDifficultyHard": {
+    "description": "Уровень сложности ухода за видом: сложный"
   }
 }
