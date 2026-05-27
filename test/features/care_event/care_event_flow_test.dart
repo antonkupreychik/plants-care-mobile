@@ -13,7 +13,7 @@ import 'package:plantcare_mobile/features/care_event/domain/logged_care_event.da
 import 'package:plantcare_mobile/features/plant_card/domain/care_event_kind.dart';
 import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
-import 'package:plantcare_mobile/features/home/domain/garden_location.dart';
+import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';

@@ -19,7 +19,7 @@ import 'package:plantcare_mobile/features/catalog/domain/catalog_repository.dart
 import 'package:plantcare_mobile/features/catalog/domain/species_page.dart';
 import 'package:plantcare_mobile/features/catalog/presentation/catalog_providers.dart';
 import 'package:plantcare_mobile/features/catalog/presentation/catalog_screen.dart';
-import 'package:plantcare_mobile/features/home/domain/garden_location.dart';
+import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';

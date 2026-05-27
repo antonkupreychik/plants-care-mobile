@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../l10n/app_localizations.dart';
 import '../theme/tokens.dart';
 import '../widgets/app_bottom_nav.dart';
 
@@ -9,7 +8,7 @@ import '../widgets/app_bottom_nav.dart';
 /// и общую плавающую нижнюю навигацию overlay над ним.
 ///
 /// Branch 0 — Сад (`/home`), branch 1 — График (`/schedule`), branch 2 —
-/// Каталог (`/catalog`). Профиль ещё не branch — таб инертен (coming-soon).
+/// Каталог (`/catalog`), branch 3 — Профиль (`/profile`).
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.navigationShell});
 
@@ -26,13 +25,6 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
-    final l10n = AppLocalizations.of(context);
-
-    void comingSoon() {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
-    }
 
     return Scaffold(
       backgroundColor: c.bg,
@@ -48,7 +40,7 @@ class AppShell extends StatelessWidget {
               onSelectGarden: () => _goBranch(0),
               onSelectSchedule: () => _goBranch(1),
               onSelectCatalog: () => _goBranch(2),
-              onComingSoon: comingSoon,
+              onSelectProfile: () => _goBranch(3),
             ),
           ),
         ],

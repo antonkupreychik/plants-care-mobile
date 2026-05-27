@@ -1,6 +1,6 @@
 import '../../../core/care/care_task.dart';
 import '../../../core/error/result.dart';
-import 'garden_location.dart';
+import '../../../core/locations/garden_location.dart';
 import 'plant.dart';
 
 /// Контракт data-слоя для экрана «Главная — Мой сад» (01).

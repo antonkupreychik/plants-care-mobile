@@ -11,7 +11,7 @@ import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../care_event/data/mappers/task_type_mapper.dart';
 import '../../care_event/presentation/log_care_event_sheet.dart';
-import '../domain/garden_location.dart';
+import '../../../core/locations/garden_location.dart';
 import '../domain/plant.dart';
 import 'home_filter.dart';
 import 'home_providers.dart';

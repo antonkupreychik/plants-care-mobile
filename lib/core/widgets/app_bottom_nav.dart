@@ -9,9 +9,8 @@ import '../theme/tokens.dart';
 /// overlay над активным branch'ем в `AppShell`. Активный таб определяется
 /// [currentIndex] (= `StatefulNavigationShell.currentIndex`).
 ///
-/// Сад/График/Каталог навигируют по branch'ам
-/// ([onSelectGarden]/[onSelectSchedule]/[onSelectCatalog]), Профиль ещё не
-/// реализован — тап вызывает [onComingSoon].
+/// Сад/График/Каталог/Профиль навигируют по branch'ам
+/// ([onSelectGarden]/[onSelectSchedule]/[onSelectCatalog]/[onSelectProfile]).
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({
     super.key,
@@ -19,17 +18,19 @@ class AppBottomNav extends StatelessWidget {
     required this.onSelectGarden,
     required this.onSelectSchedule,
     required this.onSelectCatalog,
-    required this.onComingSoon,
+    required this.onSelectProfile,
   });
 
-  /// Индекс активного branch'а (0 — Сад, 1 — График, 2 — Каталог).
+  /// Индекс активного branch'а (0 — Сад, 1 — График, 2 — Каталог, 3 — Профиль).
   final int currentIndex;
   final VoidCallback onSelectGarden;
   final VoidCallback onSelectSchedule;
 
   /// Переход в каталог видов (branch 2, экран 12).
   final VoidCallback onSelectCatalog;
-  final VoidCallback onComingSoon;
+
+  /// Переход в профиль (branch 3).
+  final VoidCallback onSelectProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +75,8 @@ class AppBottomNav extends StatelessWidget {
           _NavItem(
             icon: Icons.person_outline_rounded,
             label: l10n.navProfile,
-            active: false,
-            onTap: onComingSoon,
+            active: currentIndex == 3,
+            onTap: onSelectProfile,
           ),
         ],
       ),

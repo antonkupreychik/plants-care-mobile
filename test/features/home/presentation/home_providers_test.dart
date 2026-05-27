@@ -8,7 +8,7 @@ import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/features/home/data/home_repository_provider.dart';
 import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
-import 'package:plantcare_mobile/features/home/domain/garden_location.dart';
+import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/features/home/domain/home_repository.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/tokens.dart';
+import '../../../../core/locations/garden_location.dart';
 import '../../../../core/widgets/skeleton_box.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/garden_location.dart';
 
 /// Горизонтальная лента чипов комнат. `null` в [selectedLocationId] = «Все».
 ///
