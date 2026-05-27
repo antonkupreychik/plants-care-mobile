@@ -53,9 +53,10 @@ Feature-first:
 
 ```
 lib/
-├── core/                 # общее: network, router, theme, storage, errors, l10n, env, widgets
+├── core/                 # общее: network, router, theme, storage, errors, l10n, env, widgets, care
 │   ├── network/          # dio instance + AuthHeader/Error interceptors, ApiError, AuthScope
-│   ├── router/           # go_router (роуты, shell-табы, guards)
+│   ├── care/             # общий care-task домен (CareTask, CareTaskType, мапперы) — делят home/schedule
+│   ├── router/           # go_router (роуты, StatefulShellRoute-табы Сад/График, guards)
 │   ├── theme/            # tokens.dart (PC_THEMES) + ThemeData light/dark
 │   ├── storage/          # drift AppDatabase (каркас)
 │   ├── errors/           # ApiError (sealed), Result
@@ -72,7 +73,9 @@ lib/
 
 Фича **не** импортит из `presentation/` другой фичи. Если фиче нужны данные другой —
 зависит от её domain-интерфейса, не от экранов. Общее — только через `core/`.
-Sprint 1 фичи: `home` (01), `plant_card` (02), `care_event` (06 sheet), `auth` (07/09 заглушки).
+Sprint 1 фичи: `home` (01), `plant_card` (02), `care_event` (06 sheet), `schedule` (11),
+`auth` (07/09 заглушки). Общий care-task домен (`CareTask`/`CareTaskType`, мапперы) — в
+`core/care/`, т.к. его делят `home` и `schedule`.
 
 ---
 

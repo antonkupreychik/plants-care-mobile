@@ -1,4 +1,4 @@
-import '../../../home/domain/care_task_type.dart';
+import '../../../../core/care/care_task_type.dart';
 import '../../../plant_card/domain/care_event_kind.dart';
 
 /// Маппер-ловушка (FLUTTER.md «Data», BACKEND-GAPS G7): когда sheet ухода

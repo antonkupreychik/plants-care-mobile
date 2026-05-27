@@ -201,6 +201,34 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String scheduleWeekTasksCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'На этой неделе $count заботы в саду',
+      many: 'На этой неделе $count забот в саду',
+      few: 'На этой неделе $count заботы в саду',
+      one: 'На этой неделе $count забота в саду',
+      zero: 'На этой неделе сад отдыхает',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String scheduleDayTasksCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count задачи',
+      many: '$count задач',
+      few: '$count задачи',
+      one: '$count задача',
+      zero: 'Свободно',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String plantCardAgeDays(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -325,4 +353,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get careSheetSubmitted => 'Уход отмечен';
+
+  @override
+  String get scheduleIcsTitle => 'Подписаться в календаре';
+
+  @override
+  String get scheduleIcsSubtitle => 'Google / Apple Calendar — .ics';
+
+  @override
+  String get scheduleToCurrentWeek => 'На текущую неделю';
+
+  @override
+  String get schedulePreviousWeek => 'Предыдущая неделя';
+
+  @override
+  String get scheduleNextWeek => 'Следующая неделя';
 }

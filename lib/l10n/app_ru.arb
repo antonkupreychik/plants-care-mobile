@@ -254,6 +254,22 @@
     }
   },
 
+  "scheduleWeekTasksCount": "{count, plural, =0{На этой неделе сад отдыхает} one{На этой неделе {count} забота в саду} few{На этой неделе {count} заботы в саду} many{На этой неделе {count} забот в саду} other{На этой неделе {count} заботы в саду}}",
+  "@scheduleWeekTasksCount": {
+    "description": "Hero-заголовок экрана «График»: сумма задач за неделю (0 — свободная неделя)",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "scheduleDayTasksCount": "{count, plural, =0{Свободно} one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}",
+  "@scheduleDayTasksCount": {
+    "description": "Счётчик задач дня в строке недели (0 — свободный день)",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
   "plantCardAgeDays": "{count, plural, =0{сегодня} one{{count} день} few{{count} дня} many{{count} дней} other{{count} дня}}",
   "@plantCardAgeDays": {
     "description": "Количество дней владения растением",
@@ -429,5 +445,30 @@
   "careSheetSubmitted": "Уход отмечен",
   "@careSheetSubmitted": {
     "description": "Снэкбар-подтверждение после успешной отметки ухода"
+  },
+
+  "scheduleIcsTitle": "Подписаться в календаре",
+  "@scheduleIcsTitle": {
+    "description": "Заголовок карточки экспорта расписания в календарь (.ics)"
+  },
+
+  "scheduleIcsSubtitle": "Google / Apple Calendar — .ics",
+  "@scheduleIcsSubtitle": {
+    "description": "Подзаголовок карточки экспорта расписания (.ics)"
+  },
+
+  "scheduleToCurrentWeek": "На текущую неделю",
+  "@scheduleToCurrentWeek": {
+    "description": "Подпись (a11y) кнопки сброса на текущую неделю"
+  },
+
+  "schedulePreviousWeek": "Предыдущая неделя",
+  "@schedulePreviousWeek": {
+    "description": "Tooltip/label кнопки листания на предыдущую неделю"
+  },
+
+  "scheduleNextWeek": "Следующая неделя",
+  "@scheduleNextWeek": {
+    "description": "Tooltip/label кнопки листания на следующую неделю"
   }
 }

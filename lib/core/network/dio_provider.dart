@@ -5,13 +5,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../auth/auth_providers.dart';
 import '../env/app_config.dart';
 import 'auth_interceptor.dart';
+import 'date_query_interceptor.dart';
 import 'error_interceptor.dart';
 
 part 'dio_provider.g.dart';
 
 /// Сконфигурированный [Dio] (MADR-006). baseUrl = `{apiUrl}/api/v1`.
-/// Порядок интерсепторов: Auth → Retry (сеть/5xx) → Error (последним, чтобы
-/// маппить в [ApiError] уже после исчерпания ретраев).
+/// Порядок интерсепторов: Auth → DateQuery (фикс date-only до ухода в сеть) →
+/// Retry (сеть/5xx) → Error (последним, чтобы маппить в [ApiError] уже после
+/// исчерпания ретраев).
 @riverpod
 Dio dio(Ref ref) {
   final config = ref.watch(appConfigProvider);
@@ -30,6 +32,7 @@ Dio dio(Ref ref) {
 
   dio.interceptors.addAll([
     AuthInterceptor(session),
+    DateQueryInterceptor(),
     RetryInterceptor(dio: dio, retries: 3),
     ErrorInterceptor(),
   ]);

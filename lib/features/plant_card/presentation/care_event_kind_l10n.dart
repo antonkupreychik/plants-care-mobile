@@ -7,7 +7,7 @@ import '../domain/care_event_kind.dart';
 /// в дневнике и иконка типа.
 ///
 /// Без бизнес-логики — только перевод enum в строку/глиф (аналог
-/// `home/presentation/care_task_l10n.dart`).
+/// `core/care/care_task_l10n.dart`).
 extension CareEventKindL10n on CareEventKind {
   String doneLabel(AppLocalizations l10n) => switch (this) {
         CareEventKind.water => l10n.careDoneWater,

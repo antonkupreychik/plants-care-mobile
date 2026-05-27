@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/care/care_task.dart';
 import '../../../core/clock/clock_provider.dart';
 import '../../../core/error/api_error_l10n.dart';
 import '../../../core/theme/app_theme.dart';
@@ -10,13 +11,11 @@ import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../care_event/data/mappers/task_type_mapper.dart';
 import '../../care_event/presentation/log_care_event_sheet.dart';
-import '../domain/care_task.dart';
 import '../domain/garden_location.dart';
 import '../domain/plant.dart';
 import 'home_filter.dart';
 import 'home_providers.dart';
 import 'widgets/garden_empty.dart';
-import 'widgets/home_bottom_nav.dart';
 import 'widgets/home_header.dart';
 import 'widgets/location_chips.dart';
 import 'widgets/plant_card.dart';
@@ -116,14 +115,6 @@ class HomeScreen extends ConsumerWidget {
                 // Запас под плавающую навигацию и FAB.
                 const SliverToBoxAdapter(child: SizedBox(height: 120)),
               ],
-            ),
-
-            // Плавающая нижняя навигация.
-            Positioned(
-              left: 12,
-              right: 12,
-              bottom: 12,
-              child: HomeBottomNav(onComingSoon: comingSoon),
             ),
 
             // FAB «добавить» — пока без перехода (мастер появится в фиче).

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../l10n/app_localizations.dart';
-import '../domain/care_task.dart';
-import '../domain/care_task_type.dart';
+import '../../l10n/app_localizations.dart';
+import 'care_task.dart';
+import 'care_task_type.dart';
 
 /// UI-обвязка для [CareTask]: локализованные подписи действия и срока.
 ///
 /// Без бизнес-логики: только перевод enum в строку и форматирование уже
 /// посчитанного backend-времени [CareTask.dueAt] (UTC → локаль). Группировку
 /// «утро/вечер» здесь НЕ делаем (это экран 03 Today).
+///
+/// Общая UI-обвязка двух фич (home/schedule) → живёт в `core/care/`.
 extension CareTaskTypeL10n on CareTaskType {
   String label(AppLocalizations l10n) => switch (this) {
         CareTaskType.watering => l10n.careActionWatering,
