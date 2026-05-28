@@ -52,10 +52,20 @@ class ProfileScreen extends StatelessWidget {
                 border: Border.all(color: c.line),
               ),
               clipBehavior: Clip.antiAlias,
-              child: SettingsRow(
-                title: l10n.profileRoomsTitle,
-                icon: Icons.home_outlined,
-                onTap: () => context.push('/profile/rooms'),
+              child: Column(
+                children: [
+                  SettingsRow(
+                    title: l10n.profileRoomsTitle,
+                    icon: Icons.home_outlined,
+                    onTap: () => context.push('/profile/rooms'),
+                  ),
+                  SettingsRow(
+                    title: l10n.profileArchiveTitle,
+                    icon: Icons.inventory_2_outlined,
+                    divider: true,
+                    onTap: () => context.push('/profile/archive'),
+                  ),
+                ],
               ),
             ),
           ],

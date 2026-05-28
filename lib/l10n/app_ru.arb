@@ -1151,5 +1151,86 @@
   "roomMoveClose": "Закрыть",
   "@roomMoveClose": {
     "description": "Подпись/семантика кнопки закрытия пикера переноса"
+  },
+
+  "profileArchiveTitle": "Архив",
+  "@profileArchiveTitle": {
+    "description": "Заголовок строки настроек, ведущей на экран «Архив» (17)"
+  },
+
+  "archiveBack": "Назад",
+  "@archiveBack": {
+    "description": "Семантика кнопки «назад» на экране «Архив»"
+  },
+
+  "archiveEyebrow": "Архив · {count, plural, =0{нет растений} one{{count} растение} few{{count} растения} many{{count} растений} other{{count} растения}}",
+  "@archiveEyebrow": {
+    "description": "Надзаголовок (eyebrow) экрана «Архив» со счётчиком архивных растений",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "archiveHeadingLead": "В ",
+  "@archiveHeadingLead": {
+    "description": "Серифный заголовок экрана «Архив», обычная часть перед акцентом (напр. «В »)"
+  },
+
+  "archiveHeadingAccent": "памяти",
+  "@archiveHeadingAccent": {
+    "description": "Серифный заголовок экрана «Архив», акцентная часть (primary italic, напр. «памяти»)"
+  },
+
+  "archiveSubtitle": "Растения, с которыми пути разошлись. Их история — здесь, а не в корзине.",
+  "@archiveSubtitle": {
+    "description": "Подпись под заголовком экрана «Архив»"
+  },
+
+  "archiveLivedPrefixGifted": "Прожил рядом ·",
+  "@archiveLivedPrefixGifted": {
+    "description": "Префикс строки срока жизни для подаренного растения (мужской род, без «о»)"
+  },
+
+  "archiveLivedPrefix": "Прожило рядом ·",
+  "@archiveLivedPrefix": {
+    "description": "Префикс строки срока жизни для погибшего растения (средний род)"
+  },
+
+  "archiveOpenDiary": "Открыть дневник",
+  "@archiveOpenDiary": {
+    "description": "Чип на карточке архивного растения (открыть дневник) — coming soon"
+  },
+
+  "archiveRemember": "Вспомнить",
+  "@archiveRemember": {
+    "description": "Чип на карточке архивного растения (вспомнить) — coming soon"
+  },
+
+  "archiveRetrospectiveLabel": "Ретроспектива",
+  "@archiveRetrospectiveLabel": {
+    "description": "Eyebrow карточки ретроспективы на экране «Архив»"
+  },
+
+  "archiveRetrospectiveText": "Растения живут с тобой в среднем {avg}",
+  "@archiveRetrospectiveText": {
+    "description": "Текст карточки ретроспективы со средним сроком жизни",
+    "placeholders": {
+      "avg": { "type": "String" }
+    }
+  },
+
+  "archiveRetrospectiveHint": "Это нормально. Каждое — память и опыт.",
+  "@archiveRetrospectiveHint": {
+    "description": "Подпись карточки ретроспективы на экране «Архив»"
+  },
+
+  "archiveEmpty": "Архив пуст",
+  "@archiveEmpty": {
+    "description": "Заголовок пустого состояния экрана «Архив»"
+  },
+
+  "archiveEmptyHint": "Здесь появятся растения, с которыми ваши пути разойдутся.",
+  "@archiveEmptyHint": {
+    "description": "Подпись пустого состояния экрана «Архив»"
   }
 }
