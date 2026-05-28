@@ -1,6 +1,7 @@
 import '../../../core/error/result.dart';
 import '../../home/domain/plant.dart';
 import 'care_history_entry.dart';
+import 'plant_health.dart';
 import 'streak.dart';
 
 /// Контракт data-слоя для экрана «Карточка растения» (02).
@@ -26,4 +27,9 @@ abstract interface class PlantCardRepository {
 
   /// Стрик растения (`GET /stats/streak`, scope chat).
   Future<Result<Streak>> getStreak(int plantId);
+
+  /// Health Score растения (`GET /plants/{id}/health`, scope none —
+  /// эндпоинт публичный, идентичность не требуется). Значения посчитаны
+  /// backend, клиент их не пересчитывает.
+  Future<Result<PlantHealth>> getPlantHealth(int plantId);
 }

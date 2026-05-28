@@ -14,13 +14,16 @@
 
 ---
 
-## G1 · Health Score растения 🔴
+## G1 · Health Score растения 🟢
 - **Экран:** 01 Home (мини-кольцо на карточке), 02 Plant card (бейдж).
-- **Нужно:** числовой score 0–100 на растение (для кольца) + опц. факторы.
-- **Сейчас:** нет. `PlantDto` без health-поля; `/plants/{id}/health` отсутствует.
-- **Предложение:** поле `healthScore: int?` в `PlantDto` (дёшево для списка) ИЛИ
-  `GET /api/v1/plants/{id}/health → {score, factors[]}`. Совпадает с api-contract §12.4 (#138).
-- **Заглушка мобилки:** кольцо health не рисуем / рисуем нейтральным, пока поля нет.
+- **Закрыто:** бэкенд отдаёт `GET /api/v1/plants/{id}/health` → `{insufficientData: bool,
+  score: int 0–100, zone: GREEN|YELLOW|RED}`. Публичный (200 без auth-заголовков → клиент
+  шлёт `AuthScope.none`). Эндпоинт ДОБАВЛЕН в статическую спеку (`resources/plant-health.yaml`),
+  клиент перегенерён (MADR-007). Мобилка рисует кольцо (Home) и бейдж (Plant card);
+  `insufficientData=true` → нейтральное «—», не как ошибка.
+- **Примечание:** реальная схема `{insufficientData, score, zone}` РАСХОДИТСЯ с прогнозом
+  api-contract §12.4 (`{score, factors[], recommendation?}`) — стоит поправить §12.4.
+- **Follow-up:** см. **G16** — для кольца на Home это per-plant запрос (N+1).
 
 ## G2 · Mood / voice line растения 🔴
 - **Экран:** 01 Home (подпись-настроение), 02 Plant card (speech bubble).
@@ -201,6 +204,21 @@
   из дизайна). Реальная dio/codegen-реализация подключится подменой
   `archiveRepositoryProvider` (scope `user`), domain/state/UI не меняются.
   `TODO(BACKEND-GAPS #117)` в фейке. Чипы «Открыть дневник»/«Вспомнить» — coming-soon.
+
+---
+
+## G16 · Health Score для сетки Home — N+1 🟡
+- **Экран:** 01 Home (мини-кольцо здоровья на каждой карточке растения).
+- **Нужно:** health (score/zone) для ВСЕХ растений сада одним запросом вместе с сеткой.
+- **Сейчас:** есть только per-plant `GET /plants/{id}/health` (G1 🟢). `GET /plants` (список
+  сада) health НЕ отдаёт. Кольцо на Home тянет health по одному запросу на растение → N+1.
+- **Предложение:** либо `healthScore`/`zone` прямо в `PlantDto` списка (дёшево, один запрос
+  на сетку), либо батч `GET /api/v1/plants/health?ids=...`.
+- **Заглушка мобилки:** кольцо грузится per-plant через `plantHealthProvider(id)` (Riverpod
+  family + autoDispose). Сетка ленивая (SliverGrid) — запросы только для видимых карточек,
+  кэш гасит повторы; health не блокирует загрузку растений, на ошибке тихо скрывается.
+  Для больших садов (20+) при активном скролле возможна серия мелких запросов — приемлемо
+  для MVP, закрыть инлайн-полем/батчем когда бэк добавит.
 
 ---
 

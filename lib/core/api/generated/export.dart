@@ -14,6 +14,7 @@ export 'clients/stats_client.dart';
 export 'clients/species_client.dart';
 export 'clients/care_types_client.dart';
 // Data classes
+export 'models/plant_health_response.dart';
 export 'models/location_dto.dart';
 export 'models/location_create_request.dart';
 export 'models/location_update_request.dart';
@@ -37,6 +38,7 @@ export 'models/calendar_response.dart';
 export 'models/api_error_response.dart';
 export 'models/api_error.dart';
 export 'models/field_error.dart';
+export 'models/plant_health_response_zone.dart';
 export 'models/care_type_dto_code.dart';
 // Root client
 export 'plants_care_api.dart';

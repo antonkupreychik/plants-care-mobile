@@ -416,6 +416,22 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String healthBadgeLabel(int score) {
+    return 'HEALTH $score';
+  }
+
+  @override
+  String get healthScoreUnknown => 'HEALTH —';
+
+  @override
+  String healthSemanticScore(int score) {
+    return 'Здоровье растения: $score из 100';
+  }
+
+  @override
+  String get healthSemanticUnknown => 'Здоровье растения: недостаточно данных';
+
+  @override
   String get careDoneWater => 'Полито';
 
   @override

@@ -1,0 +1,59 @@
+# Health Score растения (G1). Не путать с health.yaml — там liveness-probe
+# сервиса. Здесь — индекс здоровья конкретного растения, посчитанный backend.
+
+paths:
+  ItemHealth:
+    get:
+      tags: [Plants]
+      operationId: getPlantHealth
+      summary: Health Score растения
+      description: |
+        Возвращает индекс здоровья растения (`score` 0..100) и его зону
+        (`GREEN`/`YELLOW`/`RED`), посчитанные backend по истории ухода.
+        Клиент значения НЕ пересчитывает.
+
+        Если данных для достоверной оценки недостаточно, `insufficientData`
+        равно `true` — в этом случае `score`/`zone` носят справочный характер,
+        а UI отображает нейтральное состояние.
+
+        Эндпоинт публичный: идентификация по заголовкам не требуется.
+      parameters:
+        - $ref: '../_common/parameters.yaml#/PlantIdPath'
+      responses:
+        '200':
+          description: Индекс здоровья растения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/PlantHealthResponse'
+              example:
+                insufficientData: false
+                score: 69
+                zone: YELLOW
+        '404':
+          $ref: '../_common/responses.yaml#/NotFound'
+
+schemas:
+  PlantHealthResponse:
+    type: object
+    description: Индекс здоровья растения, посчитанный backend.
+    required: [insufficientData, score, zone]
+    properties:
+      insufficientData:
+        type: boolean
+        description: |
+          `true`, если данных для достоверной оценки недостаточно. В этом случае
+          `score`/`zone` не следует подавать как точную метрику.
+        example: false
+      score:
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+        description: Индекс здоровья в диапазоне [0, 100].
+        example: 69
+      zone:
+        type: string
+        enum: [GREEN, YELLOW, RED]
+        description: Зона здоровья, производная от `score`.
+        example: YELLOW
