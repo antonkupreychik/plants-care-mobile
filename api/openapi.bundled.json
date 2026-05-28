@@ -376,6 +376,41 @@
         }
       }
     },
+    "/api/v1/plants/{id}/health": {
+      "get": {
+        "tags": [
+          "Plants"
+        ],
+        "operationId": "getPlantHealth",
+        "summary": "Health Score растения",
+        "description": "Возвращает индекс здоровья растения (`score` 0..100) и его зону\n(`GREEN`/`YELLOW`/`RED`), посчитанные backend по истории ухода.\nКлиент значения НЕ пересчитывает.\n\nЕсли данных для достоверной оценки недостаточно, `insufficientData`\nравно `true` — в этом случае `score`/`zone` носят справочный характер,\nа UI отображает нейтральное состояние.\n\nЭндпоинт публичный: идентификация по заголовкам не требуется.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Индекс здоровья растения.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlantHealthResponse"
+                },
+                "example": {
+                  "insufficientData": false,
+                  "score": 69,
+                  "zone": "YELLOW"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/api/v1/locations": {
       "get": {
         "tags": [
@@ -1046,6 +1081,40 @@
       }
     },
     "schemas": {
+      "PlantHealthResponse": {
+        "type": "object",
+        "description": "Индекс здоровья растения, посчитанный backend.",
+        "required": [
+          "insufficientData"
+        ],
+        "properties": {
+          "insufficientData": {
+            "type": "boolean",
+            "description": "`true`, если данных для достоверной оценки недостаточно (< 3 записей\nухода). В этом случае `score`/`zone` приходят `null`, UI рисует\nнейтральное состояние.\n",
+            "example": false
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 100,
+            "nullable": true,
+            "description": "Индекс здоровья [0, 100]. `null`, если `insufficientData`.\n",
+            "example": 69
+          },
+          "zone": {
+            "type": "string",
+            "enum": [
+              "GREEN",
+              "YELLOW",
+              "RED"
+            ],
+            "nullable": true,
+            "description": "Зона здоровья, производная от `score`. `null`, если `insufficientData`.\n",
+            "example": "YELLOW"
+          }
+        }
+      },
       "LocationDto": {
         "type": "object",
         "description": "Локация (комната/место), в которой пользователь держит растения.",

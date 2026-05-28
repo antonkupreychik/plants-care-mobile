@@ -21,11 +21,9 @@
 > готова»: если эндпоинта нет в `api/openapi/`, клиент не сгенерён — мобилке сначала
 > добавить в спеку и регенерить.
 
-**Закрыто бэкендом (зашиплено в мобилку):** G6, G9, G10, G13a.
+**Закрыто бэкендом (зашиплено в мобилку):** G1, G6, G9, G10, G13a.
 
 **Бэк уже отдаёт — мобилке остаётся подключить (в `api/openapi/` ещё нет):**
-- **G1** `GET /plants/{id}/health` → `{insufficientData, score 0–100, zone GREEN|YELLOW|RED}`
-  (без `factors[]`; в `PlantDto` поля нет и батча нет → для сетки Home это N запросов).
 - **G4** `GET /weather/snapshot` → `{available, humidityPercent, recommendation DEFER_OK|DO_NOT_DEFER|NEUTRAL, fetchedAt, fromCache}`.
 
 **Бэкенду ещё нужно сделать (backend-задачи, мобилке делать нечего):**
@@ -48,17 +46,18 @@
 
 ---
 
-## G1 · Health Score растения 🟡
+## G1 · Health Score растения 🟢
 - **Экран:** 01 Home (мини-кольцо на карточке), 02 Plant card (бейдж).
-- **Нужно:** числовой score 0–100 на растение (для кольца) + опц. факторы.
-- **Сверка 2026-05-28:** бэк отдаёт `GET /api/v1/plants/{id}/health` →
-  `{insufficientData, score 0–100, zone GREEN|YELLOW|RED}` (проверено curl, `200`).
-  При `insufficientData=true` (< 3 записей ухода) `score`/`zone` = `null`. **Нюансы:**
-  `factors[]` нет; в `PlantDto` health-поля **нет** и батч-эндпоинта нет → для мини-кольца
-  на сетке Home придётся N запросов (по растению), для бейджа на карточке (экран 02) — один.
-- **API:** ✅ готов (по одному растению). **Мобилка:** ⬜ не подключено — `/plants/{id}/health`
-  и `PlantHealthDto` отсутствуют в статической `api/openapi/` (нужно добавить + регген).
-- **Заглушка мобилки:** кольцо/бейдж health пока не рисуем.
+- **Закрыто (2026-05-28):** бэкенд отдаёт `GET /api/v1/plants/{id}/health` →
+  `{insufficientData: bool, score: int 0–100|null, zone: GREEN|YELLOW|RED|null}`.
+  Публичный (200 без auth-заголовков → клиент шлёт `AuthScope.none`). При
+  `insufficientData=true` (< 3 записей ухода) `score`/`zone` = **`null`** (в спеке поля
+  nullable, required только `insufficientData`). Эндпоинт ДОБАВЛЕН в статическую спеку
+  (`resources/plant-health.yaml`), клиент перегенерён (MADR-007). Мобилка рисует кольцо
+  (Home) и бейдж (Plant card); `insufficientData`/`null` → нейтральное «—», не как ошибка.
+- **Примечание:** реальная схема `{insufficientData, score, zone}` РАСХОДИТСЯ с прогнозом
+  api-contract §12.4 (`{score, factors[], recommendation?}`) — стоит поправить §12.4.
+- **Follow-up:** см. **G16** — для кольца на Home это per-plant запрос (N+1).
 
 ## G2 · Mood / voice line растения 🔴
 - **Экран:** 01 Home (подпись-настроение), 02 Plant card (speech bubble).
@@ -251,6 +250,21 @@
   из дизайна). Реальная dio/codegen-реализация подключится подменой
   `archiveRepositoryProvider` (scope `user`), domain/state/UI не меняются.
   `TODO(BACKEND-GAPS #117)` в фейке. Чипы «Открыть дневник»/«Вспомнить» — coming-soon.
+
+---
+
+## G16 · Health Score для сетки Home — N+1 🟡
+- **Экран:** 01 Home (мини-кольцо здоровья на каждой карточке растения).
+- **Нужно:** health (score/zone) для ВСЕХ растений сада одним запросом вместе с сеткой.
+- **Сейчас:** есть только per-plant `GET /plants/{id}/health` (G1 🟢). `GET /plants` (список
+  сада) health НЕ отдаёт. Кольцо на Home тянет health по одному запросу на растение → N+1.
+- **Предложение:** либо `healthScore`/`zone` прямо в `PlantDto` списка (дёшево, один запрос
+  на сетку), либо батч `GET /api/v1/plants/health?ids=...`.
+- **Заглушка мобилки:** кольцо грузится per-plant через `plantHealthProvider(id)` (Riverpod
+  family + autoDispose). Сетка ленивая (SliverGrid) — запросы только для видимых карточек,
+  кэш гасит повторы; health не блокирует загрузку растений, на ошибке тихо скрывается.
+  Для больших садов (20+) при активном скролле возможна серия мелких запросов — приемлемо
+  для MVP, закрыть инлайн-полем/батчем когда бэк добавит.
 
 ---
 

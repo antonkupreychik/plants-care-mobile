@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/tokens.dart';
 import '../../../../core/widgets/skeleton_box.dart';
+import '../../../plant_card/presentation/widgets/health_ring.dart';
 import '../../domain/plant.dart';
 import '../plant_illustration.dart';
 
 /// Карточка растения в сетке «Мой сад».
 ///
-/// Сознательно БЕЗ кольца здоровья (BACKEND-GAPS G1 — поля healthScore нет)
-/// и без mood/voiceLine (G2). Показываем вид (overline), имя (сериф),
-/// иллюстрацию по виду и локацию (если есть).
+/// Кольцо здоровья (G1) показываем справа от имени через [HealthRing]
+/// (общий `plantHealthProvider` фичи plant_card — established cross-feature
+/// паттерн, как [PlantIllustration]). Без mood/voiceLine (G2). Показываем вид
+/// (overline), имя (сериф), иллюстрацию по виду и локацию (если есть).
 class PlantCard extends StatelessWidget {
   const PlantCard({
     super.key,
@@ -58,11 +60,19 @@ class PlantCard extends StatelessWidget {
                   ),
                 ),
               const SizedBox(height: 2),
-              Text(
-                plant.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTheme.serif(fontSize: 22, color: c.ink),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      plant.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTheme.serif(fontSize: 22, color: c.ink),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  HealthRing(plantId: plant.id),
+                ],
               ),
               const SizedBox(height: 8),
               AspectRatio(
