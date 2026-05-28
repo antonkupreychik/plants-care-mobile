@@ -77,15 +77,19 @@
   явный `attentionPlantId` от бэка или собирать из G1.
 - **Заглушка:** баннер не показываем, пока нет сигнала.
 
-## G4 · Виджет погоды на Home 🟡
+## G4 · Виджет погоды на Home 🟢
 - **Экран:** 01 Home (микро-строка погоды).
-- **Сверка 2026-05-28:** бэк отдаёт `GET /api/v1/weather/snapshot` →
-  `{available, humidityPercent 0–100, recommendation DEFER_OK|DO_NOT_DEFER|NEUTRAL,
-  fetchedAt, fromCache}` (проверено curl, `200`). При `available=false` остальные поля
-  `null` (погода не настроена / источник недоступен). `fromCache` — серверный кеш (60 мин).
-- **API:** ✅ готов и полон. **Мобилка:** ⬜ не подключено — `weather/snapshot` и
-  `WeatherSnapshotDto` отсутствуют в статической `api/openapi/` (нужно добавить + регген).
-- **Заглушка:** строку погоды пока скрываем.
+- **Закрыто (2026-05-29):** бэк отдаёт `GET /api/v1/weather/snapshot` →
+  `{available: bool, humidityPercent: int 0–100|null, recommendation: DEFER_OK|DO_NOT_DEFER|NEUTRAL|null,
+  fetchedAt: date-time|null, fromCache: bool|null}` (проверено curl, `200`; публичный —
+  клиент шлёт `AuthScope.none`). При `available=false` остальные поля **`null`** (погода не
+  настроена / источник недоступен) — в спеке `required: [available]`, остальное nullable.
+  Эндпоинт ДОБАВЛЕН в статическую спеку (`resources/weather.yaml`), клиент перегенерён
+  (MADR-007). Мобилка рисует микро-строку: влажность + совет из `recommendation`; при
+  `!available`/loading/error строку тихо скрываем.
+- **Примечание:** реальная схема расходится с прогнозом api-contract §12.8
+  (`{temp, humidity, advice}`) — температуры и текста погоды НЕТ, только влажность +
+  recommendation-enum. Стоит поправить §12.8.
 
 ## G5 · Счётчики пользователя (header Home) 🔴
 - **Экран:** 01 Home (приветствие, badge уведомлений).

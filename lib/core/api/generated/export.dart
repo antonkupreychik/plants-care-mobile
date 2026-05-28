@@ -13,6 +13,7 @@ export 'clients/today_client.dart';
 export 'clients/stats_client.dart';
 export 'clients/species_client.dart';
 export 'clients/care_types_client.dart';
+export 'clients/weather_client.dart';
 // Data classes
 export 'models/plant_health_response.dart';
 export 'models/location_dto.dart';
@@ -28,6 +29,7 @@ export 'models/page_response_species_summary_dto.dart';
 export 'models/today_response.dart';
 export 'models/health_response.dart';
 export 'models/care_type_dto.dart';
+export 'models/weather_snapshot_response.dart';
 export 'models/care_event_type.dart';
 export 'models/create_care_event_request.dart';
 export 'models/care_event_response.dart';
@@ -40,6 +42,7 @@ export 'models/api_error.dart';
 export 'models/field_error.dart';
 export 'models/plant_health_response_zone.dart';
 export 'models/care_type_dto_code.dart';
+export 'models/weather_snapshot_response_recommendation.dart';
 // Root client
 export 'plants_care_api.dart';
 

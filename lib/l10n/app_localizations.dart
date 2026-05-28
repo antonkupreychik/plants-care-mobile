@@ -1725,6 +1725,36 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Здесь появятся растения, с которыми ваши пути разойдутся.'**
   String get archiveEmptyHint;
+
+  /// Микро-строка погоды на Home (G4): относительная влажность воздуха
+  ///
+  /// In ru, this message translates to:
+  /// **'Влажность {humidity}%'**
+  String weatherHumidity(int humidity);
+
+  /// Совет погоды на Home (G4) для рекомендации DEFER_OK
+  ///
+  /// In ru, this message translates to:
+  /// **'Влажно — полив можно отложить'**
+  String get weatherAdviceDeferOk;
+
+  /// Совет погоды на Home (G4) для рекомендации DO_NOT_DEFER
+  ///
+  /// In ru, this message translates to:
+  /// **'Сухо — не пропускай полив'**
+  String get weatherAdviceDoNotDefer;
+
+  /// Semantics-метка строки погоды (G4) с советом
+  ///
+  /// In ru, this message translates to:
+  /// **'Погода: влажность {humidity}%, {advice}'**
+  String weatherSemanticsWithAdvice(int humidity, String advice);
+
+  /// Semantics-метка строки погоды (G4) без совета
+  ///
+  /// In ru, this message translates to:
+  /// **'Погода: влажность {humidity}%'**
+  String weatherSemanticsHumidityOnly(int humidity);
 }
 
 class _AppLocalizationsDelegate

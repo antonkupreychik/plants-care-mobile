@@ -81,6 +81,8 @@ tags:
     description: Публичный справочник видов растений. Без авторизации.
   - name: Care Types
     description: Публичный справочник типов ухода (полив, опрыскивание, и т.п.). Без авторизации.
+  - name: Weather
+    description: Снапшот погоды (влажность) и рекомендация backend по поливу для Home. Публичный, без авторизации.
 
 paths:
   /api/v1/health:
@@ -121,6 +123,9 @@ paths:
 
   /api/v1/care-types:
     $ref: './resources/care-types.yaml#/paths/Collection'
+
+  /api/v1/weather/snapshot:
+    $ref: './resources/weather.yaml#/paths/Snapshot'
 
 components:
   # Параметры дублируются через $ref в каждом ресурсе (для удобства локального чтения),
@@ -202,6 +207,9 @@ components:
 
     CareTypeDto:
       $ref: './resources/care-types.yaml#/schemas/CareTypeDto'
+
+    WeatherSnapshotResponse:
+      $ref: './resources/weather.yaml#/schemas/WeatherSnapshotResponse'
 
     ApiErrorResponse:
       $ref: './_common/errors.yaml#/schemas/ApiErrorResponse'

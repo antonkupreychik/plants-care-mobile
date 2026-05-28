@@ -1470,5 +1470,40 @@
   "archiveEmptyHint": "Здесь появятся растения, с которыми ваши пути разойдутся.",
   "@archiveEmptyHint": {
     "description": "Подпись пустого состояния экрана «Архив»"
+  },
+
+  "weatherHumidity": "Влажность {humidity}%",
+  "@weatherHumidity": {
+    "description": "Микро-строка погоды на Home (G4): относительная влажность воздуха",
+    "placeholders": {
+      "humidity": { "type": "int" }
+    }
+  },
+
+  "weatherAdviceDeferOk": "Влажно — полив можно отложить",
+  "@weatherAdviceDeferOk": {
+    "description": "Совет погоды на Home (G4) для рекомендации DEFER_OK"
+  },
+
+  "weatherAdviceDoNotDefer": "Сухо — не пропускай полив",
+  "@weatherAdviceDoNotDefer": {
+    "description": "Совет погоды на Home (G4) для рекомендации DO_NOT_DEFER"
+  },
+
+  "weatherSemanticsWithAdvice": "Погода: влажность {humidity}%, {advice}",
+  "@weatherSemanticsWithAdvice": {
+    "description": "Semantics-метка строки погоды (G4) с советом",
+    "placeholders": {
+      "humidity": { "type": "int" },
+      "advice": { "type": "String" }
+    }
+  },
+
+  "weatherSemanticsHumidityOnly": "Погода: влажность {humidity}%",
+  "@weatherSemanticsHumidityOnly": {
+    "description": "Semantics-метка строки погоды (G4) без совета",
+    "placeholders": {
+      "humidity": { "type": "int" }
+    }
   }
 }

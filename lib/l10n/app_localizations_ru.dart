@@ -1074,4 +1074,25 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get archiveEmptyHint =>
       'Здесь появятся растения, с которыми ваши пути разойдутся.';
+
+  @override
+  String weatherHumidity(int humidity) {
+    return 'Влажность $humidity%';
+  }
+
+  @override
+  String get weatherAdviceDeferOk => 'Влажно — полив можно отложить';
+
+  @override
+  String get weatherAdviceDoNotDefer => 'Сухо — не пропускай полив';
+
+  @override
+  String weatherSemanticsWithAdvice(int humidity, String advice) {
+    return 'Погода: влажность $humidity%, $advice';
+  }
+
+  @override
+  String weatherSemanticsHumidityOnly(int humidity) {
+    return 'Погода: влажность $humidity%';
+  }
 }
