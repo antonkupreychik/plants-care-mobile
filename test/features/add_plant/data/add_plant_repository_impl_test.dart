@@ -212,6 +212,42 @@ void main() {
       expect(body.notes, 'на окне');
     });
 
+    test('should_put_speciesId_into_request_body_when_provided', () async {
+      when(() => plants.createPlant(
+            xUserId: any(named: 'xUserId'),
+            body: any(named: 'body'),
+            extras: any(named: 'extras'),
+          )).thenAnswer((_) async => _plant(77));
+
+      await repo.createPlant(name: 'Фикус', speciesId: 42);
+
+      final body = verify(() => plants.createPlant(
+            xUserId: any(named: 'xUserId'),
+            body: captureAny(named: 'body'),
+            extras: any(named: 'extras'),
+          )).captured.single as PlantCreateRequest;
+      // G13a: выбранный вид пробрасывается в POST /plants.
+      expect(body.speciesId, 42);
+    });
+
+    test('should_send_null_speciesId_when_not_provided', () async {
+      when(() => plants.createPlant(
+            xUserId: any(named: 'xUserId'),
+            body: any(named: 'body'),
+            extras: any(named: 'extras'),
+          )).thenAnswer((_) async => _plant(77));
+
+      await repo.createPlant(name: 'Фикус');
+
+      final body = verify(() => plants.createPlant(
+            xUserId: any(named: 'xUserId'),
+            body: captureAny(named: 'body'),
+            extras: any(named: 'extras'),
+          )).captured.single as PlantCreateRequest;
+      // Вид не выбран → speciesId == null в теле (не подменяется заглушкой).
+      expect(body.speciesId, isNull);
+    });
+
     test('should_build_request_body_with_null_location_and_notes', () async {
       when(() => plants.createPlant(
             xUserId: any(named: 'xUserId'),

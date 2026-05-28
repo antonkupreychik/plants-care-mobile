@@ -229,6 +229,56 @@ void main() {
     });
   });
 
+  group('submit speciesId propagation', () {
+    test('should_pass_selected_species_id_when_species_chosen', () async {
+      when(() => repo.createPlant(
+            name: any(named: 'name'),
+            locationId: any(named: 'locationId'),
+            notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+          )).thenAnswer((_) async => const Result.success(99));
+      final container = _container(repo);
+      final notifier =
+          container.read(addPlantWizardControllerProvider.notifier);
+      notifier.selectSpecies(_species); // id == 7, префиллит имя
+
+      await notifier.submit();
+
+      // G13a: id выбранного вида уходит в репозиторий.
+      final speciesId = verify(() => repo.createPlant(
+            name: any(named: 'name'),
+            locationId: any(named: 'locationId'),
+            notes: any(named: 'notes'),
+            speciesId: captureAny(named: 'speciesId'),
+          )).captured.single;
+      expect(speciesId, _species.id);
+      expect(speciesId, 7);
+    });
+
+    test('should_pass_null_species_id_when_no_species_chosen', () async {
+      when(() => repo.createPlant(
+            name: any(named: 'name'),
+            locationId: any(named: 'locationId'),
+            notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+          )).thenAnswer((_) async => const Result.success(99));
+      final container = _container(repo);
+      final notifier =
+          container.read(addPlantWizardControllerProvider.notifier);
+      notifier.setName('Безымянное'); // вид не выбран → draft.species == null
+
+      await notifier.submit();
+
+      final speciesId = verify(() => repo.createPlant(
+            name: any(named: 'name'),
+            locationId: any(named: 'locationId'),
+            notes: any(named: 'notes'),
+            speciesId: captureAny(named: 'speciesId'),
+          )).captured.single;
+      expect(speciesId, isNull);
+    });
+  });
+
   group('submit failure', () {
     test('should_set_failure_status_and_allow_retry', () async {
       var calls = 0;

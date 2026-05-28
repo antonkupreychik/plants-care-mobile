@@ -13,6 +13,7 @@ class PlantCreateRequest {
     required this.name,
     this.notes,
     this.locationId,
+    this.speciesId,
   });
   
   factory PlantCreateRequest.fromJson(Map<String, Object?> json) => _$PlantCreateRequestFromJson(json);
@@ -25,6 +26,9 @@ class PlantCreateRequest {
 
   /// Идентификатор локации. Если не задан, используется дефолтная локация пользователя.
   final int? locationId;
+
+  /// Вид растения (Species.id). Опционально. Если задан — растение связывается с видом; вид должен существовать, иначе 404. Расписания при этом не создаются (см. gap G14).
+  final int? speciesId;
 
   Map<String, Object?> toJson() => _$PlantCreateRequestToJson(this);
 }
