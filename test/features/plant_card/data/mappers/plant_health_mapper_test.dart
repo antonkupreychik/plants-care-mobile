@@ -59,16 +59,19 @@ void main() {
       expect(health.zone, HealthZone.green);
     });
 
-    test('should_set_hasReliableScore_false_when_insufficientData_true', () {
+    test('should_map_null_score_and_zone_when_insufficientData_true', () {
+      // Реальный ответ бэка при < 3 записей ухода: score/zone = null.
       const dto = PlantHealthResponse(
         insufficientData: true,
-        score: 0,
-        zone: PlantHealthResponseZone.green,
+        score: null,
+        zone: null,
       );
 
       final health = dto.toDomain();
 
       expect(health.insufficientData, isTrue);
+      expect(health.score, isNull);
+      expect(health.zone, isNull);
       expect(health.hasReliableScore, isFalse);
     });
 

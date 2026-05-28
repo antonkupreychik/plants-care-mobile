@@ -14,11 +14,13 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlantHealth {
 
-/// Индекс здоровья в диапазоне [0, 100].
- int get score;/// Зона здоровья (цвет), производная от [score].
- HealthZone get zone;/// `true`, если данных для достоверной оценки недостаточно. Тогда UI рисует
-/// нейтральное состояние («—»), а не подаёт [score] как точную метрику.
- bool get insufficientData;
+/// `true`, если данных для достоверной оценки недостаточно (< 3 записей
+/// ухода). Тогда [score]/[zone] приходят `null`, а UI рисует нейтральное
+/// состояние («—»), а не подаёт число как точную метрику.
+ bool get insufficientData;/// Индекс здоровья в диапазоне [0, 100]. `null`, если [insufficientData].
+ int? get score;/// Зона здоровья (цвет), производная от [score]. `null`, если
+/// [insufficientData].
+ HealthZone? get zone;
 /// Create a copy of PlantHealth
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +31,16 @@ $PlantHealthCopyWith<PlantHealth> get copyWith => _$PlantHealthCopyWithImpl<Plan
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlantHealth&&(identical(other.score, score) || other.score == score)&&(identical(other.zone, zone) || other.zone == zone)&&(identical(other.insufficientData, insufficientData) || other.insufficientData == insufficientData));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlantHealth&&(identical(other.insufficientData, insufficientData) || other.insufficientData == insufficientData)&&(identical(other.score, score) || other.score == score)&&(identical(other.zone, zone) || other.zone == zone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,score,zone,insufficientData);
+int get hashCode => Object.hash(runtimeType,insufficientData,score,zone);
 
 @override
 String toString() {
-  return 'PlantHealth(score: $score, zone: $zone, insufficientData: $insufficientData)';
+  return 'PlantHealth(insufficientData: $insufficientData, score: $score, zone: $zone)';
 }
 
 
@@ -49,7 +51,7 @@ abstract mixin class $PlantHealthCopyWith<$Res>  {
   factory $PlantHealthCopyWith(PlantHealth value, $Res Function(PlantHealth) _then) = _$PlantHealthCopyWithImpl;
 @useResult
 $Res call({
- int score, HealthZone zone, bool insufficientData
+ bool insufficientData, int? score, HealthZone? zone
 });
 
 
@@ -66,12 +68,12 @@ class _$PlantHealthCopyWithImpl<$Res>
 
 /// Create a copy of PlantHealth
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? score = null,Object? zone = null,Object? insufficientData = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? insufficientData = null,Object? score = freezed,Object? zone = freezed,}) {
   return _then(_self.copyWith(
-score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
-as int,zone: null == zone ? _self.zone : zone // ignore: cast_nullable_to_non_nullable
-as HealthZone,insufficientData: null == insufficientData ? _self.insufficientData : insufficientData // ignore: cast_nullable_to_non_nullable
-as bool,
+insufficientData: null == insufficientData ? _self.insufficientData : insufficientData // ignore: cast_nullable_to_non_nullable
+as bool,score: freezed == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+as int?,zone: freezed == zone ? _self.zone : zone // ignore: cast_nullable_to_non_nullable
+as HealthZone?,
   ));
 }
 
@@ -156,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int score,  HealthZone zone,  bool insufficientData)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool insufficientData,  int? score,  HealthZone? zone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlantHealth() when $default != null:
-return $default(_that.score,_that.zone,_that.insufficientData);case _:
+return $default(_that.insufficientData,_that.score,_that.zone);case _:
   return orElse();
 
 }
@@ -177,10 +179,10 @@ return $default(_that.score,_that.zone,_that.insufficientData);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int score,  HealthZone zone,  bool insufficientData)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool insufficientData,  int? score,  HealthZone? zone)  $default,) {final _that = this;
 switch (_that) {
 case _PlantHealth():
-return $default(_that.score,_that.zone,_that.insufficientData);case _:
+return $default(_that.insufficientData,_that.score,_that.zone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +199,10 @@ return $default(_that.score,_that.zone,_that.insufficientData);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int score,  HealthZone zone,  bool insufficientData)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool insufficientData,  int? score,  HealthZone? zone)?  $default,) {final _that = this;
 switch (_that) {
 case _PlantHealth() when $default != null:
-return $default(_that.score,_that.zone,_that.insufficientData);case _:
+return $default(_that.insufficientData,_that.score,_that.zone);case _:
   return null;
 
 }
@@ -212,16 +214,18 @@ return $default(_that.score,_that.zone,_that.insufficientData);case _:
 
 
 class _PlantHealth extends PlantHealth {
-  const _PlantHealth({required this.score, required this.zone, required this.insufficientData}): super._();
+  const _PlantHealth({required this.insufficientData, this.score, this.zone}): super._();
   
 
-/// Индекс здоровья в диапазоне [0, 100].
-@override final  int score;
-/// Зона здоровья (цвет), производная от [score].
-@override final  HealthZone zone;
-/// `true`, если данных для достоверной оценки недостаточно. Тогда UI рисует
-/// нейтральное состояние («—»), а не подаёт [score] как точную метрику.
+/// `true`, если данных для достоверной оценки недостаточно (< 3 записей
+/// ухода). Тогда [score]/[zone] приходят `null`, а UI рисует нейтральное
+/// состояние («—»), а не подаёт число как точную метрику.
 @override final  bool insufficientData;
+/// Индекс здоровья в диапазоне [0, 100]. `null`, если [insufficientData].
+@override final  int? score;
+/// Зона здоровья (цвет), производная от [score]. `null`, если
+/// [insufficientData].
+@override final  HealthZone? zone;
 
 /// Create a copy of PlantHealth
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +237,16 @@ _$PlantHealthCopyWith<_PlantHealth> get copyWith => __$PlantHealthCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlantHealth&&(identical(other.score, score) || other.score == score)&&(identical(other.zone, zone) || other.zone == zone)&&(identical(other.insufficientData, insufficientData) || other.insufficientData == insufficientData));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlantHealth&&(identical(other.insufficientData, insufficientData) || other.insufficientData == insufficientData)&&(identical(other.score, score) || other.score == score)&&(identical(other.zone, zone) || other.zone == zone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,score,zone,insufficientData);
+int get hashCode => Object.hash(runtimeType,insufficientData,score,zone);
 
 @override
 String toString() {
-  return 'PlantHealth(score: $score, zone: $zone, insufficientData: $insufficientData)';
+  return 'PlantHealth(insufficientData: $insufficientData, score: $score, zone: $zone)';
 }
 
 
@@ -253,7 +257,7 @@ abstract mixin class _$PlantHealthCopyWith<$Res> implements $PlantHealthCopyWith
   factory _$PlantHealthCopyWith(_PlantHealth value, $Res Function(_PlantHealth) _then) = __$PlantHealthCopyWithImpl;
 @override @useResult
 $Res call({
- int score, HealthZone zone, bool insufficientData
+ bool insufficientData, int? score, HealthZone? zone
 });
 
 
@@ -270,12 +274,12 @@ class __$PlantHealthCopyWithImpl<$Res>
 
 /// Create a copy of PlantHealth
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? score = null,Object? zone = null,Object? insufficientData = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? insufficientData = null,Object? score = freezed,Object? zone = freezed,}) {
   return _then(_PlantHealth(
-score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
-as int,zone: null == zone ? _self.zone : zone // ignore: cast_nullable_to_non_nullable
-as HealthZone,insufficientData: null == insufficientData ? _self.insufficientData : insufficientData // ignore: cast_nullable_to_non_nullable
-as bool,
+insufficientData: null == insufficientData ? _self.insufficientData : insufficientData // ignore: cast_nullable_to_non_nullable
+as bool,score: freezed == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+as int?,zone: freezed == zone ? _self.zone : zone // ignore: cast_nullable_to_non_nullable
+as HealthZone?,
   ));
 }
 

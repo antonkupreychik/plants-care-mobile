@@ -73,9 +73,9 @@ void main() {
       await tester.pumpWidget(_wrap(
         const HealthRing(plantId: _plantId),
         () async => const PlantHealth(
-          score: 0,
-          zone: HealthZone.green,
           insufficientData: true,
+          score: null,
+          zone: null,
         ),
       ));
       await tester.pumpAndSettle();
@@ -149,9 +149,9 @@ void main() {
       await tester.pumpWidget(_wrap(
         const HealthBadge(plantId: _plantId),
         () async => const PlantHealth(
-          score: 0,
-          zone: HealthZone.green,
           insufficientData: true,
+          score: null,
+          zone: null,
         ),
       ));
       await tester.pumpAndSettle();

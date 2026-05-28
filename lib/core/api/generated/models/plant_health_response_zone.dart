@@ -4,7 +4,8 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-/// Зона здоровья, производная от `score`.
+/// Зона здоровья, производная от `score`. `null`, если `insufficientData`.
+///
 @JsonEnum()
 enum PlantHealthResponseZone {
   @JsonValue('GREEN')

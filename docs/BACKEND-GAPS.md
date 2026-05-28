@@ -14,13 +14,47 @@
 
 ---
 
+## Сводка сверки с live-бэкендом — 2026-05-28
+
+> Прокурлено по `plants-care-development.up.railway.app` + сверено с api-docs и
+> *статической* спекой `api/openapi/` (источник кодгена). «Бэк отдаёт» ≠ «мобилка
+> готова»: если эндпоинта нет в `api/openapi/`, клиент не сгенерён — мобилке сначала
+> добавить в спеку и регенерить.
+
+**Закрыто бэкендом (зашиплено в мобилку):** G1, G6, G9, G10, G13a.
+
+**Бэк уже отдаёт — мобилке остаётся подключить (в `api/openapi/` ещё нет):**
+- **G4** `GET /weather/snapshot` → `{available, humidityPercent, recommendation DEFER_OK|DO_NOT_DEFER|NEUTRAL, fetchedAt, fromCache}`.
+
+**Бэкенду ещё нужно сделать (backend-задачи, мобилке делать нечего):**
+- **G2** — `status`/`moodLabel`/`voiceLine` нигде нет.
+- **G3** — явного флага «проблемное растение» нет; теперь **выводимо клиентом из G1** (`zone == RED`) — решить, нужен ли отдельный сигнал.
+- **G5** — `/me` → `404`; счётчиков/имени/аватара нет.
+- **G11** — `TaskDto` в `/calendar` без `doneAt`/`status` → прогресс `done/count` (экран 11) нельзя.
+- **G13b** — `/today` = `{tasks,count}`, фида/счётчика выполненного нет → прогресс-кольцо (экран 03) нельзя.
+- **G14** — эндпоинтов расписаний нет, `POST /plants` интервалы не принимает (speciesId связывает вид, но расписания не создаёт).
+- **G12** — эндпоинт `GET /calendar/{token}.ics` **появился**, но **источника `token` в API нет** (`/me` 404) → подписку не собрать. Нужен способ получить персональный token.
+- **G15** — в `PlantDto` появился флаг `archived`, но memorial-полей (`archivedAt`/причина/`livedFor`/`gifted`) и списка архивных нет.
+
+**Новые эндпоинты, появившиеся к этой сверке (для сведения):**
+`GET /care-types` (display-имена тип-задач), `GET /stats/streak?plantId=` → `{plantId, streak}`,
+`GET /plants/{id}/health` (G1), `GET /weather/snapshot` (G4), `GET /calendar/{token}.ics` (G12),
+`POST /auth/{apple,google,email/request,email/verify,refresh}` (фаза auth).
+
+> ⚠️ `/care-types` отдаёт только локализованные имена (`WATERING→«Полив»`) — enum-разрыв
+> **G7** (`taskType` WATERING ↔ care-event `type` WATER/SPRAY) НЕ закрывает.
+
+---
+
 ## G1 · Health Score растения 🟢
 - **Экран:** 01 Home (мини-кольцо на карточке), 02 Plant card (бейдж).
-- **Закрыто:** бэкенд отдаёт `GET /api/v1/plants/{id}/health` → `{insufficientData: bool,
-  score: int 0–100, zone: GREEN|YELLOW|RED}`. Публичный (200 без auth-заголовков → клиент
-  шлёт `AuthScope.none`). Эндпоинт ДОБАВЛЕН в статическую спеку (`resources/plant-health.yaml`),
-  клиент перегенерён (MADR-007). Мобилка рисует кольцо (Home) и бейдж (Plant card);
-  `insufficientData=true` → нейтральное «—», не как ошибка.
+- **Закрыто (2026-05-28):** бэкенд отдаёт `GET /api/v1/plants/{id}/health` →
+  `{insufficientData: bool, score: int 0–100|null, zone: GREEN|YELLOW|RED|null}`.
+  Публичный (200 без auth-заголовков → клиент шлёт `AuthScope.none`). При
+  `insufficientData=true` (< 3 записей ухода) `score`/`zone` = **`null`** (в спеке поля
+  nullable, required только `insufficientData`). Эндпоинт ДОБАВЛЕН в статическую спеку
+  (`resources/plant-health.yaml`), клиент перегенерён (MADR-007). Мобилка рисует кольцо
+  (Home) и бейдж (Plant card); `insufficientData`/`null` → нейтральное «—», не как ошибка.
 - **Примечание:** реальная схема `{insufficientData, score, zone}` РАСХОДИТСЯ с прогнозом
   api-contract §12.4 (`{score, factors[], recommendation?}`) — стоит поправить §12.4.
 - **Follow-up:** см. **G16** — для кольца на Home это per-plant запрос (N+1).
@@ -38,12 +72,20 @@
 - **Нужно:** признак, что у растения проблема (для баннера) + ссылка на растение.
 - **Сейчас:** нет.
 - **Предложение:** флаг в `/today` или `/me` (`attentionPlantId?`), либо вывести из G1 (health < порога).
+- **Сверка 2026-05-28:** явного флага по-прежнему нет, но G1 закрыт — баннер теперь
+  **выводим клиентом** из `health.zone == RED` (ценой N запросов /health). Решить: ждать
+  явный `attentionPlantId` от бэка или собирать из G1.
 - **Заглушка:** баннер не показываем, пока нет сигнала.
 
-## G4 · Виджет погоды на Home 🔴
+## G4 · Виджет погоды на Home 🟡
 - **Экран:** 01 Home (микро-строка погоды).
-- **Сейчас:** нет. api-contract §12.8 (#69) — `GET /weather/snapshot`.
-- **Заглушка:** строку погоды скрываем.
+- **Сверка 2026-05-28:** бэк отдаёт `GET /api/v1/weather/snapshot` →
+  `{available, humidityPercent 0–100, recommendation DEFER_OK|DO_NOT_DEFER|NEUTRAL,
+  fetchedAt, fromCache}` (проверено curl, `200`). При `available=false` остальные поля
+  `null` (погода не настроена / источник недоступен). `fromCache` — серверный кеш (60 мин).
+- **API:** ✅ готов и полон. **Мобилка:** ⬜ не подключено — `weather/snapshot` и
+  `WeatherSnapshotDto` отсутствуют в статической `api/openapi/` (нужно добавить + регген).
+- **Заглушка:** строку погоды пока скрываем.
 
 ## G5 · Счётчики пользователя (header Home) 🔴
 - **Экран:** 01 Home (приветствие, badge уведомлений).
@@ -115,15 +157,16 @@
   показываем счётчик задач (`scheduleDayTasksCount`) или «Свободно». «Просрочено»
   выводим клиентом по `nextDueAt < now` (раскрытый сегодняшний день). «Готово» нигде.
 
-## G12 · Экспорт календаря `.ics` отсутствует 🔴
+## G12 · Экспорт календаря `.ics` отсутствует 🟡
 - **Экран:** 11 График (карточка «Подписаться в календаре»).
-- **Нужно:** `GET /api/v1/calendar.ics` — подписка в Google/Apple Calendar
-  (api-contract §11 «Хотелки», #79).
-- **Сейчас:** эндпоинта нет.
-- **Предложение:** `GET /api/v1/calendar.ics` (scope chat), отдающий VCALENDAR с задачами
-  ухода; стабильный URL для подписки.
+- **Нужно:** подписка в Google/Apple Calendar (api-contract §11 «Хотелки», #79).
+- **Сверка 2026-05-28:** эндпоинт **появился** — `GET /calendar/{token}.ics` (token в пути,
+  отдаёт VCALENDAR-строку). **Но:** способа получить персональный `token` в API нет —
+  `/me` отвечает `404`, отдельного эндпоинта подписки/токена нет. Без token URL не собрать.
+- **Осталось бэкенду:** отдать пользователю его `token` (поле в будущем `/me`, либо
+  `GET /calendar/subscription` → `{url|token}`). Плюс эндпоинт не в статической `api/openapi/`.
 - **Заглушка мобилки:** карточка `.ics` (`ScheduleIcsCard`) отрисована, но **инертна** —
-  тап → snackbar «Скоро» (`comingSoon`). Включим, когда появится эндпоинт.
+  тап → snackbar «Скоро» (`comingSoon`). Включим, когда появится способ получить token.
 
 > **Клиентская ловушка (не backend-гэп), экран 11.** Спека объявляет query `from`/`to`
 > у `/calendar` как `type: string, format: date` (`YYYY-MM-DD`) — это **корректно**, бэкенд
@@ -195,6 +238,9 @@
 - **Сейчас:** эндпоинта нет. `GET /plants` отдаёт только активные; ни
   `?status=archived`, ни `/archive`, ни полей архивации в `PlantDto` (дата выбытия,
   причина, длительность) не существует. Среднего срока тоже нет.
+- **Сверка 2026-05-28:** в `PlantDto` появился булев флаг `archived` — но это всё:
+  ни списка архивных (фильтра `?status=archived`), ни memorial-полей
+  (`archivedAt`/причина/`livedFor`/`gifted`), ни ретроспективы по-прежнему нет.
 - **Предложение:** `GET /plants?status=archived` (или `/archive`) → растения с
   полями `archivedAt`, `cause/note`, `livedFor` (или вычислять из created/archived),
   `gifted: bool`; ретроспектива — отдельным полем/эндпоинтом либо считать на клиенте,

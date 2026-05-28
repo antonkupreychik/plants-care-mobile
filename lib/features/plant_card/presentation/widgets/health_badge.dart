@@ -87,11 +87,14 @@ class _ScoredBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
+    // hasReliableScore (call-site) гарантирует zone/score != null.
+    final zone = health.zone!;
+    final score = health.score!;
     return _BadgeShell(
-      background: health.zone.badgeBackground(c),
-      foreground: health.zone.foreground(c),
-      label: l10n.healthBadgeLabel(health.score),
-      semanticsLabel: l10n.healthSemanticScore(health.score),
+      background: zone.badgeBackground(c),
+      foreground: zone.foreground(c),
+      label: l10n.healthBadgeLabel(score),
+      semanticsLabel: l10n.healthSemanticScore(score),
     );
   }
 }

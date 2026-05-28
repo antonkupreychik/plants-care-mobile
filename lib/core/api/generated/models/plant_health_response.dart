@@ -13,22 +13,25 @@ part 'plant_health_response.g.dart';
 class PlantHealthResponse {
   const PlantHealthResponse({
     required this.insufficientData,
-    required this.score,
-    required this.zone,
+    this.score,
+    this.zone,
   });
   
   factory PlantHealthResponse.fromJson(Map<String, Object?> json) => _$PlantHealthResponseFromJson(json);
   
-  /// `true`, если данных для достоверной оценки недостаточно. В этом случае.
-  /// `score`/`zone` не следует подавать как точную метрику.
+  /// `true`, если данных для достоверной оценки недостаточно (< 3 записей.
+  /// ухода). В этом случае `score`/`zone` приходят `null`, UI рисует.
+  /// нейтральное состояние.
   ///
   final bool insufficientData;
 
-  /// Индекс здоровья в диапазоне [0, 100].
-  final int score;
+  /// Индекс здоровья [0, 100]. `null`, если `insufficientData`.
+  ///
+  final int? score;
 
-  /// Зона здоровья, производная от `score`.
-  final PlantHealthResponseZone zone;
+  /// Зона здоровья, производная от `score`. `null`, если `insufficientData`.
+  ///
+  final PlantHealthResponseZone? zone;
 
   Map<String, Object?> toJson() => _$PlantHealthResponseToJson(this);
 }

@@ -1085,14 +1085,12 @@
         "type": "object",
         "description": "Индекс здоровья растения, посчитанный backend.",
         "required": [
-          "insufficientData",
-          "score",
-          "zone"
+          "insufficientData"
         ],
         "properties": {
           "insufficientData": {
             "type": "boolean",
-            "description": "`true`, если данных для достоверной оценки недостаточно. В этом случае\n`score`/`zone` не следует подавать как точную метрику.\n",
+            "description": "`true`, если данных для достоверной оценки недостаточно (< 3 записей\nухода). В этом случае `score`/`zone` приходят `null`, UI рисует\nнейтральное состояние.\n",
             "example": false
           },
           "score": {
@@ -1100,7 +1098,8 @@
             "format": "int32",
             "minimum": 0,
             "maximum": 100,
-            "description": "Индекс здоровья в диапазоне [0, 100].",
+            "nullable": true,
+            "description": "Индекс здоровья [0, 100]. `null`, если `insufficientData`.\n",
             "example": 69
           },
           "zone": {
@@ -1110,7 +1109,8 @@
               "YELLOW",
               "RED"
             ],
-            "description": "Зона здоровья, производная от `score`.",
+            "nullable": true,
+            "description": "Зона здоровья, производная от `score`. `null`, если `insufficientData`.\n",
             "example": "YELLOW"
           }
         }

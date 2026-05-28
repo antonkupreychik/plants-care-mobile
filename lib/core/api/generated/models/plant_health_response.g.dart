@@ -9,8 +9,10 @@ part of 'plant_health_response.dart';
 PlantHealthResponse _$PlantHealthResponseFromJson(Map<String, dynamic> json) =>
     PlantHealthResponse(
       insufficientData: json['insufficientData'] as bool,
-      score: (json['score'] as num).toInt(),
-      zone: PlantHealthResponseZone.fromJson(json['zone'] as String),
+      score: (json['score'] as num?)?.toInt(),
+      zone: json['zone'] == null
+          ? null
+          : PlantHealthResponseZone.fromJson(json['zone'] as String),
     );
 
 Map<String, dynamic> _$PlantHealthResponseToJson(

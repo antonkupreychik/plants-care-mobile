@@ -37,23 +37,28 @@ schemas:
   PlantHealthResponse:
     type: object
     description: Индекс здоровья растения, посчитанный backend.
-    required: [insufficientData, score, zone]
+    required: [insufficientData]
     properties:
       insufficientData:
         type: boolean
         description: |
-          `true`, если данных для достоверной оценки недостаточно. В этом случае
-          `score`/`zone` не следует подавать как точную метрику.
+          `true`, если данных для достоверной оценки недостаточно (< 3 записей
+          ухода). В этом случае `score`/`zone` приходят `null`, UI рисует
+          нейтральное состояние.
         example: false
       score:
         type: integer
         format: int32
         minimum: 0
         maximum: 100
-        description: Индекс здоровья в диапазоне [0, 100].
+        nullable: true
+        description: |
+          Индекс здоровья [0, 100]. `null`, если `insufficientData`.
         example: 69
       zone:
         type: string
         enum: [GREEN, YELLOW, RED]
-        description: Зона здоровья, производная от `score`.
+        nullable: true
+        description: |
+          Зона здоровья, производная от `score`. `null`, если `insufficientData`.
         example: YELLOW

@@ -91,13 +91,15 @@ class _ScoredRing extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
-    final zoneColor = health.zone.foreground(c);
+    // hasReliableScore (call-site) гарантирует zone/score != null.
+    final score = health.score!;
+    final zoneColor = health.zone!.foreground(c);
     return Semantics(
-      label: l10n.healthSemanticScore(health.score),
+      label: l10n.healthSemanticScore(score),
       child: CustomPaint(
         size: Size.square(size),
         painter: _HealthRingPainter(
-          progress: (health.score / 100).clamp(0.0, 1.0),
+          progress: (score / 100).clamp(0.0, 1.0),
           arcColor: zoneColor,
           trackColor: c.surfaceWarm,
           centerColor: c.surface,
@@ -106,7 +108,7 @@ class _ScoredRing extends StatelessWidget {
           dimension: size,
           child: Center(
             child: Text(
-              '${health.score}',
+              '$score',
               style: TextStyle(
                 fontSize: size * 0.36,
                 fontWeight: FontWeight.w700,

@@ -9,12 +9,13 @@ import '../../domain/plant_health.dart';
 /// `score`/`zone`/`insufficientData` посчитаны backend, клиент их не трогает.
 extension PlantHealthResponseMapper on PlantHealthResponse {
   PlantHealth toDomain() => PlantHealth(
-        // Спека гарантирует 0..100, но сгенерированный клиент границы не
-        // валидирует — клампим, чтобы число в кольце/бейдже не уехало, если
-        // backend отдаст значение вне диапазона.
-        score: score.clamp(0, 100),
-        zone: zone._toDomain(),
         insufficientData: insufficientData,
+        // При insufficientData backend отдаёт score/zone = null — пробрасываем
+        // как null (UI рисует нейтральное «—»). Клампим 0..100 на случай, если
+        // backend отдаст значение вне диапазона (генерированный клиент границы
+        // не валидирует).
+        score: score?.clamp(0, 100),
+        zone: zone?._toDomain(),
       );
 }
 
