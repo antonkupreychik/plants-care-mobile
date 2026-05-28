@@ -304,18 +304,6 @@ abstract class AppLocalizations {
   /// **'Все'**
   String get homeLocationAll;
 
-  /// Заголовок пустого состояния списка растений
-  ///
-  /// In ru, this message translates to:
-  /// **'Сад пока пуст'**
-  String get homeGardenEmptyTitle;
-
-  /// Подпись к пустому состоянию списка растений
-  ///
-  /// In ru, this message translates to:
-  /// **'Добавьте первое растение — и здесь появится ваш сад'**
-  String get homeGardenEmptyHint;
-
   /// Подпись кнопки добавления растения (FAB / пустое состояние)
   ///
   /// In ru, this message translates to:
@@ -327,6 +315,72 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'В этой комнате пока нет растений'**
   String get homeRoomEmpty;
+
+  /// Надзаголовок (eyebrow, uppercase) карточки пустого сада, экран 10
+  ///
+  /// In ru, this message translates to:
+  /// **'Сад пока пуст'**
+  String get homeGardenEmptyEyebrow;
+
+  /// Серифный заголовок карточки пустого сада, экран 10
+  ///
+  /// In ru, this message translates to:
+  /// **'Заведём первое растение?'**
+  String get homeGardenEmptyHeading;
+
+  /// Подпись под заголовком карточки пустого сада, экран 10
+  ///
+  /// In ru, this message translates to:
+  /// **'Я подберу расписание ухода и буду напоминать — так, как ты любишь.'**
+  String get homeGardenEmptySubtitle;
+
+  /// Вторичная кнопка карточки пустого сада: распознавание растения по фото (coming soon)
+  ///
+  /// In ru, this message translates to:
+  /// **'Распознать по фото'**
+  String get homeRecognizeByPhoto;
+
+  /// Надзаголовок (eyebrow, uppercase) блока стартовых видов под карточкой пустого сада, экран 10
+  ///
+  /// In ru, this message translates to:
+  /// **'Идеи на старт'**
+  String get homeStarterIdeasTitle;
+
+  /// Название стартового вида: монстера
+  ///
+  /// In ru, this message translates to:
+  /// **'Монстера'**
+  String get homeStarterMonstera;
+
+  /// Подпись стартового вида монстера: уровень сложности
+  ///
+  /// In ru, this message translates to:
+  /// **'легко'**
+  String get homeStarterMonsteraHint;
+
+  /// Название стартового вида: суккулент
+  ///
+  /// In ru, this message translates to:
+  /// **'Суккулент'**
+  String get homeStarterSucculent;
+
+  /// Подпись стартового вида суккулент: уровень сложности
+  ///
+  /// In ru, this message translates to:
+  /// **'забыть можно'**
+  String get homeStarterSucculentHint;
+
+  /// Название стартового вида: эпипремнум (потос)
+  ///
+  /// In ru, this message translates to:
+  /// **'Эпипремнум'**
+  String get homeStarterPothos;
+
+  /// Подпись стартового вида эпипремнум: уровень сложности
+  ///
+  /// In ru, this message translates to:
+  /// **'для новичка'**
+  String get homeStarterPothosHint;
 
   /// Действие ухода: полив
   ///

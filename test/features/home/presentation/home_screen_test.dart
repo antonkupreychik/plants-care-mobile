@@ -105,7 +105,7 @@ void main() {
       final l10n =
           AppLocalizations.of(tester.element(find.byType(HomeScreen)));
       expect(find.byType(GardenEmpty), findsOneWidget);
-      expect(find.text(l10n.homeGardenEmptyTitle), findsOneWidget);
+      expect(find.text(l10n.homeGardenEmptyHeading), findsOneWidget);
     });
 
     testWidgets('should_show_tasks_empty_hint_when_tasks_empty',

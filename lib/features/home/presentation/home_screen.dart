@@ -112,6 +112,8 @@ class HomeScreen extends ConsumerWidget {
                 _PlantGridSection(
                   plants: plants,
                   onAdd: openAddPlant,
+                  onRecognizePhoto: comingSoon,
+                  onOpenCatalog: () => context.go('/catalog'),
                   onPlantTap: (plant) => context.push('/home/plants/${plant.id}'),
                   onRetry: () => ref.invalidate(homePlantsProvider),
                 ),
@@ -249,12 +251,16 @@ class _PlantGridSection extends ConsumerWidget {
   const _PlantGridSection({
     required this.plants,
     required this.onAdd,
+    required this.onRecognizePhoto,
+    required this.onOpenCatalog,
     required this.onPlantTap,
     required this.onRetry,
   });
 
   final AsyncValue<List<Plant>> plants;
   final VoidCallback onAdd;
+  final VoidCallback onRecognizePhoto;
+  final VoidCallback onOpenCatalog;
   final void Function(Plant plant) onPlantTap;
   final VoidCallback onRetry;
 
@@ -294,7 +300,13 @@ class _PlantGridSection extends ConsumerWidget {
         if (all.isEmpty) {
           return SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverToBoxAdapter(child: GardenEmpty(onAdd: onAdd)),
+            sliver: SliverToBoxAdapter(
+              child: GardenEmpty(
+                onAdd: onAdd,
+                onRecognizePhoto: onRecognizePhoto,
+                onOpenCatalog: onOpenCatalog,
+              ),
+            ),
           );
         }
         final selected = ref.watch(selectedLocationProvider);
