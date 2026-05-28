@@ -29,5 +29,14 @@ abstract class CareTask with _$CareTask {
 
     /// Денормализованное имя локации (если backend прислал).
     String? locationName,
+
+    /// Идентификатор вида растения (`Species.id`).
+    ///
+    /// Нужен UI для выбора SVG-иллюстрации (BACKEND-GAPS G6). Nullable:
+    /// у растения может не быть привязанного вида.
+    int? speciesId,
+
+    /// Имя вида растения (для иллюстрации/подписи в UI, G6). Nullable.
+    String? speciesName,
   }) = _CareTask;
 }

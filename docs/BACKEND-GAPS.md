@@ -48,13 +48,17 @@
 - **Сейчас:** нет `/me`. api-contract §12.1.
 - **Заглушка:** `tasksToday` берём из длины `/today`; имя — заглушка; badge не рисуем.
 
-## G6 · Привязка задачи/растения к виду (иллюстрация) 🟡
+## G6 · Привязка задачи/растения к виду (иллюстрация) 🟢
 - **Экран:** 01 Home, 03 Today — нужно выбрать SVG-иллюстрацию (Monstera/Fern/...).
 - **Нужно:** по `TaskDto`/`PlantDto` понять вид, чтобы выбрать иллюстрацию.
-- **Сейчас:** `PlantDto.speciesId/speciesName` есть; `TaskDto` (в /today) — только `plantName`,
-  без `speciesId`. На Today-задаче не из чего выбрать иллюстрацию.
-- **Предложение:** добавить `speciesId` (или ключ иллюстрации) в `TaskDto`.
-- **Заглушка:** на Today дефолтная иллюстрация; на Home — по `speciesName` маппингом.
+- **Было:** `PlantDto.speciesId/speciesName` есть; `TaskDto` (в /today,/calendar) — только
+  `plantName`, без вида. На Today-задаче не из чего было выбрать иллюстрацию.
+- **Закрыто (2026-05-28):** бэкенд добавил в `TaskDto` поля `speciesId` (int64, nullable)
+  и `speciesName` (string, nullable) в `/today` и `/calendar`. Проверено curl. Мобилка:
+  спека `calendar.yaml` обновлена, клиент регенерён, поля проброшены в domain `CareTask`
+  и mapper; карточки задач Today (`today_card`, `today_task_card`) рисуют
+  `PlantIllustration` по виду вместо нейтрального глифа. При отсутствии вида (`null`) —
+  дефолтная иллюстрация через `PlantArt.fromSpecies`.
 
 ## G7 · `taskType` (today/calendar) ≠ `type` (care-events) 🟡
 - **Везде, где выполняем уход.**

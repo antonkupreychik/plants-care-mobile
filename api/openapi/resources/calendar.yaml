@@ -57,6 +57,15 @@ schemas:
         format: int64
       plantName:
         type: string
+      speciesId:
+        type: integer
+        format: int64
+        nullable: true
+        description: Вид растения (`Species.id`). Для выбора иллюстрации (mobile gap G6).
+      speciesName:
+        type: string
+        nullable: true
+        description: Имя вида (для иллюстрации/подписи).
       taskType:
         type: string
         description: Имя `TaskType.name()` — `WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`.

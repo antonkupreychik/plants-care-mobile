@@ -28,8 +28,8 @@ import 'widgets/today_task_card.dart';
 /// сейчас это push-маршрут `/home/today`, реструктуризацию табов не делаем.
 ///
 /// Скрыто (BACKEND-GAPS, см. задача 03): прогресс-кольцо «X из N выполнено» и
-/// секция «N выполнено сегодня» — фида done нет; voice line (G2); вид/species
-/// растения (G6) — нет данных.
+/// секция «N выполнено сегодня» — фида done нет; voice line (G2). Иллюстрация
+/// по виду (G6) доступна — `TaskDto.speciesName` рисует `PlantIllustration`.
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
 
