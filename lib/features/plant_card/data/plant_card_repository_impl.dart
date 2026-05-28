@@ -9,8 +9,10 @@ import '../../home/data/mappers/plant_mapper.dart';
 import '../../home/domain/plant.dart';
 import '../domain/care_history_entry.dart';
 import '../domain/plant_card_repository.dart';
+import '../domain/plant_health.dart';
 import '../domain/streak.dart';
 import 'mappers/care_history_mapper.dart';
+import 'mappers/plant_health_mapper.dart';
 import 'mappers/streak_mapper.dart';
 
 /// Реализация [PlantCardRepository] поверх сгенерированного API-клиента
@@ -79,6 +81,21 @@ class PlantCardRepositoryImpl implements PlantCardRepository {
         extras: authScopeExtra(AuthScope.chat),
       );
       return Result.success(response.toDomain());
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
+  @override
+  Future<Result<PlantHealth>> getPlantHealth(int plantId) async {
+    try {
+      // Публичный эндпоинт: AuthScope.none → интерсептор не вешает
+      // X-User-Id/X-Chat-Id. Без header-параметра в сгенерированном клиенте.
+      final dto = await _api.plants.getPlantHealth(
+        id: plantId,
+        extras: authScopeExtra(AuthScope.none),
+      );
+      return Result.success(dto.toDomain());
     } on DioException catch (e) {
       return Result.failure(_toApiError(e));
     }

@@ -7,6 +7,8 @@ import 'package:plantcare_mobile/core/api/generated/clients/stats_client.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_event_response.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_event_type.dart';
 import 'package:plantcare_mobile/core/api/generated/models/plant_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/plant_health_response.dart';
+import 'package:plantcare_mobile/core/api/generated/models/plant_health_response_zone.dart';
 import 'package:plantcare_mobile/core/api/generated/models/plant_history_response.dart';
 import 'package:plantcare_mobile/core/api/generated/models/streak_response.dart';
 import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
@@ -16,6 +18,7 @@ import 'package:plantcare_mobile/core/network/auth_scope.dart';
 import 'package:plantcare_mobile/core/network/request_extra.dart';
 import 'package:plantcare_mobile/features/plant_card/data/plant_card_repository_impl.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_event_kind.dart';
+import 'package:plantcare_mobile/features/plant_card/domain/health_zone.dart';
 
 class _MockApi extends Mock implements PlantsCareApi {}
 
@@ -262,6 +265,78 @@ void main() {
           )).thenThrow(_dioWith(null));
 
       final result = await repo.getStreak(42);
+
+      expect((result as Failure).error, const ApiError.unknown());
+    });
+  });
+
+  group('getPlantHealth', () {
+    test('should_return_success_with_mapped_health_when_client_returns_dto',
+        () async {
+      when(() => plants.getPlantHealth(
+            id: any(named: 'id'),
+            extras: any(named: 'extras'),
+          )).thenAnswer(
+        (_) async => const PlantHealthResponse(
+          insufficientData: false,
+          score: 92,
+          zone: PlantHealthResponseZone.green,
+        ),
+      );
+
+      final result = await repo.getPlantHealth(42);
+
+      final health = (result as Success).value;
+      expect(health.score, 92);
+      expect(health.zone, HealthZone.green);
+      expect(health.insufficientData, isFalse);
+      expect(health.hasReliableScore, isTrue);
+    });
+
+    // Auth-слот (облегчённый): публичный эндпоинт — scope NONE, без
+    // user/chat-заголовков. Ловит молчаливую регрессию при подключении реального
+    // auth (если кто-то сменит scope, заголовки уедут не туда).
+    test('should_send_none_authScope_in_extras', () async {
+      when(() => plants.getPlantHealth(
+            id: any(named: 'id'),
+            extras: any(named: 'extras'),
+          )).thenAnswer(
+        (_) async => const PlantHealthResponse(
+          insufficientData: false,
+          score: 50,
+          zone: PlantHealthResponseZone.yellow,
+        ),
+      );
+
+      await repo.getPlantHealth(42);
+
+      final captured = verify(() => plants.getPlantHealth(
+            id: any(named: 'id'),
+            extras: captureAny(named: 'extras'),
+          )).captured.single as Map<String, dynamic>;
+      expect(captured[kAuthScopeExtraKey], AuthScope.none);
+    });
+
+    test('should_return_failure_network_when_DioException_carries_it',
+        () async {
+      when(() => plants.getPlantHealth(
+            id: any(named: 'id'),
+            extras: any(named: 'extras'),
+          )).thenThrow(_dioWith(const ApiError.network()));
+
+      final result = await repo.getPlantHealth(42);
+
+      expect((result as Failure).error, const ApiError.network());
+    });
+
+    test('should_return_failure_unknown_when_DioException_error_not_ApiError',
+        () async {
+      when(() => plants.getPlantHealth(
+            id: any(named: 'id'),
+            extras: any(named: 'extras'),
+          )).thenThrow(_dioWith('boom'));
+
+      final result = await repo.getPlantHealth(42);
 
       expect((result as Failure).error, const ApiError.unknown());
     });

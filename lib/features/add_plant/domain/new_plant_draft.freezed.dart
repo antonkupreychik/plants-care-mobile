@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NewPlantDraft {
 
-/// Выбранный на шаге 1 вид (для префилла имени и превью плана ухода).
+/// Выбранный на шаге 1 вид. Его id уходит в `POST /plants` как `speciesId`
+/// (null → растение без вида). Также используется для префилла имени и
+/// превью плана ухода.
  SpeciesSummary? get species;/// Имя растения (шаг 2). Валидируется [isNameValid].
  String get name;/// Выбранная локация (шаг 2). null → backend положит в дефолтную локацию.
  int? get locationId;/// Заметки пользователя (шаг 4).
@@ -228,7 +230,9 @@ class _NewPlantDraft extends NewPlantDraft {
   const _NewPlantDraft({this.species, this.name = '', this.locationId, this.notes}): super._();
   
 
-/// Выбранный на шаге 1 вид (для префилла имени и превью плана ухода).
+/// Выбранный на шаге 1 вид. Его id уходит в `POST /plants` как `speciesId`
+/// (null → растение без вида). Также используется для префилла имени и
+/// превью плана ухода.
 @override final  SpeciesSummary? species;
 /// Имя растения (шаг 2). Валидируется [isNameValid].
 @override@JsonKey() final  String name;

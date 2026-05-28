@@ -487,6 +487,32 @@
     }
   },
 
+  "healthBadgeLabel": "HEALTH {score}",
+  "@healthBadgeLabel": {
+    "description": "Бейдж индекса здоровья растения (G1): «HEALTH {score}»",
+    "placeholders": {
+      "score": { "type": "int" }
+    }
+  },
+
+  "healthScoreUnknown": "HEALTH —",
+  "@healthScoreUnknown": {
+    "description": "Бейдж здоровья в нейтральном состоянии: данных недостаточно"
+  },
+
+  "healthSemanticScore": "Здоровье растения: {score} из 100",
+  "@healthSemanticScore": {
+    "description": "Semantics-метка кольца/бейджа здоровья с достоверным score",
+    "placeholders": {
+      "score": { "type": "int" }
+    }
+  },
+
+  "healthSemanticUnknown": "Здоровье растения: недостаточно данных",
+  "@healthSemanticUnknown": {
+    "description": "Semantics-метка кольца/бейджа здоровья при недостатке данных"
+  },
+
   "careDoneWater": "Полито",
   "@careDoneWater": {
     "description": "Запись истории: выполнен полив"

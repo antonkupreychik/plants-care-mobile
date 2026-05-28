@@ -27,8 +27,10 @@ import 'widgets/today_card.dart';
 /// [homePlantsProvider], [homeLocationsProvider]) — каждая секция рисует
 /// loading/error/empty/data самостоятельно (провайдеры падают независимо).
 ///
-/// Скрыто как заглушки каркаса: алерт «проблемное растение» (BACKEND-GAPS G3),
-/// виджет погоды (G4), кольцо здоровья на карточке (G1), mood/voiceLine (G2).
+/// Кольцо здоровья на карточке (G1) показываем — справа от имени растения
+/// (см. [PlantCard] → [HealthRing]). Скрыто как заглушки каркаса: алерт
+/// «проблемное растение» (BACKEND-GAPS G3), виджет погоды (G4),
+/// mood/voiceLine (G2).
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
