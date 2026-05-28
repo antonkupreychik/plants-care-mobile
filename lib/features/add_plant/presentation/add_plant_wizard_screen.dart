@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/error/api_error_l10n.dart';
+import '../../../core/locations/garden_location.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../home/domain/garden_location.dart';
 import '../../home/presentation/home_providers.dart';
 import '../domain/species_summary.dart';
 import 'add_plant_wizard_controller.dart';

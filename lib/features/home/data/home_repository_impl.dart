@@ -5,12 +5,12 @@ import '../../../core/care/care_task.dart';
 import '../../../core/care/task_mapper.dart';
 import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
+import '../../../core/locations/garden_location.dart';
+import '../../../core/locations/location_mapper.dart';
 import '../../../core/network/auth_scope.dart';
 import '../../../core/network/request_extra.dart';
-import '../domain/garden_location.dart';
 import '../domain/home_repository.dart';
 import '../domain/plant.dart';
-import 'mappers/location_mapper.dart';
 import 'mappers/plant_mapper.dart';
 
 /// Реализация [HomeRepository] поверх сгенерированного API-клиента (MADR-007).

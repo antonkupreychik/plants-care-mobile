@@ -16,7 +16,7 @@ import 'package:plantcare_mobile/features/add_plant/domain/species_summary.dart'
 import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_screen.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/species_providers.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/widgets/care_plan_preview.dart';
-import 'package:plantcare_mobile/features/home/domain/garden_location.dart';
+import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
 

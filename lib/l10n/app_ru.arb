@@ -949,5 +949,207 @@
   "careDifficultyHard": "Сложный уход",
   "@careDifficultyHard": {
     "description": "Уровень сложности ухода за видом: сложный"
+  },
+
+  "profileTitle": "Профиль",
+  "@profileTitle": {
+    "description": "Серифный заголовок экрана профиля"
+  },
+
+  "profileOverline": "НАСТРОЙКИ",
+  "@profileOverline": {
+    "description": "Надзаголовок-капс над заголовком экрана профиля"
+  },
+
+  "profileSectionMore": "Ещё",
+  "@profileSectionMore": {
+    "description": "Заголовок секции дополнительных настроек на экране профиля"
+  },
+
+  "profileRoomsTitle": "Дома и места",
+  "@profileRoomsTitle": {
+    "description": "Строка настроек: переход к управлению комнатами"
+  },
+
+  "roomsTitle": "Дома и места",
+  "@roomsTitle": {
+    "description": "Серифный заголовок экрана управления комнатами"
+  },
+
+  "roomsOverline": "МОИ КОМНАТЫ",
+  "@roomsOverline": {
+    "description": "Надзаголовок-капс в шапке экрана управления комнатами"
+  },
+
+  "roomsBack": "Назад",
+  "@roomsBack": {
+    "description": "Семантика/подпись кнопки возврата в шапке экрана комнат"
+  },
+
+  "roomsCount": "{count, plural, =0{Нет комнат} one{{count} комната} few{{count} комнаты} many{{count} комнат} other{{count} комнаты}}",
+  "@roomsCount": {
+    "description": "Количество комнат под заголовком экрана",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "roomsDefaultBadge": "По умолчанию",
+  "@roomsDefaultBadge": {
+    "description": "Пометка на строке дефолтной комнаты"
+  },
+
+  "roomsAdd": "Добавить комнату",
+  "@roomsAdd": {
+    "description": "Подпись кнопки добавления комнаты (FAB / пустое состояние)"
+  },
+
+  "roomsEditAction": "Изменить",
+  "@roomsEditAction": {
+    "description": "Семантика/подпись действия редактирования комнаты"
+  },
+
+  "roomsDeleteAction": "Удалить",
+  "@roomsDeleteAction": {
+    "description": "Семантика/подпись действия удаления комнаты"
+  },
+
+  "roomsEmptyTitle": "Комнат пока нет",
+  "@roomsEmptyTitle": {
+    "description": "Заголовок пустого состояния списка комнат"
+  },
+
+  "roomsEmptyHint": "Добавьте комнату, чтобы группировать растения по местам",
+  "@roomsEmptyHint": {
+    "description": "Подпись к пустому состоянию списка комнат"
+  },
+
+  "roomSheetCreateOverline": "Новая комната",
+  "@roomSheetCreateOverline": {
+    "description": "Надзаголовок-капс в шапке sheet создания комнаты"
+  },
+
+  "roomSheetEditOverline": "Комната",
+  "@roomSheetEditOverline": {
+    "description": "Надзаголовок-капс в шапке sheet редактирования комнаты"
+  },
+
+  "roomSheetCreateTitle": "Добавить комнату",
+  "@roomSheetCreateTitle": {
+    "description": "Заголовок sheet создания комнаты"
+  },
+
+  "roomSheetEditTitle": "Изменить комнату",
+  "@roomSheetEditTitle": {
+    "description": "Заголовок sheet редактирования комнаты"
+  },
+
+  "roomSheetClose": "Закрыть",
+  "@roomSheetClose": {
+    "description": "Подпись/семантика кнопки закрытия sheet комнаты"
+  },
+
+  "roomSheetNameLabel": "Название",
+  "@roomSheetNameLabel": {
+    "description": "Метка поля названия комнаты"
+  },
+
+  "roomSheetNameHint": "Например: Гостиная",
+  "@roomSheetNameHint": {
+    "description": "Плейсхолдер поля названия комнаты"
+  },
+
+  "roomSheetNameError": "Введите название (до {max} символов)",
+  "@roomSheetNameError": {
+    "description": "Ошибка валидации названия комнаты: пусто или слишком длинное",
+    "placeholders": {
+      "max": { "type": "int" }
+    }
+  },
+
+  "roomSheetEmojiLabel": "Эмодзи",
+  "@roomSheetEmojiLabel": {
+    "description": "Метка необязательного поля эмодзи комнаты"
+  },
+
+  "roomSheetEmojiHint": "🪴",
+  "@roomSheetEmojiHint": {
+    "description": "Плейсхолдер поля эмодзи комнаты"
+  },
+
+  "roomSheetEmojiOptional": "необязательно",
+  "@roomSheetEmojiOptional": {
+    "description": "Подпись: поле эмодзи необязательно"
+  },
+
+  "roomSheetCreateSubmit": "Добавить",
+  "@roomSheetCreateSubmit": {
+    "description": "Кнопка подтверждения создания комнаты"
+  },
+
+  "roomSheetEditSubmit": "Сохранить",
+  "@roomSheetEditSubmit": {
+    "description": "Кнопка подтверждения изменения комнаты"
+  },
+
+  "roomCreated": "Комната добавлена",
+  "@roomCreated": {
+    "description": "Снэкбар-подтверждение после создания комнаты"
+  },
+
+  "roomUpdated": "Комната обновлена",
+  "@roomUpdated": {
+    "description": "Снэкбар-подтверждение после изменения комнаты"
+  },
+
+  "roomDeleted": "Комната удалена",
+  "@roomDeleted": {
+    "description": "Снэкбар-подтверждение после удаления комнаты"
+  },
+
+  "roomDeleteConfirmTitle": "Удалить комнату?",
+  "@roomDeleteConfirmTitle": {
+    "description": "Заголовок диалога подтверждения удаления комнаты"
+  },
+
+  "roomDeleteConfirmMessage": "Комната «{name}» будет удалена.",
+  "@roomDeleteConfirmMessage": {
+    "description": "Текст диалога подтверждения удаления комнаты",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "roomDeleteConfirmCancel": "Отмена",
+  "@roomDeleteConfirmCancel": {
+    "description": "Кнопка отмены в диалоге удаления комнаты"
+  },
+
+  "roomDeleteConfirmDelete": "Удалить",
+  "@roomDeleteConfirmDelete": {
+    "description": "Кнопка подтверждения в диалоге удаления комнаты"
+  },
+
+  "roomMoveOverline": "Перенос растений",
+  "@roomMoveOverline": {
+    "description": "Надзаголовок-капс в шапке пикера переноса растений"
+  },
+
+  "roomMoveTitle": "Куда перенести растения?",
+  "@roomMoveTitle": {
+    "description": "Заголовок пикера переноса растений из удаляемой комнаты"
+  },
+
+  "roomMoveSubtitle": "В комнате «{name}» есть растения. Выберите, куда их перенести перед удалением.",
+  "@roomMoveSubtitle": {
+    "description": "Подпись пикера переноса растений",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "roomMoveClose": "Закрыть",
+  "@roomMoveClose": {
+    "description": "Подпись/семантика кнопки закрытия пикера переноса"
   }
 }

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/locations/garden_location.dart';
 import '../../../../core/theme/tokens.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../home/domain/garden_location.dart';
 import '../../../home/presentation/home_providers.dart';
 import '../../domain/new_plant_draft.dart';
 import 'wizard_chrome.dart';

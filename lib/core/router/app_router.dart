@@ -7,6 +7,8 @@ import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/today_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
+import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
 import 'app_shell.dart';
 
@@ -21,10 +23,11 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 /// держит свой стек: в саду живут push-маршруты `/home/today` (экран 03
 /// «Сегодня»), `/home/add` (экран 04 «Мастер добавления») и `/home/plants/:id`
 /// (экран 02 «Карточка растения»), в каталоге —
-/// `/catalog/:id` (экран 13 «Деталь вида»). Detail/drill-in-экраны со своей
-/// нижней кнопкой/назад рендерятся на [_rootNavigatorKey] (поверх shell, без
-/// плавающего таб-бара). Профиль ещё не branch — его таб в нижней навигации
-/// инертен (coming-soon), см. [AppBottomNav].
+/// `/catalog/:id` (экран 13 «Деталь вида»), в профиле — `/profile/rooms`
+/// (управление комнатами). Detail/drill-in-экраны со своей нижней кнопкой/назад
+/// рендерятся на [_rootNavigatorKey] (поверх shell, без плавающего таб-бара).
+/// Профиль — branch 3 (`/profile`), таб в нижней навигации активен, см.
+/// [AppBottomNav].
 ///
 /// Старт — `/home` (экран «Мой сад»), это фиксирует контракт стартового экрана.
 final appRouter = GoRouter(
@@ -105,6 +108,25 @@ final appRouter = GoRouter(
                         int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
                     return SpeciesDetailScreen(id: id);
                   },
+                ),
+              ],
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/profile',
+              name: 'profile',
+              builder: (context, state) => const ProfileScreen(),
+              routes: [
+                // Управление комнатами (CRUD локаций) — push поверх shell (своя
+                // кнопка «назад», без таб-бара), как карточка/today.
+                GoRoute(
+                  path: 'rooms',
+                  name: 'rooms',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const RoomsScreen(),
                 ),
               ],
             ),

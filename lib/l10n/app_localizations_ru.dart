@@ -734,4 +734,136 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get careDifficultyHard => 'Сложный уход';
+
+  @override
+  String get profileTitle => 'Профиль';
+
+  @override
+  String get profileOverline => 'НАСТРОЙКИ';
+
+  @override
+  String get profileSectionMore => 'Ещё';
+
+  @override
+  String get profileRoomsTitle => 'Дома и места';
+
+  @override
+  String get roomsTitle => 'Дома и места';
+
+  @override
+  String get roomsOverline => 'МОИ КОМНАТЫ';
+
+  @override
+  String get roomsBack => 'Назад';
+
+  @override
+  String roomsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count комнаты',
+      many: '$count комнат',
+      few: '$count комнаты',
+      one: '$count комната',
+      zero: 'Нет комнат',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roomsDefaultBadge => 'По умолчанию';
+
+  @override
+  String get roomsAdd => 'Добавить комнату';
+
+  @override
+  String get roomsEditAction => 'Изменить';
+
+  @override
+  String get roomsDeleteAction => 'Удалить';
+
+  @override
+  String get roomsEmptyTitle => 'Комнат пока нет';
+
+  @override
+  String get roomsEmptyHint =>
+      'Добавьте комнату, чтобы группировать растения по местам';
+
+  @override
+  String get roomSheetCreateOverline => 'Новая комната';
+
+  @override
+  String get roomSheetEditOverline => 'Комната';
+
+  @override
+  String get roomSheetCreateTitle => 'Добавить комнату';
+
+  @override
+  String get roomSheetEditTitle => 'Изменить комнату';
+
+  @override
+  String get roomSheetClose => 'Закрыть';
+
+  @override
+  String get roomSheetNameLabel => 'Название';
+
+  @override
+  String get roomSheetNameHint => 'Например: Гостиная';
+
+  @override
+  String roomSheetNameError(int max) {
+    return 'Введите название (до $max символов)';
+  }
+
+  @override
+  String get roomSheetEmojiLabel => 'Эмодзи';
+
+  @override
+  String get roomSheetEmojiHint => '🪴';
+
+  @override
+  String get roomSheetEmojiOptional => 'необязательно';
+
+  @override
+  String get roomSheetCreateSubmit => 'Добавить';
+
+  @override
+  String get roomSheetEditSubmit => 'Сохранить';
+
+  @override
+  String get roomCreated => 'Комната добавлена';
+
+  @override
+  String get roomUpdated => 'Комната обновлена';
+
+  @override
+  String get roomDeleted => 'Комната удалена';
+
+  @override
+  String get roomDeleteConfirmTitle => 'Удалить комнату?';
+
+  @override
+  String roomDeleteConfirmMessage(String name) {
+    return 'Комната «$name» будет удалена.';
+  }
+
+  @override
+  String get roomDeleteConfirmCancel => 'Отмена';
+
+  @override
+  String get roomDeleteConfirmDelete => 'Удалить';
+
+  @override
+  String get roomMoveOverline => 'Перенос растений';
+
+  @override
+  String get roomMoveTitle => 'Куда перенести растения?';
+
+  @override
+  String roomMoveSubtitle(String name) {
+    return 'В комнате «$name» есть растения. Выберите, куда их перенести перед удалением.';
+  }
+
+  @override
+  String get roomMoveClose => 'Закрыть';
 }

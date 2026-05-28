@@ -53,10 +53,11 @@ Feature-first:
 
 ```
 lib/
-├── core/                 # общее: network, router, theme, storage, errors, l10n, env, widgets, care
+├── core/                 # общее: network, router, theme, storage, errors, l10n, env, widgets, care, locations
 │   ├── network/          # dio instance + AuthHeader/Error interceptors, ApiError, AuthScope
 │   ├── care/             # общий care-task домен (CareTask, CareTaskType, мапперы) — делят home/schedule
-│   ├── router/           # go_router (роуты, StatefulShellRoute-табы Сад/График, guards)
+│   ├── locations/        # общий location-домен (GardenLocation, LocationDtoMapper) — делят home/add_plant/rooms
+│   ├── router/           # go_router (роуты, StatefulShellRoute-табы Сад/График/Каталог/Профиль, guards)
 │   ├── theme/            # tokens.dart (PC_THEMES) + ThemeData light/dark
 │   ├── storage/          # drift AppDatabase (каркас)
 │   ├── errors/           # ApiError (sealed), Result
@@ -76,8 +77,12 @@ lib/
 Sprint 1 фичи: `home` (01), `plant_card` (02), `add_plant` (04 — мастер из 4 шагов,
 полноэкранно поверх shell через root navigator `/home/add`; выбор вида и план ухода —
 read-only превью, `speciesId`/расписания backend не сохраняет, G13/G14), `care_event`
-(06 sheet), `schedule` (11), `auth` (07/09 заглушки). Общий care-task домен
-(`CareTask`/`CareTaskType`, мапперы) — в `core/care/`, т.к. его делят `home` и `schedule`.
+(06 sheet), `schedule` (11), `rooms` (управление комнатами — CRUD локаций
+`/api/v1/locations`, push `/profile/rooms`), `profile` (минимальный экран настроек,
+branch 3 `/profile` — таб «Профиль» активен, не coming-soon), `auth` (07/09 заглушки).
+Общий care-task домен (`CareTask`/`CareTaskType`, мапперы) — в `core/care/`, т.к. его
+делят `home` и `schedule`; общий location-домен (`GardenLocation`, `LocationDtoMapper`) —
+в `core/locations/`, т.к. его делят `home`, `add_plant` и `rooms`.
 
 ---
 

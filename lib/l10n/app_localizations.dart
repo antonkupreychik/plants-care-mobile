@@ -1143,6 +1143,234 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Сложный уход'**
   String get careDifficultyHard;
+
+  /// Серифный заголовок экрана профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Профиль'**
+  String get profileTitle;
+
+  /// Надзаголовок-капс над заголовком экрана профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'НАСТРОЙКИ'**
+  String get profileOverline;
+
+  /// Заголовок секции дополнительных настроек на экране профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Ещё'**
+  String get profileSectionMore;
+
+  /// Строка настроек: переход к управлению комнатами
+  ///
+  /// In ru, this message translates to:
+  /// **'Дома и места'**
+  String get profileRoomsTitle;
+
+  /// Серифный заголовок экрана управления комнатами
+  ///
+  /// In ru, this message translates to:
+  /// **'Дома и места'**
+  String get roomsTitle;
+
+  /// Надзаголовок-капс в шапке экрана управления комнатами
+  ///
+  /// In ru, this message translates to:
+  /// **'МОИ КОМНАТЫ'**
+  String get roomsOverline;
+
+  /// Семантика/подпись кнопки возврата в шапке экрана комнат
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get roomsBack;
+
+  /// Количество комнат под заголовком экрана
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет комнат} one{{count} комната} few{{count} комнаты} many{{count} комнат} other{{count} комнаты}}'**
+  String roomsCount(int count);
+
+  /// Пометка на строке дефолтной комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'По умолчанию'**
+  String get roomsDefaultBadge;
+
+  /// Подпись кнопки добавления комнаты (FAB / пустое состояние)
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить комнату'**
+  String get roomsAdd;
+
+  /// Семантика/подпись действия редактирования комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить'**
+  String get roomsEditAction;
+
+  /// Семантика/подпись действия удаления комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get roomsDeleteAction;
+
+  /// Заголовок пустого состояния списка комнат
+  ///
+  /// In ru, this message translates to:
+  /// **'Комнат пока нет'**
+  String get roomsEmptyTitle;
+
+  /// Подпись к пустому состоянию списка комнат
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавьте комнату, чтобы группировать растения по местам'**
+  String get roomsEmptyHint;
+
+  /// Надзаголовок-капс в шапке sheet создания комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Новая комната'**
+  String get roomSheetCreateOverline;
+
+  /// Надзаголовок-капс в шапке sheet редактирования комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Комната'**
+  String get roomSheetEditOverline;
+
+  /// Заголовок sheet создания комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить комнату'**
+  String get roomSheetCreateTitle;
+
+  /// Заголовок sheet редактирования комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить комнату'**
+  String get roomSheetEditTitle;
+
+  /// Подпись/семантика кнопки закрытия sheet комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Закрыть'**
+  String get roomSheetClose;
+
+  /// Метка поля названия комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Название'**
+  String get roomSheetNameLabel;
+
+  /// Плейсхолдер поля названия комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Гостиная'**
+  String get roomSheetNameHint;
+
+  /// Ошибка валидации названия комнаты: пусто или слишком длинное
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите название (до {max} символов)'**
+  String roomSheetNameError(int max);
+
+  /// Метка необязательного поля эмодзи комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Эмодзи'**
+  String get roomSheetEmojiLabel;
+
+  /// Плейсхолдер поля эмодзи комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'🪴'**
+  String get roomSheetEmojiHint;
+
+  /// Подпись: поле эмодзи необязательно
+  ///
+  /// In ru, this message translates to:
+  /// **'необязательно'**
+  String get roomSheetEmojiOptional;
+
+  /// Кнопка подтверждения создания комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить'**
+  String get roomSheetCreateSubmit;
+
+  /// Кнопка подтверждения изменения комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить'**
+  String get roomSheetEditSubmit;
+
+  /// Снэкбар-подтверждение после создания комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Комната добавлена'**
+  String get roomCreated;
+
+  /// Снэкбар-подтверждение после изменения комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Комната обновлена'**
+  String get roomUpdated;
+
+  /// Снэкбар-подтверждение после удаления комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Комната удалена'**
+  String get roomDeleted;
+
+  /// Заголовок диалога подтверждения удаления комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить комнату?'**
+  String get roomDeleteConfirmTitle;
+
+  /// Текст диалога подтверждения удаления комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Комната «{name}» будет удалена.'**
+  String roomDeleteConfirmMessage(String name);
+
+  /// Кнопка отмены в диалоге удаления комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get roomDeleteConfirmCancel;
+
+  /// Кнопка подтверждения в диалоге удаления комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get roomDeleteConfirmDelete;
+
+  /// Надзаголовок-капс в шапке пикера переноса растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенос растений'**
+  String get roomMoveOverline;
+
+  /// Заголовок пикера переноса растений из удаляемой комнаты
+  ///
+  /// In ru, this message translates to:
+  /// **'Куда перенести растения?'**
+  String get roomMoveTitle;
+
+  /// Подпись пикера переноса растений
+  ///
+  /// In ru, this message translates to:
+  /// **'В комнате «{name}» есть растения. Выберите, куда их перенести перед удалением.'**
+  String roomMoveSubtitle(String name);
+
+  /// Подпись/семантика кнопки закрытия пикера переноса
+  ///
+  /// In ru, this message translates to:
+  /// **'Закрыть'**
+  String get roomMoveClose;
 }
 
 class _AppLocalizationsDelegate

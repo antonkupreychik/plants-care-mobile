@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plantcare_mobile/core/api/generated/models/location_dto.dart';
-import 'package:plantcare_mobile/features/home/data/mappers/location_mapper.dart';
+import 'package:plantcare_mobile/core/locations/location_mapper.dart';
 
 void main() {
   group('LocationDtoMapper.toDomain', () {
@@ -28,6 +28,8 @@ void main() {
 
       final loc = dto.toDomain();
 
+      expect(loc.id, 1);
+      expect(loc.name, 'Балкон');
       expect(loc.isDefault, isFalse);
       expect(loc.emoji, isNull);
       expect(loc.createdAt, isNull);
