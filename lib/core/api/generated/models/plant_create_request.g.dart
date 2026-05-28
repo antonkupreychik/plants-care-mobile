@@ -11,6 +11,7 @@ PlantCreateRequest _$PlantCreateRequestFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       notes: json['notes'] as String?,
       locationId: (json['locationId'] as num?)?.toInt(),
+      speciesId: (json['speciesId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$PlantCreateRequestToJson(PlantCreateRequest instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$PlantCreateRequestToJson(PlantCreateRequest instance) =>
       'name': instance.name,
       'notes': instance.notes,
       'locationId': instance.locationId,
+      'speciesId': instance.speciesId,
     };

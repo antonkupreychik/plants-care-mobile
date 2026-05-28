@@ -28,5 +28,6 @@ abstract interface class AddPlantRepository {
     required String name,
     int? locationId,
     String? notes,
+    int? speciesId,
   });
 }

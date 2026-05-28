@@ -10,14 +10,17 @@ part 'new_plant_draft.freezed.dart';
 /// контроллере). Шаг мастера (текущая страница) держит UI/PageController — здесь
 /// только введённые пользователем данные.
 ///
-/// Что персистится при создании: только [name], [locationId], [notes]
-/// (`POST /plants` принимает `{name, notes?, locationId?}`). [species]
-/// используется лишь для префилла имени и показа read-only «плана ухода» —
-/// `speciesId` backend не сохраняет (см. BACKEND-GAPS).
+/// Что персистится при создании: [name], [locationId], [notes] и id выбранного
+/// [species] (`POST /plants` принимает `{name, notes?, locationId?, speciesId?}`).
+/// При заданном `speciesId` backend связывает растение с видом; расписания ухода
+/// при этом НЕ создаются (gap G14). [species] также используется для префилла
+/// имени и показа read-only «плана ухода».
 @freezed
 abstract class NewPlantDraft with _$NewPlantDraft {
   const factory NewPlantDraft({
-    /// Выбранный на шаге 1 вид (для префилла имени и превью плана ухода).
+    /// Выбранный на шаге 1 вид. Его id уходит в `POST /plants` как `speciesId`
+    /// (null → растение без вида). Также используется для префилла имени и
+    /// превью плана ухода.
     SpeciesSummary? species,
 
     /// Имя растения (шаг 2). Валидируется [isNameValid].

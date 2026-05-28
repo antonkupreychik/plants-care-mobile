@@ -73,8 +73,9 @@ class AddPlantWizardController extends _$AddPlantWizardController {
   ///
   /// На успех инвалидирует `homePlantsProvider` (растение появляется в саду) и
   /// кладёт `success(id)` в статус. На ошибку — типизированный [ApiError] в
-  /// статус (UI рисует по типу). Создаётся только `name + locationId + notes`:
-  /// `speciesId` и расписания backend не сохраняет (см. BACKEND-GAPS).
+  /// статус (UI рисует по типу). Отправляем `name + locationId + notes +
+  /// speciesId` (последний — id выбранного вида или null). Backend связывает
+  /// растение с видом; расписания ухода при этом НЕ создаются (gap G14).
   Future<int?> submit() async {
     if (!state.canSubmit) return null;
 
@@ -85,6 +86,7 @@ class AddPlantWizardController extends _$AddPlantWizardController {
           name: draft.trimmedName,
           locationId: draft.locationId,
           notes: draft.notes,
+          speciesId: draft.species?.id,
         );
 
     // autoDispose: если мастер закрыли во время in-flight POST — notifier
