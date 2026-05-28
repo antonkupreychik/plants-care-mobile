@@ -324,3 +324,107 @@ final class PlantStreakFamily extends $Family
   @override
   String toString() => r'plantStreakProvider';
 }
+
+/// Health Score растения (`GET /plants/{id}/health`, scope none — публичный).
+///
+/// Один family-провайдер на `plantId` для ОБОИХ потребителей: бейдж на карточке
+/// растения (02) и кольцо на карточках Home-сетки (01, по `plant.id`). Family
+/// кэширует по ключу и автодиспозит — два разных провайдера НЕ заводим.
+
+@ProviderFor(plantHealth)
+final plantHealthProvider = PlantHealthFamily._();
+
+/// Health Score растения (`GET /plants/{id}/health`, scope none — публичный).
+///
+/// Один family-провайдер на `plantId` для ОБОИХ потребителей: бейдж на карточке
+/// растения (02) и кольцо на карточках Home-сетки (01, по `plant.id`). Family
+/// кэширует по ключу и автодиспозит — два разных провайдера НЕ заводим.
+
+final class PlantHealthProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<PlantHealth>,
+          PlantHealth,
+          FutureOr<PlantHealth>
+        >
+    with $FutureModifier<PlantHealth>, $FutureProvider<PlantHealth> {
+  /// Health Score растения (`GET /plants/{id}/health`, scope none — публичный).
+  ///
+  /// Один family-провайдер на `plantId` для ОБОИХ потребителей: бейдж на карточке
+  /// растения (02) и кольцо на карточках Home-сетки (01, по `plant.id`). Family
+  /// кэширует по ключу и автодиспозит — два разных провайдера НЕ заводим.
+  PlantHealthProvider._({
+    required PlantHealthFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'plantHealthProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$plantHealthHash();
+
+  @override
+  String toString() {
+    return r'plantHealthProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<PlantHealth> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<PlantHealth> create(Ref ref) {
+    final argument = this.argument as int;
+    return plantHealth(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PlantHealthProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$plantHealthHash() => r'92ebf2e4b7f4295bc42d598133f7ca1f9d7bb5b9';
+
+/// Health Score растения (`GET /plants/{id}/health`, scope none — публичный).
+///
+/// Один family-провайдер на `plantId` для ОБОИХ потребителей: бейдж на карточке
+/// растения (02) и кольцо на карточках Home-сетки (01, по `plant.id`). Family
+/// кэширует по ключу и автодиспозит — два разных провайдера НЕ заводим.
+
+final class PlantHealthFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<PlantHealth>, int> {
+  PlantHealthFamily._()
+    : super(
+        retry: null,
+        name: r'plantHealthProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Health Score растения (`GET /plants/{id}/health`, scope none — публичный).
+  ///
+  /// Один family-провайдер на `plantId` для ОБОИХ потребителей: бейдж на карточке
+  /// растения (02) и кольцо на карточках Home-сетки (01, по `plant.id`). Family
+  /// кэширует по ключу и автодиспозит — два разных провайдера НЕ заводим.
+
+  PlantHealthProvider call(int plantId) =>
+      PlantHealthProvider._(argument: plantId, from: this);
+
+  @override
+  String toString() => r'plantHealthProvider';
+}

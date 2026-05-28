@@ -92,6 +92,8 @@ paths:
     $ref: './resources/plants.yaml#/paths/Item'
   /api/v1/plants/{id}/history:
     $ref: './resources/plant-history.yaml#/paths/ItemHistory'
+  /api/v1/plants/{id}/health:
+    $ref: './resources/plant-health.yaml#/paths/ItemHealth'
 
   /api/v1/locations:
     $ref: './resources/locations.yaml#/paths/Collection'
@@ -162,6 +164,9 @@ components:
 
     PlantHistoryResponse:
       $ref: './resources/plant-history.yaml#/schemas/PlantHistoryResponse'
+
+    PlantHealthResponse:
+      $ref: './resources/plant-health.yaml#/schemas/PlantHealthResponse'
 
     LocationDto:
       $ref: './resources/locations.yaml#/schemas/LocationDto'

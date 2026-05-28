@@ -6,15 +6,16 @@ import '../../../../core/widgets/skeleton_box.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../home/domain/plant.dart';
 import '../../../home/presentation/plant_illustration.dart';
+import 'health_badge.dart';
 
 /// Hero-шапка карточки растения: иллюстрация по виду на тёплой плашке,
-/// затем имя (сериф), overline «вид · локация» и подпись «со мной …».
+/// затем имя (сериф), overline «вид · локация», подпись «со мной …» и ряд
+/// чипов-бейджей (бейдж здоровья G1).
 ///
-/// Сознательно БЕЗ кольца/бейджа здоровья (BACKEND-GAPS G1 — поля healthScore
-/// нет) и БЕЗ реплики-настроения (G2 — voiceLine генерится не из данных;
-/// экран 01 её тоже не показывает, повторяем решение, чтобы не выдумывать
-/// данные). Длительность владения — формат по `createdAt` (UI-форматирование
-/// уже имеющейся даты, не доменный расчёт).
+/// Бейдж «♥ HEALTH {score}» (G1) — через [HealthBadge] (общий
+/// `plantHealthProvider`). БЕЗ реплики-настроения (G2 — voiceLine генерится не
+/// из данных; экран 01 её тоже не показывает). Длительность владения — формат
+/// по `createdAt` (UI-форматирование уже имеющейся даты, не доменный расчёт).
 class PlantHero extends StatelessWidget {
   const PlantHero({super.key, required this.plant, required this.now});
 
@@ -91,6 +92,14 @@ class PlantHero extends StatelessWidget {
             ],
           ),
         ],
+        const SizedBox(height: 10),
+        // Ряд чипов-бейджей. Сейчас один — бейдж здоровья (G1); сюда же
+        // встанут «токсично»/«черенок», когда появятся данные.
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: [HealthBadge(plantId: plant.id)],
+        ),
       ],
     );
   }

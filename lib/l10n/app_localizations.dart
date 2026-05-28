@@ -622,6 +622,30 @@ abstract class AppLocalizations {
   /// **'{date}, {time}'**
   String plantCardHistoryDate(String date, String time);
 
+  /// Бейдж индекса здоровья растения (G1): «HEALTH {score}»
+  ///
+  /// In ru, this message translates to:
+  /// **'HEALTH {score}'**
+  String healthBadgeLabel(int score);
+
+  /// Бейдж здоровья в нейтральном состоянии: данных недостаточно
+  ///
+  /// In ru, this message translates to:
+  /// **'HEALTH —'**
+  String get healthScoreUnknown;
+
+  /// Semantics-метка кольца/бейджа здоровья с достоверным score
+  ///
+  /// In ru, this message translates to:
+  /// **'Здоровье растения: {score} из 100'**
+  String healthSemanticScore(int score);
+
+  /// Semantics-метка кольца/бейджа здоровья при недостатке данных
+  ///
+  /// In ru, this message translates to:
+  /// **'Здоровье растения: недостаточно данных'**
+  String get healthSemanticUnknown;
+
   /// Запись истории: выполнен полив
   ///
   /// In ru, this message translates to:

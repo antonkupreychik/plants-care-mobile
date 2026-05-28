@@ -8,6 +8,7 @@ import 'package:retrofit/retrofit.dart';
 import '../models/page_response_plant_dto.dart';
 import '../models/plant_create_request.dart';
 import '../models/plant_dto.dart';
+import '../models/plant_health_response.dart';
 import '../models/plant_update_request.dart';
 
 part 'plants_client.g.dart';
@@ -118,6 +119,25 @@ abstract class PlantsClient {
   @DELETE('/api/v1/plants/{id}')
   Future<void> deletePlant({
     @Header('X-User-Id') required int xUserId,
+    @Path('id') required int id,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Health Score растения.
+  ///
+  /// Возвращает индекс здоровья растения (`score` 0..100) и его зону.
+  /// (`GREEN`/`YELLOW`/`RED`), посчитанные backend по истории ухода.
+  /// Клиент значения НЕ пересчитывает.
+  ///
+  /// Если данных для достоверной оценки недостаточно, `insufficientData`.
+  /// равно `true` — в этом случае `score`/`zone` носят справочный характер,.
+  /// а UI отображает нейтральное состояние.
+  ///
+  /// Эндпоинт публичный: идентификация по заголовкам не требуется.
+  ///
+  /// [id] - Идентификатор растения.
+  @GET('/api/v1/plants/{id}/health')
+  Future<PlantHealthResponse> getPlantHealth({
     @Path('id') required int id,
     @Extras() Map<String, dynamic>? extras,
   });

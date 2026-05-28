@@ -5,6 +5,7 @@ import '../../../core/error/result.dart';
 import '../../home/domain/plant.dart';
 import '../data/plant_card_repository_provider.dart';
 import '../domain/care_history_entry.dart';
+import '../domain/plant_health.dart';
 import '../domain/streak.dart';
 
 part 'plant_card_providers.g.dart';
@@ -45,6 +46,18 @@ Future<List<CareHistoryEntry>> plantHistory(Ref ref, int plantId) async {
 Future<Streak> plantStreak(Ref ref, int plantId) async {
   final result =
       await ref.watch(plantCardRepositoryProvider).getStreak(plantId);
+  return _unwrap(result);
+}
+
+/// Health Score растения (`GET /plants/{id}/health`, scope none — публичный).
+///
+/// Один family-провайдер на `plantId` для ОБОИХ потребителей: бейдж на карточке
+/// растения (02) и кольцо на карточках Home-сетки (01, по `plant.id`). Family
+/// кэширует по ключу и автодиспозит — два разных провайдера НЕ заводим.
+@riverpod
+Future<PlantHealth> plantHealth(Ref ref, int plantId) async {
+  final result =
+      await ref.watch(plantCardRepositoryProvider).getPlantHealth(plantId);
   return _unwrap(result);
 }
 

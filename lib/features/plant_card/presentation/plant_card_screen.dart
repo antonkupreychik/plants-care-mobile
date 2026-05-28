@@ -24,10 +24,11 @@ import 'widgets/section_title.dart';
 /// ([plantDetailProvider], [plantStreakProvider], [plantHistoryProvider]) —
 /// каждая секция рисует loading/error/empty/data самостоятельно (как в home).
 ///
-/// Скрыто как заглушки каркаса (BACKEND-GAPS): кольцо/бейдж здоровья (G1) —
-/// не рисуем (поля нет); реплика-настроение voiceLine (G2) — не показываем
-/// (генерится не из данных, экран 01 её тоже не показывает). «Отметить уход» —
-/// пока snackbar `comingSoon` (sheet появится в фиче 06).
+/// Бейдж здоровья (G1) показываем в шапке через `HealthBadge` (см. [PlantHero]);
+/// кольцо здоровья — на карточках Home (01). Скрыто как заглушки каркаса
+/// (BACKEND-GAPS): реплика-настроение voiceLine (G2) — не показываем (генерится
+/// не из данных, экран 01 её тоже не показывает). «Отметить уход» — sheet
+/// фичи 06.
 class PlantCardScreen extends ConsumerWidget {
   const PlantCardScreen({super.key, required this.plantId});
 
