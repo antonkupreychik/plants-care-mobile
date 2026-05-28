@@ -65,6 +65,14 @@ class ProfileScreen extends StatelessWidget {
                     divider: true,
                     onTap: () => context.push('/profile/archive'),
                   ),
+                  // Превью-флоу экранов входа (07/08/09) — визуальная заглушка,
+                  // полноэкранно поверх shell на root-навигаторе.
+                  SettingsRow(
+                    title: l10n.profileAuthPreviewTitle,
+                    icon: Icons.login_outlined,
+                    divider: true,
+                    onTap: () => context.push('/auth/welcome'),
+                  ),
                 ],
               ),
             ),

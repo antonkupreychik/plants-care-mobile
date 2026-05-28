@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/add_plant/presentation/add_plant_wizard_screen.dart';
 import '../../features/archive/presentation/archive_screen.dart';
+import '../../features/auth/presentation/auth_code_screen.dart';
+import '../../features/auth/presentation/auth_welcome_back_screen.dart';
+import '../../features/auth/presentation/auth_welcome_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -31,10 +34,33 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 /// [AppBottomNav].
 ///
 /// Старт — `/home` (экран «Мой сад»), это фиксирует контракт стартового экрана.
+///
+/// Группа `/auth/*` — полноэкранные экраны входа (07/08/09) ВНЕ табов, на
+/// [_rootNavigatorKey] (рядом с shell, top-level). Это ПРЕВЬЮ-флоу: без
+/// redirect/guard и без гейтинга — роуты просто доступны (точка входа из
+/// профиля). Реального auth/токена/сети нет.
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
   routes: [
+    GoRoute(
+      path: '/auth/welcome',
+      name: 'authWelcome',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => const AuthWelcomeScreen(),
+    ),
+    GoRoute(
+      path: '/auth/code',
+      name: 'authCode',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => const AuthCodeScreen(),
+    ),
+    GoRoute(
+      path: '/auth/welcome-back',
+      name: 'authWelcomeBack',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => const AuthWelcomeBackScreen(),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
           AppShell(navigationShell: navigationShell),
