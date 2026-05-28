@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/add_plant/presentation/add_plant_wizard_screen.dart';
+import '../../features/archive/presentation/archive_screen.dart';
 import '../../features/auth/presentation/auth_code_screen.dart';
 import '../../features/auth/presentation/auth_welcome_back_screen.dart';
 import '../../features/auth/presentation/auth_welcome_screen.dart';
@@ -153,6 +154,14 @@ final appRouter = GoRouter(
                   name: 'rooms',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const RoomsScreen(),
+                ),
+                // Экран 17 «Архив» (memorial) — полноэкранно поверх shell (своя
+                // кнопка «назад», без таб-бара), как rooms/карточка.
+                GoRoute(
+                  path: 'archive',
+                  name: 'archive',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const ArchiveScreen(),
                 ),
               ],
             ),

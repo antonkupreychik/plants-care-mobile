@@ -48,13 +48,17 @@
 - **Сейчас:** нет `/me`. api-contract §12.1.
 - **Заглушка:** `tasksToday` берём из длины `/today`; имя — заглушка; badge не рисуем.
 
-## G6 · Привязка задачи/растения к виду (иллюстрация) 🟡
+## G6 · Привязка задачи/растения к виду (иллюстрация) 🟢
 - **Экран:** 01 Home, 03 Today — нужно выбрать SVG-иллюстрацию (Monstera/Fern/...).
 - **Нужно:** по `TaskDto`/`PlantDto` понять вид, чтобы выбрать иллюстрацию.
-- **Сейчас:** `PlantDto.speciesId/speciesName` есть; `TaskDto` (в /today) — только `plantName`,
-  без `speciesId`. На Today-задаче не из чего выбрать иллюстрацию.
-- **Предложение:** добавить `speciesId` (или ключ иллюстрации) в `TaskDto`.
-- **Заглушка:** на Today дефолтная иллюстрация; на Home — по `speciesName` маппингом.
+- **Было:** `PlantDto.speciesId/speciesName` есть; `TaskDto` (в /today,/calendar) — только
+  `plantName`, без вида. На Today-задаче не из чего было выбрать иллюстрацию.
+- **Закрыто (2026-05-28):** бэкенд добавил в `TaskDto` поля `speciesId` (int64, nullable)
+  и `speciesName` (string, nullable) в `/today` и `/calendar`. Проверено curl. Мобилка:
+  спека `calendar.yaml` обновлена, клиент регенерён, поля проброшены в domain `CareTask`
+  и mapper; карточки задач Today (`today_card`, `today_task_card`) рисуют
+  `PlantIllustration` по виду вместо нейтрального глифа. При отсутствии вида (`null`) —
+  дефолтная иллюстрация через `PlantArt.fromSpecies`.
 
 ## G7 · `taskType` (today/calendar) ≠ `type` (care-events) 🟡
 - **Везде, где выполняем уход.**
@@ -174,6 +178,27 @@
   Summary показывает только `totalCount` (pending) + `overdueCount` (вычисляется
   на клиенте: `dueAt.toLocal() < now`). Overdue считается клиентом, а не приходит
   с бэкенда. `TODO(gap #13)` — вернуть прогресс дня, когда появится фид done.
+
+---
+
+## G15 · Архив / memorial растений 🔴
+- **Экран:** 17 Архив (`screens-v4.jsx → ArchiveScreen`), roadmap #117.
+- **Нужно:** список архивных (выбывших) растений с memorial-данными для карточки:
+  имя, вид, как долго прожило рядом, причина/заметка выбытия, дата архивации,
+  флаг «подарили» vs «погибло»; плюс агрегат для блока «Ретроспектива» (средний
+  срок жизни растений у пользователя).
+- **Сейчас:** эндпоинта нет. `GET /plants` отдаёт только активные; ни
+  `?status=archived`, ни `/archive`, ни полей архивации в `PlantDto` (дата выбытия,
+  причина, длительность) не существует. Среднего срока тоже нет.
+- **Предложение:** `GET /plants?status=archived` (или `/archive`) → растения с
+  полями `archivedAt`, `cause/note`, `livedFor` (или вычислять из created/archived),
+  `gifted: bool`; ретроспектива — отдельным полем/эндпоинтом либо считать на клиенте,
+  когда появятся даты. Для архивации — `PATCH /plants/{id}` со `status`.
+- **Заглушка мобилки:** экран собран **UI-first** — domain-интерфейс
+  `ArchiveRepository` + `FakeArchiveRepositoryImpl` (хардкод 3 растения + ретроспектива
+  из дизайна). Реальная dio/codegen-реализация подключится подменой
+  `archiveRepositoryProvider` (scope `user`), domain/state/UI не меняются.
+  `TODO(BACKEND-GAPS #117)` в фейке. Чипы «Открыть дневник»/«Вспомнить» — coming-soon.
 
 ---
 

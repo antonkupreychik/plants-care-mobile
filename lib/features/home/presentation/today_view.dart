@@ -49,8 +49,10 @@ abstract class TodayGroup with _$TodayGroup {
 /// Сознательно отсутствует (backend-гэпы, см. задачу 03):
 ///  * `doneCount` / прогресс-кольцо «X из N» — `/today` отдаёт только pending;
 ///  * свёрнутая секция «N выполнено сегодня» — нет фида «выполнено»;
-///  * voice line / mood растения (G2) — нет в API;
-///  * speciesId / иллюстрация по виду (G6) — нет в TaskDto.
+///  * voice line / mood растения (G2) — нет в API.
+///
+/// Иллюстрация по виду (G6) теперь доступна: `TaskDto` отдаёт `speciesName`
+/// (см. [CareTask.speciesName]), карточки задач рисуют `PlantIllustration`.
 @freezed
 abstract class TodayView with _$TodayView {
   const factory TodayView({

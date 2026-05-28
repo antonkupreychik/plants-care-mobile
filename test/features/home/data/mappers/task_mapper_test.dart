@@ -14,6 +14,8 @@ void main() {
         taskType: 'WATERING',
         nextDueAt: due,
         locationName: 'Гостиная',
+        speciesId: 42,
+        speciesName: 'Монстера',
       );
 
       final task = dto.toDomain();
@@ -24,6 +26,44 @@ void main() {
       expect(task.type, CareTaskType.watering);
       expect(task.dueAt, due);
       expect(task.locationName, 'Гостиная');
+      expect(task.speciesId, 42);
+      expect(task.speciesName, 'Монстера');
+    });
+
+    // BACKEND-GAPS G6: speciesId/speciesName из DTO должны доходить до domain
+    // (UI выбирает по ним иллюстрацию). Регрессия — если маппер их «забудет».
+    test('should_carry_species_fields_when_present', () {
+      final dto = TaskDto(
+        scheduleId: 1,
+        plantId: 1,
+        plantName: 'Fern',
+        taskType: 'MISTING',
+        nextDueAt: DateTime.utc(2026, 5, 27),
+        speciesId: 99,
+        speciesName: 'Папоротник',
+      );
+
+      final task = dto.toDomain();
+
+      expect(task.speciesId, 99);
+      expect(task.speciesName, 'Папоротник');
+    });
+
+    // Бэк может не прислать вид (растение без привязанного Species). Поля
+    // опциональны — маппер обязан пробросить null, а не упасть/подставить заглушку.
+    test('should_keep_species_fields_null_when_absent', () {
+      final dto = TaskDto(
+        scheduleId: 1,
+        plantId: 1,
+        plantName: 'Cactus',
+        taskType: 'WATERING',
+        nextDueAt: DateTime.utc(2026, 5, 27),
+      );
+
+      final task = dto.toDomain();
+
+      expect(task.speciesId, isNull);
+      expect(task.speciesName, isNull);
     });
 
     test('should_keep_locationName_null_when_absent', () {

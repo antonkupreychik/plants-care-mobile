@@ -15,5 +15,7 @@ extension TaskDtoMapper on TaskDto {
         type: CareTaskType.fromApi(taskType),
         dueAt: nextDueAt,
         locationName: locationName,
+        speciesId: speciesId,
+        speciesName: speciesName,
       );
 }
