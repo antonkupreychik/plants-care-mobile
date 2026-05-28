@@ -194,16 +194,6 @@
     "description": "Чип «все локации» в фильтре комнат"
   },
 
-  "homeGardenEmptyTitle": "Сад пока пуст",
-  "@homeGardenEmptyTitle": {
-    "description": "Заголовок пустого состояния списка растений"
-  },
-
-  "homeGardenEmptyHint": "Добавьте первое растение — и здесь появится ваш сад",
-  "@homeGardenEmptyHint": {
-    "description": "Подпись к пустому состоянию списка растений"
-  },
-
   "homeAddPlant": "Добавить растение",
   "@homeAddPlant": {
     "description": "Подпись кнопки добавления растения (FAB / пустое состояние)"
@@ -212,6 +202,61 @@
   "homeRoomEmpty": "В этой комнате пока нет растений",
   "@homeRoomEmpty": {
     "description": "Подсказка: в выбранной комнате нет растений"
+  },
+
+  "homeGardenEmptyEyebrow": "Сад пока пуст",
+  "@homeGardenEmptyEyebrow": {
+    "description": "Надзаголовок (eyebrow, uppercase) карточки пустого сада, экран 10"
+  },
+
+  "homeGardenEmptyHeading": "Заведём первое растение?",
+  "@homeGardenEmptyHeading": {
+    "description": "Серифный заголовок карточки пустого сада, экран 10"
+  },
+
+  "homeGardenEmptySubtitle": "Я подберу расписание ухода и буду напоминать — так, как ты любишь.",
+  "@homeGardenEmptySubtitle": {
+    "description": "Подпись под заголовком карточки пустого сада, экран 10"
+  },
+
+  "homeRecognizeByPhoto": "Распознать по фото",
+  "@homeRecognizeByPhoto": {
+    "description": "Вторичная кнопка карточки пустого сада: распознавание растения по фото (coming soon)"
+  },
+
+  "homeStarterIdeasTitle": "Идеи на старт",
+  "@homeStarterIdeasTitle": {
+    "description": "Надзаголовок (eyebrow, uppercase) блока стартовых видов под карточкой пустого сада, экран 10"
+  },
+
+  "homeStarterMonstera": "Монстера",
+  "@homeStarterMonstera": {
+    "description": "Название стартового вида: монстера"
+  },
+
+  "homeStarterMonsteraHint": "легко",
+  "@homeStarterMonsteraHint": {
+    "description": "Подпись стартового вида монстера: уровень сложности"
+  },
+
+  "homeStarterSucculent": "Суккулент",
+  "@homeStarterSucculent": {
+    "description": "Название стартового вида: суккулент"
+  },
+
+  "homeStarterSucculentHint": "забыть можно",
+  "@homeStarterSucculentHint": {
+    "description": "Подпись стартового вида суккулент: уровень сложности"
+  },
+
+  "homeStarterPothos": "Эпипремнум",
+  "@homeStarterPothos": {
+    "description": "Название стартового вида: эпипремнум (потос)"
+  },
+
+  "homeStarterPothosHint": "для новичка",
+  "@homeStarterPothosHint": {
+    "description": "Подпись стартового вида эпипремнум: уровень сложности"
   },
 
   "careActionWatering": "Полить",

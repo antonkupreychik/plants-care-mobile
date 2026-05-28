@@ -181,17 +181,44 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeLocationAll => 'Все';
 
   @override
-  String get homeGardenEmptyTitle => 'Сад пока пуст';
-
-  @override
-  String get homeGardenEmptyHint =>
-      'Добавьте первое растение — и здесь появится ваш сад';
-
-  @override
   String get homeAddPlant => 'Добавить растение';
 
   @override
   String get homeRoomEmpty => 'В этой комнате пока нет растений';
+
+  @override
+  String get homeGardenEmptyEyebrow => 'Сад пока пуст';
+
+  @override
+  String get homeGardenEmptyHeading => 'Заведём первое растение?';
+
+  @override
+  String get homeGardenEmptySubtitle =>
+      'Я подберу расписание ухода и буду напоминать — так, как ты любишь.';
+
+  @override
+  String get homeRecognizeByPhoto => 'Распознать по фото';
+
+  @override
+  String get homeStarterIdeasTitle => 'Идеи на старт';
+
+  @override
+  String get homeStarterMonstera => 'Монстера';
+
+  @override
+  String get homeStarterMonsteraHint => 'легко';
+
+  @override
+  String get homeStarterSucculent => 'Суккулент';
+
+  @override
+  String get homeStarterSucculentHint => 'забыть можно';
+
+  @override
+  String get homeStarterPothos => 'Эпипремнум';
+
+  @override
+  String get homeStarterPothosHint => 'для новичка';
 
   @override
   String get careActionWatering => 'Полить';
