@@ -893,4 +893,108 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get roomMoveClose => 'Закрыть';
+
+  @override
+  String get profileAuthPreviewTitle => 'Экраны входа (превью)';
+
+  @override
+  String get authBack => 'Назад';
+
+  @override
+  String get authBrand => 'PlantCare';
+
+  @override
+  String get authLocale => 'RU';
+
+  @override
+  String get authWelcomeOverline => 'Дневник для растений';
+
+  @override
+  String get authWelcomeTitle => 'Растения, о которых не забывают';
+
+  @override
+  String get authWelcomeSubtitle =>
+      'Напоминания о поливе, опрыскивании и подкормке. Прямо как от заботливой бабушки — но цифровой.';
+
+  @override
+  String get authContinueGoogle => 'Продолжить через Google';
+
+  @override
+  String get authContinueTelegram => 'Продолжить через Telegram';
+
+  @override
+  String get authOr => 'или';
+
+  @override
+  String get authContinueGuest => 'Зайти как гость';
+
+  @override
+  String get authTerms =>
+      'Нажимая «Продолжить», вы соглашаетесь с условиями и политикой конфиденциальности.';
+
+  @override
+  String get authCodeStepIndicator => 'Шаг 2 из 2';
+
+  @override
+  String get authCodeOverline => 'Telegram · подтверждение';
+
+  @override
+  String get authCodeTitle => 'Введите код из чата с ботом';
+
+  @override
+  String authCodeSubtitle(String bot) {
+    return 'Мы написали вам в $bot. Откройте Telegram и скопируйте 6-значный код.';
+  }
+
+  @override
+  String get authCodeBot => '@PlantCareBot';
+
+  @override
+  String authResendIn(String seconds) {
+    return 'Отправить новый код через $seconds';
+  }
+
+  @override
+  String get authResend => 'Отправить код повторно';
+
+  @override
+  String get authKeypadBackspace => 'Удалить цифру';
+
+  @override
+  String authKeypadDigit(String digit) {
+    return 'Цифра $digit';
+  }
+
+  @override
+  String get authContinue => 'Продолжить';
+
+  @override
+  String get authWelcomeBackOverline => 'Аккаунт привязан · Telegram';
+
+  @override
+  String get authWelcomeBackName => 'Алина';
+
+  @override
+  String authWelcomeBackTitle(String name) {
+    return 'Привет, $name';
+  }
+
+  @override
+  String get authWelcomeBackSubtitle =>
+      'Тут будет жить ваш сад. Добавим первое растение — и научимся его понимать.';
+
+  @override
+  String get authChipReminders => 'Напоминания';
+
+  @override
+  String get authChipJournal => 'Дневник';
+
+  @override
+  String get authChipCalendar => 'Календарь';
+
+  @override
+  String get authAddFirstPlant => 'Добавить первое растение';
+
+  @override
+  String get authGoHome => 'Я просто посмотрю';
 }

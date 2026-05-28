@@ -1425,6 +1425,192 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Закрыть'**
   String get roomMoveClose;
+
+  /// Строка настроек: открыть превью-флоу экранов входа (визуальная заглушка)
+  ///
+  /// In ru, this message translates to:
+  /// **'Экраны входа (превью)'**
+  String get profileAuthPreviewTitle;
+
+  /// Подпись/семантика кнопки возврата на auth-экранах
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get authBack;
+
+  /// Брендовое название в шапке экрана входа
+  ///
+  /// In ru, this message translates to:
+  /// **'PlantCare'**
+  String get authBrand;
+
+  /// Метка текущего языка в шапке экрана входа
+  ///
+  /// In ru, this message translates to:
+  /// **'RU'**
+  String get authLocale;
+
+  /// Надзаголовок-капс над hero-заголовком экрана входа (экран 07)
+  ///
+  /// In ru, this message translates to:
+  /// **'Дневник для растений'**
+  String get authWelcomeOverline;
+
+  /// Hero-заголовок экрана входа (экран 07)
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения, о которых не забывают'**
+  String get authWelcomeTitle;
+
+  /// Подпись под hero-заголовком экрана входа
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания о поливе, опрыскивании и подкормке. Прямо как от заботливой бабушки — но цифровой.'**
+  String get authWelcomeSubtitle;
+
+  /// Кнопка входа через Google (coming soon)
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить через Google'**
+  String get authContinueGoogle;
+
+  /// Кнопка входа через Telegram (переход к вводу кода)
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить через Telegram'**
+  String get authContinueTelegram;
+
+  /// Разделитель между группами способов входа
+  ///
+  /// In ru, this message translates to:
+  /// **'или'**
+  String get authOr;
+
+  /// Кнопка входа как гость (coming soon)
+  ///
+  /// In ru, this message translates to:
+  /// **'Зайти как гость'**
+  String get authContinueGuest;
+
+  /// Дисклеймер об условиях и политике на экране входа
+  ///
+  /// In ru, this message translates to:
+  /// **'Нажимая «Продолжить», вы соглашаетесь с условиями и политикой конфиденциальности.'**
+  String get authTerms;
+
+  /// Индикатор шага в шапке экрана ввода кода (экран 08)
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаг 2 из 2'**
+  String get authCodeStepIndicator;
+
+  /// Надзаголовок-капс над заголовком экрана ввода кода
+  ///
+  /// In ru, this message translates to:
+  /// **'Telegram · подтверждение'**
+  String get authCodeOverline;
+
+  /// Заголовок экрана ввода кода (экран 08)
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите код из чата с ботом'**
+  String get authCodeTitle;
+
+  /// Подпись экрана ввода кода с именем бота-назначения
+  ///
+  /// In ru, this message translates to:
+  /// **'Мы написали вам в {bot}. Откройте Telegram и скопируйте 6-значный код.'**
+  String authCodeSubtitle(String bot);
+
+  /// Плейсхолдер назначения кода — имя Telegram-бота (статичная заглушка)
+  ///
+  /// In ru, this message translates to:
+  /// **'@PlantCareBot'**
+  String get authCodeBot;
+
+  /// Текст обратного отсчёта до повторной отправки кода (mm:ss)
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить новый код через {seconds}'**
+  String authResendIn(String seconds);
+
+  /// Кликабельная подпись повторной отправки кода (таймер досчитал)
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить код повторно'**
+  String get authResend;
+
+  /// Семантика клавиши backspace цифровой клавиатуры
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить цифру'**
+  String get authKeypadBackspace;
+
+  /// Семантика цифровой клавиши клавиатуры
+  ///
+  /// In ru, this message translates to:
+  /// **'Цифра {digit}'**
+  String authKeypadDigit(String digit);
+
+  /// Основная кнопка «Продолжить» на экране ввода кода (активна при полном коде)
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить'**
+  String get authContinue;
+
+  /// Надзаголовок-капс на экране приветствия после входа (экран 09)
+  ///
+  /// In ru, this message translates to:
+  /// **'Аккаунт привязан · Telegram'**
+  String get authWelcomeBackOverline;
+
+  /// Имя пользователя на экране приветствия (статичная заглушка превью-флоу)
+  ///
+  /// In ru, this message translates to:
+  /// **'Алина'**
+  String get authWelcomeBackName;
+
+  /// Приветственный заголовок экрана 09 с именем пользователя
+  ///
+  /// In ru, this message translates to:
+  /// **'Привет, {name}'**
+  String authWelcomeBackTitle(String name);
+
+  /// Подпись под приветствием на экране 09
+  ///
+  /// In ru, this message translates to:
+  /// **'Тут будет жить ваш сад. Добавим первое растение — и научимся его понимать.'**
+  String get authWelcomeBackSubtitle;
+
+  /// Чип на экране приветствия: напоминания
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания'**
+  String get authChipReminders;
+
+  /// Чип на экране приветствия: дневник
+  ///
+  /// In ru, this message translates to:
+  /// **'Дневник'**
+  String get authChipJournal;
+
+  /// Чип на экране приветствия: календарь
+  ///
+  /// In ru, this message translates to:
+  /// **'Календарь'**
+  String get authChipCalendar;
+
+  /// Основная кнопка экрана 09: перейти к мастеру добавления растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить первое растение'**
+  String get authAddFirstPlant;
+
+  /// Вторичная ссылка экрана 09: уйти на главную без добавления растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Я просто посмотрю'**
+  String get authGoHome;
 }
 
 class _AppLocalizationsDelegate

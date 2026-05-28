@@ -1196,5 +1196,172 @@
   "roomMoveClose": "Закрыть",
   "@roomMoveClose": {
     "description": "Подпись/семантика кнопки закрытия пикера переноса"
+  },
+
+  "profileAuthPreviewTitle": "Экраны входа (превью)",
+  "@profileAuthPreviewTitle": {
+    "description": "Строка настроек: открыть превью-флоу экранов входа (визуальная заглушка)"
+  },
+
+  "authBack": "Назад",
+  "@authBack": {
+    "description": "Подпись/семантика кнопки возврата на auth-экранах"
+  },
+
+  "authBrand": "PlantCare",
+  "@authBrand": {
+    "description": "Брендовое название в шапке экрана входа"
+  },
+
+  "authLocale": "RU",
+  "@authLocale": {
+    "description": "Метка текущего языка в шапке экрана входа"
+  },
+
+  "authWelcomeOverline": "Дневник для растений",
+  "@authWelcomeOverline": {
+    "description": "Надзаголовок-капс над hero-заголовком экрана входа (экран 07)"
+  },
+
+  "authWelcomeTitle": "Растения, о которых не забывают",
+  "@authWelcomeTitle": {
+    "description": "Hero-заголовок экрана входа (экран 07)"
+  },
+
+  "authWelcomeSubtitle": "Напоминания о поливе, опрыскивании и подкормке. Прямо как от заботливой бабушки — но цифровой.",
+  "@authWelcomeSubtitle": {
+    "description": "Подпись под hero-заголовком экрана входа"
+  },
+
+  "authContinueGoogle": "Продолжить через Google",
+  "@authContinueGoogle": {
+    "description": "Кнопка входа через Google (coming soon)"
+  },
+
+  "authContinueTelegram": "Продолжить через Telegram",
+  "@authContinueTelegram": {
+    "description": "Кнопка входа через Telegram (переход к вводу кода)"
+  },
+
+  "authOr": "или",
+  "@authOr": {
+    "description": "Разделитель между группами способов входа"
+  },
+
+  "authContinueGuest": "Зайти как гость",
+  "@authContinueGuest": {
+    "description": "Кнопка входа как гость (coming soon)"
+  },
+
+  "authTerms": "Нажимая «Продолжить», вы соглашаетесь с условиями и политикой конфиденциальности.",
+  "@authTerms": {
+    "description": "Дисклеймер об условиях и политике на экране входа"
+  },
+
+  "authCodeStepIndicator": "Шаг 2 из 2",
+  "@authCodeStepIndicator": {
+    "description": "Индикатор шага в шапке экрана ввода кода (экран 08)"
+  },
+
+  "authCodeOverline": "Telegram · подтверждение",
+  "@authCodeOverline": {
+    "description": "Надзаголовок-капс над заголовком экрана ввода кода"
+  },
+
+  "authCodeTitle": "Введите код из чата с ботом",
+  "@authCodeTitle": {
+    "description": "Заголовок экрана ввода кода (экран 08)"
+  },
+
+  "authCodeSubtitle": "Мы написали вам в {bot}. Откройте Telegram и скопируйте 6-значный код.",
+  "@authCodeSubtitle": {
+    "description": "Подпись экрана ввода кода с именем бота-назначения",
+    "placeholders": {
+      "bot": { "type": "String" }
+    }
+  },
+
+  "authCodeBot": "@PlantCareBot",
+  "@authCodeBot": {
+    "description": "Плейсхолдер назначения кода — имя Telegram-бота (статичная заглушка)"
+  },
+
+  "authResendIn": "Отправить новый код через {seconds}",
+  "@authResendIn": {
+    "description": "Текст обратного отсчёта до повторной отправки кода (mm:ss)",
+    "placeholders": {
+      "seconds": { "type": "String" }
+    }
+  },
+
+  "authResend": "Отправить код повторно",
+  "@authResend": {
+    "description": "Кликабельная подпись повторной отправки кода (таймер досчитал)"
+  },
+
+  "authKeypadBackspace": "Удалить цифру",
+  "@authKeypadBackspace": {
+    "description": "Семантика клавиши backspace цифровой клавиатуры"
+  },
+
+  "authKeypadDigit": "Цифра {digit}",
+  "@authKeypadDigit": {
+    "description": "Семантика цифровой клавиши клавиатуры",
+    "placeholders": {
+      "digit": { "type": "String" }
+    }
+  },
+
+  "authContinue": "Продолжить",
+  "@authContinue": {
+    "description": "Основная кнопка «Продолжить» на экране ввода кода (активна при полном коде)"
+  },
+
+  "authWelcomeBackOverline": "Аккаунт привязан · Telegram",
+  "@authWelcomeBackOverline": {
+    "description": "Надзаголовок-капс на экране приветствия после входа (экран 09)"
+  },
+
+  "authWelcomeBackName": "Алина",
+  "@authWelcomeBackName": {
+    "description": "Имя пользователя на экране приветствия (статичная заглушка превью-флоу)"
+  },
+
+  "authWelcomeBackTitle": "Привет, {name}",
+  "@authWelcomeBackTitle": {
+    "description": "Приветственный заголовок экрана 09 с именем пользователя",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "authWelcomeBackSubtitle": "Тут будет жить ваш сад. Добавим первое растение — и научимся его понимать.",
+  "@authWelcomeBackSubtitle": {
+    "description": "Подпись под приветствием на экране 09"
+  },
+
+  "authChipReminders": "Напоминания",
+  "@authChipReminders": {
+    "description": "Чип на экране приветствия: напоминания"
+  },
+
+  "authChipJournal": "Дневник",
+  "@authChipJournal": {
+    "description": "Чип на экране приветствия: дневник"
+  },
+
+  "authChipCalendar": "Календарь",
+  "@authChipCalendar": {
+    "description": "Чип на экране приветствия: календарь"
+  },
+
+  "authAddFirstPlant": "Добавить первое растение",
+  "@authAddFirstPlant": {
+    "description": "Основная кнопка экрана 09: перейти к мастеру добавления растения"
+  },
+
+  "authGoHome": "Я просто посмотрю",
+  "@authGoHome": {
+    "description": "Вторичная ссылка экрана 09: уйти на главную без добавления растения"
   }
 }

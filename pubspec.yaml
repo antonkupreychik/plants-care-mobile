@@ -56,6 +56,8 @@ dev_dependencies:
 
   # Тесты (MADR-014).
   mocktail: ^1.0.5
+  # Детерминированный прогон таймеров в unit-тестах (UI-таймер ресенда auth).
+  fake_async: ^1.3.1
 
   # Для tool/bundle_openapi.dart (сборка многофайловой OpenAPI в один файл).
   yaml: ^3.1.2

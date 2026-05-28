@@ -52,10 +52,22 @@ class ProfileScreen extends StatelessWidget {
                 border: Border.all(color: c.line),
               ),
               clipBehavior: Clip.antiAlias,
-              child: SettingsRow(
-                title: l10n.profileRoomsTitle,
-                icon: Icons.home_outlined,
-                onTap: () => context.push('/profile/rooms'),
+              child: Column(
+                children: [
+                  SettingsRow(
+                    title: l10n.profileRoomsTitle,
+                    icon: Icons.home_outlined,
+                    onTap: () => context.push('/profile/rooms'),
+                  ),
+                  // Превью-флоу экранов входа (07/08/09) — визуальная заглушка,
+                  // полноэкранно поверх shell на root-навигаторе.
+                  SettingsRow(
+                    title: l10n.profileAuthPreviewTitle,
+                    icon: Icons.login_outlined,
+                    divider: true,
+                    onTap: () => context.push('/auth/welcome'),
+                  ),
+                ],
               ),
             ),
           ],
