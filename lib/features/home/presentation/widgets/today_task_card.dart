@@ -4,12 +4,13 @@ import '../../../../core/theme/tokens.dart';
 import '../../../../core/widgets/skeleton_box.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/care/care_task_l10n.dart';
+import '../plant_illustration.dart';
 import '../today_view.dart';
 
 /// Карточка задачи на экране 03 «Сегодня».
 ///
 /// Близка по стилю к строке `TodayCard` (Home), но это самостоятельная
-/// карточка-плитка с рамкой: глиф растения (нейтральный — вид неизвестен, G6),
+/// карточка-плитка с рамкой: иллюстрация вида ([CareTask.speciesName], G6),
 /// имя, бейдж «просрочено», срок ([CareTask.dueLabel]) и action-pill с типом
 /// ухода. Тап по карточке или по pill открывает sheet 06 (колбэк [onTap]).
 class TodayTaskCard extends StatelessWidget {
@@ -53,9 +54,13 @@ class TodayTaskCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                   ),
                   alignment: Alignment.center,
-                  // Вид растения в /today неизвестен (TaskDto без speciesId —
-                  // BACKEND-GAPS G6): нейтральный глиф, а не подбор иллюстрации.
-                  child: Icon(Icons.local_florist_outlined, size: 26, color: c.leaf),
+                  // Иллюстрация по виду задачи (BACKEND-GAPS G6 закрыт:
+                  // TaskDto отдаёт speciesName). PlantArt.fromSpecies сам
+                  // падает в дефолт (monstera) при null/нераспознанном виде.
+                  child: PlantIllustration(
+                    speciesName: task.speciesName,
+                    size: 38,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(

@@ -15,6 +15,8 @@ class TaskDto {
     required this.plantName,
     required this.taskType,
     required this.nextDueAt,
+    this.speciesId,
+    this.speciesName,
     this.locationName,
   });
   
@@ -23,6 +25,12 @@ class TaskDto {
   final int scheduleId;
   final int plantId;
   final String plantName;
+
+  /// Вид растения (`Species.id`). Для выбора иллюстрации (mobile gap G6).
+  final int? speciesId;
+
+  /// Имя вида (для иллюстрации/подписи).
+  final String? speciesName;
 
   /// Имя `TaskType.name()` — `WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`.
   final String taskType;

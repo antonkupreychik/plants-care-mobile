@@ -6,6 +6,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/tokens.dart';
 import '../../../../core/widgets/skeleton_box.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../plant_illustration.dart';
 
 /// Карточка «Сегодня»: компактный список задач ухода ([CareTask]).
 ///
@@ -213,10 +214,13 @@ class _TaskRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   alignment: Alignment.center,
-                  // Вид растения в /today неизвестен (TaskDto без speciesId —
-                  // BACKEND-GAPS G6), поэтому нейтральный глиф, а не подбор
-                  // иллюстрации по имени (он бы всегда падал в дефолт).
-                  child: Icon(Icons.local_florist_outlined, size: 24, color: c.leaf),
+                  // Иллюстрация по виду задачи (BACKEND-GAPS G6 закрыт:
+                  // TaskDto отдаёт speciesName). PlantArt.fromSpecies сам
+                  // падает в дефолт (monstera) при null/нераспознанном виде.
+                  child: PlantIllustration(
+                    speciesName: task.speciesName,
+                    size: 36,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
