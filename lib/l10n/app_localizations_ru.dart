@@ -893,4 +893,65 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get roomMoveClose => 'Закрыть';
+
+  @override
+  String get profileArchiveTitle => 'Архив';
+
+  @override
+  String get archiveBack => 'Назад';
+
+  @override
+  String archiveEyebrow(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count растения',
+      many: '$count растений',
+      few: '$count растения',
+      one: '$count растение',
+      zero: 'нет растений',
+    );
+    return 'Архив · $_temp0';
+  }
+
+  @override
+  String get archiveHeadingLead => 'В ';
+
+  @override
+  String get archiveHeadingAccent => 'памяти';
+
+  @override
+  String get archiveSubtitle =>
+      'Растения, с которыми пути разошлись. Их история — здесь, а не в корзине.';
+
+  @override
+  String get archiveLivedPrefixGifted => 'Прожил рядом ·';
+
+  @override
+  String get archiveLivedPrefix => 'Прожило рядом ·';
+
+  @override
+  String get archiveOpenDiary => 'Открыть дневник';
+
+  @override
+  String get archiveRemember => 'Вспомнить';
+
+  @override
+  String get archiveRetrospectiveLabel => 'Ретроспектива';
+
+  @override
+  String archiveRetrospectiveText(String avg) {
+    return 'Растения живут с тобой в среднем $avg';
+  }
+
+  @override
+  String get archiveRetrospectiveHint =>
+      'Это нормально. Каждое — память и опыт.';
+
+  @override
+  String get archiveEmpty => 'Архив пуст';
+
+  @override
+  String get archiveEmptyHint =>
+      'Здесь появятся растения, с которыми ваши пути разойдутся.';
 }

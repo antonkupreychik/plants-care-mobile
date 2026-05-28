@@ -1425,6 +1425,96 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Закрыть'**
   String get roomMoveClose;
+
+  /// Заголовок строки настроек, ведущей на экран «Архив» (17)
+  ///
+  /// In ru, this message translates to:
+  /// **'Архив'**
+  String get profileArchiveTitle;
+
+  /// Семантика кнопки «назад» на экране «Архив»
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get archiveBack;
+
+  /// Надзаголовок (eyebrow) экрана «Архив» со счётчиком архивных растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Архив · {count, plural, =0{нет растений} one{{count} растение} few{{count} растения} many{{count} растений} other{{count} растения}}'**
+  String archiveEyebrow(int count);
+
+  /// Серифный заголовок экрана «Архив», обычная часть перед акцентом (напр. «В »)
+  ///
+  /// In ru, this message translates to:
+  /// **'В '**
+  String get archiveHeadingLead;
+
+  /// Серифный заголовок экрана «Архив», акцентная часть (primary italic, напр. «памяти»)
+  ///
+  /// In ru, this message translates to:
+  /// **'памяти'**
+  String get archiveHeadingAccent;
+
+  /// Подпись под заголовком экрана «Архив»
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения, с которыми пути разошлись. Их история — здесь, а не в корзине.'**
+  String get archiveSubtitle;
+
+  /// Префикс строки срока жизни для подаренного растения (мужской род, без «о»)
+  ///
+  /// In ru, this message translates to:
+  /// **'Прожил рядом ·'**
+  String get archiveLivedPrefixGifted;
+
+  /// Префикс строки срока жизни для погибшего растения (средний род)
+  ///
+  /// In ru, this message translates to:
+  /// **'Прожило рядом ·'**
+  String get archiveLivedPrefix;
+
+  /// Чип на карточке архивного растения (открыть дневник) — coming soon
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть дневник'**
+  String get archiveOpenDiary;
+
+  /// Чип на карточке архивного растения (вспомнить) — coming soon
+  ///
+  /// In ru, this message translates to:
+  /// **'Вспомнить'**
+  String get archiveRemember;
+
+  /// Eyebrow карточки ретроспективы на экране «Архив»
+  ///
+  /// In ru, this message translates to:
+  /// **'Ретроспектива'**
+  String get archiveRetrospectiveLabel;
+
+  /// Текст карточки ретроспективы со средним сроком жизни
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения живут с тобой в среднем {avg}'**
+  String archiveRetrospectiveText(String avg);
+
+  /// Подпись карточки ретроспективы на экране «Архив»
+  ///
+  /// In ru, this message translates to:
+  /// **'Это нормально. Каждое — память и опыт.'**
+  String get archiveRetrospectiveHint;
+
+  /// Заголовок пустого состояния экрана «Архив»
+  ///
+  /// In ru, this message translates to:
+  /// **'Архив пуст'**
+  String get archiveEmpty;
+
+  /// Подпись пустого состояния экрана «Архив»
+  ///
+  /// In ru, this message translates to:
+  /// **'Здесь появятся растения, с которыми ваши пути разойдутся.'**
+  String get archiveEmptyHint;
 }
 
 class _AppLocalizationsDelegate
