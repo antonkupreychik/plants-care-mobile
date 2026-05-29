@@ -100,11 +100,20 @@ class PlantCardScreen extends ConsumerWidget {
                   ),
                 ),
 
-                // ДНЕВНИК — заголовок секции.
+                // ДНЕВНИК — заголовок секции + ссылка на полную историю (21).
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(22, 24, 22, 0),
                   sliver: SliverToBoxAdapter(
-                    child: SectionTitle(title: l10n.plantCardJournalTitle),
+                    child: SectionTitle(
+                      title: l10n.plantCardJournalTitle,
+                      trailing: _ViewAllHistoryLink(
+                        label: l10n.careHistoryViewAll,
+                        onTap: () => context.pushNamed(
+                          'plantHistory',
+                          pathParameters: {'id': '$plantId'},
+                        ),
+                      ),
+                    ),
                   ),
                 ),
 
@@ -298,6 +307,49 @@ class _JournalSection extends StatelessWidget {
         onRetry: onRetry,
       ),
       data: (entries) => PlantJournalCard(entries: entries),
+    );
+  }
+}
+
+/// Ссылка-вход в полную историю ухода (экран 21): «Всё ›».
+class _ViewAllHistoryLink extends StatelessWidget {
+  const _ViewAllHistoryLink({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(999),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Semantics(
+          button: true,
+          label: label,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: c.primary,
+                  ),
+                ),
+                const SizedBox(width: 2),
+                Icon(Icons.chevron_right_rounded, size: 18, color: c.primary),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
