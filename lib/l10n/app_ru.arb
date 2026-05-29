@@ -1600,6 +1600,83 @@
     "description": "Подпись офлайн-состояния (экран 29)"
   },
 
+  "firstCareSuccessEyebrow": "Готово",
+  "@firstCareSuccessEyebrow": {
+    "description": "Надзаголовок (eyebrow) экрана 33 «Успех первого ухода»"
+  },
+
+  "firstCareSuccessTitleWater": "{plant} напоена",
+  "@firstCareSuccessTitleWater": {
+    "description": "Hero-заголовок экрана 33 после первого полива. Род слова «напоена» зафиксирован формой дизайна (грамматический род произвольной клички недоступен на клиенте — косметическое ограничение).",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "firstCareSuccessTitleSpray": "{plant} опрыскана",
+  "@firstCareSuccessTitleSpray": {
+    "description": "Hero-заголовок экрана 33 после первого опрыскивания.",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "firstCareSuccessTitleFertilize": "{plant} удобрена",
+  "@firstCareSuccessTitleFertilize": {
+    "description": "Hero-заголовок экрана 33 после первого внесения удобрения.",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "firstCareSuccessTitleGeneric": "{plant} — уход отмечен",
+  "@firstCareSuccessTitleGeneric": {
+    "description": "Нейтральный hero-заголовок экрана 33 для нераспознанного типа ухода.",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "firstCareSuccessVerbWater": "напоена",
+  "@firstCareSuccessVerbWater": {
+    "description": "Акцентное слово-глагол hero-заголовка экрана 33 (полив) — выделяется курсивом и цветом primary."
+  },
+
+  "firstCareSuccessVerbSpray": "опрыскана",
+  "@firstCareSuccessVerbSpray": {
+    "description": "Акцентное слово-глагол hero-заголовка экрана 33 (опрыскивание)."
+  },
+
+  "firstCareSuccessVerbFertilize": "удобрена",
+  "@firstCareSuccessVerbFertilize": {
+    "description": "Акцентное слово-глагол hero-заголовка экрана 33 (удобрение)."
+  },
+
+  "firstCareSuccessBubble": "«Спасибо! Сразу легче дышится 💧»",
+  "@firstCareSuccessBubble": {
+    "description": "Реплика-благодарность растения в speech-bubble экрана 33 (вариант полива из дизайна)."
+  },
+
+  "firstCareSuccessFallbackPlantName": "Растение",
+  "@firstCareSuccessFallbackPlantName": {
+    "description": "Нейтральное имя растения на экране 33, если деталь не загрузилась (уход уже записан — не показываем как ошибку)."
+  },
+
+  "firstCareSuccessStreakDayOne": "Стрик начат · день 1",
+  "@firstCareSuccessStreakDayOne": {
+    "description": "Чип старта стрика на экране 33 (только при onTime == true)."
+  },
+
+  "firstCareSuccessNextHint": "Я напомню, когда придёт время следующего ухода.",
+  "@firstCareSuccessNextHint": {
+    "description": "Строка ободрения внизу экрана 33 БЕЗ счётчика дней (интервал до следующего ухода недоступен, G19)."
+  },
+
+  "firstCareSuccessCta": "Вернуться в сад",
+  "@firstCareSuccessCta": {
+    "description": "CTA-кнопка экрана 33 → возврат в таб «Сад»."
+  },
+
   "careHistoryOverline": "Дневник ухода",
   "@careHistoryOverline": {
     "description": "Надзаголовок экрана 21 «Полная история ухода»"

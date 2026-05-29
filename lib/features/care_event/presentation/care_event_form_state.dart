@@ -51,7 +51,22 @@ sealed class CareEventSubmitStatus with _$CareEventSubmitStatus {
   const factory CareEventSubmitStatus.submitting() = Submitting;
 
   /// Успех — UI закрывает sheet, показывает подтверждение.
-  const factory CareEventSubmitStatus.success() = SubmitSuccess;
+  ///
+  /// Несёт данные записанного события для пост-успешного флоу (экран 33
+  /// «Успех первого ухода»):
+  /// - [wasFirstCare] — это было ПЕРВОЕ событие ухода растения (детекция до
+  ///   POST по `total` истории; при ошибке детекции — `false`, деградируем
+  ///   тихо, без празднования);
+  /// - [kind] — тип записанного ухода (для иллюстрации/копирайта экрана 33);
+  /// - [onTime] — выполнено ли в срок (как вернул backend в `LoggedCareEvent`).
+  ///
+  /// Sheet читает это в listener на `status` и решает: push экрана 33
+  /// (если [wasFirstCare]) или обычный снэкбар.
+  const factory CareEventSubmitStatus.success({
+    @Default(false) bool wasFirstCare,
+    @Default(CareEventKind.water) CareEventKind kind,
+    @Default(true) bool onTime,
+  }) = SubmitSuccess;
 
   /// Ошибка — UI рисует баннер/тост по типу [error] (текст через l10n).
   const factory CareEventSubmitStatus.failure(ApiError error) = SubmitFailure;
