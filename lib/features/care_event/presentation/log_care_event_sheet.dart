@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/clock/clock_provider.dart';
@@ -62,13 +63,22 @@ class _LogCareEventSheet extends ConsumerWidget {
     final controller = ref.read(provider.notifier);
 
     // Закрытие sheet ровно один раз на переход в success (а не в build —
-    // используем listen, чтобы не дёргать Navigator при ребилдах).
+    // используем listen, чтобы не дёргать Navigator при ребилдах). Если это был
+    // ПЕРВЫЙ уход растения — после закрытия sheet открываем экран 33 «Успех
+    // первого ухода» (push поверх shell). Иначе — обычный снэкбар.
     ref.listen(provider.select((s) => s.status), (prev, next) {
-      if (next is SubmitSuccess) {
+      if (next case SubmitSuccess(:final wasFirstCare, :final kind, :final onTime)) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(l10n.careSheetSubmitted)));
+        if (wasFirstCare) {
+          if (!context.mounted) return;
+          context.push(
+            '/home/care-success/$plantId?kind=${kind.name}&onTime=$onTime',
+          );
+        } else {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(content: Text(l10n.careSheetSubmitted)));
+        }
       }
     });
 

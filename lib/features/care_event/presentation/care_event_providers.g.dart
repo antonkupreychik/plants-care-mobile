@@ -56,3 +56,59 @@ final class LogCareEventProvider
 }
 
 String _$logCareEventHash() => r'a79ed8094151b26eb6ef077e00b396a7b18e0212';
+
+/// DI-точка use case [CountPriorCareEvents] — детекция «первого ухода»
+/// (экран 33). Notifier зовёт use case, а не репозиторий напрямую (MADR-002).
+
+@ProviderFor(countPriorCareEvents)
+final countPriorCareEventsProvider = CountPriorCareEventsProvider._();
+
+/// DI-точка use case [CountPriorCareEvents] — детекция «первого ухода»
+/// (экран 33). Notifier зовёт use case, а не репозиторий напрямую (MADR-002).
+
+final class CountPriorCareEventsProvider
+    extends
+        $FunctionalProvider<
+          CountPriorCareEvents,
+          CountPriorCareEvents,
+          CountPriorCareEvents
+        >
+    with $Provider<CountPriorCareEvents> {
+  /// DI-точка use case [CountPriorCareEvents] — детекция «первого ухода»
+  /// (экран 33). Notifier зовёт use case, а не репозиторий напрямую (MADR-002).
+  CountPriorCareEventsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'countPriorCareEventsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$countPriorCareEventsHash();
+
+  @$internal
+  @override
+  $ProviderElement<CountPriorCareEvents> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CountPriorCareEvents create(Ref ref) {
+    return countPriorCareEvents(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CountPriorCareEvents value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CountPriorCareEvents>(value),
+    );
+  }
+}
+
+String _$countPriorCareEventsHash() =>
+    r'001dc7962adcb61f95b935708ba4b50680425219';

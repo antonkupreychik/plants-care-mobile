@@ -51,6 +51,27 @@ class CareEventRepositoryImpl implements CareEventRepository {
     }
   }
 
+  @override
+  Future<Result<int>> priorCareEventCount(int plantId) async {
+    try {
+      // Минимальная страница: нужны только метаданные пагинации (`total`),
+      // сами записи не загружаем. Тот же эндпоинт и scope chat, что у чтения
+      // истории в `PlantCardRepositoryImpl.getHistory` (`X-Chat-Id` ставит
+      // `AuthInterceptor`). Держим вызов в фиче care_event, чтобы детекция
+      // «первого ухода» была самодостаточной.
+      final response = await _api.plantHistory.getPlantHistory(
+        xChatId: _headerOverriddenByInterceptor,
+        id: plantId,
+        limit: 1,
+        offset: 0,
+        extras: authScopeExtra(AuthScope.chat),
+      );
+      return Result.success(response.total);
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
   /// `ErrorInterceptor` уже нормализовал ошибку в [ApiError] и положил её в
   /// `DioException.error`. Если там не [ApiError] — безопасный fallback.
   ApiError _toApiError(DioException e) =>

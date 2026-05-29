@@ -86,21 +86,39 @@ class LogCareEventController extends _$LogCareEventController {
 
     state = state.copyWith(status: const CareEventSubmitStatus.submitting());
 
+    // Детекция «первого ухода» (экран 33) ДО POST: спрашиваем, сколько событий
+    // у растения уже записано. count == 0 → это первый уход. Любой Failure ИЛИ
+    // count > 0 → не первый: деградируем тихо, без празднования. Детекция НИКОГДА
+    // не блокирует и не валит запись — уход обязан логироваться в любом случае.
+    final priorCount =
+        await ref.read(countPriorCareEventsProvider).call(state.plantId);
+
+    // Sheet — autoDispose family поверх showModalBottomSheet: если пользователь
+    // смахнул sheet во время этого await, notifier диспоузнулся и обращение к
+    // ref/state ниже кинуло бы StateError. Тот же guard покрывает и await POST
+    // ниже. Просто выходим — запись ещё не отправлена, sheet закрыт.
+    if (!ref.mounted) return false;
+
+    final wasFirstCare = priorCount is Success<int> && priorCount.value == 0;
+
     final draft = state.toDraft(clientId: clientId);
     final result = await ref.read(logCareEventProvider).call(draft);
 
-    // Sheet — autoDispose family поверх showModalBottomSheet: если пользователь
-    // смахнул sheet во время in-flight POST, notifier диспоузнулся и обращение к
-    // ref/state ниже кинуло бы StateError (Future от submit UI отбрасывает).
-    // Запись на бэке уже создана/создаётся — идемпотентность по clientId
-    // покрывает повтор, sheet всё равно закрыт. Просто выходим.
+    // Тот же guard после await POST: запись на бэке уже создана/создаётся —
+    // идемпотентность по clientId покрывает повтор, sheet всё равно закрыт.
     if (!ref.mounted) return false;
 
     switch (result) {
-      case Success():
+      case Success(:final value):
         _attemptClientId = null;
         _invalidateAfterSuccess(state.plantId);
-        state = state.copyWith(status: const CareEventSubmitStatus.success());
+        state = state.copyWith(
+          status: CareEventSubmitStatus.success(
+            wasFirstCare: wasFirstCare,
+            kind: value.type,
+            onTime: value.onTime,
+          ),
+        );
         return true;
       case Failure(:final error):
         // clientId НЕ сбрасываем: повторный submit ретраит ту же попытку.
