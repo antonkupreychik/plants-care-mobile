@@ -2061,6 +2061,138 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Отметить первый уход'**
   String get careHistoryEmptyCta;
+
+  /// Строка настроек профиля → экран 14 «Месячный отчёт»
+  ///
+  /// In ru, this message translates to:
+  /// **'Месячный отчёт'**
+  String get profileReportTitle;
+
+  /// Кнопка «Поделиться» в шапке отчёта (экран 14), coming-soon
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться'**
+  String get reportShare;
+
+  /// Кнопка «назад» на экране месячного отчёта (экран 14)
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get reportBack;
+
+  /// Надстрочник hero на экране отчёта: «Отчёт · май 2026»
+  ///
+  /// In ru, this message translates to:
+  /// **'Отчёт · {month}'**
+  String reportOverline(String month);
+
+  /// Hero-заголовок отчёта при высоком проценте вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'Месяц прошёл отлично'**
+  String get reportTitleGreat;
+
+  /// Hero-заголовок отчёта при среднем проценте вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'Хороший месяц'**
+  String get reportTitleGood;
+
+  /// Нейтральный hero-заголовок отчёта (нет данных по проценту / низкий)
+  ///
+  /// In ru, this message translates to:
+  /// **'Итоги месяца'**
+  String get reportTitleNeutral;
+
+  /// Подзаголовок hero про текущий стрик
+  ///
+  /// In ru, this message translates to:
+  /// **'Стрик {streak, plural, one{{streak} день} few{{streak} дня} many{{streak} дней} other{{streak} дня}} заботы подряд. Так держать.'**
+  String reportSubtitleStreak(int streak);
+
+  /// Подзаголовок hero, когда стрик 0
+  ///
+  /// In ru, this message translates to:
+  /// **'Понемногу складывается твоя история заботы.'**
+  String get reportSubtitleNoStreak;
+
+  /// Подпись большого числа: стрик
+  ///
+  /// In ru, this message translates to:
+  /// **'дней\nподряд'**
+  String get reportStatStreak;
+
+  /// Подпись большого числа: выполнено забот
+  ///
+  /// In ru, this message translates to:
+  /// **'забот\nвыполнено'**
+  String get reportStatDone;
+
+  /// Подпись большого числа: процент вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'вовремя'**
+  String get reportStatOnTime;
+
+  /// Подпись большого числа: пропусков (просрочено)
+  ///
+  /// In ru, this message translates to:
+  /// **'пропусков'**
+  String get reportStatOverdue;
+
+  /// Плейсхолдер числа, когда данных нет (например процент вовремя null)
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get reportNoData;
+
+  /// Формат процента вовремя на экране отчёта
+  ///
+  /// In ru, this message translates to:
+  /// **'{value}%'**
+  String reportPercent(int value);
+
+  /// Заголовок секции разбивки выполненного по типам ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'По типам заботы'**
+  String get reportByTypeLabel;
+
+  /// Заголовок секции недельного тренда
+  ///
+  /// In ru, this message translates to:
+  /// **'По неделям'**
+  String get reportTrendLabel;
+
+  /// Подпись недели в тренде: сколько выполнено
+  ///
+  /// In ru, this message translates to:
+  /// **'{done, plural, one{{done} забота} few{{done} заботы} many{{done} забот} other{{done} заботы}}'**
+  String reportTrendWeekDone(int done);
+
+  /// Короткая подпись недели в тренде (номер ISO-недели)
+  ///
+  /// In ru, this message translates to:
+  /// **'Нед. {number}'**
+  String reportWeekLabel(String number);
+
+  /// Нижняя CTA-кнопка «Поделиться отчётом» (экран 14), coming-soon
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться отчётом'**
+  String get reportShareCta;
+
+  /// Заголовок пустого состояния отчёта (нет заботы за месяц)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока пусто'**
+  String get reportEmptyTitle;
+
+  /// Текст пустого состояния отчёта
+  ///
+  /// In ru, this message translates to:
+  /// **'За этот месяц ещё нет заботы. Отметь первый уход — и здесь появятся твои итоги.'**
+  String get reportEmptyBody;
 }
 
 class _AppLocalizationsDelegate

@@ -66,6 +66,10 @@
     {
       "name": "Weather",
       "description": "Снапшот погоды (влажность) и рекомендация backend по поливу для Home. Публичный, без авторизации."
+    },
+    {
+      "name": "Reports",
+      "description": "Месячный отчёт по уходу (экран 14) — агрегаты за календарный месяц. User-scoped (`X-User-Id`)."
     }
   ],
   "paths": {
@@ -978,6 +982,68 @@
           }
         }
       }
+    },
+    "/api/v1/reports/monthly": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "getMonthlyReport",
+        "summary": "Месячный отчёт по уходу",
+        "description": "Возвращает агрегированный отчёт за календарный месяц: количество\nвыполненных и просроченных задач, разбивку выполненных по типам ухода,\nтекущий стрик и понедельный тренд (выполнено + доля вовремя).\n\nРазбивки по растениям и «звёзд месяца» backend не отдаёт.\n\nИдентификация пользователя — по заголовку `X-User-Id`.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/XUserId"
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "required": false,
+            "description": "Месяц отчёта в формате `YYYY-MM` (например, `2026-05`). Строка, НЕ\nдата. Если не передан — backend берёт текущий месяц пользователя.\n",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}$",
+              "example": "2026-05"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Отчёт посчитан.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthlyReportResponse"
+                },
+                "example": {
+                  "month": "2026-05",
+                  "done": 189,
+                  "overdue": 5,
+                  "byType": {
+                    "WATERING": 27,
+                    "MISTING": 47,
+                    "FERTILIZING": 9,
+                    "SOIL_CHECK": 2
+                  },
+                  "streak": 9,
+                  "healthTrend": [
+                    {
+                      "week": "2026-W19",
+                      "done": 11,
+                      "onTimePct": 0.91
+                    },
+                    {
+                      "week": "2026-W20",
+                      "done": 33,
+                      "onTimePct": 1.0
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1216,6 +1282,94 @@
             "type": "string",
             "maxLength": 16,
             "nullable": true
+          }
+        }
+      },
+      "MonthlyReportResponse": {
+        "type": "object",
+        "description": "Ответ `GET /api/v1/reports/monthly`. Агрегаты посчитаны backend.",
+        "required": [
+          "month",
+          "done",
+          "overdue",
+          "byType",
+          "streak",
+          "healthTrend"
+        ],
+        "properties": {
+          "month": {
+            "type": "string",
+            "description": "Месяц отчёта `YYYY-MM`.",
+            "example": "2026-05"
+          },
+          "done": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Всего выполненных задач ухода за месяц.",
+            "example": 189
+          },
+          "overdue": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Всего просроченных (невыполненных в срок) задач за месяц.",
+            "example": 5
+          },
+          "byType": {
+            "type": "object",
+            "description": "Разбивка выполненных задач по типу ухода. Ключ — строковый код типа\n(`WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`), значение —\nколичество. Неизвестные ключи клиент игнорирует.\n",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": {
+              "WATERING": 27,
+              "MISTING": 47,
+              "FERTILIZING": 9,
+              "SOIL_CHECK": 2
+            }
+          },
+          "streak": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Текущий стрик (выполнений вовремя подряд).",
+            "example": 9
+          },
+          "healthTrend": {
+            "type": "array",
+            "description": "Понедельный тренд за месяц (выполнено + доля вовремя).",
+            "items": {
+              "$ref": "#/components/schemas/WeeklyHealthBucket"
+            }
+          }
+        }
+      },
+      "WeeklyHealthBucket": {
+        "type": "object",
+        "description": "Агрегат за одну ISO-неделю месяца.",
+        "required": [
+          "week",
+          "done",
+          "onTimePct"
+        ],
+        "properties": {
+          "week": {
+            "type": "string",
+            "description": "ISO-неделя `YYYY-Www` (например, `2026-W19`).",
+            "example": "2026-W19"
+          },
+          "done": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Выполнено задач за неделю.",
+            "example": 11
+          },
+          "onTimePct": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Доля выполненных вовремя [0, 1].",
+            "example": 0.91
           }
         }
       },

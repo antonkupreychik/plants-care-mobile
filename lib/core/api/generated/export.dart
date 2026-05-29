@@ -14,11 +14,14 @@ export 'clients/stats_client.dart';
 export 'clients/species_client.dart';
 export 'clients/care_types_client.dart';
 export 'clients/weather_client.dart';
+export 'clients/reports_client.dart';
 // Data classes
 export 'models/plant_health_response.dart';
 export 'models/location_dto.dart';
 export 'models/location_create_request.dart';
 export 'models/location_update_request.dart';
+export 'models/monthly_report_response.dart';
+export 'models/weekly_health_bucket.dart';
 export 'models/plant_dto.dart';
 export 'models/plant_create_request.dart';
 export 'models/plant_update_request.dart';

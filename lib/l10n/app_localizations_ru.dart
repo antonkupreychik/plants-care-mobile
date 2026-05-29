@@ -1282,4 +1282,98 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get careHistoryEmptyCta => 'Отметить первый уход';
+
+  @override
+  String get profileReportTitle => 'Месячный отчёт';
+
+  @override
+  String get reportShare => 'Поделиться';
+
+  @override
+  String get reportBack => 'Назад';
+
+  @override
+  String reportOverline(String month) {
+    return 'Отчёт · $month';
+  }
+
+  @override
+  String get reportTitleGreat => 'Месяц прошёл отлично';
+
+  @override
+  String get reportTitleGood => 'Хороший месяц';
+
+  @override
+  String get reportTitleNeutral => 'Итоги месяца';
+
+  @override
+  String reportSubtitleStreak(int streak) {
+    String _temp0 = intl.Intl.pluralLogic(
+      streak,
+      locale: localeName,
+      other: '$streak дня',
+      many: '$streak дней',
+      few: '$streak дня',
+      one: '$streak день',
+    );
+    return 'Стрик $_temp0 заботы подряд. Так держать.';
+  }
+
+  @override
+  String get reportSubtitleNoStreak =>
+      'Понемногу складывается твоя история заботы.';
+
+  @override
+  String get reportStatStreak => 'дней\nподряд';
+
+  @override
+  String get reportStatDone => 'забот\nвыполнено';
+
+  @override
+  String get reportStatOnTime => 'вовремя';
+
+  @override
+  String get reportStatOverdue => 'пропусков';
+
+  @override
+  String get reportNoData => '—';
+
+  @override
+  String reportPercent(int value) {
+    return '$value%';
+  }
+
+  @override
+  String get reportByTypeLabel => 'По типам заботы';
+
+  @override
+  String get reportTrendLabel => 'По неделям';
+
+  @override
+  String reportTrendWeekDone(int done) {
+    String _temp0 = intl.Intl.pluralLogic(
+      done,
+      locale: localeName,
+      other: '$done заботы',
+      many: '$done забот',
+      few: '$done заботы',
+      one: '$done забота',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reportWeekLabel(String number) {
+    return 'Нед. $number';
+  }
+
+  @override
+  String get reportShareCta => 'Поделиться отчётом';
+
+  @override
+  String get reportEmptyTitle => 'Пока пусто';
+
+  @override
+  String get reportEmptyBody =>
+      'За этот месяц ещё нет заботы. Отметь первый уход — и здесь появятся твои итоги.';
 }

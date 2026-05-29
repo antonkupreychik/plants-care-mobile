@@ -1796,5 +1796,130 @@
   "careHistoryEmptyCta": "Отметить первый уход",
   "@careHistoryEmptyCta": {
     "description": "CTA пустого дневника (экран 31): открыть отметку ухода"
+  },
+
+  "profileReportTitle": "Месячный отчёт",
+  "@profileReportTitle": {
+    "description": "Строка настроек профиля → экран 14 «Месячный отчёт»"
+  },
+
+  "reportShare": "Поделиться",
+  "@reportShare": {
+    "description": "Кнопка «Поделиться» в шапке отчёта (экран 14), coming-soon"
+  },
+
+  "reportBack": "Назад",
+  "@reportBack": {
+    "description": "Кнопка «назад» на экране месячного отчёта (экран 14)"
+  },
+
+  "reportOverline": "Отчёт · {month}",
+  "@reportOverline": {
+    "description": "Надстрочник hero на экране отчёта: «Отчёт · май 2026»",
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+
+  "reportTitleGreat": "Месяц прошёл отлично",
+  "@reportTitleGreat": {
+    "description": "Hero-заголовок отчёта при высоком проценте вовремя"
+  },
+
+  "reportTitleGood": "Хороший месяц",
+  "@reportTitleGood": {
+    "description": "Hero-заголовок отчёта при среднем проценте вовремя"
+  },
+
+  "reportTitleNeutral": "Итоги месяца",
+  "@reportTitleNeutral": {
+    "description": "Нейтральный hero-заголовок отчёта (нет данных по проценту / низкий)"
+  },
+
+  "reportSubtitleStreak": "Стрик {streak, plural, one{{streak} день} few{{streak} дня} many{{streak} дней} other{{streak} дня}} заботы подряд. Так держать.",
+  "@reportSubtitleStreak": {
+    "description": "Подзаголовок hero про текущий стрик",
+    "placeholders": {
+      "streak": { "type": "int" }
+    }
+  },
+
+  "reportSubtitleNoStreak": "Понемногу складывается твоя история заботы.",
+  "@reportSubtitleNoStreak": {
+    "description": "Подзаголовок hero, когда стрик 0"
+  },
+
+  "reportStatStreak": "дней\nподряд",
+  "@reportStatStreak": {
+    "description": "Подпись большого числа: стрик"
+  },
+
+  "reportStatDone": "забот\nвыполнено",
+  "@reportStatDone": {
+    "description": "Подпись большого числа: выполнено забот"
+  },
+
+  "reportStatOnTime": "вовремя",
+  "@reportStatOnTime": {
+    "description": "Подпись большого числа: процент вовремя"
+  },
+
+  "reportStatOverdue": "пропусков",
+  "@reportStatOverdue": {
+    "description": "Подпись большого числа: пропусков (просрочено)"
+  },
+
+  "reportNoData": "—",
+  "@reportNoData": {
+    "description": "Плейсхолдер числа, когда данных нет (например процент вовремя null)"
+  },
+
+  "reportPercent": "{value}%",
+  "@reportPercent": {
+    "description": "Формат процента вовремя на экране отчёта",
+    "placeholders": {
+      "value": { "type": "int" }
+    }
+  },
+
+  "reportByTypeLabel": "По типам заботы",
+  "@reportByTypeLabel": {
+    "description": "Заголовок секции разбивки выполненного по типам ухода"
+  },
+
+  "reportTrendLabel": "По неделям",
+  "@reportTrendLabel": {
+    "description": "Заголовок секции недельного тренда"
+  },
+
+  "reportTrendWeekDone": "{done, plural, one{{done} забота} few{{done} заботы} many{{done} забот} other{{done} заботы}}",
+  "@reportTrendWeekDone": {
+    "description": "Подпись недели в тренде: сколько выполнено",
+    "placeholders": {
+      "done": { "type": "int" }
+    }
+  },
+
+  "reportWeekLabel": "Нед. {number}",
+  "@reportWeekLabel": {
+    "description": "Короткая подпись недели в тренде (номер ISO-недели)",
+    "placeholders": {
+      "number": { "type": "String" }
+    }
+  },
+
+  "reportShareCta": "Поделиться отчётом",
+  "@reportShareCta": {
+    "description": "Нижняя CTA-кнопка «Поделиться отчётом» (экран 14), coming-soon"
+  },
+
+  "reportEmptyTitle": "Пока пусто",
+  "@reportEmptyTitle": {
+    "description": "Заголовок пустого состояния отчёта (нет заботы за месяц)"
+  },
+
+  "reportEmptyBody": "За этот месяц ещё нет заботы. Отметь первый уход — и здесь появятся твои итоги.",
+  "@reportEmptyBody": {
+    "description": "Текст пустого состояния отчёта"
   }
 }

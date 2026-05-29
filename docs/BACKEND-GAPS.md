@@ -347,12 +347,21 @@
   `POST /api/v1/sharing/invites` `{plantIds[], inviteeContact, canLogCare}`.
 - **Заглушка мобилки:** экран не делаем.
 
-## G23 · Месячный отчёт 🔴
+## G23 · Месячный отчёт 🟢
 - **Экран:** 14 Месячный отчёт.
-- **Сейчас:** нет (#137).
-- **Предложение:** `GET /api/v1/reports/monthly?month=YYYY-MM` → агрегаты ухода за месяц
-  (выполнено/просрочено по типам, стрик, динамика health и т.п.).
-- **Заглушка мобилки:** экран не делаем.
+- **Закрыто (2026-05-29):** бэк отдаёт `GET /api/v1/reports/monthly?month=YYYY-MM` →
+  `MonthlyReportResponse {month, done, overdue, byType{WATERING/MISTING/FERTILIZING/SOIL_CHECK},
+  streak, healthTrend[{week (ISO YYYY-Www), done, onTimePct}]}` (проверено curl, `200`,
+  user-scoped). Эндпоинт ДОБАВЛЕН в статическую спеку (`resources/reports.yaml`), клиент
+  перегенерён (MADR-007). Мобилка: фича `lib/features/report/`, экран 14 (вход — профиль).
+  Большие числа (стрик/выполнено/вовремя%/пропуски), разбивка по типам, недельный тренд.
+  `onTimePct` общий — взвешенно из `healthTrend` на клиенте (отдельного поля нет).
+  Query `month` — строка `YYYY-MM`, НЕ `format: date` (G12-ловушка обойдена).
+- **Осталось (новый под-гэп per-plant):** дизайн v4 показывает «Звёзды месяца»
+  (медали по растениям) и «Личный рекорд» (самое спокойное растение) — per-plant разбивки
+  агрегат `MonthlyReportResponse` НЕ содержит. Эти блоки опущены. Нужно: либо
+  `topPlants[{plantId, name, done, ...}]`/`calmestPlantId` в ответе, либо отдельный
+  `GET /reports/monthly/plants?month=`. Дельты к прошлому месяцу («+8% к апрелю») тоже нет.
 
 ## G24 · Диагноз проблемного растения 🔴
 - **Экран:** 15 Диагноз.

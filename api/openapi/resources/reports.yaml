@@ -1,0 +1,133 @@
+# Месячный отчёт по уходу (экран 14). Агрегаты за календарный месяц,
+# посчитанные backend: сделано/просрочено, разбивка по типам ухода, стрик и
+# понедельный тренд «здоровья» (выполнено + доля вовремя).
+#
+# Эндпоинт ЖИВОЙ на dev-бэке (проверено curl), но отсутствовал в курированной
+# статической спеке — добавлен здесь вручную по реальной схеме. Источник правды
+# до синхронизации с GitHub — этот файл.
+#
+# User-scoped: идентификация по `X-User-Id` (как у `/plants`), интерсептор
+# подставит заголовок из AuthSession. Все значения посчитаны backend, клиент их
+# не пересчитывает.
+#
+# G12-ловушка: query `month` — строка формата `YYYY-MM` (НЕ дата). Объявлен как
+# `type: string` без `format: date`, иначе кодген сделает `DateTime` и сломает
+# сериализацию (отправит полную дату/время вместо `YYYY-MM`).
+
+paths:
+  Monthly:
+    get:
+      tags: [Reports]
+      operationId: getMonthlyReport
+      summary: Месячный отчёт по уходу
+      description: |
+        Возвращает агрегированный отчёт за календарный месяц: количество
+        выполненных и просроченных задач, разбивку выполненных по типам ухода,
+        текущий стрик и понедельный тренд (выполнено + доля вовремя).
+
+        Разбивки по растениям и «звёзд месяца» backend не отдаёт.
+
+        Идентификация пользователя — по заголовку `X-User-Id`.
+      parameters:
+        - $ref: '../_common/parameters.yaml#/XUserId'
+        - name: month
+          in: query
+          required: false
+          description: |
+            Месяц отчёта в формате `YYYY-MM` (например, `2026-05`). Строка, НЕ
+            дата. Если не передан — backend берёт текущий месяц пользователя.
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}$'
+            example: '2026-05'
+      responses:
+        '200':
+          description: Отчёт посчитан.
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/MonthlyReportResponse'
+              example:
+                month: '2026-05'
+                done: 189
+                overdue: 5
+                byType:
+                  WATERING: 27
+                  MISTING: 47
+                  FERTILIZING: 9
+                  SOIL_CHECK: 2
+                streak: 9
+                healthTrend:
+                  - week: '2026-W19'
+                    done: 11
+                    onTimePct: 0.91
+                  - week: '2026-W20'
+                    done: 33
+                    onTimePct: 1.0
+
+schemas:
+  MonthlyReportResponse:
+    type: object
+    description: Ответ `GET /api/v1/reports/monthly`. Агрегаты посчитаны backend.
+    required: [month, done, overdue, byType, streak, healthTrend]
+    properties:
+      month:
+        type: string
+        description: Месяц отчёта `YYYY-MM`.
+        example: '2026-05'
+      done:
+        type: integer
+        format: int32
+        description: Всего выполненных задач ухода за месяц.
+        example: 189
+      overdue:
+        type: integer
+        format: int32
+        description: Всего просроченных (невыполненных в срок) задач за месяц.
+        example: 5
+      byType:
+        type: object
+        description: |
+          Разбивка выполненных задач по типу ухода. Ключ — строковый код типа
+          (`WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`), значение —
+          количество. Неизвестные ключи клиент игнорирует.
+        additionalProperties:
+          type: integer
+          format: int32
+        example:
+          WATERING: 27
+          MISTING: 47
+          FERTILIZING: 9
+          SOIL_CHECK: 2
+      streak:
+        type: integer
+        format: int32
+        description: Текущий стрик (выполнений вовремя подряд).
+        example: 9
+      healthTrend:
+        type: array
+        description: Понедельный тренд за месяц (выполнено + доля вовремя).
+        items:
+          $ref: '#/schemas/WeeklyHealthBucket'
+
+  WeeklyHealthBucket:
+    type: object
+    description: Агрегат за одну ISO-неделю месяца.
+    required: [week, done, onTimePct]
+    properties:
+      week:
+        type: string
+        description: ISO-неделя `YYYY-Www` (например, `2026-W19`).
+        example: '2026-W19'
+      done:
+        type: integer
+        format: int32
+        description: Выполнено задач за неделю.
+        example: 11
+      onTimePct:
+        type: number
+        format: double
+        minimum: 0
+        maximum: 1
+        description: Доля выполненных вовремя [0, 1].
+        example: 0.91
