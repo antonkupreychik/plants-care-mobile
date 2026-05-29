@@ -18,6 +18,9 @@ SpeciesDetailDto _$SpeciesDetailDtoFromJson(Map<String, dynamic> json) =>
       careDifficulty: json['careDifficulty'] as String?,
       lightPreference: json['lightPreference'] as String?,
       description: json['description'] as String?,
+      facts: (json['facts'] as List<dynamic>?)
+          ?.map((e) => SpeciesFactDto.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$SpeciesDetailDtoToJson(SpeciesDetailDto instance) =>
@@ -32,4 +35,5 @@ Map<String, dynamic> _$SpeciesDetailDtoToJson(SpeciesDetailDto instance) =>
       'careDifficulty': instance.careDifficulty,
       'lightPreference': instance.lightPreference,
       'description': instance.description,
+      'facts': instance.facts,
     };

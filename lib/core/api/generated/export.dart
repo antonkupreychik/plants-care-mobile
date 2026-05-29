@@ -25,6 +25,7 @@ export 'models/plant_update_request.dart';
 export 'models/page_response_plant_dto.dart';
 export 'models/species_summary_dto.dart';
 export 'models/species_detail_dto.dart';
+export 'models/species_fact_dto.dart';
 export 'models/page_response_species_summary_dto.dart';
 export 'models/today_response.dart';
 export 'models/health_response.dart';

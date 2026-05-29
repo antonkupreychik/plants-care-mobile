@@ -2,6 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'care_difficulty.dart';
 import 'light_preference.dart';
+import 'species_fact.dart';
+import 'species_fact_category.dart';
 
 part 'species_detail.freezed.dart';
 
@@ -28,5 +30,21 @@ abstract class SpeciesDetail with _$SpeciesDetail {
 
     /// Длинное текстовое описание вида.
     String? description,
+
+    /// Справочные факты о виде (уход, происхождение, токсичность и т.п.).
+    /// Backend может не прислать поле/прислать пустой массив → `const []`.
+    @Default(<SpeciesFact>[]) List<SpeciesFact> facts,
   }) = _SpeciesDetail;
+}
+
+/// Удобный доступ к токсичности для UI (баннер на экране 20).
+extension SpeciesDetailToxicity on SpeciesDetail {
+  /// Первый факт с категорией [SpeciesFactCategory.toxicity], если есть.
+  /// `null` → вид нетоксичен / данных нет → UI баннер не рисует.
+  SpeciesFact? get toxicityFact {
+    for (final fact in facts) {
+      if (fact.category == SpeciesFactCategory.toxicity) return fact;
+    }
+    return null;
+  }
 }

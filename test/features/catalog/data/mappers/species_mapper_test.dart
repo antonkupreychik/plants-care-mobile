@@ -1,10 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plantcare_mobile/core/api/generated/models/page_response_species_summary_dto.dart';
 import 'package:plantcare_mobile/core/api/generated/models/species_detail_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/species_fact_dto.dart';
 import 'package:plantcare_mobile/core/api/generated/models/species_summary_dto.dart';
 import 'package:plantcare_mobile/features/catalog/data/mappers/species_mapper.dart';
 import 'package:plantcare_mobile/features/catalog/domain/care_difficulty.dart';
 import 'package:plantcare_mobile/features/catalog/domain/light_preference.dart';
+import 'package:plantcare_mobile/features/catalog/domain/species_detail.dart';
+import 'package:plantcare_mobile/features/catalog/domain/species_fact_category.dart';
 
 void main() {
   group('SpeciesSummaryDtoMapper.toDomain', () {
@@ -95,6 +98,113 @@ void main() {
       expect(detail.soilCheckDays, isNull);
       expect(detail.careDifficulty, CareDifficulty.unknown);
       expect(detail.lightPreference, LightPreference.unknown);
+    });
+  });
+
+  // Дельта ветки: facts[] → domain. Точка нормализации категории
+  // (открытый перечень строк backend → enum) и удобный геттер toxicityFact.
+  group('SpeciesDetailDtoMapper facts mapping', () {
+    test('should_map_facts_with_categories_and_find_toxicity_when_present', () {
+      const dto = SpeciesDetailDto(
+        id: 3,
+        name: 'Спатифиллум',
+        facts: [
+          SpeciesFactDto(
+            category: 'CARE',
+            title: 'Полив',
+            body: 'Раз в неделю.',
+            source: null,
+          ),
+          SpeciesFactDto(
+            category: 'WONDERLAND',
+            title: 'Неизвестно',
+            body: 'Странная категория.',
+          ),
+          SpeciesFactDto(
+            category: 'TOXICITY',
+            title: 'Токсично для кошек',
+            body: 'Оксалаты кальция в листьях.',
+            source: 'ASPCA',
+          ),
+        ],
+      );
+
+      final detail = dto.toDomain();
+
+      expect(detail.facts.length, 3);
+      // Известная категория → точный enum.
+      expect(detail.facts[0].category, SpeciesFactCategory.care);
+      expect(detail.facts[0].title, 'Полив');
+      expect(detail.facts[0].body, 'Раз в неделю.');
+      // source: null сохраняется как null.
+      expect(detail.facts[0].source, isNull);
+      // Неизвестная строка категории → unknown (не падаем).
+      expect(detail.facts[1].category, SpeciesFactCategory.unknown);
+      // TOXICITY → toxicity, source проброшен.
+      expect(detail.facts[2].category, SpeciesFactCategory.toxicity);
+      expect(detail.facts[2].source, 'ASPCA');
+
+      // Геттер находит именно факт токсичности.
+      final tox = detail.toxicityFact;
+      expect(tox, isNotNull);
+      expect(tox!.category, SpeciesFactCategory.toxicity);
+      expect(tox.title, 'Токсично для кошек');
+      expect(tox.body, 'Оксалаты кальция в листьях.');
+      expect(tox.source, 'ASPCA');
+    });
+
+    test('should_map_lowercase_toxicity_category_to_toxicity', () {
+      const dto = SpeciesDetailDto(
+        id: 4,
+        name: 'x',
+        facts: [
+          SpeciesFactDto(category: 'toxicity', title: 't', body: 'b'),
+        ],
+      );
+
+      final detail = dto.toDomain();
+
+      expect(detail.facts.single.category, SpeciesFactCategory.toxicity);
+      expect(detail.toxicityFact, isNotNull);
+    });
+
+    test('should_default_facts_empty_and_toxicityFact_null_when_facts_null',
+        () {
+      const dto = SpeciesDetailDto(id: 5, name: 'Без фактов');
+
+      final detail = dto.toDomain();
+
+      expect(detail.facts, isEmpty);
+      expect(detail.toxicityFact, isNull);
+    });
+
+    test('should_keep_empty_facts_and_null_toxicityFact_when_facts_empty', () {
+      const dto = SpeciesDetailDto(id: 6, name: 'Пустой список', facts: []);
+
+      final detail = dto.toDomain();
+
+      expect(detail.facts, isEmpty);
+      expect(detail.toxicityFact, isNull);
+    });
+
+    test('should_return_null_toxicityFact_when_no_toxicity_among_facts', () {
+      const dto = SpeciesDetailDto(
+        id: 7,
+        name: 'Нетоксичный',
+        facts: [
+          SpeciesFactDto(category: 'CARE', title: 'c', body: 'b'),
+          SpeciesFactDto(category: 'ORIGIN', title: 'o', body: 'b'),
+        ],
+      );
+
+      final detail = dto.toDomain();
+
+      expect(detail.facts.length, 2);
+      expect(detail.facts.map((f) => f.category), [
+        SpeciesFactCategory.care,
+        SpeciesFactCategory.origin,
+      ]);
+      expect(detail.toxicityFact, isNull);
     });
   });
 
