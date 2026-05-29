@@ -6,6 +6,7 @@ import '../../features/archive/presentation/archive_screen.dart';
 import '../../features/auth/presentation/auth_code_screen.dart';
 import '../../features/auth/presentation/auth_welcome_back_screen.dart';
 import '../../features/auth/presentation/auth_welcome_screen.dart';
+import '../../features/care_history/presentation/care_history_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -110,6 +111,21 @@ final appRouter = GoRouter(
                         int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
                     return PlantCardScreen(plantId: id);
                   },
+                  routes: [
+                    // Экран 21 «Полная история ухода». Полноэкранно поверх
+                    // shell (своя кнопка «назад», без таб-бара), как карточка.
+                    // Вход: карточка 02 → «Дневник · Всё».
+                    GoRoute(
+                      path: 'history',
+                      name: 'plantHistory',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final id =
+                            int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                        return CareHistoryScreen(plantId: id);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

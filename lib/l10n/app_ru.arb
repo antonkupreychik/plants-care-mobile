@@ -1598,5 +1598,126 @@
   "offlineMessage": "Не получается достучаться до сервера. Проверь интернет — твои растения никуда не денутся.",
   "@offlineMessage": {
     "description": "Подпись офлайн-состояния (экран 29)"
+  },
+
+  "careHistoryOverline": "Дневник ухода",
+  "@careHistoryOverline": {
+    "description": "Надзаголовок экрана 21 «Полная история ухода»"
+  },
+
+  "careHistoryViewAll": "Всё",
+  "@careHistoryViewAll": {
+    "description": "Ссылка-вход на полную историю ухода с карточки растения (02 → «Дневник · Всё»)"
+  },
+
+  "careHistorySummaryTotalLabel": "забот\nвсего",
+  "@careHistorySummaryTotalLabel": {
+    "description": "Подпись плитки сводки: всего записей истории"
+  },
+
+  "careHistorySummaryTotalValue": "{count}",
+  "@careHistorySummaryTotalValue": {
+    "description": "Значение плитки сводки: всего записей",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "careHistorySummaryOnTimeLabel": "вовремя",
+  "@careHistorySummaryOnTimeLabel": {
+    "description": "Подпись плитки сводки: доля уходов вовремя"
+  },
+
+  "careHistorySummaryOnTimeValue": "{percent}%",
+  "@careHistorySummaryOnTimeValue": {
+    "description": "Значение плитки сводки: процент уходов вовремя",
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+
+  "careHistorySummaryStreakLabel": "дней\nстрик",
+  "@careHistorySummaryStreakLabel": {
+    "description": "Подпись плитки сводки: серия уходов вовремя"
+  },
+
+  "careHistorySummaryStreakValue": "{count}",
+  "@careHistorySummaryStreakValue": {
+    "description": "Значение плитки сводки: длина серии",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "careHistoryFilterAll": "Всё",
+  "@careHistoryFilterAll": {
+    "description": "Фильтр-чип «все типы ухода» на экране 21"
+  },
+
+  "careHistoryEntryDate": "{dow} {day} · {time}",
+  "@careHistoryEntryDate": {
+    "description": "Дата записи таймлайна: день недели, число, время (локальная TZ)",
+    "placeholders": {
+      "dow": { "type": "String" },
+      "day": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+
+  "careHistoryOnTime": "ВОВРЕМЯ",
+  "@careHistoryOnTime": {
+    "description": "Метка записи таймлайна: уход выполнен в срок"
+  },
+
+  "careHistoryLate": "С ОПОЗДАНИЕМ",
+  "@careHistoryLate": {
+    "description": "Метка записи таймлайна: уход выполнен с опозданием"
+  },
+
+  "careHistoryPlantCreated": "{name} появилась у тебя · {date}",
+  "@careHistoryPlantCreated": {
+    "description": "Маркер появления растения в конце таймлайна",
+    "placeholders": {
+      "name": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+
+  "careHistoryLoadMore": "Показать ещё",
+  "@careHistoryLoadMore": {
+    "description": "Кнопка дозагрузки следующей страницы истории"
+  },
+
+  "careHistoryLoadMoreError": "Не удалось дозагрузить историю",
+  "@careHistoryLoadMoreError": {
+    "description": "Ошибка дозагрузки страницы истории (показанный список сохранён)"
+  },
+
+  "careHistoryEmptyTitle": "История",
+  "@careHistoryEmptyTitle": {
+    "description": "Заголовок пустого дневника (экран 31), первая часть"
+  },
+
+  "careHistoryEmptyTitleAccent": "только начинается",
+  "@careHistoryEmptyTitleAccent": {
+    "description": "Заголовок пустого дневника (экран 31), акцентная часть"
+  },
+
+  "careHistoryEmptyBubble": "Я только переехал к тебе. Отметь первый уход — и начнём вести историю вместе.",
+  "@careHistoryEmptyBubble": {
+    "description": "Реплика растения в пустом дневнике (экран 31)"
+  },
+
+  "careHistoryEmptyAuthor": "— {name}",
+  "@careHistoryEmptyAuthor": {
+    "description": "Подпись автора реплики в пустом дневнике",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "careHistoryEmptyCta": "Отметить первый уход",
+  "@careHistoryEmptyCta": {
+    "description": "CTA пустого дневника (экран 31): открыть отметку ухода"
   }
 }
