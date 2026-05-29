@@ -1144,6 +1144,25 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get homeLoadingCaption => 'Собираю твой сад…';
+
+  @override
+  String get offlineBannerTitle => 'Нет связи с садом';
+
+  @override
+  String get offlineBannerStatus => 'офлайн';
+
+  @override
+  String get offlineTitleLead => 'Сад на минутку ';
+
+  @override
+  String get offlineTitleAccent => 'вне зоны';
+
+  @override
+  String get offlineMessage =>
+      'Не получается достучаться до сервера. Проверь интернет — твои растения никуда не денутся.';
+
+  @override
   String get firstCareSuccessEyebrow => 'Готово';
 
   @override
