@@ -1,0 +1,85 @@
+# Погода на Home (G4). Снапшот влажности и рекомендации backend по поливу.
+#
+# Эндпоинт ЖИВОЙ на dev-бэке, но отсутствовал в курированной статической
+# спеке — добавлен здесь вручную по реальной схеме (curl на dev). Источник
+# правды до синхронизации с GitHub — этот файл.
+#
+# Все значения посчитаны backend; клиент рекомендацию НЕ пересчитывает.
+
+paths:
+  Snapshot:
+    get:
+      tags: [Weather]
+      operationId: getWeatherSnapshot
+      summary: Снапшот погоды для рекомендаций по поливу
+      description: |
+        Возвращает текущий снапшот погоды (влажность воздуха) и рекомендацию
+        backend, стоит ли отложить полив. Значения посчитаны backend по
+        внешнему источнику погоды и кэшируются (~60 мин, см. `fromCache`).
+
+        Если погода не настроена или источник недоступен, `available` равно
+        `false`, а остальные поля приходят `null` — UI не показывает строку
+        погоды.
+
+        Эндпоинт публичный: идентификация по заголовкам не требуется.
+      responses:
+        '200':
+          description: Снапшот погоды.
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/WeatherSnapshotResponse'
+              example:
+                available: true
+                humidityPercent: 88
+                recommendation: DEFER_OK
+                fetchedAt: '2026-05-28T20:09:38.777692Z'
+                fromCache: true
+
+schemas:
+  WeatherSnapshotResponse:
+    type: object
+    description: |
+      Снапшот погоды для рекомендаций по поливу, посчитанный backend.
+      При `available=false` все остальные поля — `null`.
+    required: [available]
+    properties:
+      available:
+        type: boolean
+        description: |
+          `true`, если данные погоды доступны (источник настроен и ответил).
+          При `false` остальные поля приходят `null`, UI не рисует строку погоды.
+        example: true
+      humidityPercent:
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+        nullable: true
+        description: |
+          Относительная влажность воздуха [0, 100]. `null`, если `available=false`.
+        example: 88
+      recommendation:
+        type: string
+        enum: [DEFER_OK, DO_NOT_DEFER, NEUTRAL]
+        nullable: true
+        description: |
+          Рекомендация backend по поливу: можно отложить (`DEFER_OK`),
+          откладывать не стоит (`DO_NOT_DEFER`), нейтрально (`NEUTRAL`).
+          `null`, если `available=false`. Клиент рекомендацию не пересчитывает.
+        example: DEFER_OK
+      fetchedAt:
+        type: string
+        format: date-time
+        nullable: true
+        description: |
+          Момент получения данных от источника (UTC, ISO-8601). `null`, если
+          `available=false`.
+        example: '2026-05-28T20:09:38.777692Z'
+      fromCache:
+        type: boolean
+        nullable: true
+        description: |
+          `true`, если снапшот отдан из серверного кеша (~60 мин), а не запрошен
+          у источника заново. `null`, если `available=false`.
+        example: true

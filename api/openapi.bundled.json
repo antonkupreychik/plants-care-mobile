@@ -62,6 +62,10 @@
     {
       "name": "Care Types",
       "description": "Публичный справочник типов ухода (полив, опрыскивание, и т.п.). Без авторизации."
+    },
+    {
+      "name": "Weather",
+      "description": "Снапшот погоды (влажность) и рекомендация backend по поливу для Home. Публичный, без авторизации."
     }
   ],
   "paths": {
@@ -945,6 +949,35 @@
           }
         }
       }
+    },
+    "/api/v1/weather/snapshot": {
+      "get": {
+        "tags": [
+          "Weather"
+        ],
+        "operationId": "getWeatherSnapshot",
+        "summary": "Снапшот погоды для рекомендаций по поливу",
+        "description": "Возвращает текущий снапшот погоды (влажность воздуха) и рекомендацию\nbackend, стоит ли отложить полив. Значения посчитаны backend по\nвнешнему источнику погоды и кэшируются (~60 мин, см. `fromCache`).\n\nЕсли погода не настроена или источник недоступен, `available` равно\n`false`, а остальные поля приходят `null` — UI не показывает строку\nпогоды.\n\nЭндпоинт публичный: идентификация по заголовкам не требуется.\n",
+        "responses": {
+          "200": {
+            "description": "Снапшот погоды.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherSnapshotResponse"
+                },
+                "example": {
+                  "available": true,
+                  "humidityPercent": 88,
+                  "recommendation": "DEFER_OK",
+                  "fetchedAt": "2026-05-28T20:09:38.777692Z",
+                  "fromCache": true
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1547,6 +1580,53 @@
             "type": "string",
             "description": "Локализованное русское имя для UI.",
             "example": "Полив"
+          }
+        }
+      },
+      "WeatherSnapshotResponse": {
+        "type": "object",
+        "description": "Снапшот погоды для рекомендаций по поливу, посчитанный backend.\nПри `available=false` все остальные поля — `null`.\n",
+        "required": [
+          "available"
+        ],
+        "properties": {
+          "available": {
+            "type": "boolean",
+            "description": "`true`, если данные погоды доступны (источник настроен и ответил).\nПри `false` остальные поля приходят `null`, UI не рисует строку погоды.\n",
+            "example": true
+          },
+          "humidityPercent": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 100,
+            "nullable": true,
+            "description": "Относительная влажность воздуха [0, 100]. `null`, если `available=false`.\n",
+            "example": 88
+          },
+          "recommendation": {
+            "type": "string",
+            "enum": [
+              "DEFER_OK",
+              "DO_NOT_DEFER",
+              "NEUTRAL"
+            ],
+            "nullable": true,
+            "description": "Рекомендация backend по поливу: можно отложить (`DEFER_OK`),\nоткладывать не стоит (`DO_NOT_DEFER`), нейтрально (`NEUTRAL`).\n`null`, если `available=false`. Клиент рекомендацию не пересчитывает.\n",
+            "example": "DEFER_OK"
+          },
+          "fetchedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Момент получения данных от источника (UTC, ISO-8601). `null`, если\n`available=false`.\n",
+            "example": "2026-05-28T20:09:38.777692Z"
+          },
+          "fromCache": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "`true`, если снапшот отдан из серверного кеша (~60 мин), а не запрошен\nу источника заново. `null`, если `available=false`.\n",
+            "example": true
           }
         }
       },

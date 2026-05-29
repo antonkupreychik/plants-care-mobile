@@ -11,6 +11,7 @@ import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../care_event/data/mappers/task_type_mapper.dart';
 import '../../care_event/presentation/log_care_event_sheet.dart';
+import '../../weather/presentation/widgets/weather_strip.dart';
 import '../../../core/locations/garden_location.dart';
 import '../domain/plant.dart';
 import 'home_filter.dart';
@@ -28,8 +29,9 @@ import 'widgets/today_card.dart';
 /// loading/error/empty/data самостоятельно (провайдеры падают независимо).
 ///
 /// Кольцо здоровья на карточке (G1) показываем — справа от имени растения
-/// (см. [PlantCard] → [HealthRing]). Скрыто как заглушки каркаса: алерт
-/// «проблемное растение» (BACKEND-GAPS G3), виджет погоды (G4),
+/// (см. [PlantCard] → [HealthRing]). Микро-строка погоды (G4) — под хедером
+/// ([WeatherStrip], тихо сворачивается, если погода не настроена). Скрыто как
+/// заглушки каркаса: алерт «проблемное растение» (BACKEND-GAPS G3),
 /// mood/voiceLine (G2).
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -67,6 +69,11 @@ class HomeScreen extends ConsumerWidget {
                     child: HomeHeader(now: nowLocal, onComingSoon: comingSoon),
                   ),
                 ),
+
+                // WEATHER STRIP (G4) — под хедером, над карточкой «Сегодня».
+                // Свой паддинг внутри виджета; тихо сворачивается, если погода
+                // недоступна/грузится/ошибка (Home не блокируется).
+                const SliverToBoxAdapter(child: WeatherStrip()),
 
                 // TODAY — секция задач (своё loading/error/empty/data).
                 SliverPadding(
