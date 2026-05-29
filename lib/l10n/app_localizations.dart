@@ -1827,6 +1827,42 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Погода: влажность {humidity}%'**
   String weatherSemanticsHumidityOnly(int humidity);
+
+  /// Курсивная подпись под ростком на полноэкранном скелетоне загрузки Home (экран 28)
+  ///
+  /// In ru, this message translates to:
+  /// **'Собираю твой сад…'**
+  String get homeLoadingCaption;
+
+  /// Заголовок офлайн-баннера на полноэкранном офлайн-состоянии (экран 29)
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет связи с садом'**
+  String get offlineBannerTitle;
+
+  /// Статус-метка справа в офлайн-баннере (экран 29)
+  ///
+  /// In ru, this message translates to:
+  /// **'офлайн'**
+  String get offlineBannerStatus;
+
+  /// Серифный заголовок офлайн-состояния, обычная часть перед акцентом (экран 29)
+  ///
+  /// In ru, this message translates to:
+  /// **'Сад на минутку '**
+  String get offlineTitleLead;
+
+  /// Серифный заголовок офлайн-состояния, акцентная часть (primary italic, экран 29)
+  ///
+  /// In ru, this message translates to:
+  /// **'вне зоны'**
+  String get offlineTitleAccent;
+
+  /// Подпись офлайн-состояния (экран 29)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не получается достучаться до сервера. Проверь интернет — твои растения никуда не денутся.'**
+  String get offlineMessage;
 }
 
 class _AppLocalizationsDelegate

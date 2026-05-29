@@ -8,6 +8,7 @@ import '../../../core/error/api_error_l10n.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/error_state.dart';
+import '../../../core/widgets/offline_state.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../care_event/data/mappers/task_type_mapper.dart';
 import '../../care_event/presentation/log_care_event_sheet.dart';
@@ -16,8 +17,10 @@ import '../../../core/locations/garden_location.dart';
 import '../domain/plant.dart';
 import 'home_filter.dart';
 import 'home_providers.dart';
+import 'home_view_state.dart';
 import 'widgets/garden_empty.dart';
 import 'widgets/home_header.dart';
+import 'widgets/home_loading_skeleton.dart';
 import 'widgets/location_chips.dart';
 import 'widgets/plant_card.dart';
 import 'widgets/today_card.dart';
@@ -40,6 +43,46 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
+
+    // Top-level состояние Home (28 скелетон / 29 офлайн / контент). Ключуется
+    // на первичный провайдер сада (см. [homeViewStateProvider]); вторичные
+    // секции отрисовываются посекционно уже внутри content.
+    final viewState = ref.watch(homeViewStateProvider);
+
+    return Scaffold(
+      backgroundColor: c.bg,
+      body: switch (viewState) {
+        HomeViewState.coldLoading => const HomeLoadingSkeleton(),
+        HomeViewState.offline => OfflineState(
+          title: l10n.offlineTitleLead,
+          titleAccent: l10n.offlineTitleAccent,
+          message: l10n.offlineMessage,
+          retryLabel: l10n.retry,
+          bannerTitle: l10n.offlineBannerTitle,
+          bannerStatus: l10n.offlineBannerStatus,
+          // Реального кэш-снапшота нет — строку last-saved не показываем
+          // (время не фабрикуем).
+          lastSavedLabel: null,
+          onRetry: () {
+            ref.invalidate(homePlantsProvider);
+            ref.invalidate(homeTasksProvider);
+            ref.invalidate(homeLocationsProvider);
+          },
+        ),
+        HomeViewState.content => const _HomeContent(),
+      },
+    );
+  }
+}
+
+/// Контентное состояние Home: посекционная раскладка (каждая секция рисует
+/// своё loading/error/empty/data) + FAB добавления растения.
+class _HomeContent extends ConsumerWidget {
+  const _HomeContent();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final nowLocal = ref.watch(clockProvider).nowUtc().toLocal();
 
     void comingSoon() {
@@ -55,91 +98,88 @@ class HomeScreen extends ConsumerWidget {
     final plants = ref.watch(homePlantsProvider);
     final locations = ref.watch(homeLocationsProvider);
 
-    return Scaffold(
-      backgroundColor: c.bg,
-      body: SafeArea(
-        bottom: false,
-        child: Stack(
-          children: [
-            CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
-                  sliver: SliverToBoxAdapter(
-                    child: HomeHeader(now: nowLocal, onComingSoon: comingSoon),
-                  ),
+    return SafeArea(
+      bottom: false,
+      child: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
+                sliver: SliverToBoxAdapter(
+                  child: HomeHeader(now: nowLocal, onComingSoon: comingSoon),
                 ),
+              ),
 
-                // WEATHER STRIP (G4) — под хедером, над карточкой «Сегодня».
-                // Свой паддинг внутри виджета; тихо сворачивается, если погода
-                // недоступна/грузится/ошибка (Home не блокируется).
-                const SliverToBoxAdapter(child: WeatherStrip()),
+              // WEATHER STRIP (G4) — под хедером, над карточкой «Сегодня».
+              // Свой паддинг внутри виджета; тихо сворачивается, если погода
+              // недоступна/грузится/ошибка (Home не блокируется).
+              const SliverToBoxAdapter(child: WeatherStrip()),
 
-                // TODAY — секция задач (своё loading/error/empty/data).
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                  sliver: SliverToBoxAdapter(
-                    child: _TodaySection(
-                      tasks: tasks,
-                      now: nowLocal,
-                      // Тап по задаче /today → sheet ухода с предвыбранным
-                      // типом. Внутренний taskType нормализуем в публичный
-                      // CareEventKind маппером data-слоя (SOIL_CHECK/unknown →
-                      // unknown, контроллер откатит на дефолт).
-                      onTaskTap: (task) => showLogCareEventSheet(
-                        context,
-                        plantId: task.plantId,
-                        presetType: careEventKindFromTaskType(task.type),
-                        plantName: task.plantName,
-                      ),
-                      onSeeAll: () => context.push('/home/today'),
-                      onRetry: () => ref.invalidate(homeTasksProvider),
+              // TODAY — секция задач (своё loading/error/empty/data).
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                sliver: SliverToBoxAdapter(
+                  child: _TodaySection(
+                    tasks: tasks,
+                    now: nowLocal,
+                    // Тап по задаче /today → sheet ухода с предвыбранным
+                    // типом. Внутренний taskType нормализуем в публичный
+                    // CareEventKind маппером data-слоя (SOIL_CHECK/unknown →
+                    // unknown, контроллер откатит на дефолт).
+                    onTaskTap: (task) => showLogCareEventSheet(
+                      context,
+                      plantId: task.plantId,
+                      presetType: careEventKindFromTaskType(task.type),
+                      plantName: task.plantName,
                     ),
+                    onSeeAll: () => context.push('/home/today'),
+                    onRetry: () => ref.invalidate(homeTasksProvider),
                   ),
                 ),
+              ),
 
-                // MY GARDEN — заголовок + счётчик.
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(22, 20, 22, 0),
-                  sliver: SliverToBoxAdapter(
-                    child: _GardenHeader(plants: plants),
+              // MY GARDEN — заголовок + счётчик.
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(22, 20, 22, 0),
+                sliver: SliverToBoxAdapter(
+                  child: _GardenHeader(plants: plants),
+                ),
+              ),
+
+              // CHIPS — локации (своё loading/error/data; ошибку прячем тихо).
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 8, bottom: 14),
+                sliver: SliverToBoxAdapter(
+                  child: _LocationChipsSection(
+                    locations: locations,
+                    plants: plants,
                   ),
                 ),
+              ),
 
-                // CHIPS — локации (своё loading/error/data; ошибку прячем тихо).
-                SliverPadding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 14),
-                  sliver: SliverToBoxAdapter(
-                    child: _LocationChipsSection(
-                      locations: locations,
-                      plants: plants,
-                    ),
-                  ),
-                ),
+              // GRID — растения (loading/error/empty/data).
+              _PlantGridSection(
+                plants: plants,
+                onAdd: openAddPlant,
+                onRecognizePhoto: comingSoon,
+                onOpenCatalog: () => context.go('/catalog'),
+                onPlantTap: (plant) => context.push('/home/plants/${plant.id}'),
+                onRetry: () => ref.invalidate(homePlantsProvider),
+              ),
 
-                // GRID — растения (loading/error/empty/data).
-                _PlantGridSection(
-                  plants: plants,
-                  onAdd: openAddPlant,
-                  onRecognizePhoto: comingSoon,
-                  onOpenCatalog: () => context.go('/catalog'),
-                  onPlantTap: (plant) => context.push('/home/plants/${plant.id}'),
-                  onRetry: () => ref.invalidate(homePlantsProvider),
-                ),
+              // Запас под плавающую навигацию и FAB.
+              const SliverToBoxAdapter(child: SizedBox(height: 120)),
+            ],
+          ),
 
-                // Запас под плавающую навигацию и FAB.
-                const SliverToBoxAdapter(child: SizedBox(height: 120)),
-              ],
-            ),
-
-            // FAB «добавить» → мастер добавления растения (экран 04).
-            Positioned(
-              right: 20,
-              bottom: 92,
-              child: _AddFab(onPressed: openAddPlant),
-            ),
-          ],
-        ),
+          // FAB «добавить» → мастер добавления растения (экран 04).
+          Positioned(
+            right: 20,
+            bottom: 92,
+            child: _AddFab(onPressed: openAddPlant),
+          ),
+        ],
       ),
     );
   }
@@ -289,10 +329,7 @@ class _PlantGridSection extends ConsumerWidget {
         padding: EdgeInsets.symmetric(horizontal: 16),
         sliver: SliverGrid(
           gridDelegate: _gridDelegate,
-          delegate: SliverChildBuilderDelegate(
-            _skeletonBuilder,
-            childCount: 4,
-          ),
+          delegate: SliverChildBuilderDelegate(_skeletonBuilder, childCount: 4),
         ),
       ),
       error: (error, _) => SliverPadding(
@@ -340,17 +377,14 @@ class _PlantGridSection extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           sliver: SliverGrid(
             gridDelegate: _gridDelegate,
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final plant = visible[index];
-                return PlantCard(
-                  plant: plant,
-                  tintWarm: index.isEven,
-                  onTap: () => onPlantTap(plant),
-                );
-              },
-              childCount: visible.length,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final plant = visible[index];
+              return PlantCard(
+                plant: plant,
+                tintWarm: index.isEven,
+                onTap: () => onPlantTap(plant),
+              );
+            }, childCount: visible.length),
           ),
         );
       },
