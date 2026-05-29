@@ -721,6 +721,53 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String speciesWateringEveryDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'раз в $count дн.',
+      many: 'раз в $count дн.',
+      few: 'раз в $count дн.',
+      one: 'раз в $count дн.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get speciesFactDifficulty => 'Сложность';
+
+  @override
+  String get speciesFactLight => 'Свет';
+
+  @override
+  String get speciesFactWatering => 'Полив';
+
+  @override
+  String get speciesToxicTitle => 'Токсично для кошек, собак и детей';
+
+  @override
+  String get speciesToxicSubtitle =>
+      'Сок листьев раздражает слизистую. Держите повыше.';
+
+  @override
+  String get speciesLightTitle => 'Свет';
+
+  @override
+  String get speciesLightStepShade => 'Тень';
+
+  @override
+  String get speciesLightStepPartial => 'Полутень';
+
+  @override
+  String get speciesLightStepIndirect => 'Рассеянный';
+
+  @override
+  String get speciesLightStepDirect => 'Прямое';
+
+  @override
+  String get speciesAddToGarden => 'Добавить в мой сад';
+
+  @override
   String get addPlantCarePlanEmpty =>
       'Выберите вид на первом шаге, чтобы увидеть план ухода';
 

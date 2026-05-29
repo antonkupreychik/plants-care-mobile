@@ -1132,6 +1132,78 @@ abstract class AppLocalizations {
   /// **'{count, plural, one{каждый {count} день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}'**
   String speciesCareEveryDays(int count);
 
+  /// Компактный интервал полива в фактах-сетке («раз в N дн.»)
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{раз в {count} дн.} few{раз в {count} дн.} many{раз в {count} дн.} other{раз в {count} дн.}}'**
+  String speciesWateringEveryDays(int count);
+
+  /// Подпись факта «Сложность» в сетке фактов вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Сложность'**
+  String get speciesFactDifficulty;
+
+  /// Подпись факта «Свет» в сетке фактов вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Свет'**
+  String get speciesFactLight;
+
+  /// Подпись факта «Полив» в сетке фактов вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Полив'**
+  String get speciesFactWatering;
+
+  /// Заголовок баннера токсичности вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Токсично для кошек, собак и детей'**
+  String get speciesToxicTitle;
+
+  /// Пояснение в баннере токсичности вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Сок листьев раздражает слизистую. Держите повыше.'**
+  String get speciesToxicSubtitle;
+
+  /// Заголовок секции шкалы света на карточке вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Свет'**
+  String get speciesLightTitle;
+
+  /// Ступень шкалы света: тень
+  ///
+  /// In ru, this message translates to:
+  /// **'Тень'**
+  String get speciesLightStepShade;
+
+  /// Ступень шкалы света: полутень
+  ///
+  /// In ru, this message translates to:
+  /// **'Полутень'**
+  String get speciesLightStepPartial;
+
+  /// Ступень шкалы света: рассеянный
+  ///
+  /// In ru, this message translates to:
+  /// **'Рассеянный'**
+  String get speciesLightStepIndirect;
+
+  /// Ступень шкалы света: прямое солнце
+  ///
+  /// In ru, this message translates to:
+  /// **'Прямое'**
+  String get speciesLightStepDirect;
+
+  /// Кнопка добавления вида в сад на карточке вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить в мой сад'**
+  String get speciesAddToGarden;
+
   /// Подсказка на шаге плана ухода, когда вид не выбран
   ///
   /// In ru, this message translates to:

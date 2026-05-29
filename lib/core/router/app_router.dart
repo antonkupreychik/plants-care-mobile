@@ -87,7 +87,15 @@ final appRouter = GoRouter(
                   path: 'add',
                   name: 'addPlant',
                   parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) => const AddPlantWizardScreen(),
+                  builder: (context, state) {
+                    // Опциональный предвыбранный вид: `/home/add?speciesId=123`
+                    // (CTA с карточки вида, экран 20). Невалидный/отсутствующий
+                    // → null, мастер стартует с шага 1 «Выбор вида».
+                    final speciesId = int.tryParse(
+                      state.uri.queryParameters['speciesId'] ?? '',
+                    );
+                    return AddPlantWizardScreen(initialSpeciesId: speciesId);
+                  },
                 ),
                 GoRoute(
                   path: 'plants/:id',

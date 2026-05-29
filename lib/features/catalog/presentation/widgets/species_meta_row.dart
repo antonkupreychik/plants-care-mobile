@@ -79,4 +79,9 @@ class SpeciesMetaRow extends StatelessWidget {
         CareDifficulty.hard => c.terracotta,
         CareDifficulty.unknown => c.inkMute,
       };
+
+  /// Цвет точки сложности по токенам текущей темы — переиспользуется в
+  /// фактах-сетке детали вида (единый маппинг сложность → цвет).
+  static Color dotColorFor(BuildContext context, CareDifficulty difficulty) =>
+      _dotColor(Theme.of(context).extension<PcColors>()!, difficulty);
 }
