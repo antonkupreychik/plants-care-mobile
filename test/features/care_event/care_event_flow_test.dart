@@ -65,6 +65,11 @@ void main() {
     );
 
     final repo = _MockCareEventRepo();
+    // submit() зовёт детекцию «первого ухода» ДО POST — стабим, иначе мок кинет
+    // на незастабленном вызове. Этот флоу-тест про проводку presetType, не про
+    // экран 33: отдаём «уже есть события» (path снэкбара).
+    when(() => repo.priorCareEventCount(any()))
+        .thenAnswer((_) async => const Result.success(3));
     when(() => repo.logCareEvent(any())).thenAnswer(
       (_) async => Result.success(
         LoggedCareEvent(

@@ -1827,6 +1827,84 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Погода: влажность {humidity}%'**
   String weatherSemanticsHumidityOnly(int humidity);
+
+  /// Надзаголовок (eyebrow) экрана 33 «Успех первого ухода»
+  ///
+  /// In ru, this message translates to:
+  /// **'Готово'**
+  String get firstCareSuccessEyebrow;
+
+  /// Hero-заголовок экрана 33 после первого полива. Род слова «напоена» зафиксирован формой дизайна (грамматический род произвольной клички недоступен на клиенте — косметическое ограничение).
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} напоена'**
+  String firstCareSuccessTitleWater(String plant);
+
+  /// Hero-заголовок экрана 33 после первого опрыскивания.
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} опрыскана'**
+  String firstCareSuccessTitleSpray(String plant);
+
+  /// Hero-заголовок экрана 33 после первого внесения удобрения.
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} удобрена'**
+  String firstCareSuccessTitleFertilize(String plant);
+
+  /// Нейтральный hero-заголовок экрана 33 для нераспознанного типа ухода.
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} — уход отмечен'**
+  String firstCareSuccessTitleGeneric(String plant);
+
+  /// Акцентное слово-глагол hero-заголовка экрана 33 (полив) — выделяется курсивом и цветом primary.
+  ///
+  /// In ru, this message translates to:
+  /// **'напоена'**
+  String get firstCareSuccessVerbWater;
+
+  /// Акцентное слово-глагол hero-заголовка экрана 33 (опрыскивание).
+  ///
+  /// In ru, this message translates to:
+  /// **'опрыскана'**
+  String get firstCareSuccessVerbSpray;
+
+  /// Акцентное слово-глагол hero-заголовка экрана 33 (удобрение).
+  ///
+  /// In ru, this message translates to:
+  /// **'удобрена'**
+  String get firstCareSuccessVerbFertilize;
+
+  /// Реплика-благодарность растения в speech-bubble экрана 33 (вариант полива из дизайна).
+  ///
+  /// In ru, this message translates to:
+  /// **'«Спасибо! Сразу легче дышится 💧»'**
+  String get firstCareSuccessBubble;
+
+  /// Нейтральное имя растения на экране 33, если деталь не загрузилась (уход уже записан — не показываем как ошибку).
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение'**
+  String get firstCareSuccessFallbackPlantName;
+
+  /// Чип старта стрика на экране 33 (только при onTime == true).
+  ///
+  /// In ru, this message translates to:
+  /// **'Стрик начат · день 1'**
+  String get firstCareSuccessStreakDayOne;
+
+  /// Строка ободрения внизу экрана 33 БЕЗ счётчика дней (интервал до следующего ухода недоступен, G19).
+  ///
+  /// In ru, this message translates to:
+  /// **'Я напомню, когда придёт время следующего ухода.'**
+  String get firstCareSuccessNextHint;
+
+  /// CTA-кнопка экрана 33 → возврат в таб «Сад».
+  ///
+  /// In ru, this message translates to:
+  /// **'Вернуться в сад'**
+  String get firstCareSuccessCta;
 }
 
 class _AppLocalizationsDelegate

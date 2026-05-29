@@ -99,7 +99,15 @@ void main() {
 
   late _MockCareEventRepo repo;
 
-  setUp(() => repo = _MockCareEventRepo());
+  setUp(() {
+    repo = _MockCareEventRepo();
+    // Детекция «первого ухода» зовётся внутри submit() ДО POST. По умолчанию
+    // отдаём «уже есть события» (count > 0) → wasFirstCare == false, чтобы
+    // существующие success-проверки не зависели от празднования. Тесты
+    // первого ухода переопределяют этот стаб явно.
+    when(() => repo.priorCareEventCount(any()))
+        .thenAnswer((_) async => const Result.success(3));
+  });
 
   group('initial state', () {
     test('should_apply_preset_water', () {
@@ -400,6 +408,120 @@ void main() {
               as CareEventDraft;
       expect(draft.performedAtUtc.isUtc, isTrue);
       expect(draft.performedAtUtc, local.toUtc());
+    });
+  });
+
+  group('first-care detection (экран 33)', () {
+    test('should_set_wasFirstCare_true_when_prior_count_zero', () async {
+      when(() => repo.priorCareEventCount(_plantId))
+          .thenAnswer((_) async => const Result.success(0));
+      when(() => repo.logCareEvent(any())).thenAnswer(
+        (_) async => Result.success(
+          LoggedCareEvent(
+            id: 7,
+            plantId: _plantId,
+            plantName: 'Фикус',
+            type: CareEventKind.fertilize,
+            performedAtUtc: _fixedNow,
+            onTime: false,
+          ),
+        ),
+      );
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      final ok = await notifier.submit();
+
+      expect(ok, isTrue);
+      final status =
+          container.read(logCareEventControllerProvider(_plantId)).status;
+      // wasFirstCare — из детекции до POST; kind/onTime — из ответа backend.
+      expect(
+        status,
+        const CareEventSubmitStatus.success(
+          wasFirstCare: true,
+          kind: CareEventKind.fertilize,
+          onTime: false,
+        ),
+      );
+    });
+
+    test('should_count_prior_for_correct_plantId', () async {
+      when(() => repo.priorCareEventCount(_plantId))
+          .thenAnswer((_) async => const Result.success(0));
+      when(() => repo.logCareEvent(any()))
+          .thenAnswer((_) async => Result.success(_logged('uuid')));
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      await notifier.submit();
+
+      // Детекция спрашивает счётчик именно по plantId формы, а не по чему-то ещё.
+      verify(() => repo.priorCareEventCount(_plantId)).called(1);
+    });
+
+    test('should_set_wasFirstCare_false_when_prior_count_positive', () async {
+      when(() => repo.priorCareEventCount(_plantId))
+          .thenAnswer((_) async => const Result.success(1));
+      when(() => repo.logCareEvent(any()))
+          .thenAnswer((_) async => Result.success(_logged('uuid')));
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      final ok = await notifier.submit();
+
+      expect(ok, isTrue);
+      final status = container
+          .read(logCareEventControllerProvider(_plantId))
+          .status as SubmitSuccess;
+      expect(status.wasFirstCare, isFalse);
+    });
+
+    test(
+        'should_degrade_to_wasFirstCare_false_and_still_log_when_count_fails',
+        () async {
+      // Детекция падает (Result.failure) → деградируем тихо: празднования нет,
+      // но уход ВСЁ РАВНО записан и submit успешен.
+      when(() => repo.priorCareEventCount(_plantId))
+          .thenAnswer((_) async => const Result.failure(ApiError.network()));
+      when(() => repo.logCareEvent(any()))
+          .thenAnswer((_) async => Result.success(_logged('uuid')));
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      final ok = await notifier.submit();
+
+      expect(ok, isTrue); // запись прошла
+      verify(() => repo.logCareEvent(any())).called(1); // POST действительно ушёл
+      final status = container
+          .read(logCareEventControllerProvider(_plantId))
+          .status as SubmitSuccess;
+      expect(status.wasFirstCare, isFalse); // деградировали без падения
+    });
+
+    test('should_keep_failure_status_when_post_fails_even_if_first_care',
+        () async {
+      // Регрессия: детекция «первый уход» не меняет поведение при ошибке POST —
+      // статус остаётся failure (как до экрана 33), submit возвращает false.
+      when(() => repo.priorCareEventCount(_plantId))
+          .thenAnswer((_) async => const Result.success(0));
+      when(() => repo.logCareEvent(any()))
+          .thenAnswer((_) async => const Result.failure(ApiError.network()));
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      final ok = await notifier.submit();
+
+      expect(ok, isFalse);
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).status,
+        const CareEventSubmitStatus.failure(ApiError.network()),
+      );
     });
   });
 

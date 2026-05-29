@@ -105,7 +105,14 @@ void main() {
 
   late _MockRepo repo;
 
-  setUp(() => repo = _MockRepo());
+  setUp(() {
+    repo = _MockRepo();
+    // submit() зовёт детекцию «первого ухода» ДО POST. По умолчанию — «уже есть
+    // события» (>0): эти sheet-тесты проверяют общий путь (снэкбар/ошибка), а не
+    // празднование. Тест экрана 33 живёт в first_care_success_flow_test.dart.
+    when(() => repo.priorCareEventCount(any()))
+        .thenAnswer((_) async => const Result.success(3));
+  });
 
   group('idle', () {
     testWidgets('should_show_controls_and_enabled_submit_button',

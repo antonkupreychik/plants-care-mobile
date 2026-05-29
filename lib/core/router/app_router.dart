@@ -6,8 +6,10 @@ import '../../features/archive/presentation/archive_screen.dart';
 import '../../features/auth/presentation/auth_code_screen.dart';
 import '../../features/auth/presentation/auth_welcome_back_screen.dart';
 import '../../features/auth/presentation/auth_welcome_screen.dart';
+import '../../features/care_event/presentation/first_care_success_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
+import '../../features/plant_card/domain/care_event_kind.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/today_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
@@ -97,6 +99,34 @@ final appRouter = GoRouter(
                     return AddPlantWizardScreen(initialSpeciesId: speciesId);
                   },
                 ),
+                // Экран 33 «Успех первого ухода» — полноэкранное празднование
+                // поверх shell (на root-навигаторе, без таб-бара), как карточка
+                // растения. Push'ится из sheet ухода после ПЕРВОГО события.
+                // `kind`/`onTime` несёт сам путь (запрос-параметры), асинхронно
+                // экран дочитывает имя/вид через `plantDetailProvider(plantId)`.
+                GoRoute(
+                  path: 'care-success/:plantId',
+                  name: 'careSuccess',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) {
+                    final plantId = int.tryParse(
+                          state.pathParameters['plantId'] ?? '',
+                        ) ??
+                        0;
+                    // Неизвестный/отсутствующий kind → нейтральный fallback
+                    // (экран рисует без падения). `onTime` по умолчанию true.
+                    final kind = _careKindFromName(
+                      state.uri.queryParameters['kind'],
+                    );
+                    final onTime =
+                        state.uri.queryParameters['onTime'] != 'false';
+                    return FirstCareSuccessScreen(
+                      plantId: plantId,
+                      careKind: kind,
+                      onTime: onTime,
+                    );
+                  },
+                ),
                 GoRoute(
                   path: 'plants/:id',
                   name: 'plantCard',
@@ -179,3 +209,14 @@ final appRouter = GoRouter(
     ),
   ],
 );
+
+/// Парсит query-параметр `kind` экрана 33 в [CareEventKind]. Неизвестное/пустое
+/// значение → [CareEventKind.water] (нейтральный fallback — экран не падает).
+/// Значения совпадают с `CareEventKind.name` (water/spray/fertilize), которые
+/// строит sheet при push.
+CareEventKind _careKindFromName(String? name) => switch (name) {
+      'water' => CareEventKind.water,
+      'spray' => CareEventKind.spray,
+      'fertilize' => CareEventKind.fertilize,
+      _ => CareEventKind.water,
+    };

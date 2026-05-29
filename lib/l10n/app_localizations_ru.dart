@@ -1142,4 +1142,52 @@ class AppLocalizationsRu extends AppLocalizations {
   String weatherSemanticsHumidityOnly(int humidity) {
     return 'Погода: влажность $humidity%';
   }
+
+  @override
+  String get firstCareSuccessEyebrow => 'Готово';
+
+  @override
+  String firstCareSuccessTitleWater(String plant) {
+    return '$plant напоена';
+  }
+
+  @override
+  String firstCareSuccessTitleSpray(String plant) {
+    return '$plant опрыскана';
+  }
+
+  @override
+  String firstCareSuccessTitleFertilize(String plant) {
+    return '$plant удобрена';
+  }
+
+  @override
+  String firstCareSuccessTitleGeneric(String plant) {
+    return '$plant — уход отмечен';
+  }
+
+  @override
+  String get firstCareSuccessVerbWater => 'напоена';
+
+  @override
+  String get firstCareSuccessVerbSpray => 'опрыскана';
+
+  @override
+  String get firstCareSuccessVerbFertilize => 'удобрена';
+
+  @override
+  String get firstCareSuccessBubble => '«Спасибо! Сразу легче дышится 💧»';
+
+  @override
+  String get firstCareSuccessFallbackPlantName => 'Растение';
+
+  @override
+  String get firstCareSuccessStreakDayOne => 'Стрик начат · день 1';
+
+  @override
+  String get firstCareSuccessNextHint =>
+      'Я напомню, когда придёт время следующего ухода.';
+
+  @override
+  String get firstCareSuccessCta => 'Вернуться в сад';
 }

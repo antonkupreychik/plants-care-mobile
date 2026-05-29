@@ -2,9 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/api/generated/clients/care_events_client.dart';
+import 'package:plantcare_mobile/core/api/generated/clients/plant_history_client.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_event_response.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_event_type.dart';
 import 'package:plantcare_mobile/core/api/generated/models/create_care_event_request.dart';
+import 'package:plantcare_mobile/core/api/generated/models/plant_history_response.dart';
 import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
@@ -17,6 +19,8 @@ import 'package:plantcare_mobile/features/plant_card/domain/care_event_kind.dart
 class _MockApi extends Mock implements PlantsCareApi {}
 
 class _MockCareEventsClient extends Mock implements CareEventsClient {}
+
+class _MockPlantHistoryClient extends Mock implements PlantHistoryClient {}
 
 DioException _dioWith(Object? error) => DioException(
       requestOptions: RequestOptions(path: '/care-events'),
@@ -57,12 +61,15 @@ void main() {
 
   late _MockApi api;
   late _MockCareEventsClient client;
+  late _MockPlantHistoryClient historyClient;
   late CareEventRepositoryImpl repo;
 
   setUp(() {
     api = _MockApi();
     client = _MockCareEventsClient();
+    historyClient = _MockPlantHistoryClient();
     when(() => api.careEvents).thenReturn(client);
+    when(() => api.plantHistory).thenReturn(historyClient);
     repo = CareEventRepositoryImpl(api);
   });
 
@@ -161,6 +168,127 @@ void main() {
           )).thenThrow(_dioWith('boom'));
 
       final result = await repo.logCareEvent(_draft());
+
+      expect((result as Failure).error, const ApiError.unknown());
+    });
+  });
+
+  group('priorCareEventCount success', () {
+    test('should_map_total_from_history_response', () async {
+      when(() => historyClient.getPlantHistory(
+            xChatId: any(named: 'xChatId'),
+            id: any(named: 'id'),
+            limit: any(named: 'limit'),
+            offset: any(named: 'offset'),
+            extras: any(named: 'extras'),
+          )).thenAnswer(
+        (_) async => const PlantHistoryResponse(
+          items: <CareEventResponse>[],
+          total: 5,
+          limit: 1,
+          offset: 0,
+        ),
+      );
+
+      final result = await repo.priorCareEventCount(42);
+
+      expect((result as Success).value, 5);
+    });
+
+    test('should_request_plantId_with_minimal_page', () async {
+      // limit:1, offset:0 — нужен только `total`, записи не тянем.
+      when(() => historyClient.getPlantHistory(
+            xChatId: any(named: 'xChatId'),
+            id: any(named: 'id'),
+            limit: any(named: 'limit'),
+            offset: any(named: 'offset'),
+            extras: any(named: 'extras'),
+          )).thenAnswer(
+        (_) async => const PlantHistoryResponse(
+          items: <CareEventResponse>[],
+          total: 0,
+          limit: 1,
+          offset: 0,
+        ),
+      );
+
+      await repo.priorCareEventCount(42);
+
+      verify(() => historyClient.getPlantHistory(
+            xChatId: any(named: 'xChatId'),
+            id: 42,
+            limit: 1,
+            offset: 0,
+            extras: any(named: 'extras'),
+          )).called(1);
+    });
+  });
+
+  group('priorCareEventCount auth slot', () {
+    test('should_send_chat_authScope_and_not_leak_hardcoded_identity',
+        () async {
+      when(() => historyClient.getPlantHistory(
+            xChatId: any(named: 'xChatId'),
+            id: any(named: 'id'),
+            limit: any(named: 'limit'),
+            offset: any(named: 'offset'),
+            extras: any(named: 'extras'),
+          )).thenAnswer(
+        (_) async => const PlantHistoryResponse(
+          items: <CareEventResponse>[],
+          total: 0,
+          limit: 1,
+          offset: 0,
+        ),
+      );
+
+      await repo.priorCareEventCount(42);
+
+      final captured = verify(() => historyClient.getPlantHistory(
+            xChatId: captureAny(named: 'xChatId'),
+            id: any(named: 'id'),
+            limit: any(named: 'limit'),
+            offset: any(named: 'offset'),
+            extras: captureAny(named: 'extras'),
+          )).captured;
+      final chatId = captured[0] as int;
+      final extras = captured[1] as Map<String, dynamic>;
+
+      // Scope chat → X-Chat-Id ставит AuthInterceptor из AuthSession.
+      expect(extras[kAuthScopeExtraKey], AuthScope.chat);
+      // Идентичность НЕ хардкодится в data-слое: заглушка-заголовок == 0,
+      // никакого dev USER_ID/CHAT_ID не утекает мимо интерцептора.
+      expect(chatId, 0);
+    });
+  });
+
+  group('priorCareEventCount failures', () {
+    test('should_return_failure_with_ApiError_when_DioException_carries_it',
+        () async {
+      when(() => historyClient.getPlantHistory(
+            xChatId: any(named: 'xChatId'),
+            id: any(named: 'id'),
+            limit: any(named: 'limit'),
+            offset: any(named: 'offset'),
+            extras: any(named: 'extras'),
+          )).thenThrow(_dioWith(const ApiError.notFound()));
+
+      final result = await repo.priorCareEventCount(42);
+
+      expect((result as Failure).error, const ApiError.notFound());
+    });
+
+    test('should_return_failure_unknown_when_DioException_error_not_ApiError',
+        () async {
+      when(() => historyClient.getPlantHistory(
+            xChatId: any(named: 'xChatId'),
+            id: any(named: 'id'),
+            limit: any(named: 'limit'),
+            offset: any(named: 'offset'),
+            extras: any(named: 'extras'),
+          )).thenThrow(_dioWith('boom'));
+
+      final result = await repo.priorCareEventCount(42);
 
       expect((result as Failure).error, const ApiError.unknown());
     });
