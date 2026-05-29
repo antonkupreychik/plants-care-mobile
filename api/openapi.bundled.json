@@ -1488,6 +1488,44 @@
             "type": "string",
             "nullable": true,
             "description": "Длинное текстовое описание вида."
+          },
+          "facts": {
+            "type": "array",
+            "nullable": true,
+            "description": "Справочные факты о виде (уход, происхождение, токсичность и т.п.).\nВ списке (`SpeciesSummaryDto`) НЕ приходят — только в детали.\nМожет отсутствовать или быть пустым массивом.\n",
+            "items": {
+              "$ref": "#/components/schemas/SpeciesFactDto"
+            }
+          }
+        }
+      },
+      "SpeciesFactDto": {
+        "type": "object",
+        "description": "Один справочный факт о виде. `category` — открытый перечень строк\n(`CARE` | `CURIOSITY` | `ORIGIN` | `TOXICITY` | …), клиент нормализует\nв domain-enum и схлопывает неизвестное в `unknown`.\n",
+        "required": [
+          "category",
+          "title",
+          "body"
+        ],
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Код категории факта, напр. `TOXICITY`.",
+            "example": "TOXICITY"
+          },
+          "title": {
+            "type": "string",
+            "example": "Токсичность"
+          },
+          "body": {
+            "type": "string",
+            "description": "Текст факта."
+          },
+          "source": {
+            "type": "string",
+            "nullable": true,
+            "description": "Источник факта (напр. `ASPCA`), если указан.",
+            "example": "ASPCA"
           }
         }
       },

@@ -119,7 +119,7 @@ class _DetailContent extends StatelessWidget {
     final hasFacts = SpeciesFactsGrid.hasAny(detail);
     final hasCare = SpeciesCareSection.hasAny(detail);
     final hasLight = SpeciesLightMeter.hasData(detail);
-    // G28: токсичность пока всегда скрыта (нет поля в API).
+    // Баннер токсичности — по наличию факта facts[TOXICITY] (реальные данные).
     final hasToxicity = SpeciesToxicityBanner.shouldShow(detail);
 
     return Column(
@@ -131,7 +131,7 @@ class _DetailContent extends StatelessWidget {
           const SizedBox(height: 16),
           SpeciesFactsGrid(detail: detail),
         ],
-        // 2. Баннер токсичности (TODO BACKEND-GAPS G28 — сейчас не рисуется).
+        // 2. Баннер токсичности (из facts[TOXICITY], если есть).
         if (hasToxicity) ...[
           const SizedBox(height: 16),
           SpeciesToxicityBanner(detail: detail),

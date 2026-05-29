@@ -1190,4 +1190,77 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get firstCareSuccessCta => 'Вернуться в сад';
+
+  @override
+  String get careHistoryOverline => 'Дневник ухода';
+
+  @override
+  String get careHistoryViewAll => 'Всё';
+
+  @override
+  String get careHistorySummaryTotalLabel => 'забот\nвсего';
+
+  @override
+  String careHistorySummaryTotalValue(int count) {
+    return '$count';
+  }
+
+  @override
+  String get careHistorySummaryOnTimeLabel => 'вовремя';
+
+  @override
+  String careHistorySummaryOnTimeValue(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get careHistorySummaryStreakLabel => 'дней\nстрик';
+
+  @override
+  String careHistorySummaryStreakValue(int count) {
+    return '$count';
+  }
+
+  @override
+  String get careHistoryFilterAll => 'Всё';
+
+  @override
+  String careHistoryEntryDate(String dow, String day, String time) {
+    return '$dow $day · $time';
+  }
+
+  @override
+  String get careHistoryOnTime => 'ВОВРЕМЯ';
+
+  @override
+  String get careHistoryLate => 'С ОПОЗДАНИЕМ';
+
+  @override
+  String careHistoryPlantCreated(String name, String date) {
+    return '$name появилась у тебя · $date';
+  }
+
+  @override
+  String get careHistoryLoadMore => 'Показать ещё';
+
+  @override
+  String get careHistoryLoadMoreError => 'Не удалось дозагрузить историю';
+
+  @override
+  String get careHistoryEmptyTitle => 'История';
+
+  @override
+  String get careHistoryEmptyTitleAccent => 'только начинается';
+
+  @override
+  String get careHistoryEmptyBubble =>
+      'Я только переехал к тебе. Отметь первый уход — и начнём вести историю вместе.';
+
+  @override
+  String careHistoryEmptyAuthor(String name) {
+    return '— $name';
+  }
+
+  @override
+  String get careHistoryEmptyCta => 'Отметить первый уход';
 }

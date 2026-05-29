@@ -1905,6 +1905,126 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Вернуться в сад'**
   String get firstCareSuccessCta;
+
+  /// Надзаголовок экрана 21 «Полная история ухода»
+  ///
+  /// In ru, this message translates to:
+  /// **'Дневник ухода'**
+  String get careHistoryOverline;
+
+  /// Ссылка-вход на полную историю ухода с карточки растения (02 → «Дневник · Всё»)
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё'**
+  String get careHistoryViewAll;
+
+  /// Подпись плитки сводки: всего записей истории
+  ///
+  /// In ru, this message translates to:
+  /// **'забот\nвсего'**
+  String get careHistorySummaryTotalLabel;
+
+  /// Значение плитки сводки: всего записей
+  ///
+  /// In ru, this message translates to:
+  /// **'{count}'**
+  String careHistorySummaryTotalValue(int count);
+
+  /// Подпись плитки сводки: доля уходов вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'вовремя'**
+  String get careHistorySummaryOnTimeLabel;
+
+  /// Значение плитки сводки: процент уходов вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'{percent}%'**
+  String careHistorySummaryOnTimeValue(int percent);
+
+  /// Подпись плитки сводки: серия уходов вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'дней\nстрик'**
+  String get careHistorySummaryStreakLabel;
+
+  /// Значение плитки сводки: длина серии
+  ///
+  /// In ru, this message translates to:
+  /// **'{count}'**
+  String careHistorySummaryStreakValue(int count);
+
+  /// Фильтр-чип «все типы ухода» на экране 21
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё'**
+  String get careHistoryFilterAll;
+
+  /// Дата записи таймлайна: день недели, число, время (локальная TZ)
+  ///
+  /// In ru, this message translates to:
+  /// **'{dow} {day} · {time}'**
+  String careHistoryEntryDate(String dow, String day, String time);
+
+  /// Метка записи таймлайна: уход выполнен в срок
+  ///
+  /// In ru, this message translates to:
+  /// **'ВОВРЕМЯ'**
+  String get careHistoryOnTime;
+
+  /// Метка записи таймлайна: уход выполнен с опозданием
+  ///
+  /// In ru, this message translates to:
+  /// **'С ОПОЗДАНИЕМ'**
+  String get careHistoryLate;
+
+  /// Маркер появления растения в конце таймлайна
+  ///
+  /// In ru, this message translates to:
+  /// **'{name} появилась у тебя · {date}'**
+  String careHistoryPlantCreated(String name, String date);
+
+  /// Кнопка дозагрузки следующей страницы истории
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать ещё'**
+  String get careHistoryLoadMore;
+
+  /// Ошибка дозагрузки страницы истории (показанный список сохранён)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось дозагрузить историю'**
+  String get careHistoryLoadMoreError;
+
+  /// Заголовок пустого дневника (экран 31), первая часть
+  ///
+  /// In ru, this message translates to:
+  /// **'История'**
+  String get careHistoryEmptyTitle;
+
+  /// Заголовок пустого дневника (экран 31), акцентная часть
+  ///
+  /// In ru, this message translates to:
+  /// **'только начинается'**
+  String get careHistoryEmptyTitleAccent;
+
+  /// Реплика растения в пустом дневнике (экран 31)
+  ///
+  /// In ru, this message translates to:
+  /// **'Я только переехал к тебе. Отметь первый уход — и начнём вести историю вместе.'**
+  String get careHistoryEmptyBubble;
+
+  /// Подпись автора реплики в пустом дневнике
+  ///
+  /// In ru, this message translates to:
+  /// **'— {name}'**
+  String careHistoryEmptyAuthor(String name);
+
+  /// CTA пустого дневника (экран 31): открыть отметку ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить первый уход'**
+  String get careHistoryEmptyCta;
 }
 
 class _AppLocalizationsDelegate
