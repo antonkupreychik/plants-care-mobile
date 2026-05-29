@@ -15,7 +15,9 @@ T _$identity<T>(T value) => value;
 mixin _$SpeciesDetail {
 
  int get id; String get name; String? get latinName; int? get wateringDays; int? get mistingDays; int? get fertilizingDays; int? get soilCheckDays; CareDifficulty get careDifficulty; LightPreference get lightPreference;/// Длинное текстовое описание вида.
- String? get description;
+ String? get description;/// Справочные факты о виде (уход, происхождение, токсичность и т.п.).
+/// Backend может не прислать поле/прислать пустой массив → `const []`.
+ List<SpeciesFact> get facts;
 /// Create a copy of SpeciesDetail
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +28,16 @@ $SpeciesDetailCopyWith<SpeciesDetail> get copyWith => _$SpeciesDetailCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SpeciesDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.latinName, latinName) || other.latinName == latinName)&&(identical(other.wateringDays, wateringDays) || other.wateringDays == wateringDays)&&(identical(other.mistingDays, mistingDays) || other.mistingDays == mistingDays)&&(identical(other.fertilizingDays, fertilizingDays) || other.fertilizingDays == fertilizingDays)&&(identical(other.soilCheckDays, soilCheckDays) || other.soilCheckDays == soilCheckDays)&&(identical(other.careDifficulty, careDifficulty) || other.careDifficulty == careDifficulty)&&(identical(other.lightPreference, lightPreference) || other.lightPreference == lightPreference)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SpeciesDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.latinName, latinName) || other.latinName == latinName)&&(identical(other.wateringDays, wateringDays) || other.wateringDays == wateringDays)&&(identical(other.mistingDays, mistingDays) || other.mistingDays == mistingDays)&&(identical(other.fertilizingDays, fertilizingDays) || other.fertilizingDays == fertilizingDays)&&(identical(other.soilCheckDays, soilCheckDays) || other.soilCheckDays == soilCheckDays)&&(identical(other.careDifficulty, careDifficulty) || other.careDifficulty == careDifficulty)&&(identical(other.lightPreference, lightPreference) || other.lightPreference == lightPreference)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.facts, facts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,latinName,wateringDays,mistingDays,fertilizingDays,soilCheckDays,careDifficulty,lightPreference,description);
+int get hashCode => Object.hash(runtimeType,id,name,latinName,wateringDays,mistingDays,fertilizingDays,soilCheckDays,careDifficulty,lightPreference,description,const DeepCollectionEquality().hash(facts));
 
 @override
 String toString() {
-  return 'SpeciesDetail(id: $id, name: $name, latinName: $latinName, wateringDays: $wateringDays, mistingDays: $mistingDays, fertilizingDays: $fertilizingDays, soilCheckDays: $soilCheckDays, careDifficulty: $careDifficulty, lightPreference: $lightPreference, description: $description)';
+  return 'SpeciesDetail(id: $id, name: $name, latinName: $latinName, wateringDays: $wateringDays, mistingDays: $mistingDays, fertilizingDays: $fertilizingDays, soilCheckDays: $soilCheckDays, careDifficulty: $careDifficulty, lightPreference: $lightPreference, description: $description, facts: $facts)';
 }
 
 
@@ -46,7 +48,7 @@ abstract mixin class $SpeciesDetailCopyWith<$Res>  {
   factory $SpeciesDetailCopyWith(SpeciesDetail value, $Res Function(SpeciesDetail) _then) = _$SpeciesDetailCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String? latinName, int? wateringDays, int? mistingDays, int? fertilizingDays, int? soilCheckDays, CareDifficulty careDifficulty, LightPreference lightPreference, String? description
+ int id, String name, String? latinName, int? wateringDays, int? mistingDays, int? fertilizingDays, int? soilCheckDays, CareDifficulty careDifficulty, LightPreference lightPreference, String? description, List<SpeciesFact> facts
 });
 
 
@@ -63,7 +65,7 @@ class _$SpeciesDetailCopyWithImpl<$Res>
 
 /// Create a copy of SpeciesDetail
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? latinName = freezed,Object? wateringDays = freezed,Object? mistingDays = freezed,Object? fertilizingDays = freezed,Object? soilCheckDays = freezed,Object? careDifficulty = null,Object? lightPreference = null,Object? description = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? latinName = freezed,Object? wateringDays = freezed,Object? mistingDays = freezed,Object? fertilizingDays = freezed,Object? soilCheckDays = freezed,Object? careDifficulty = null,Object? lightPreference = null,Object? description = freezed,Object? facts = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -75,7 +77,8 @@ as int?,soilCheckDays: freezed == soilCheckDays ? _self.soilCheckDays : soilChec
 as int?,careDifficulty: null == careDifficulty ? _self.careDifficulty : careDifficulty // ignore: cast_nullable_to_non_nullable
 as CareDifficulty,lightPreference: null == lightPreference ? _self.lightPreference : lightPreference // ignore: cast_nullable_to_non_nullable
 as LightPreference,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,facts: null == facts ? _self.facts : facts // ignore: cast_nullable_to_non_nullable
+as List<SpeciesFact>,
   ));
 }
 
@@ -160,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String? latinName,  int? wateringDays,  int? mistingDays,  int? fertilizingDays,  int? soilCheckDays,  CareDifficulty careDifficulty,  LightPreference lightPreference,  String? description)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String? latinName,  int? wateringDays,  int? mistingDays,  int? fertilizingDays,  int? soilCheckDays,  CareDifficulty careDifficulty,  LightPreference lightPreference,  String? description,  List<SpeciesFact> facts)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SpeciesDetail() when $default != null:
-return $default(_that.id,_that.name,_that.latinName,_that.wateringDays,_that.mistingDays,_that.fertilizingDays,_that.soilCheckDays,_that.careDifficulty,_that.lightPreference,_that.description);case _:
+return $default(_that.id,_that.name,_that.latinName,_that.wateringDays,_that.mistingDays,_that.fertilizingDays,_that.soilCheckDays,_that.careDifficulty,_that.lightPreference,_that.description,_that.facts);case _:
   return orElse();
 
 }
@@ -181,10 +184,10 @@ return $default(_that.id,_that.name,_that.latinName,_that.wateringDays,_that.mis
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String? latinName,  int? wateringDays,  int? mistingDays,  int? fertilizingDays,  int? soilCheckDays,  CareDifficulty careDifficulty,  LightPreference lightPreference,  String? description)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String? latinName,  int? wateringDays,  int? mistingDays,  int? fertilizingDays,  int? soilCheckDays,  CareDifficulty careDifficulty,  LightPreference lightPreference,  String? description,  List<SpeciesFact> facts)  $default,) {final _that = this;
 switch (_that) {
 case _SpeciesDetail():
-return $default(_that.id,_that.name,_that.latinName,_that.wateringDays,_that.mistingDays,_that.fertilizingDays,_that.soilCheckDays,_that.careDifficulty,_that.lightPreference,_that.description);case _:
+return $default(_that.id,_that.name,_that.latinName,_that.wateringDays,_that.mistingDays,_that.fertilizingDays,_that.soilCheckDays,_that.careDifficulty,_that.lightPreference,_that.description,_that.facts);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +204,10 @@ return $default(_that.id,_that.name,_that.latinName,_that.wateringDays,_that.mis
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String? latinName,  int? wateringDays,  int? mistingDays,  int? fertilizingDays,  int? soilCheckDays,  CareDifficulty careDifficulty,  LightPreference lightPreference,  String? description)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String? latinName,  int? wateringDays,  int? mistingDays,  int? fertilizingDays,  int? soilCheckDays,  CareDifficulty careDifficulty,  LightPreference lightPreference,  String? description,  List<SpeciesFact> facts)?  $default,) {final _that = this;
 switch (_that) {
 case _SpeciesDetail() when $default != null:
-return $default(_that.id,_that.name,_that.latinName,_that.wateringDays,_that.mistingDays,_that.fertilizingDays,_that.soilCheckDays,_that.careDifficulty,_that.lightPreference,_that.description);case _:
+return $default(_that.id,_that.name,_that.latinName,_that.wateringDays,_that.mistingDays,_that.fertilizingDays,_that.soilCheckDays,_that.careDifficulty,_that.lightPreference,_that.description,_that.facts);case _:
   return null;
 
 }
@@ -216,7 +219,7 @@ return $default(_that.id,_that.name,_that.latinName,_that.wateringDays,_that.mis
 
 
 class _SpeciesDetail implements SpeciesDetail {
-  const _SpeciesDetail({required this.id, required this.name, this.latinName, this.wateringDays, this.mistingDays, this.fertilizingDays, this.soilCheckDays, this.careDifficulty = CareDifficulty.unknown, this.lightPreference = LightPreference.unknown, this.description});
+  const _SpeciesDetail({required this.id, required this.name, this.latinName, this.wateringDays, this.mistingDays, this.fertilizingDays, this.soilCheckDays, this.careDifficulty = CareDifficulty.unknown, this.lightPreference = LightPreference.unknown, this.description, final  List<SpeciesFact> facts = const <SpeciesFact>[]}): _facts = facts;
   
 
 @override final  int id;
@@ -230,6 +233,17 @@ class _SpeciesDetail implements SpeciesDetail {
 @override@JsonKey() final  LightPreference lightPreference;
 /// Длинное текстовое описание вида.
 @override final  String? description;
+/// Справочные факты о виде (уход, происхождение, токсичность и т.п.).
+/// Backend может не прислать поле/прислать пустой массив → `const []`.
+ final  List<SpeciesFact> _facts;
+/// Справочные факты о виде (уход, происхождение, токсичность и т.п.).
+/// Backend может не прислать поле/прислать пустой массив → `const []`.
+@override@JsonKey() List<SpeciesFact> get facts {
+  if (_facts is EqualUnmodifiableListView) return _facts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_facts);
+}
+
 
 /// Create a copy of SpeciesDetail
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +255,16 @@ _$SpeciesDetailCopyWith<_SpeciesDetail> get copyWith => __$SpeciesDetailCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SpeciesDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.latinName, latinName) || other.latinName == latinName)&&(identical(other.wateringDays, wateringDays) || other.wateringDays == wateringDays)&&(identical(other.mistingDays, mistingDays) || other.mistingDays == mistingDays)&&(identical(other.fertilizingDays, fertilizingDays) || other.fertilizingDays == fertilizingDays)&&(identical(other.soilCheckDays, soilCheckDays) || other.soilCheckDays == soilCheckDays)&&(identical(other.careDifficulty, careDifficulty) || other.careDifficulty == careDifficulty)&&(identical(other.lightPreference, lightPreference) || other.lightPreference == lightPreference)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SpeciesDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.latinName, latinName) || other.latinName == latinName)&&(identical(other.wateringDays, wateringDays) || other.wateringDays == wateringDays)&&(identical(other.mistingDays, mistingDays) || other.mistingDays == mistingDays)&&(identical(other.fertilizingDays, fertilizingDays) || other.fertilizingDays == fertilizingDays)&&(identical(other.soilCheckDays, soilCheckDays) || other.soilCheckDays == soilCheckDays)&&(identical(other.careDifficulty, careDifficulty) || other.careDifficulty == careDifficulty)&&(identical(other.lightPreference, lightPreference) || other.lightPreference == lightPreference)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._facts, _facts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,latinName,wateringDays,mistingDays,fertilizingDays,soilCheckDays,careDifficulty,lightPreference,description);
+int get hashCode => Object.hash(runtimeType,id,name,latinName,wateringDays,mistingDays,fertilizingDays,soilCheckDays,careDifficulty,lightPreference,description,const DeepCollectionEquality().hash(_facts));
 
 @override
 String toString() {
-  return 'SpeciesDetail(id: $id, name: $name, latinName: $latinName, wateringDays: $wateringDays, mistingDays: $mistingDays, fertilizingDays: $fertilizingDays, soilCheckDays: $soilCheckDays, careDifficulty: $careDifficulty, lightPreference: $lightPreference, description: $description)';
+  return 'SpeciesDetail(id: $id, name: $name, latinName: $latinName, wateringDays: $wateringDays, mistingDays: $mistingDays, fertilizingDays: $fertilizingDays, soilCheckDays: $soilCheckDays, careDifficulty: $careDifficulty, lightPreference: $lightPreference, description: $description, facts: $facts)';
 }
 
 
@@ -261,7 +275,7 @@ abstract mixin class _$SpeciesDetailCopyWith<$Res> implements $SpeciesDetailCopy
   factory _$SpeciesDetailCopyWith(_SpeciesDetail value, $Res Function(_SpeciesDetail) _then) = __$SpeciesDetailCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String? latinName, int? wateringDays, int? mistingDays, int? fertilizingDays, int? soilCheckDays, CareDifficulty careDifficulty, LightPreference lightPreference, String? description
+ int id, String name, String? latinName, int? wateringDays, int? mistingDays, int? fertilizingDays, int? soilCheckDays, CareDifficulty careDifficulty, LightPreference lightPreference, String? description, List<SpeciesFact> facts
 });
 
 
@@ -278,7 +292,7 @@ class __$SpeciesDetailCopyWithImpl<$Res>
 
 /// Create a copy of SpeciesDetail
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? latinName = freezed,Object? wateringDays = freezed,Object? mistingDays = freezed,Object? fertilizingDays = freezed,Object? soilCheckDays = freezed,Object? careDifficulty = null,Object? lightPreference = null,Object? description = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? latinName = freezed,Object? wateringDays = freezed,Object? mistingDays = freezed,Object? fertilizingDays = freezed,Object? soilCheckDays = freezed,Object? careDifficulty = null,Object? lightPreference = null,Object? description = freezed,Object? facts = null,}) {
   return _then(_SpeciesDetail(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -290,7 +304,8 @@ as int?,soilCheckDays: freezed == soilCheckDays ? _self.soilCheckDays : soilChec
 as int?,careDifficulty: null == careDifficulty ? _self.careDifficulty : careDifficulty // ignore: cast_nullable_to_non_nullable
 as CareDifficulty,lightPreference: null == lightPreference ? _self.lightPreference : lightPreference // ignore: cast_nullable_to_non_nullable
 as LightPreference,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,facts: null == facts ? _self._facts : facts // ignore: cast_nullable_to_non_nullable
+as List<SpeciesFact>,
   ));
 }
 

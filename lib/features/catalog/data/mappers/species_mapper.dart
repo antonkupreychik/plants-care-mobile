@@ -1,10 +1,13 @@
 import '../../../../core/api/generated/models/page_response_species_summary_dto.dart';
 import '../../../../core/api/generated/models/species_detail_dto.dart';
+import '../../../../core/api/generated/models/species_fact_dto.dart';
 import '../../../../core/api/generated/models/species_summary_dto.dart';
 import '../../domain/care_difficulty.dart';
 import '../../domain/light_preference.dart';
 import '../../domain/species.dart';
 import '../../domain/species_detail.dart';
+import '../../domain/species_fact.dart';
+import '../../domain/species_fact_category.dart';
 import '../../domain/species_page.dart';
 
 /// Маппинг видов: сгенерированные DTO (`/api/v1/species`) → domain (MADR-002).
@@ -39,6 +42,19 @@ extension SpeciesDetailDtoMapper on SpeciesDetailDto {
         careDifficulty: _careDifficultyFromApi(careDifficulty),
         lightPreference: _lightPreferenceFromApi(lightPreference),
         description: description,
+        facts: facts
+                ?.map((dto) => dto.toDomain())
+                .toList(growable: false) ??
+            const <SpeciesFact>[],
+      );
+}
+
+extension SpeciesFactDtoMapper on SpeciesFactDto {
+  SpeciesFact toDomain() => SpeciesFact(
+        category: _factCategoryFromApi(category),
+        title: title,
+        body: body,
+        source: source,
       );
 }
 
@@ -73,4 +89,16 @@ LightPreference _lightPreferenceFromApi(String? raw) => switch (raw?.toUpperCase
       'PARTIAL' || 'PARTIAL_SHADE' => LightPreference.partialShade,
       'SHADE' => LightPreference.shade,
       _ => LightPreference.unknown,
+    };
+
+/// `SpeciesFactDto.category` backend → domain-enum. Перечень категорий открытый
+/// (`CARE` | `CURIOSITY` | `ORIGIN` | `TOXICITY` | …), известные коды маппим,
+/// остальное → [SpeciesFactCategory.unknown] (не падаем). Регистр приводим к
+/// верхнему на случай вариаций.
+SpeciesFactCategory _factCategoryFromApi(String raw) => switch (raw.toUpperCase()) {
+      'CARE' => SpeciesFactCategory.care,
+      'CURIOSITY' => SpeciesFactCategory.curiosity,
+      'ORIGIN' => SpeciesFactCategory.origin,
+      'TOXICITY' => SpeciesFactCategory.toxicity,
+      _ => SpeciesFactCategory.unknown,
     };

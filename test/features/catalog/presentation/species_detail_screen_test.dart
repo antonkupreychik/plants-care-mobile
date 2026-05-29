@@ -11,6 +11,8 @@ import 'package:plantcare_mobile/core/widgets/error_state.dart';
 import 'package:plantcare_mobile/features/catalog/domain/care_difficulty.dart';
 import 'package:plantcare_mobile/features/catalog/domain/light_preference.dart';
 import 'package:plantcare_mobile/features/catalog/domain/species_detail.dart';
+import 'package:plantcare_mobile/features/catalog/domain/species_fact.dart';
+import 'package:plantcare_mobile/features/catalog/domain/species_fact_category.dart';
 import 'package:plantcare_mobile/features/catalog/presentation/catalog_providers.dart';
 import 'package:plantcare_mobile/features/catalog/presentation/species_attributes_l10n.dart';
 import 'package:plantcare_mobile/features/catalog/presentation/species_detail_screen.dart';
@@ -279,8 +281,8 @@ void main() {
     });
   });
 
-  group('toxicity banner (G28 — hidden)', () {
-    testWidgets('should_not_show_toxicity_banner_in_data_state',
+  group('toxicity banner (real, facts[TOXICITY])', () {
+    testWidgets('should_show_toxicity_banner_when_detail_has_toxicity_fact',
         (tester) async {
       await tester.pumpWidget(_wrap(
         () async => const SpeciesDetail(
@@ -289,17 +291,53 @@ void main() {
           wateringDays: 7,
           careDifficulty: CareDifficulty.medium,
           lightPreference: LightPreference.partialShade,
-          description: 'Токсична для животных (в реальности), но баннер скрыт.',
+          facts: [
+            SpeciesFact(
+              category: SpeciesFactCategory.toxicity,
+              title: 'Токсично для кошек и собак',
+              body: 'Оксалаты кальция раздражают слизистые.',
+              source: 'ASPCA',
+            ),
+          ],
         ),
       ));
       await tester.pumpAndSettle();
 
-      // G28: данных о токсичности нет — баннер не рисуется.
+      // Баннер на экране, его title и body видны.
+      expect(find.byType(SpeciesToxicityBanner), findsOneWidget);
+      expect(find.text('Токсично для кошек и собак'), findsOneWidget);
+      expect(
+        find.text('Оксалаты кальция раздражают слизистые.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('should_not_show_toxicity_banner_when_no_toxicity_fact',
+        (tester) async {
+      await tester.pumpWidget(_wrap(
+        () async => const SpeciesDetail(
+          id: _id,
+          name: 'Хлорофитум',
+          wateringDays: 7,
+          careDifficulty: CareDifficulty.easy,
+          lightPreference: LightPreference.brightIndirect,
+          facts: [
+            SpeciesFact(
+              category: SpeciesFactCategory.care,
+              title: 'Уход',
+              body: 'Неприхотлив.',
+            ),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      // Нет факта токсичности — баннер не рисуется.
       expect(find.byType(SpeciesToxicityBanner), findsNothing);
       // Защита от случайного включения хардкода: shouldShow == false.
       expect(
         SpeciesToxicityBanner.shouldShow(
-          const SpeciesDetail(id: _id, name: 'Диффенбахия'),
+          const SpeciesDetail(id: _id, name: 'Хлорофитум'),
         ),
         isFalse,
       );

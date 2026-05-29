@@ -166,6 +166,39 @@ schemas:
         type: string
         nullable: true
         description: Длинное текстовое описание вида.
+      facts:
+        type: array
+        nullable: true
+        description: |
+          Справочные факты о виде (уход, происхождение, токсичность и т.п.).
+          В списке (`SpeciesSummaryDto`) НЕ приходят — только в детали.
+          Может отсутствовать или быть пустым массивом.
+        items:
+          $ref: '#/schemas/SpeciesFactDto'
+
+  SpeciesFactDto:
+    type: object
+    description: |
+      Один справочный факт о виде. `category` — открытый перечень строк
+      (`CARE` | `CURIOSITY` | `ORIGIN` | `TOXICITY` | …), клиент нормализует
+      в domain-enum и схлопывает неизвестное в `unknown`.
+    required: [category, title, body]
+    properties:
+      category:
+        type: string
+        description: Код категории факта, напр. `TOXICITY`.
+        example: TOXICITY
+      title:
+        type: string
+        example: Токсичность
+      body:
+        type: string
+        description: Текст факта.
+      source:
+        type: string
+        nullable: true
+        description: Источник факта (напр. `ASPCA`), если указан.
+        example: ASPCA
 
   PageResponseSpeciesSummaryDto:
     type: object

@@ -4,6 +4,8 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'species_fact_dto.dart';
+
 part 'species_detail_dto.g.dart';
 
 /// Полная карточка вида. Все поля `SpeciesSummaryDto` плюс `description`.
@@ -21,6 +23,7 @@ class SpeciesDetailDto {
     this.careDifficulty,
     this.lightPreference,
     this.description,
+    this.facts,
   });
   
   factory SpeciesDetailDto.fromJson(Map<String, Object?> json) => _$SpeciesDetailDtoFromJson(json);
@@ -37,6 +40,12 @@ class SpeciesDetailDto {
 
   /// Длинное текстовое описание вида.
   final String? description;
+
+  /// Справочные факты о виде (уход, происхождение, токсичность и т.п.).
+  /// В списке (`SpeciesSummaryDto`) НЕ приходят — только в детали.
+  /// Может отсутствовать или быть пустым массивом.
+  ///
+  final List<SpeciesFactDto>? facts;
 
   Map<String, Object?> toJson() => _$SpeciesDetailDtoToJson(this);
 }
