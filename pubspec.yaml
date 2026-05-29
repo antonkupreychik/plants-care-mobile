@@ -74,6 +74,11 @@ dev_dependencies:
   freezed: ^3.2.5
   json_serializable: ^6.14.0
 
+  # Генерация launcher-иконок из assets/branding/app_icon.png.
+  # В CI/локально с Flutter: dart run flutter_launcher_icons
+  # Без Flutter (источник правды по геометрии): python3 tool/generate_app_icon.py
+  flutter_launcher_icons: ^0.14.1
+
   # custom_lint / riverpod_lint (MADR-004) отложены: на 2026-05 их релизы
   # тянут analyzer ^7/^8 и конфликтуют с riverpod_generator 4.0.3 +
   # json_serializable 6.14.0 (analyzer ^9/^12). Вернуть, когда выйдет
@@ -85,3 +90,10 @@ flutter:
 
   assets:
     - assets/illustrations/
+
+# Launcher-иконка (см. dev_dependencies). Источник — assets/branding/app_icon.png.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/branding/app_icon.png"
