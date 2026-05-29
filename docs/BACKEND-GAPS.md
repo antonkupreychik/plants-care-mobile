@@ -44,6 +44,23 @@
 > ⚠️ `/care-types` отдаёт только локализованные имена (`WATERING→«Полив»`) — enum-разрыв
 > **G7** (`taskType` WATERING ↔ care-event `type` WATER/SPRAY) НЕ закрывает.
 
+### Backend-тикеты (`antonkupreychik/plants-care`)
+Заведено 2026-05-28 по открытым гэпам:
+
+| Gap | Issue | Gap | Issue |
+|---|---|---|---|
+| G11 + G13b | [#179](https://github.com/antonkupreychik/plants-care/issues/179) | G22 | [#191](https://github.com/antonkupreychik/plants-care/issues/191) |
+| G16 (+G5) | [#182](https://github.com/antonkupreychik/plants-care/issues/182) | G23 | [#192](https://github.com/antonkupreychik/plants-care/issues/192) |
+| G17 | [#183](https://github.com/antonkupreychik/plants-care/issues/183) | G24 | [#193](https://github.com/antonkupreychik/plants-care/issues/193) |
+| G19 (+G14) | [#185](https://github.com/antonkupreychik/plants-care/issues/185) | G25 | [#194](https://github.com/antonkupreychik/plants-care/issues/194) |
+| G28 | [#186](https://github.com/antonkupreychik/plants-care/issues/186) | G26 | [#195](https://github.com/antonkupreychik/plants-care/issues/195) |
+| G18 | [#187](https://github.com/antonkupreychik/plants-care/issues/187) | G27 | [#196](https://github.com/antonkupreychik/plants-care/issues/196) |
+| G20 | [#188](https://github.com/antonkupreychik/plants-care/issues/188) | G21 | [#189](https://github.com/antonkupreychik/plants-care/issues/189) |
+
+> Без тикета (намеренно): G2 (решение voiceLine клиент/бэк), G3 (выводим из G1),
+> G7 (дешёвый клиентский маппинг), G8 (тулинг), G12 (ждёт источник token),
+> G15 (#117, отдельный roadmap-трек архива).
+
 ---
 
 ## G1 · Health Score растения 🟢
