@@ -15,6 +15,7 @@ import 'clients/stats_client.dart';
 import 'clients/species_client.dart';
 import 'clients/care_types_client.dart';
 import 'clients/weather_client.dart';
+import 'clients/reports_client.dart';
 
 /// Plants Care API `v0.1.0`.
 ///
@@ -69,6 +70,7 @@ class PlantsCareApi {
   SpeciesClient? _species;
   CareTypesClient? _careTypes;
   WeatherClient? _weather;
+  ReportsClient? _reports;
 
   HealthClient get health => _health ??= HealthClient(_dio, baseUrl: _baseUrl);
 
@@ -91,4 +93,6 @@ class PlantsCareApi {
   CareTypesClient get careTypes => _careTypes ??= CareTypesClient(_dio, baseUrl: _baseUrl);
 
   WeatherClient get weather => _weather ??= WeatherClient(_dio, baseUrl: _baseUrl);
+
+  ReportsClient get reports => _reports ??= ReportsClient(_dio, baseUrl: _baseUrl);
 }

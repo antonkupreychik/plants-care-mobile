@@ -65,6 +65,13 @@ class ProfileScreen extends StatelessWidget {
                     divider: true,
                     onTap: () => context.push('/profile/archive'),
                   ),
+                  // Экран 14 «Месячный отчёт» → push поверх shell.
+                  SettingsRow(
+                    title: l10n.profileReportTitle,
+                    icon: Icons.bar_chart_rounded,
+                    divider: true,
+                    onTap: () => context.push('/profile/report'),
+                  ),
                   // Превью-флоу экранов входа (07/08/09) — визуальная заглушка,
                   // полноэкранно поверх shell на root-навигаторе.
                   SettingsRow(

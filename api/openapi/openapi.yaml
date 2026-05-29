@@ -83,6 +83,8 @@ tags:
     description: Публичный справочник типов ухода (полив, опрыскивание, и т.п.). Без авторизации.
   - name: Weather
     description: Снапшот погоды (влажность) и рекомендация backend по поливу для Home. Публичный, без авторизации.
+  - name: Reports
+    description: Месячный отчёт по уходу (экран 14) — агрегаты за календарный месяц. User-scoped (`X-User-Id`).
 
 paths:
   /api/v1/health:
@@ -126,6 +128,9 @@ paths:
 
   /api/v1/weather/snapshot:
     $ref: './resources/weather.yaml#/paths/Snapshot'
+
+  /api/v1/reports/monthly:
+    $ref: './resources/reports.yaml#/paths/Monthly'
 
 components:
   # Параметры дублируются через $ref в каждом ресурсе (для удобства локального чтения),
@@ -210,6 +215,11 @@ components:
 
     WeatherSnapshotResponse:
       $ref: './resources/weather.yaml#/schemas/WeatherSnapshotResponse'
+
+    MonthlyReportResponse:
+      $ref: './resources/reports.yaml#/schemas/MonthlyReportResponse'
+    WeeklyHealthBucket:
+      $ref: './resources/reports.yaml#/schemas/WeeklyHealthBucket'
 
     ApiErrorResponse:
       $ref: './_common/errors.yaml#/schemas/ApiErrorResponse'
