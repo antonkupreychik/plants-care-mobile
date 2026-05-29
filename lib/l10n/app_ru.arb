@@ -1568,5 +1568,35 @@
     "placeholders": {
       "humidity": { "type": "int" }
     }
+  },
+
+  "homeLoadingCaption": "Собираю твой сад…",
+  "@homeLoadingCaption": {
+    "description": "Курсивная подпись под ростком на полноэкранном скелетоне загрузки Home (экран 28)"
+  },
+
+  "offlineBannerTitle": "Нет связи с садом",
+  "@offlineBannerTitle": {
+    "description": "Заголовок офлайн-баннера на полноэкранном офлайн-состоянии (экран 29)"
+  },
+
+  "offlineBannerStatus": "офлайн",
+  "@offlineBannerStatus": {
+    "description": "Статус-метка справа в офлайн-баннере (экран 29)"
+  },
+
+  "offlineTitleLead": "Сад на минутку ",
+  "@offlineTitleLead": {
+    "description": "Серифный заголовок офлайн-состояния, обычная часть перед акцентом (экран 29)"
+  },
+
+  "offlineTitleAccent": "вне зоны",
+  "@offlineTitleAccent": {
+    "description": "Серифный заголовок офлайн-состояния, акцентная часть (primary italic, экран 29)"
+  },
+
+  "offlineMessage": "Не получается достучаться до сервера. Проверь интернет — твои растения никуда не денутся.",
+  "@offlineMessage": {
+    "description": "Подпись офлайн-состояния (экран 29)"
   }
 }

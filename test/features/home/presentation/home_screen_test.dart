@@ -8,6 +8,8 @@ import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
 import 'package:plantcare_mobile/core/widgets/error_state.dart';
+import 'package:plantcare_mobile/core/widgets/offline_state.dart';
+import 'package:plantcare_mobile/features/home/presentation/widgets/home_loading_skeleton.dart';
 import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
@@ -66,34 +68,41 @@ Widget _wrap({
 
 void main() {
   group('HomeScreen loading', () {
-    testWidgets('should_show_skeletons_when_all_providers_loading',
+    // Сад уже загружен (content) → вторичные секции (задачи/локации) рисуют
+    // СВОИ скелетоны посекционно. Полноэкранный скелетон сюда не вмешивается:
+    // он только для coldLoading самого сада (см. homeViewStateProvider).
+    testWidgets('should_show_section_skeletons_when_secondary_providers_loading',
         (tester) async {
       await tester.pumpWidget(_wrap(
         tasks: _pending<List<CareTask>>,
-        plants: _pending<List<Plant>>,
+        plants: () async => const [Plant(id: 1, name: 'Фикус')],
         locations: _pending<List<GardenLocation>>,
       ));
       await tester.pump();
 
+      expect(find.byType(HomeLoadingSkeleton), findsNothing);
       expect(find.byType(TodayCardSkeleton), findsOneWidget);
-      expect(find.byType(PlantCardSkeleton), findsWidgets);
       expect(find.byType(LocationChipsSkeleton), findsOneWidget);
     });
   });
 
   group('HomeScreen error', () {
-    testWidgets('should_show_error_with_retry_when_tasks_and_plants_fail',
+    // Сад загружен (content); падает секция задач → её посекционный ErrorState.
+    // Сетевая ошибка САДА без кэша даёт полноэкранный офлайн (см. отдельный
+    // тест в 'top-level states'), поэтому здесь сад намеренно резолвится.
+    testWidgets('should_show_section_error_with_retry_when_tasks_fail',
         (tester) async {
       await tester.pumpWidget(_wrap(
         tasks: () async => throw const ApiError.notFound(),
-        plants: () async => throw const ApiError.network(),
+        plants: () async => const [Plant(id: 1, name: 'Фикус')],
       ));
       await tester.pumpAndSettle();
 
       final l10n =
           AppLocalizations.of(tester.element(find.byType(HomeScreen)));
-      expect(find.byType(ErrorState), findsNWidgets(2));
-      expect(find.text(l10n.retry), findsNWidgets(2));
+      expect(find.byType(OfflineState), findsNothing);
+      expect(find.byType(ErrorState), findsOneWidget);
+      expect(find.text(l10n.retry), findsOneWidget);
     });
   });
 
@@ -144,6 +153,73 @@ void main() {
       expect(find.text('Кактус'), findsOneWidget);
       // Растения есть → пустого состояния нет.
       expect(find.byType(GardenEmpty), findsNothing);
+    });
+  });
+
+  // Top-level состояния поверх посекционной логики (экраны 28/29).
+  // Ключуются ТОЛЬКО на homePlantsProvider (сад) — см. homeViewStateProvider.
+  group('HomeScreen top-level states', () {
+    testWidgets('should_show_loading_skeleton_when_plants_cold_loading',
+        (tester) async {
+      // Сад грузится без данных → полноэкранный скелетон (28).
+      await tester.pumpWidget(_wrap(plants: _pending<List<Plant>>));
+      await tester.pump();
+
+      final l10n =
+          AppLocalizations.of(tester.element(find.byType(HomeScreen)));
+      expect(find.byType(HomeLoadingSkeleton), findsOneWidget);
+      expect(find.text(l10n.homeLoadingCaption), findsOneWidget);
+      // Это не контент и не офлайн.
+      expect(find.byType(OfflineState), findsNothing);
+      expect(find.byType(TodayCard), findsNothing);
+    });
+
+    testWidgets('should_show_offline_state_when_plants_network_error',
+        (tester) async {
+      // Сетевая ошибка сада без кэша → полноэкранный офлайн (29).
+      await tester.pumpWidget(_wrap(
+        plants: () async => throw const ApiError.network(),
+      ));
+      await tester.pumpAndSettle();
+
+      final l10n =
+          AppLocalizations.of(tester.element(find.byType(HomeScreen)));
+      expect(find.byType(OfflineState), findsOneWidget);
+      expect(find.text(l10n.offlineMessage), findsOneWidget);
+      expect(find.text(l10n.retry), findsOneWidget);
+      // Ни скелетона, ни посекционного контента/ErrorState.
+      expect(find.byType(HomeLoadingSkeleton), findsNothing);
+      expect(find.byType(TodayCard), findsNothing);
+      expect(find.byType(ErrorState), findsNothing);
+    });
+
+    testWidgets('should_show_content_when_plants_data_present',
+        (tester) async {
+      // Есть данные сада → контент (посекционная раскладка), не скелетон/офлайн.
+      await tester.pumpWidget(_wrap(
+        plants: () async => const [Plant(id: 1, name: 'Фикус')],
+      ));
+      await tester.pumpAndSettle();
+
+      // Контент: посекционная раскладка с карточкой растения.
+      expect(find.byType(PlantCard), findsOneWidget);
+      expect(find.text('Фикус'), findsOneWidget);
+      expect(find.byType(HomeLoadingSkeleton), findsNothing);
+      expect(find.byType(OfflineState), findsNothing);
+    });
+
+    testWidgets('should_show_content_when_plants_non_network_error',
+        (tester) async {
+      // Не-сетевая ошибка сада без кэша → content (посекционный ErrorState),
+      // НЕ полноэкранный офлайн.
+      await tester.pumpWidget(_wrap(
+        plants: () async => throw const ApiError.unknown(),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OfflineState), findsNothing);
+      expect(find.byType(HomeLoadingSkeleton), findsNothing);
+      expect(find.byType(ErrorState), findsWidgets);
     });
   });
 }
