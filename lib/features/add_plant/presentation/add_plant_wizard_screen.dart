@@ -10,6 +10,7 @@ import '../../home/presentation/home_providers.dart';
 import '../domain/species_summary.dart';
 import 'add_plant_wizard_controller.dart';
 import 'add_plant_wizard_state.dart';
+import 'species_providers.dart';
 import 'widgets/step_care_plan.dart';
 import 'widgets/step_confirm.dart';
 import 'widgets/step_name_room.dart';
@@ -26,8 +27,16 @@ import 'widgets/wizard_chrome.dart';
 /// Продуктовый объём: 4-шаговый флоу, но backend сохраняет лишь
 /// `name + locationId + notes`. Шаг вида префиллит имя + показывает read-only
 /// план ухода; шаг расписания — read-only превью (BACKEND-GAPS).
+///
+/// [initialSpeciesId] — опциональный предвыбранный вид (CTA «Добавить в мой
+/// сад» с карточки вида, экран 20). Если задан, мастер при инициализации грузит
+/// этот вид, кладёт его в черновик и стартует с шага 2 (имя/комната), минуя
+/// шаг 1. При ошибке загрузки — деградирует на обычный старт с шага 1.
 class AddPlantWizardScreen extends ConsumerStatefulWidget {
-  const AddPlantWizardScreen({super.key});
+  const AddPlantWizardScreen({super.key, this.initialSpeciesId});
+
+  /// Id предвыбранного вида или null (обычный старт с шага 1).
+  final int? initialSpeciesId;
 
   @override
   ConsumerState<AddPlantWizardScreen> createState() =>
@@ -37,9 +46,46 @@ class AddPlantWizardScreen extends ConsumerStatefulWidget {
 class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
   static const _totalSteps = 4;
   static const _pageDuration = Duration(milliseconds: 280);
+  // Индекс шага 2 «Имя/комната» в [PageView] (0-based).
+  static const _stepNameRoom = 1;
 
-  final PageController _pageController = PageController();
-  int _step = 0; // 0-based индекс страницы.
+  // Стартовая страница [PageController]: при предвыбранном виде сразу шаг 2,
+  // иначе шаг 1. Используется как initialPage, чтобы не было «прыжка» анимации.
+  late final PageController _pageController = PageController(
+    initialPage: widget.initialSpeciesId != null ? _stepNameRoom : 0,
+  );
+  late int _step =
+      widget.initialSpeciesId != null ? _stepNameRoom : 0; // 0-based индекс.
+
+  @override
+  void initState() {
+    super.initState();
+    final id = widget.initialSpeciesId;
+    if (id != null) {
+      // Предвыбор делаем один раз при инициализации (не на rebuild).
+      // PageView уже стартует на шаге 2 (см. initialPage), а вид
+      // подгружаем асинхронно и кладём в черновик.
+      WidgetsBinding.instance.addPostFrameCallback((_) => _preselect(id));
+    }
+  }
+
+  /// Грузит вид по id и проставляет его в черновик (как [selectSpecies]).
+  /// При ошибке/невалидном id — деградируем на старт с шага 1 (откатываем
+  /// стартовую страницу на 0), без краша.
+  Future<void> _preselect(int id) async {
+    try {
+      final detail = await ref.read(speciesDetailProvider(id).future);
+      if (!mounted) return;
+      ref
+          .read(addPlantWizardControllerProvider.notifier)
+          .selectSpecies(detail.summary);
+    } catch (_) {
+      // Загрузка вида не удалась — откатываем на шаг 1, пользователь выберет
+      // вид вручную. Без снекбара: деградация тихая (вид опционален в мастере).
+      if (!mounted) return;
+      _goTo(0);
+    }
+  }
 
   @override
   void dispose() {

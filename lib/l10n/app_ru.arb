@@ -944,6 +944,69 @@
     }
   },
 
+  "speciesWateringEveryDays": "{count, plural, one{раз в {count} дн.} few{раз в {count} дн.} many{раз в {count} дн.} other{раз в {count} дн.}}",
+  "@speciesWateringEveryDays": {
+    "description": "Компактный интервал полива в фактах-сетке («раз в N дн.»)",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "speciesFactDifficulty": "Сложность",
+  "@speciesFactDifficulty": {
+    "description": "Подпись факта «Сложность» в сетке фактов вида"
+  },
+
+  "speciesFactLight": "Свет",
+  "@speciesFactLight": {
+    "description": "Подпись факта «Свет» в сетке фактов вида"
+  },
+
+  "speciesFactWatering": "Полив",
+  "@speciesFactWatering": {
+    "description": "Подпись факта «Полив» в сетке фактов вида"
+  },
+
+  "speciesToxicTitle": "Токсично для кошек, собак и детей",
+  "@speciesToxicTitle": {
+    "description": "Заголовок баннера токсичности вида"
+  },
+
+  "speciesToxicSubtitle": "Сок листьев раздражает слизистую. Держите повыше.",
+  "@speciesToxicSubtitle": {
+    "description": "Пояснение в баннере токсичности вида"
+  },
+
+  "speciesLightTitle": "Свет",
+  "@speciesLightTitle": {
+    "description": "Заголовок секции шкалы света на карточке вида"
+  },
+
+  "speciesLightStepShade": "Тень",
+  "@speciesLightStepShade": {
+    "description": "Ступень шкалы света: тень"
+  },
+
+  "speciesLightStepPartial": "Полутень",
+  "@speciesLightStepPartial": {
+    "description": "Ступень шкалы света: полутень"
+  },
+
+  "speciesLightStepIndirect": "Рассеянный",
+  "@speciesLightStepIndirect": {
+    "description": "Ступень шкалы света: рассеянный"
+  },
+
+  "speciesLightStepDirect": "Прямое",
+  "@speciesLightStepDirect": {
+    "description": "Ступень шкалы света: прямое солнце"
+  },
+
+  "speciesAddToGarden": "Добавить в мой сад",
+  "@speciesAddToGarden": {
+    "description": "Кнопка добавления вида в сад на карточке вида"
+  },
+
   "addPlantCarePlanEmpty": "Выберите вид на первом шаге, чтобы увидеть план ухода",
   "@addPlantCarePlanEmpty": {
     "description": "Подсказка на шаге плана ухода, когда вид не выбран"
