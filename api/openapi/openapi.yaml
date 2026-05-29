@@ -85,6 +85,8 @@ tags:
     description: Снапшот погоды (влажность) и рекомендация backend по поливу для Home. Публичный, без авторизации.
   - name: Reports
     description: Месячный отчёт по уходу (экран 14) — агрегаты за календарный месяц. User-scoped (`X-User-Id`).
+  - name: Plant Schedules
+    description: Расписания ухода за растением (экран 22) — чтение и обновление по типу. User-scoped (`X-User-Id`).
 
 paths:
   /api/v1/health:
@@ -98,6 +100,10 @@ paths:
     $ref: './resources/plant-history.yaml#/paths/ItemHistory'
   /api/v1/plants/{id}/health:
     $ref: './resources/plant-health.yaml#/paths/ItemHealth'
+  /api/v1/plants/{id}/schedules:
+    $ref: './resources/plant-schedules.yaml#/paths/Collection'
+  /api/v1/plants/{id}/schedules/{type}:
+    $ref: './resources/plant-schedules.yaml#/paths/Item'
 
   /api/v1/locations:
     $ref: './resources/locations.yaml#/paths/Collection'
@@ -220,6 +226,11 @@ components:
       $ref: './resources/reports.yaml#/schemas/MonthlyReportResponse'
     WeeklyHealthBucket:
       $ref: './resources/reports.yaml#/schemas/WeeklyHealthBucket'
+
+    CareScheduleDto:
+      $ref: './resources/plant-schedules.yaml#/schemas/CareScheduleDto'
+    CareScheduleUpdateRequest:
+      $ref: './resources/plant-schedules.yaml#/schemas/CareScheduleUpdateRequest'
 
     ApiErrorResponse:
       $ref: './_common/errors.yaml#/schemas/ApiErrorResponse'

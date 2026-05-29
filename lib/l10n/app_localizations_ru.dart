@@ -1376,4 +1376,104 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get reportEmptyBody =>
       'За этот месяц ещё нет заботы. Отметь первый уход — и здесь появятся твои итоги.';
+
+  @override
+  String editScheduleOverline(String plant) {
+    return 'Расписание · $plant';
+  }
+
+  @override
+  String get editScheduleTitle => 'Как часто заботиться?';
+
+  @override
+  String get editScheduleSubtitle => 'Интервалы влияют на напоминания и стрик';
+
+  @override
+  String get editScheduleDone => 'Готово';
+
+  @override
+  String get editScheduleBack => 'Назад';
+
+  @override
+  String get editScheduleNextCare => 'Следующий уход';
+
+  @override
+  String get editScheduleDisabled => 'Выключено';
+
+  @override
+  String get editScheduleEvery => 'Каждые';
+
+  @override
+  String get editScheduleWaterAmount => 'Объём воды';
+
+  @override
+  String editScheduleDaysUnit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count дн.',
+      many: '$count дн.',
+      few: '$count дн.',
+      one: '$count дн.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String editScheduleMlUnit(int count) {
+    return '$count мл';
+  }
+
+  @override
+  String get editScheduleAmountUnset => '—';
+
+  @override
+  String get editScheduleDueToday => 'сегодня';
+
+  @override
+  String get editScheduleDueTomorrow => 'завтра';
+
+  @override
+  String get editScheduleDueOverdue => 'просрочено';
+
+  @override
+  String editScheduleDueInDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'через $count дн.',
+      many: 'через $count дн.',
+      few: 'через $count дн.',
+      one: 'через $count дн.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get editScheduleResetTitle => 'Сбросить к рекомендованным';
+
+  @override
+  String get editScheduleResetSubtitle =>
+      'Интервалы из каталога для вашего вида';
+
+  @override
+  String get editScheduleNote =>
+      '«Летом я пью чаще — можешь поставить полив раз в 5 дней, а зимой вернуть на 9.»';
+
+  @override
+  String get editScheduleEmptyTitle => 'Расписаний пока нет';
+
+  @override
+  String get editScheduleEmptyBody =>
+      'Для этого растения ещё не настроены интервалы ухода.';
+
+  @override
+  String get editScheduleSaveError =>
+      'Не удалось сохранить расписание. Попробуй ещё раз.';
+
+  @override
+  String get plantCardScheduleTitle => 'Расписание ухода';
+
+  @override
+  String get plantCardScheduleEdit => 'Изменить';
 }

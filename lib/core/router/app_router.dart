@@ -11,6 +11,7 @@ import '../../features/care_event/presentation/first_care_success_screen.dart';
 import '../../features/care_history/presentation/care_history_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
+import '../../features/edit_schedule/presentation/edit_schedule_screen.dart';
 import '../../features/plant_card/domain/care_event_kind.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/today_screen.dart';
@@ -154,6 +155,24 @@ final appRouter = GoRouter(
                         final id =
                             int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
                         return CareHistoryScreen(plantId: id);
+                      },
+                    ),
+                    // Экран 22 «Редактирование расписания ухода».
+                    // Полноэкранно поверх shell (своя шапка с «назад»/«Готово»,
+                    // без таб-бара), как история/карточка. Вход: карточка 02 →
+                    // «Расписание · Изменить». Опциональное `name` растения
+                    // (для overline) пробрасываем через extra.
+                    GoRoute(
+                      path: 'schedule',
+                      name: 'editSchedule',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final id =
+                            int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                        final name = state.extra is String
+                            ? state.extra as String
+                            : null;
+                        return EditScheduleScreen(plantId: id, plantName: name);
                       },
                     ),
                   ],

@@ -1921,5 +1921,137 @@
   "reportEmptyBody": "За этот месяц ещё нет заботы. Отметь первый уход — и здесь появятся твои итоги.",
   "@reportEmptyBody": {
     "description": "Текст пустого состояния отчёта"
+  },
+
+  "editScheduleOverline": "Расписание · {plant}",
+  "@editScheduleOverline": {
+    "description": "Overline в шапке экрана 22 «Редактирование расписания»: имя растения",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "editScheduleTitle": "Как часто заботиться?",
+  "@editScheduleTitle": {
+    "description": "Серифный заголовок экрана 22"
+  },
+
+  "editScheduleSubtitle": "Интервалы влияют на напоминания и стрик",
+  "@editScheduleSubtitle": {
+    "description": "Подпись под заголовком экрана 22"
+  },
+
+  "editScheduleDone": "Готово",
+  "@editScheduleDone": {
+    "description": "Кнопка сохранения изменений расписания (шапка экрана 22)"
+  },
+
+  "editScheduleBack": "Назад",
+  "@editScheduleBack": {
+    "description": "Кнопка «назад» в шапке экрана 22"
+  },
+
+  "editScheduleNextCare": "Следующий уход",
+  "@editScheduleNextCare": {
+    "description": "Префикс строки «Следующий уход · {когда}» на карточке типа ухода"
+  },
+
+  "editScheduleDisabled": "Выключено",
+  "@editScheduleDisabled": {
+    "description": "Подпись на карточке, когда расписание выключено"
+  },
+
+  "editScheduleEvery": "Каждые",
+  "@editScheduleEvery": {
+    "description": "Подпись степпера интервала «Каждые N дн.»"
+  },
+
+  "editScheduleWaterAmount": "Объём воды",
+  "@editScheduleWaterAmount": {
+    "description": "Подпись степпера объёма воды (только для полива)"
+  },
+
+  "editScheduleDaysUnit": "{count, plural, one{{count} дн.} few{{count} дн.} many{{count} дн.} other{{count} дн.}}",
+  "@editScheduleDaysUnit": {
+    "description": "Значение степпера интервала: N дн.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "editScheduleMlUnit": "{count} мл",
+  "@editScheduleMlUnit": {
+    "description": "Значение степпера объёма воды: N мл",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "editScheduleAmountUnset": "—",
+  "@editScheduleAmountUnset": {
+    "description": "Плейсхолдер объёма воды, когда значение не задано"
+  },
+
+  "editScheduleDueToday": "сегодня",
+  "@editScheduleDueToday": {
+    "description": "Относительный срок следующего ухода: сегодня"
+  },
+
+  "editScheduleDueTomorrow": "завтра",
+  "@editScheduleDueTomorrow": {
+    "description": "Относительный срок следующего ухода: завтра"
+  },
+
+  "editScheduleDueOverdue": "просрочено",
+  "@editScheduleDueOverdue": {
+    "description": "Относительный срок следующего ухода: просрочено (в прошлом)"
+  },
+
+  "editScheduleDueInDays": "{count, plural, one{через {count} дн.} few{через {count} дн.} many{через {count} дн.} other{через {count} дн.}}",
+  "@editScheduleDueInDays": {
+    "description": "Относительный срок следующего ухода: через N дн.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "editScheduleResetTitle": "Сбросить к рекомендованным",
+  "@editScheduleResetTitle": {
+    "description": "Заголовок карточки сброса интервалов к рекомендованным для вида"
+  },
+
+  "editScheduleResetSubtitle": "Интервалы из каталога для вашего вида",
+  "@editScheduleResetSubtitle": {
+    "description": "Подпись карточки сброса интервалов к рекомендованным"
+  },
+
+  "editScheduleNote": "«Летом я пью чаще — можешь поставить полив раз в 5 дней, а зимой вернуть на 9.»",
+  "@editScheduleNote": {
+    "description": "Декоративная цитата-заметка внизу экрана 22"
+  },
+
+  "editScheduleEmptyTitle": "Расписаний пока нет",
+  "@editScheduleEmptyTitle": {
+    "description": "Заголовок пустого состояния (backend не вернул ни одного расписания)"
+  },
+
+  "editScheduleEmptyBody": "Для этого растения ещё не настроены интервалы ухода.",
+  "@editScheduleEmptyBody": {
+    "description": "Текст пустого состояния экрана 22"
+  },
+
+  "editScheduleSaveError": "Не удалось сохранить расписание. Попробуй ещё раз.",
+  "@editScheduleSaveError": {
+    "description": "Снэкбар при ошибке сохранения, когда тип ошибки общий"
+  },
+
+  "plantCardScheduleTitle": "Расписание ухода",
+  "@plantCardScheduleTitle": {
+    "description": "Заголовок секции-входа в редактирование расписания на карточке растения"
+  },
+
+  "plantCardScheduleEdit": "Изменить",
+  "@plantCardScheduleEdit": {
+    "description": "Ссылка-вход «Изменить» в редактирование расписания (карточка растения)"
   }
 }
