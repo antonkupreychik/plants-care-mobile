@@ -1672,6 +1672,26 @@
     "description": "Строка ободрения внизу экрана 33 БЕЗ счётчика дней (интервал до следующего ухода недоступен, G19)."
   },
 
+  "firstCareSuccessNextPrefixWater": "Следующий полив — ",
+  "@firstCareSuccessNextPrefixWater": {
+    "description": "Префикс строки-счётчика экрана 33 для полива: перед болд-частью «через N дн.»."
+  },
+
+  "firstCareSuccessNextPrefixSpray": "Следующее опрыскивание — ",
+  "@firstCareSuccessNextPrefixSpray": {
+    "description": "Префикс строки-счётчика экрана 33 для опрыскивания: перед болд-частью «через N дн.»."
+  },
+
+  "firstCareSuccessNextPrefixFertilize": "Следующая подкормка — ",
+  "@firstCareSuccessNextPrefixFertilize": {
+    "description": "Префикс строки-счётчика экрана 33 для подкормки: перед болд-частью «через N дн.»."
+  },
+
+  "firstCareSuccessNextSuffix": ", напомню сама",
+  "@firstCareSuccessNextSuffix": {
+    "description": "Суффикс строки-счётчика экрана 33 после болд-части «через N дн.» (общий для всех типов ухода)."
+  },
+
   "firstCareSuccessCta": "Вернуться в сад",
   "@firstCareSuccessCta": {
     "description": "CTA-кнопка экрана 33 → возврат в таб «Сад»."

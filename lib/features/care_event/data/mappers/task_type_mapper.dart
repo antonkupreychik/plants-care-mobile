@@ -24,3 +24,23 @@ CareEventKind careEventKindFromTaskType(CareTaskType taskType) =>
       CareTaskType.soilCheck => CareEventKind.unknown,
       CareTaskType.unknown => CareEventKind.unknown,
     };
+
+/// Обратное направление (G7): публичный [CareEventKind] записанного ухода →
+/// внутренний [CareTaskType] расписания (`GET /plants/{id}/schedules`).
+///
+/// Нужно, чтобы по типу выполненного события (экран 33 «Успех первого ухода»)
+/// найти соответствующее расписание и показать его `nextDueAt`. Единственная
+/// точка нормализации в эту сторону; покрывается unit-тестом (test-writer).
+///
+/// [CareEventKind.unknown] не имеет внутреннего эквивалента (как и `SOIL_CHECK`
+/// не имеет публичного) — возвращаем [CareTaskType.unknown]. Расписание с типом
+/// `unknown` среди ответа `/schedules` не ожидается, поэтому поиск по нему
+/// просто не найдёт совпадения (счётчик не покажем). Возвращаем `unknown`, а не
+/// бросаем: решение «нашлось ли расписание» принимает вызывающий.
+CareTaskType careTaskTypeFromCareEventKind(CareEventKind kind) =>
+    switch (kind) {
+      CareEventKind.water => CareTaskType.watering,
+      CareEventKind.spray => CareTaskType.misting,
+      CareEventKind.fertilize => CareTaskType.fertilizing,
+      CareEventKind.unknown => CareTaskType.unknown,
+    };
