@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/clock/clock_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../edit_schedule/presentation/next_due_label.dart';
 import '../../home/presentation/plant_illustration.dart';
 import '../../plant_card/domain/care_event_kind.dart';
 import '../../plant_card/presentation/plant_card_providers.dart';
+import 'next_care_due_provider.dart';
 
 /// Экран 33 «Успех первого ухода» (First Care Success) — клиентское
 /// празднование, показывается ОДИН раз сразу после записи ПЕРВОГО события
@@ -82,7 +85,11 @@ class FirstCareSuccessScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                _Footer(onReturn: () => context.go('/home')),
+                _Footer(
+                  plantId: plantId,
+                  careKind: careKind,
+                  onReturn: () => context.go('/home'),
+                ),
               ],
             ),
           ),
@@ -326,28 +333,40 @@ class _StreakChip extends StatelessWidget {
   }
 }
 
-/// Низ экрана: generic-строка ободрения (БЕЗ счётчика дней, G19) и
-/// full-width CTA «Вернуться в сад».
-class _Footer extends StatelessWidget {
-  const _Footer({required this.onReturn});
+/// Низ экрана: строка-счётчик «Следующий {уход} — через N дн., напомню сама»
+/// (относительная часть болдом) и full-width CTA «Вернуться в сад».
+///
+/// Счётчик показываем только когда `nextCareDueProvider` отдал конкретный
+/// момент (`data`, non-null) и тип распознан. В остальных случаях (null /
+/// loading / error / `unknown`) мягко деградируем к generic-строке ободрения
+/// `firstCareSuccessNextHint` — празднование не ломаем.
+class _Footer extends ConsumerWidget {
+  const _Footer({
+    required this.plantId,
+    required this.careKind,
+    required this.onReturn,
+  });
 
+  final int plantId;
+  final CareEventKind careKind;
   final VoidCallback onReturn;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
+
+    final nextDue = ref.watch(
+      nextCareDueProvider(plantId: plantId, kind: careKind),
+    );
+    final nowLocal = ref.watch(clockProvider).nowUtc().toLocal();
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(22, 0, 22, 28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            l10n.firstCareSuccessNextHint,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, color: c.inkSoft, height: 1.4),
-          ),
+          _NextHint(careKind: careKind, nextDue: nextDue, nowLocal: nowLocal),
           const SizedBox(height: 14),
           FilledButton(
             onPressed: onReturn,
@@ -367,6 +386,69 @@ class _Footer extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Строка над CTA. Если известен срок следующего ухода (`data`, non-null) и
+/// тип распознан — собираем «Следующий {уход} — {через N дн.}, напомню сама»
+/// с относительной частью болдом. Иначе — generic `firstCareSuccessNextHint`.
+class _NextHint extends StatelessWidget {
+  const _NextHint({
+    required this.careKind,
+    required this.nextDue,
+    required this.nowLocal,
+  });
+
+  final CareEventKind careKind;
+  final AsyncValue<DateTime?> nextDue;
+  final DateTime nowLocal;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+
+    final baseStyle = TextStyle(fontSize: 13, color: c.inkSoft, height: 1.4);
+
+    // Тип-специфичный префикс (для unknown — null → generic-деградация).
+    final String? prefix = switch (careKind) {
+      CareEventKind.water => l10n.firstCareSuccessNextPrefixWater,
+      CareEventKind.spray => l10n.firstCareSuccessNextPrefixSpray,
+      CareEventKind.fertilize => l10n.firstCareSuccessNextPrefixFertilize,
+      CareEventKind.unknown => null,
+    };
+
+    // Относительная часть («через N дн.») — только из data(non-null).
+    // loading/error/data(null) → null → мягкая деградация к generic-строке.
+    final String? relative = prefix == null
+        ? null
+        : nextDue.maybeWhen(
+            data: (due) => nextDueLabel(l10n, due, nowLocal),
+            orElse: () => null,
+          );
+
+    if (prefix == null || relative == null) {
+      return Text(
+        l10n.firstCareSuccessNextHint,
+        textAlign: TextAlign.center,
+        style: baseStyle,
+      );
+    }
+
+    return Text.rich(
+      TextSpan(
+        style: baseStyle,
+        children: [
+          TextSpan(text: prefix),
+          TextSpan(
+            text: relative,
+            style: TextStyle(color: c.ink, fontWeight: FontWeight.w700),
+          ),
+          TextSpan(text: l10n.firstCareSuccessNextSuffix),
+        ],
+      ),
+      textAlign: TextAlign.center,
     );
   }
 }

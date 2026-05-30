@@ -1208,6 +1208,18 @@ class AppLocalizationsRu extends AppLocalizations {
       'Я напомню, когда придёт время следующего ухода.';
 
   @override
+  String get firstCareSuccessNextPrefixWater => 'Следующий полив — ';
+
+  @override
+  String get firstCareSuccessNextPrefixSpray => 'Следующее опрыскивание — ';
+
+  @override
+  String get firstCareSuccessNextPrefixFertilize => 'Следующая подкормка — ';
+
+  @override
+  String get firstCareSuccessNextSuffix => ', напомню сама';
+
+  @override
   String get firstCareSuccessCta => 'Вернуться в сад';
 
   @override

@@ -1936,6 +1936,30 @@ abstract class AppLocalizations {
   /// **'Я напомню, когда придёт время следующего ухода.'**
   String get firstCareSuccessNextHint;
 
+  /// Префикс строки-счётчика экрана 33 для полива: перед болд-частью «через N дн.».
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующий полив — '**
+  String get firstCareSuccessNextPrefixWater;
+
+  /// Префикс строки-счётчика экрана 33 для опрыскивания: перед болд-частью «через N дн.».
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующее опрыскивание — '**
+  String get firstCareSuccessNextPrefixSpray;
+
+  /// Префикс строки-счётчика экрана 33 для подкормки: перед болд-частью «через N дн.».
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующая подкормка — '**
+  String get firstCareSuccessNextPrefixFertilize;
+
+  /// Суффикс строки-счётчика экрана 33 после болд-части «через N дн.» (общий для всех типов ухода).
+  ///
+  /// In ru, this message translates to:
+  /// **', напомню сама'**
+  String get firstCareSuccessNextSuffix;
+
   /// CTA-кнопка экрана 33 → возврат в таб «Сад».
   ///
   /// In ru, this message translates to:

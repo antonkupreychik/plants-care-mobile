@@ -33,7 +33,7 @@
 | 28 | Загрузка — скелетон | `home` (`HomeLoadingSkeleton`) + `core/widgets` (`SkeletonBox`) — cold-start Home |
 | 29 | Офлайн / ошибка связи | `core/widgets` (`OfflineState`) + `home` (`homeViewStateProvider`) — полноэкранный офлайн при `NetworkError` |
 | 31 | Пустой дневник | `care_history` (состояние history `total:0`) |
-| 33 | Успех первого ухода | `care_event` (клиентское празднование первого события; без счётчика дней, G19) |
+| 33 | Успех первого ухода | `care_event` (празднование + счётчик «следующий уход через N дн.» из расписания, G19) |
 | 34 | Дома и места | `rooms` |
 
 ---
