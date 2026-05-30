@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'clients/health_client.dart';
 import 'clients/plants_client.dart';
 import 'clients/plant_history_client.dart';
+import 'clients/plant_schedules_client.dart';
 import 'clients/locations_client.dart';
 import 'clients/care_events_client.dart';
 import 'clients/calendar_client.dart';
@@ -62,6 +63,7 @@ class PlantsCareApi {
   HealthClient? _health;
   PlantsClient? _plants;
   PlantHistoryClient? _plantHistory;
+  PlantSchedulesClient? _plantSchedules;
   LocationsClient? _locations;
   CareEventsClient? _careEvents;
   CalendarClient? _calendar;
@@ -77,6 +79,8 @@ class PlantsCareApi {
   PlantsClient get plants => _plants ??= PlantsClient(_dio, baseUrl: _baseUrl);
 
   PlantHistoryClient get plantHistory => _plantHistory ??= PlantHistoryClient(_dio, baseUrl: _baseUrl);
+
+  PlantSchedulesClient get plantSchedules => _plantSchedules ??= PlantSchedulesClient(_dio, baseUrl: _baseUrl);
 
   LocationsClient get locations => _locations ??= LocationsClient(_dio, baseUrl: _baseUrl);
 

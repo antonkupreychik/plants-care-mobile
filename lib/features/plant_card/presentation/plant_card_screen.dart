@@ -100,6 +100,26 @@ class PlantCardScreen extends ConsumerWidget {
                   ),
                 ),
 
+                // РАСПИСАНИЕ — заголовок секции + ссылка-вход в редактирование
+                // расписания ухода (экран 22). Имя растения (если деталь
+                // загружена) пробрасываем для overline шапки через extra.
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 24, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: SectionTitle(
+                      title: l10n.plantCardScheduleTitle,
+                      trailing: _ViewAllHistoryLink(
+                        label: l10n.plantCardScheduleEdit,
+                        onTap: () => context.pushNamed(
+                          'editSchedule',
+                          pathParameters: {'id': '$plantId'},
+                          extra: detail.value?.name,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
                 // ДНЕВНИК — заголовок секции + ссылка на полную историю (21).
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(22, 24, 22, 0),

@@ -2193,6 +2193,150 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'За этот месяц ещё нет заботы. Отметь первый уход — и здесь появятся твои итоги.'**
   String get reportEmptyBody;
+
+  /// Overline в шапке экрана 22 «Редактирование расписания»: имя растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Расписание · {plant}'**
+  String editScheduleOverline(String plant);
+
+  /// Серифный заголовок экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'Как часто заботиться?'**
+  String get editScheduleTitle;
+
+  /// Подпись под заголовком экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'Интервалы влияют на напоминания и стрик'**
+  String get editScheduleSubtitle;
+
+  /// Кнопка сохранения изменений расписания (шапка экрана 22)
+  ///
+  /// In ru, this message translates to:
+  /// **'Готово'**
+  String get editScheduleDone;
+
+  /// Кнопка «назад» в шапке экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get editScheduleBack;
+
+  /// Префикс строки «Следующий уход · {когда}» на карточке типа ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующий уход'**
+  String get editScheduleNextCare;
+
+  /// Подпись на карточке, когда расписание выключено
+  ///
+  /// In ru, this message translates to:
+  /// **'Выключено'**
+  String get editScheduleDisabled;
+
+  /// Подпись степпера интервала «Каждые N дн.»
+  ///
+  /// In ru, this message translates to:
+  /// **'Каждые'**
+  String get editScheduleEvery;
+
+  /// Подпись степпера объёма воды (только для полива)
+  ///
+  /// In ru, this message translates to:
+  /// **'Объём воды'**
+  String get editScheduleWaterAmount;
+
+  /// Значение степпера интервала: N дн.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{{count} дн.} few{{count} дн.} many{{count} дн.} other{{count} дн.}}'**
+  String editScheduleDaysUnit(int count);
+
+  /// Значение степпера объёма воды: N мл
+  ///
+  /// In ru, this message translates to:
+  /// **'{count} мл'**
+  String editScheduleMlUnit(int count);
+
+  /// Плейсхолдер объёма воды, когда значение не задано
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get editScheduleAmountUnset;
+
+  /// Относительный срок следующего ухода: сегодня
+  ///
+  /// In ru, this message translates to:
+  /// **'сегодня'**
+  String get editScheduleDueToday;
+
+  /// Относительный срок следующего ухода: завтра
+  ///
+  /// In ru, this message translates to:
+  /// **'завтра'**
+  String get editScheduleDueTomorrow;
+
+  /// Относительный срок следующего ухода: просрочено (в прошлом)
+  ///
+  /// In ru, this message translates to:
+  /// **'просрочено'**
+  String get editScheduleDueOverdue;
+
+  /// Относительный срок следующего ухода: через N дн.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{через {count} дн.} few{через {count} дн.} many{через {count} дн.} other{через {count} дн.}}'**
+  String editScheduleDueInDays(int count);
+
+  /// Заголовок карточки сброса интервалов к рекомендованным для вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Сбросить к рекомендованным'**
+  String get editScheduleResetTitle;
+
+  /// Подпись карточки сброса интервалов к рекомендованным
+  ///
+  /// In ru, this message translates to:
+  /// **'Интервалы из каталога для вашего вида'**
+  String get editScheduleResetSubtitle;
+
+  /// Декоративная цитата-заметка внизу экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'«Летом я пью чаще — можешь поставить полив раз в 5 дней, а зимой вернуть на 9.»'**
+  String get editScheduleNote;
+
+  /// Заголовок пустого состояния (backend не вернул ни одного расписания)
+  ///
+  /// In ru, this message translates to:
+  /// **'Расписаний пока нет'**
+  String get editScheduleEmptyTitle;
+
+  /// Текст пустого состояния экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'Для этого растения ещё не настроены интервалы ухода.'**
+  String get editScheduleEmptyBody;
+
+  /// Снэкбар при ошибке сохранения, когда тип ошибки общий
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось сохранить расписание. Попробуй ещё раз.'**
+  String get editScheduleSaveError;
+
+  /// Заголовок секции-входа в редактирование расписания на карточке растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Расписание ухода'**
+  String get plantCardScheduleTitle;
+
+  /// Ссылка-вход «Изменить» в редактирование расписания (карточка растения)
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить'**
+  String get plantCardScheduleEdit;
 }
 
 class _AppLocalizationsDelegate

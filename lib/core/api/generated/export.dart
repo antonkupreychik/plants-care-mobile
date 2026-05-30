@@ -6,6 +6,7 @@
 export 'clients/health_client.dart';
 export 'clients/plants_client.dart';
 export 'clients/plant_history_client.dart';
+export 'clients/plant_schedules_client.dart';
 export 'clients/locations_client.dart';
 export 'clients/care_events_client.dart';
 export 'clients/calendar_client.dart';
@@ -17,6 +18,8 @@ export 'clients/weather_client.dart';
 export 'clients/reports_client.dart';
 // Data classes
 export 'models/plant_health_response.dart';
+export 'models/care_schedule_dto.dart';
+export 'models/care_schedule_update_request.dart';
 export 'models/location_dto.dart';
 export 'models/location_create_request.dart';
 export 'models/location_update_request.dart';
