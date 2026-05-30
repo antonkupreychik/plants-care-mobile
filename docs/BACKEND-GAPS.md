@@ -14,6 +14,56 @@
 
 ---
 
+## Сводка сверки — 2026-05-30 (сверка с веткой `develop`)
+
+> Сверено с веткой `develop` репозитория `antonkupreychik/plants-care` (в `main` ещё
+> НЕ влито — `main` стоит на 2026-05-24). Спеку из `develop` **пробно подтянули и
+> регенерили** (`./tool/gen_api.sh --fetch --branch develop` — скрипт теперь принимает
+> `--branch`/`PC_BRANCH`), затем **откатили**: рабочая спека/клиент остаются на `main`.
+> Причина отката — ниже.
+
+**⚠️ Смена модели авторизации (затрагивает всё) → миграция отложена.** `develop`
+полностью убрал заголовки `X-User-Id`/`X-Chat-Id`; все пользовательские эндпоинты теперь
+под `bearerAuth` (JWT, `sub` = user). Появился `auth.yaml`:
+`POST /auth/{apple,google,email/request,email/verify,refresh}`. При подтягивании этой спеки
+вызывающий код (репозитории во всех фичах + тесты) **не компилируется**
+(`undefined_named_parameter xUserId/xChatId`) — нужен переход на bearer + dev-токен вместо
+header-слота (см. memory `dev-identity-slot`). **Решение: мигрируем, когда бэкенд будет
+полностью готов** (develop влит в `main`, bearer-стек стабилен). До тех пор клиент остаётся
+на header-auth; список ниже — что уже готово на бэке и ждёт подключения после миграции.
+
+**Закрыто бэкендом в `develop` (issue закрыты) — мобилке остаётся подключить:**
+
+| Gap | Что появилось | Issue |
+|---|---|---|
+| G5 + G16 | `GET`/`PATCH /me` (профиль, счётчики, тихие часы, TZ, locale) | [#182](https://github.com/antonkupreychik/plants-care/issues/182) |
+| G11 + G13b | `/today` → `summary{total,done,remaining,overdue}` + `GET /calendar/progress?from&to` | [#179](https://github.com/antonkupreychik/plants-care/issues/179) |
+| G14 + G19 | `GET`/`PUT /plants/{id}/schedules[/{type}]` (`CareScheduleDto`) | [#185](https://github.com/antonkupreychik/plants-care/issues/185) |
+| G17 | `GET /notifications` + `POST /notifications/{id}/read` | [#183](https://github.com/antonkupreychik/plants-care/issues/183) |
+| G23 | `GET /reports/monthly?month=` (уже было) | [#192](https://github.com/antonkupreychik/plants-care/issues/192) |
+| G24 | `GET /plants/{id}/diagnosis` (`PlantDiagnosisDto`) | [#193](https://github.com/antonkupreychik/plants-care/issues/193) |
+| G27 | `GET/POST/PATCH/DELETE /shopping` | [#196](https://github.com/antonkupreychik/plants-care/issues/196) |
+| G28 | `toxicToCats/toxicToDogs/toxicToHumans` в `SpeciesSummaryDto` → бейдж каталога 🐈 | [#186](https://github.com/antonkupreychik/plants-care/issues/186) |
+
+**Ещё нужно бэку — issue ОТКРЫТЫ (в `develop` эндпоинтов нет):**
+G18 push (`#187`), G20 сезонные коэффициенты (`#188`), G21 режим отпуска (`#189`),
+G22 совместный уход (`#191`), G25 AI-доктор (`#194`), G26 родословная (`#195`).
+
+**Ещё нужно бэку — issue заведены 2026-05-30:**
+- **G29** — агрегат истории ухода (`total`/`onTimePercent`/`byType` + серверный фильтр `type=`) — [#206](https://github.com/antonkupreychik/plants-care/issues/206).
+- **G16 N+1** — health в списке `/plants` (инлайн-поле `healthScore`/`zone` или батч `?ids=`) — [#207](https://github.com/antonkupreychik/plants-care/issues/207).
+- **G12** — источник `token`/`url` подписки `.ics` (в `MeResponse` нет) — [#208](https://github.com/antonkupreychik/plants-care/issues/208).
+
+**Ещё нужно бэку — issue НЕ заведено:**
+- **G23-sub** — per-plant блоки месячного отчёта («звёзды месяца», «личный рекорд») и дельты
+  к прошлому месяцу. Агрегат `MonthlyReportResponse` их не содержит; тикета нет (минор).
+
+**Намеренно без тикета:** G2 (решение voiceLine клиент/бэк), G3 (выводим из G1 `zone==RED`),
+G7 (дешёвый клиентский enum-маппинг), G8 (тулинг). G15 — roadmap-трек архива (`#117`),
+в `develop` только булев `archived`, memorial-полей/списка архивных нет.
+
+---
+
 ## Сводка сверки с live-бэкендом — 2026-05-28
 
 > Прокурлено по `plants-care-development.up.railway.app` + сверено с api-docs и
@@ -108,7 +158,8 @@
   (`{temp, humidity, advice}`) — температуры и текста погоды НЕТ, только влажность +
   recommendation-enum. Стоит поправить §12.8.
 
-## G5 · Счётчики пользователя (header Home) 🔴
+## G5 · Счётчики пользователя (header Home) 🟢
+> Закрыто develop 2026-05-30 (#182, вместе с G16) — `GET /me` отдаёт `{name, avatar?, plantsTotal, tasksToday, notificationsUnread, ...}`. Мобилке подключить.
 - **Экран:** 01 Home (приветствие, badge уведомлений).
 - **Нужно:** `{plantsTotal, tasksToday, notificationsUnread}` + имя/аватар.
 - **Сейчас:** нет `/me`. api-contract §12.1.
@@ -164,7 +215,8 @@
   Форма совпадает с маппером `care_history_mapper`. Секция истории на экране 02
   наполняется.
 
-## G11 · `/calendar` без признака выполнения задач 🔴
+## G11 · `/calendar` без признака выполнения задач 🟢
+> Закрыто develop 2026-05-30 (#179) — `GET /calendar/progress?from&to` отдаёт по дням `{planned, done}` (≤60 дней). Мобилке подключить.
 - **Экран:** 11 График (недельный календарь).
 - **Нужно:** по задаче в `/calendar` понимать, выполнена ли она — для прогресса дня
   `done/count` (полоса в дизайне экрана 11) и состояния «готово»/«просрочено».
@@ -213,7 +265,8 @@
 - **Осталось (G14):** дефолтные расписания из вида бэкенд по-прежнему не создаёт —
   шаг 3 мастера остаётся read-only превью.
 
-## G14 · Расписания не задаются при создании растения 🔴
+## G14 · Расписания не задаются при создании растения 🟢
+> Закрыто develop 2026-05-30 (#185, вместе с G19) — `GET/PUT /plants/{id}/schedules`. Мобилке подключить (шаг 3 мастера).
 - **Экран:** 04 Мастер добавления (шаг 3 «Расписание ухода»).
 - **Нужно:** задать/подтвердить интервалы ухода для нового растения (дизайн шага 3 —
   редактируемые расписания).
@@ -229,7 +282,8 @@
 
 ---
 
-## G13b · Нет фида «выполнено сегодня» / счётчика done 🔴
+## G13b · Нет фида «выполнено сегодня» / счётчика done 🟢
+> Закрыто develop 2026-05-30 (#179) — `/today` теперь отдаёт `summary{total, done, remaining, overdue}`. Мобилке подключить прогресс-кольцо (экран 03).
 - **Экран:** 03 Сегодня (полный список задач ухода).
 - **Родственный:** G11 (тот же дефицит «признака выполнения», но для `/calendar`/экрана 11).
 - **Нужно:** для прогресса дня — сколько задач уже выполнено сегодня и какие
@@ -279,7 +333,8 @@
 > реализации — в `docs/SCREENS-PLAN.md`. Roadmap-номера (`#NN`) — из
 > `design_handoff_plantcare/README.md` §4.
 
-## G16 · Настройки пользователя `/me` + `PATCH /me` 🔴
+## G16 · Настройки пользователя `/me` + `PATCH /me` 🟢
+> Закрыто develop 2026-05-30 (#182) — `GET`/`PATCH /me` (`quietHours*`, `timezone`, `locale` + профиль/счётчики). Мобилке подключить (экраны 23/37/38/13).
 - **Экран:** 23 Тихие часы, 37 Таймзона, 38 Язык (синк), 13 Профиль (статистика/блоки).
 - **Нужно:** чтение и запись персональных настроек: `quietHoursStart`/`quietHoursEnd`,
   `timezone`, `locale`; плюс read-профиль (имя/аватар/счётчики — ср. **G5**).
@@ -291,7 +346,8 @@
 - **Заглушка мобилки:** экраны 23/37 пока не делаем; 38 Язык — локально через
   `AppLocalizations` (MADR-012), синк в `/me` подключим позже.
 
-## G17 · Лента уведомлений 🔴
+## G17 · Лента уведомлений 🟢
+> Закрыто develop 2026-05-30 (#183) — `GET /notifications` + `POST /notifications/{id}/read`. Мобилке подключить (экран 24, badge 🔔).
 - **Экран:** 24 Лента уведомлений, 32 Пустая лента; badge 🔔 на Home 01.
 - **Нужно:** список уведомлений (care/alert/award/report/system) с прочитанностью +
   отметка прочтения. Тексты «голосом растения» — ср. **G2** (voiceLine).
@@ -312,6 +368,7 @@
   по стеку реальная регистрация не работает.
 
 ## G19 · Чтение/редактирование расписаний ухода 🟢
+> Закрыто develop 2026-05-30 (#185) — `GET /plants/{id}/schedules` + `PUT /plants/{id}/schedules/{type}` (`type, every, unit:DAY, amountMl, enabled, nextDueAt`). Мобилке подключить (экран 22).
 - **Экран:** 22 Редактирование расписания (4 типа: enabled, интервал, объём мл для полива).
 - **Родственный:** **G14** (расписания при создании) — тот же дефицит, но G14 про создание.
 - **Закрыто (2026-05-30):** бэк отдаёт `GET /api/v1/plants/{id}/schedules` →
@@ -368,7 +425,8 @@
   `topPlants[{plantId, name, done, ...}]`/`calmestPlantId` в ответе, либо отдельный
   `GET /reports/monthly/plants?month=`. Дельты к прошлому месяцу («+8% к апрелю») тоже нет.
 
-## G24 · Диагноз проблемного растения 🔴
+## G24 · Диагноз проблемного растения 🟢
+> Закрыто develop 2026-05-30 (#193) — `GET /plants/{id}/diagnosis` (`PlantDiagnosisDto` с `issues[]`/`DiagnosisIssueDto`). Мобилке подключить (экран 15).
 - **Экран:** 15 Диагноз.
 - **Сейчас:** нет (#73). Сейчас есть только `GET /plants/{id}/health` (score/zone, G1) —
   без причин/рекомендаций.
@@ -391,13 +449,15 @@
   → предки/потомки.
 - **Заглушка мобилки:** экран не делаем.
 
-## G27 · Список покупок 🔴
+## G27 · Список покупок 🟢
+> Закрыто develop 2026-05-30 (#196) — `GET/POST/PATCH/DELETE /shopping`. Мобилке подключить (экран 19).
 - **Экран:** 19 Список покупок.
 - **Сейчас:** нет (#136).
 - **Предложение:** `GET /api/v1/shopping`, мутации добавления/отметки. Форма — по дизайну экрана 19.
 - **Заглушка мобилки:** экран не делаем.
 
-## G28 · Структурный флаг токсичности вида `toxic` 🟡
+## G28 · Структурный флаг токсичности вида `toxic` 🟢
+> Закрыто develop 2026-05-30 (#186) — `SpeciesSummaryDto` получил `toxicToCats/toxicToDogs/toxicToHumans` (bool). Бейдж каталога 🐈 (экран 12) можно оживить без парсинга текста.
 - **Экран:** 12 Каталог (бейдж 🐈), 20 Карточка вида (баннер токсичности).
 - **Нужно:** машиночитаемый признак токсичности вида для **бейджа каталога** (#128) —
   фильтрация/иконка без парсинга текста.
