@@ -4,9 +4,10 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'care_schedule_update_request_unit.dart';
+
 part 'care_schedule_update_request.g.dart';
 
-/// Тело `PUT /api/v1/plants/{id}/schedules/{type}`.
 @JsonSerializable()
 class CareScheduleUpdateRequest {
   const CareScheduleUpdateRequest({
@@ -18,16 +19,11 @@ class CareScheduleUpdateRequest {
   
   factory CareScheduleUpdateRequest.fromJson(Map<String, Object?> json) => _$CareScheduleUpdateRequestFromJson(json);
   
-  /// Интервал повторения в единицах [unit]. Не меньше 1.
   final int every;
+  final CareScheduleUpdateRequestUnit unit;
 
-  /// Единица интервала (например, `DAY`).
-  final String unit;
-
-  /// Объём воды в миллилитрах (для полива). `null` — не задан.
+  /// Объём полива в миллилитрах. Только для type=WATERING.
   final int? amountMl;
-
-  /// Активно ли расписание.
   final bool enabled;
 
   Map<String, Object?> toJson() => _$CareScheduleUpdateRequestToJson(this);

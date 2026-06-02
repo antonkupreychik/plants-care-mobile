@@ -18,6 +18,7 @@ class TaskDto {
     this.speciesId,
     this.speciesName,
     this.locationName,
+    this.doneAt,
   });
   
   factory TaskDto.fromJson(Map<String, Object?> json) => _$TaskDtoFromJson(json);
@@ -26,10 +27,13 @@ class TaskDto {
   final int plantId;
   final String plantName;
 
-  /// Вид растения (`Species.id`). Для выбора иллюстрации (mobile gap G6).
+  /// Id вида растения (`Species.id`), если вид задан. Нужен клиенту, чтобы.
+  /// выбрать иллюстрацию задачи (mobile gap G6). `null`, если у растения.
+  /// нет привязки к виду.
+  ///
   final int? speciesId;
 
-  /// Имя вида (для иллюстрации/подписи).
+  /// Денормализованное имя вида (подпись/фолбэк иллюстрации). `null`, если вид не задан.
   final String? speciesName;
 
   /// Имя `TaskType.name()` — `WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`.
@@ -38,6 +42,12 @@ class TaskDto {
 
   /// Ближайший дедлайн (UTC).
   final DateTime nextDueAt;
+
+  /// Момент отметки «сделано» (UTC), если задача выполнена сегодня.
+  /// (mobile gap G11, ADR-014). `null` — задача ещё не выполнена (pending).
+  /// В выдаче `/calendar` всегда `null`.
+  ///
+  final DateTime? doneAt;
 
   Map<String, Object?> toJson() => _$TaskDtoToJson(this);
 }

@@ -20,7 +20,7 @@ class _WeatherClient implements WeatherClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<WeatherSnapshotResponse> getWeatherSnapshot({
+  Future<WeatherSnapshotDto> getWeatherSnapshot({
     Map<String, dynamic>? extras,
   }) async {
     final _extra = <String, dynamic>{};
@@ -29,7 +29,7 @@ class _WeatherClient implements WeatherClient {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<WeatherSnapshotResponse>(
+    final _options = _setStreamType<WeatherSnapshotDto>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -40,9 +40,9 @@ class _WeatherClient implements WeatherClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, Object?>>(_options);
-    late WeatherSnapshotResponse _value;
+    late WeatherSnapshotDto _value;
     try {
-      _value = WeatherSnapshotResponse.fromJson(_result.data!);
+      _value = WeatherSnapshotDto.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

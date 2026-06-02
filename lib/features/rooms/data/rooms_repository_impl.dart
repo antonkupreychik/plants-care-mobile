@@ -14,9 +14,9 @@ import '../domain/rooms_repository.dart';
 /// Реализация [RoomsRepository] поверх сгенерированного API-клиента (MADR-007).
 ///
 /// На каждый запрос проставляет [AuthScope.user] через `authScopeExtra` —
-/// заголовок `X-User-Id` подставит `AuthInterceptor` из текущей `AuthSession`
+/// заголовок `Authorization` подставит `AuthInterceptor` из текущей `AuthSession`
 /// (MADR-006/008). Идентичность здесь НЕ хардкодится: см.
-/// [_headerOverriddenByInterceptor].
+/// `AuthInterceptor`.
 ///
 /// Ошибки dio ловит `ErrorInterceptor` и кладёт [ApiError] в
 /// `DioException.error`; здесь это разворачивается в `Result.failure`
@@ -26,18 +26,10 @@ class RoomsRepositoryImpl implements RoomsRepository {
 
   final PlantsCareApi _api;
 
-  /// Значение для required-параметра `@Header` сгенерированного клиента.
-  ///
-  /// Генератор требует `int` для `X-User-Id`, но реальный заголовок ставит
-  /// `AuthInterceptor` из `AuthSession` и ПЕРЕЗАПИСЫВАЕТ это значение. Data-слой
-  /// идентичность не знает и не хардкодит — это лишь заглушка обязательного поля.
-  static const int _headerOverriddenByInterceptor = 0;
-
   @override
   Future<Result<List<GardenLocation>>> getLocations() async {
     try {
       final response = await _api.locations.listLocations(
-        xUserId: _headerOverriddenByInterceptor,
         extras: authScopeExtra(AuthScope.user),
       );
       return Result.success(
@@ -55,7 +47,6 @@ class RoomsRepositoryImpl implements RoomsRepository {
   }) async {
     try {
       final dto = await _api.locations.createLocation(
-        xUserId: _headerOverriddenByInterceptor,
         body: LocationCreateRequest(name: name, emoji: emoji),
         extras: authScopeExtra(AuthScope.user),
       );
@@ -75,7 +66,6 @@ class RoomsRepositoryImpl implements RoomsRepository {
       // PATCH-семантика: шлём только заданные поля. `null` в DTO → поле не
       // сериализуется (backend трактует отсутствие как «не менять»).
       final dto = await _api.locations.updateLocation(
-        xUserId: _headerOverriddenByInterceptor,
         id: id,
         body: LocationUpdateRequest(name: name, emoji: emoji),
         extras: authScopeExtra(AuthScope.user),
@@ -93,7 +83,6 @@ class RoomsRepositoryImpl implements RoomsRepository {
   }) async {
     try {
       await _api.locations.deleteLocation(
-        xUserId: _headerOverriddenByInterceptor,
         id: id,
         targetLocationId: targetLocationId,
         extras: authScopeExtra(AuthScope.user),

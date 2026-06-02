@@ -8,7 +8,7 @@ import 'weekly_health_bucket.dart';
 
 part 'monthly_report_response.g.dart';
 
-/// Ответ `GET /api/v1/reports/monthly`. Агрегаты посчитаны backend.
+/// Ответ `GET /api/v1/reports/monthly`.
 @JsonSerializable()
 class MonthlyReportResponse {
   const MonthlyReportResponse({
@@ -22,25 +22,25 @@ class MonthlyReportResponse {
   
   factory MonthlyReportResponse.fromJson(Map<String, Object?> json) => _$MonthlyReportResponseFromJson(json);
   
-  /// Месяц отчёта `YYYY-MM`.
+  /// Эхо запрошенного месяца (`YYYY-MM`).
   final String month;
 
-  /// Всего выполненных задач ухода за месяц.
+  /// Число выполненных действий ухода за месяц.
   final int done;
 
-  /// Всего просроченных (невыполненных в срок) задач за месяц.
+  /// Число действий, выполненных с опозданием (`onTime = false`).
   final int overdue;
 
-  /// Разбивка выполненных задач по типу ухода. Ключ — строковый код типа.
-  /// (`WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`), значение —.
-  /// количество. Неизвестные ключи клиент игнорирует.
+  /// Разбивка `done` по типам ухода. Ключи — имена enum `TaskType`.
+  /// (`WATERING`, `MISTING`, `FERTILIZING`, `SOIL_CHECK`); присутствуют.
+  /// все четыре, отсутствующие — `0`.
   ///
   final Map<String, int> byType;
 
-  /// Текущий стрик (выполнений вовремя подряд).
+  /// Текущий стрик пользователя (дней подряд) на момент запроса.
   final int streak;
 
-  /// Понедельный тренд за месяц (выполнено + доля вовремя).
+  /// Понедельные бакеты качества для ISO-недель, пересекающих месяц.
   final List<WeeklyHealthBucket> healthTrend;
 
   Map<String, Object?> toJson() => _$MonthlyReportResponseToJson(this);

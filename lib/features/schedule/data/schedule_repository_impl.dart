@@ -12,18 +12,13 @@ import 'mappers/calendar_mapper.dart';
 /// Реализация [ScheduleRepository] поверх сгенерированного клиента (MADR-007).
 ///
 /// Паттерн — как у `HomeRepositoryImpl`: [AuthScope.chat] через `authScopeExtra`
-/// (заголовок `X-Chat-Id` ставит `AuthInterceptor`, идентичность тут не
-/// хардкодится — см. [_headerOverriddenByInterceptor]); `DioException` →
+/// (заголовок `Authorization` ставит `AuthInterceptor`, идентичность тут не
+/// хардкодится — см. `AuthInterceptor`); `DioException` →
 /// `Result.failure(_toApiError)` (MADR-011), наружу не бросаем.
 class ScheduleRepositoryImpl implements ScheduleRepository {
   const ScheduleRepositoryImpl(this._api);
 
   final PlantsCareApi _api;
-
-  /// Заглушка обязательного `@Header('X-Chat-Id')` сгенерированного клиента:
-  /// реальный заголовок перезаписывает `AuthInterceptor` из `AuthSession`,
-  /// data-слой идентичность не знает (см. `HomeRepositoryImpl`).
-  static const int _headerOverriddenByInterceptor = 0;
 
   @override
   Future<Result<ScheduleWeek>> getWeek({required DateTime weekStart}) async {
@@ -35,7 +30,6 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
     try {
       final response = await _api.calendar.getCalendar(
-        xChatId: _headerOverriddenByInterceptor,
         from: from,
         to: to,
         // from/to backend ждёт как date-only; кодген шлёт ISO-8601 с временем

@@ -4,11 +4,12 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'care_schedule_dto_type.dart';
+import 'care_schedule_dto_unit.dart';
+
 part 'care_schedule_dto.g.dart';
 
-/// Расписание ухода одного типа для растения. Интервалы и `nextDueAt`.
-/// посчитаны backend; клиент их не пересчитывает.
-///
+/// Расписание ухода растения одного типа.
 @JsonSerializable()
 class CareScheduleDto {
   const CareScheduleDto({
@@ -22,30 +23,19 @@ class CareScheduleDto {
   
   factory CareScheduleDto.fromJson(Map<String, Object?> json) => _$CareScheduleDtoFromJson(json);
   
-  /// Тип ухода (`WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`).
-  /// Строка нормализуется маппером в domain-enum.
-  ///
-  final String type;
+  final CareScheduleDtoType type;
 
-  /// Интервал повторения в единицах [unit].
+  /// Интервал в днях.
   final int every;
 
-  /// Единица интервала (например, `DAY`). Строка, не enum — маппер.
-  /// нормализует в domain.
-  ///
-  final String unit;
+  /// Единица интервала. Сейчас всегда DAY.
+  final CareScheduleDtoUnit unit;
 
-  /// Объём воды в миллилитрах (для полива). `null` — не задан / не.
-  /// применим к типу.
-  ///
+  /// Объём полива в миллилитрах. Только для type=WATERING.
   final int? amountMl;
-
-  /// Активно ли расписание (генерирует ли задачи).
   final bool enabled;
 
-  /// Момент следующей задачи (UTC), посчитан backend. `null` — расписание.
-  /// неактивно / срок не определён.
-  ///
+  /// Ближайшее срабатывание (UTC). Заполнено только если enabled=true.
   final DateTime? nextDueAt;
 
   Map<String, Object?> toJson() => _$CareScheduleDtoToJson(this);

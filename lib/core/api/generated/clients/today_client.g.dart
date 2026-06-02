@@ -20,16 +20,12 @@ class _TodayClient implements TodayClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<TodayResponse> getToday({
-    required int xChatId,
-    Map<String, dynamic>? extras,
-  }) async {
+  Future<TodayResponse> getToday({Map<String, dynamic>? extras}) async {
     final _extra = <String, dynamic>{};
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-Chat-Id': xChatId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<TodayResponse>(
       Options(method: 'GET', headers: _headers, extra: _extra)

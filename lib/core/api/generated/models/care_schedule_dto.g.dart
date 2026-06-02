@@ -8,9 +8,9 @@ part of 'care_schedule_dto.dart';
 
 CareScheduleDto _$CareScheduleDtoFromJson(Map<String, dynamic> json) =>
     CareScheduleDto(
-      type: json['type'] as String,
+      type: CareScheduleDtoType.fromJson(json['type'] as String),
       every: (json['every'] as num).toInt(),
-      unit: json['unit'] as String,
+      unit: CareScheduleDtoUnit.fromJson(json['unit'] as String),
       enabled: json['enabled'] as bool,
       amountMl: (json['amountMl'] as num?)?.toInt(),
       nextDueAt: json['nextDueAt'] == null

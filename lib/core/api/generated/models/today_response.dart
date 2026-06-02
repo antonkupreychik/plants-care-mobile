@@ -5,6 +5,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import 'task_dto.dart';
+import 'today_summary.dart';
 
 part 'today_response.g.dart';
 
@@ -14,6 +15,7 @@ class TodayResponse {
   const TodayResponse({
     required this.tasks,
     required this.count,
+    required this.summary,
   });
   
   factory TodayResponse.fromJson(Map<String, Object?> json) => _$TodayResponseFromJson(json);
@@ -22,6 +24,7 @@ class TodayResponse {
 
   /// Длина `tasks` (дублируется для удобства клиента).
   final int count;
+  final TodaySummary summary;
 
   Map<String, Object?> toJson() => _$TodayResponseToJson(this);
 }

@@ -12,6 +12,7 @@ extension ApiErrorL10n on AppLocalizations {
     return switch (error) {
       NetworkError() => errorNetwork,
       NotFoundError() => errorNotFound,
+      UnauthorizedError() => errorUnauthorized,
       AccessDeniedError() => errorAccessDenied,
       ValidationError() => errorValidation,
       ConflictError() => errorConflict,

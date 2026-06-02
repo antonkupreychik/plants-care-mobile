@@ -12,9 +12,9 @@ import 'mappers/care_event_mapper.dart';
 
 /// Реализация [CareEventRepository] поверх сгенерированного API-клиента
 /// (MADR-007). Зеркалит `HomeRepositoryImpl` / `PlantCardRepositoryImpl`:
-/// помечает [AuthScope.chat] через `authScopeExtra` — заголовок `X-Chat-Id`
+/// помечает [AuthScope.chat] через `authScopeExtra` — заголовок `Authorization`
 /// подставит `AuthInterceptor` из текущей `AuthSession` (MADR-006/008).
-/// Идентичность здесь НЕ хардкодится: см. [_headerOverriddenByInterceptor].
+/// Идентичность здесь НЕ хардкодится: см. `AuthInterceptor`.
 ///
 /// Ошибки dio ловит `ErrorInterceptor` и кладёт [ApiError] в
 /// `DioException.error`; здесь это разворачивается в `Result.failure`
@@ -23,11 +23,6 @@ class CareEventRepositoryImpl implements CareEventRepository {
   const CareEventRepositoryImpl(this._api);
 
   final PlantsCareApi _api;
-
-  /// Заглушка обязательного `@Header`-параметра сгенерированного клиента.
-  /// Реальный `X-Chat-Id` ставит `AuthInterceptor` из `AuthSession` и
-  /// перезаписывает это значение — data-слой идентичность не знает.
-  static const int _headerOverriddenByInterceptor = 0;
 
   @override
   Future<Result<LoggedCareEvent>> logCareEvent(CareEventDraft draft) async {
@@ -41,7 +36,6 @@ class CareEventRepositoryImpl implements CareEventRepository {
 
     try {
       final response = await _api.careEvents.createCareEvent(
-        xChatId: _headerOverriddenByInterceptor,
         body: draft.toRequest(dtoType),
         extras: authScopeExtra(AuthScope.chat),
       );
@@ -56,11 +50,10 @@ class CareEventRepositoryImpl implements CareEventRepository {
     try {
       // Минимальная страница: нужны только метаданные пагинации (`total`),
       // сами записи не загружаем. Тот же эндпоинт и scope chat, что у чтения
-      // истории в `PlantCardRepositoryImpl.getHistory` (`X-Chat-Id` ставит
+      // истории в `PlantCardRepositoryImpl.getHistory` (`Authorization` ставит
       // `AuthInterceptor`). Держим вызов в фиче care_event, чтобы детекция
       // «первого ухода» была самодостаточной.
       final response = await _api.plantHistory.getPlantHistory(
-        xChatId: _headerOverriddenByInterceptor,
         id: plantId,
         limit: 1,
         offset: 0,

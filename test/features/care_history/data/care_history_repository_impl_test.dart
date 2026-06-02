@@ -75,7 +75,6 @@ void main() {
   group('getHistoryPage', () {
     test('should_map_items_and_carry_pagination_metadata', () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -103,7 +102,6 @@ void main() {
 
     test('should_report_hasMore_true_when_window_below_total', () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -119,7 +117,6 @@ void main() {
 
     test('should_report_hasMore_false_when_window_reaches_total', () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -135,7 +132,6 @@ void main() {
 
     test('should_forward_limit_and_offset_to_client', () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -145,7 +141,6 @@ void main() {
       await repo.getHistoryPage(42, limit: 25, offset: 50);
 
       verify(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: 42,
             limit: 25,
             offset: 50,
@@ -158,7 +153,6 @@ void main() {
     // если кто-то сменит scope при подключении реального auth.
     test('should_send_chat_authScope_in_extras', () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -168,7 +162,6 @@ void main() {
       await repo.getHistoryPage(42);
 
       final captured = verify(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -180,7 +173,6 @@ void main() {
     test('should_return_failure_network_when_DioException_carries_it',
         () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -195,7 +187,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -212,7 +203,6 @@ void main() {
   group('getStreak', () {
     test('should_return_success_with_mapped_streak', () async {
       when(() => stats.getPlantStreak(
-            xChatId: any(named: 'xChatId'),
             plantId: any(named: 'plantId'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -228,7 +218,6 @@ void main() {
 
     test('should_send_chat_authScope_in_extras', () async {
       when(() => stats.getPlantStreak(
-            xChatId: any(named: 'xChatId'),
             plantId: any(named: 'plantId'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -238,7 +227,6 @@ void main() {
       await repo.getStreak(42);
 
       final captured = verify(() => stats.getPlantStreak(
-            xChatId: any(named: 'xChatId'),
             plantId: any(named: 'plantId'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
@@ -247,7 +235,6 @@ void main() {
 
     test('should_return_failure_when_DioException_carries_ApiError', () async {
       when(() => stats.getPlantStreak(
-            xChatId: any(named: 'xChatId'),
             plantId: any(named: 'plantId'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.accessDenied()));
@@ -261,7 +248,6 @@ void main() {
   group('getPlant', () {
     test('should_return_success_with_mapped_plant', () async {
       when(() => plants.getPlant(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -286,7 +272,6 @@ void main() {
     // истории/стрика. Регрессия scope тут увела бы заголовок не туда.
     test('should_send_user_authScope_in_extras', () async {
       when(() => plants.getPlant(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -296,7 +281,6 @@ void main() {
       await repo.getPlant(42);
 
       final captured = verify(() => plants.getPlant(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
@@ -306,7 +290,6 @@ void main() {
     test('should_return_failure_notFound_when_DioException_carries_it',
         () async {
       when(() => plants.getPlant(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.notFound()));

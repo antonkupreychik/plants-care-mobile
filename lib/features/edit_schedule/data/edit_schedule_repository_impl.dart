@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../../core/api/generated/models/type.dart' as sched;
 import '../../../core/api/generated/plants_care_api.dart';
 import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
@@ -11,9 +12,9 @@ import 'mappers/care_schedule_mapper.dart';
 
 /// Реализация [EditScheduleRepository] поверх сгенерированного API-клиента
 /// (MADR-007). User-scoped: на запрос проставляет [AuthScope.user] через
-/// `authScopeExtra` — заголовок `X-User-Id` подставит `AuthInterceptor` из
+/// `authScopeExtra` — заголовок `Authorization` подставит `AuthInterceptor` из
 /// текущей `AuthSession` (MADR-006/008). Идентичность здесь НЕ хардкодится:
-/// см. [_headerOverriddenByInterceptor].
+/// см. `AuthInterceptor`.
 ///
 /// Ошибки dio ловит `ErrorInterceptor` и кладёт [ApiError] в
 /// `DioException.error`; здесь это разворачивается в `Result.failure`
@@ -23,17 +24,10 @@ class EditScheduleRepositoryImpl implements EditScheduleRepository {
 
   final PlantsCareApi _api;
 
-  /// Заглушка required-параметра `@Header('X-User-Id')` сгенерированного
-  /// клиента: реальный заголовок ставит `AuthInterceptor` из `AuthSession` и
-  /// перезаписывает это значение. Data-слой идентичность не знает и не
-  /// хардкодит (как в `ReportsRepositoryImpl`/`HomeRepositoryImpl`).
-  static const int _headerOverriddenByInterceptor = 0;
-
   @override
   Future<Result<List<PlantCareSchedule>>> getSchedules(int plantId) async {
     try {
-      final dtos = await _api.plantSchedules.listPlantSchedules(
-        xUserId: _headerOverriddenByInterceptor,
+      final dtos = await _api.schedules.listPlantSchedules(
         id: plantId,
         extras: authScopeExtra(AuthScope.user),
       );
@@ -51,10 +45,11 @@ class EditScheduleRepositoryImpl implements EditScheduleRepository {
     PlantCareSchedule schedule,
   ) async {
     try {
-      final dto = await _api.plantSchedules.updatePlantSchedule(
-        xUserId: _headerOverriddenByInterceptor,
+      final dto = await _api.schedules.updatePlantSchedule(
         id: plantId,
-        type: schedule.rawType,
+        // Path-параметр `{type}` кодген отдал как enum `Type`; восстанавливаем
+        // из исходной backend-строки расписания.
+        type: sched.Type.fromJson(schedule.rawType),
         body: schedule.toUpdateRequest(),
         extras: authScopeExtra(AuthScope.user),
       );

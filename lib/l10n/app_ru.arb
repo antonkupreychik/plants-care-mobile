@@ -347,6 +347,11 @@
     "description": "Текст ошибки 403"
   },
 
+  "errorUnauthorized": "Сессия истекла. Войдите снова",
+  "@errorUnauthorized": {
+    "description": "Текст ошибки 401 — токен недействителен, нужен повторный вход"
+  },
+
   "errorValidation": "Проверьте введённые данные",
   "@errorValidation": {
     "description": "Текст ошибки валидации"

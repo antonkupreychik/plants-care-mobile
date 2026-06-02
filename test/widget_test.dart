@@ -26,8 +26,6 @@ void main() {
     const config = AppConfig(
       flavor: Flavor.dev,
       apiUrl: 'https://example.test',
-      chatId: '9000001',
-      userId: '1',
     );
 
     await tester.pumpWidget(

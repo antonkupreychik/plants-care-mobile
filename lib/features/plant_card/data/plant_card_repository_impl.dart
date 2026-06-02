@@ -18,9 +18,9 @@ import 'mappers/streak_mapper.dart';
 /// Реализация [PlantCardRepository] поверх сгенерированного API-клиента
 /// (MADR-007). Зеркалит [HomeRepositoryImpl]: три независимых чтения, каждое
 /// помечает [AuthScope] через `authScopeExtra` — нужный заголовок
-/// (`X-User-Id` / `X-Chat-Id`) подставит `AuthInterceptor` из текущей
+/// (`Authorization: Bearer`) подставит `AuthInterceptor` из текущей
 /// `AuthSession` (MADR-006/008). Идентичность здесь НЕ хардкодится:
-/// см. [_headerOverriddenByInterceptor].
+/// см. `AuthInterceptor`.
 ///
 /// Ошибки dio ловит `ErrorInterceptor` и кладёт [ApiError] в
 /// `DioException.error`; здесь это разворачивается в `Result.failure`
@@ -33,16 +33,10 @@ class PlantCardRepositoryImpl implements PlantCardRepository {
 
   final PlantsCareApi _api;
 
-  /// Заглушка обязательного `@Header`-параметра сгенерированного клиента.
-  /// Реальный заголовок ставит `AuthInterceptor` из `AuthSession` и
-  /// перезаписывает это значение — data-слой идентичность не знает.
-  static const int _headerOverriddenByInterceptor = 0;
-
   @override
   Future<Result<Plant>> getPlant(int plantId) async {
     try {
       final dto = await _api.plants.getPlant(
-        xUserId: _headerOverriddenByInterceptor,
         id: plantId,
         extras: authScopeExtra(AuthScope.user),
       );
@@ -59,7 +53,6 @@ class PlantCardRepositoryImpl implements PlantCardRepository {
   }) async {
     try {
       final response = await _api.plantHistory.getPlantHistory(
-        xChatId: _headerOverriddenByInterceptor,
         id: plantId,
         limit: limit,
         extras: authScopeExtra(AuthScope.chat),
@@ -76,7 +69,6 @@ class PlantCardRepositoryImpl implements PlantCardRepository {
   Future<Result<Streak>> getStreak(int plantId) async {
     try {
       final response = await _api.stats.getPlantStreak(
-        xChatId: _headerOverriddenByInterceptor,
         plantId: plantId,
         extras: authScopeExtra(AuthScope.chat),
       );

@@ -158,7 +158,11 @@ final class PlantSchedulesFamily extends $Family
 ///   совпадения / `nextDueAt == null`): UI счётчик НЕ показывает;
 /// - `data(dateTime)` — UTC-момент; форматирование «через N дн.» делает UI
 ///   (`nextDueLabel`, относительно инжектируемого Clock-«сейчас»);
-/// - `error` — запрос расписаний упал: UI деградирует мягко (счётчик скрыт).
+/// - upstream-`Failure` ([plantSchedules]) → derived остаётся в **не-`data`**
+///   состоянии (на текущей версии Riverpod `await ref.watch(.future)` держит
+///   его в `loading`, не ретранслируя в `error`). Гарантируется лишь инвариант
+///   «никогда не `data(non-null)` при упавшем запросе» — UI на любое не-`data`
+///   (`loading`/`error`) одинаково деградирует мягко (счётчик скрыт, generic-хинт).
 
 @ProviderFor(nextCareDue)
 final nextCareDueProvider = NextCareDueFamily._();
@@ -172,7 +176,11 @@ final nextCareDueProvider = NextCareDueFamily._();
 ///   совпадения / `nextDueAt == null`): UI счётчик НЕ показывает;
 /// - `data(dateTime)` — UTC-момент; форматирование «через N дн.» делает UI
 ///   (`nextDueLabel`, относительно инжектируемого Clock-«сейчас»);
-/// - `error` — запрос расписаний упал: UI деградирует мягко (счётчик скрыт).
+/// - upstream-`Failure` ([plantSchedules]) → derived остаётся в **не-`data`**
+///   состоянии (на текущей версии Riverpod `await ref.watch(.future)` держит
+///   его в `loading`, не ретранслируя в `error`). Гарантируется лишь инвариант
+///   «никогда не `data(non-null)` при упавшем запросе» — UI на любое не-`data`
+///   (`loading`/`error`) одинаково деградирует мягко (счётчик скрыт, generic-хинт).
 
 final class NextCareDueProvider
     extends
@@ -191,7 +199,11 @@ final class NextCareDueProvider
   ///   совпадения / `nextDueAt == null`): UI счётчик НЕ показывает;
   /// - `data(dateTime)` — UTC-момент; форматирование «через N дн.» делает UI
   ///   (`nextDueLabel`, относительно инжектируемого Clock-«сейчас»);
-  /// - `error` — запрос расписаний упал: UI деградирует мягко (счётчик скрыт).
+  /// - upstream-`Failure` ([plantSchedules]) → derived остаётся в **не-`data`**
+  ///   состоянии (на текущей версии Riverpod `await ref.watch(.future)` держит
+  ///   его в `loading`, не ретранслируя в `error`). Гарантируется лишь инвариант
+  ///   «никогда не `data(non-null)` при упавшем запросе» — UI на любое не-`data`
+  ///   (`loading`/`error`) одинаково деградирует мягко (счётчик скрыт, generic-хинт).
   NextCareDueProvider._({
     required NextCareDueFamily super.from,
     required ({int plantId, CareEventKind kind}) super.argument,
@@ -246,7 +258,11 @@ String _$nextCareDueHash() => r'0496dc72d8855df978a76bffe07d61afabb462c6';
 ///   совпадения / `nextDueAt == null`): UI счётчик НЕ показывает;
 /// - `data(dateTime)` — UTC-момент; форматирование «через N дн.» делает UI
 ///   (`nextDueLabel`, относительно инжектируемого Clock-«сейчас»);
-/// - `error` — запрос расписаний упал: UI деградирует мягко (счётчик скрыт).
+/// - upstream-`Failure` ([plantSchedules]) → derived остаётся в **не-`data`**
+///   состоянии (на текущей версии Riverpod `await ref.watch(.future)` держит
+///   его в `loading`, не ретранслируя в `error`). Гарантируется лишь инвариант
+///   «никогда не `data(non-null)` при упавшем запросе» — UI на любое не-`data`
+///   (`loading`/`error`) одинаково деградирует мягко (счётчик скрыт, generic-хинт).
 
 final class NextCareDueFamily extends $Family
     with
@@ -272,7 +288,11 @@ final class NextCareDueFamily extends $Family
   ///   совпадения / `nextDueAt == null`): UI счётчик НЕ показывает;
   /// - `data(dateTime)` — UTC-момент; форматирование «через N дн.» делает UI
   ///   (`nextDueLabel`, относительно инжектируемого Clock-«сейчас»);
-  /// - `error` — запрос расписаний упал: UI деградирует мягко (счётчик скрыт).
+  /// - upstream-`Failure` ([plantSchedules]) → derived остаётся в **не-`data`**
+  ///   состоянии (на текущей версии Riverpod `await ref.watch(.future)` держит
+  ///   его в `loading`, не ретранслируя в `error`). Гарантируется лишь инвариант
+  ///   «никогда не `data(non-null)` при упавшем запросе» — UI на любое не-`data`
+  ///   (`loading`/`error`) одинаково деградирует мягко (счётчик скрыт, generic-хинт).
 
   NextCareDueProvider call({
     required int plantId,

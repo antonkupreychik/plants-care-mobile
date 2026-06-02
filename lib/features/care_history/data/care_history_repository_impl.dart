@@ -16,9 +16,9 @@ import '../domain/care_history_repository.dart';
 /// Реализация [CareHistoryRepository] поверх сгенерированного API-клиента
 /// (MADR-007). Зеркалит `PlantCardRepositoryImpl`: три независимых чтения,
 /// каждое помечает [AuthScope] через `authScopeExtra` — нужный заголовок
-/// (`X-User-Id` / `X-Chat-Id`) подставит `AuthInterceptor` из текущей
+/// (`Authorization: Bearer`) подставит `AuthInterceptor` из текущей
 /// `AuthSession` (MADR-006/008). Идентичность здесь НЕ хардкодится: см.
-/// [_headerOverriddenByInterceptor].
+/// `AuthInterceptor`.
 ///
 /// Маппинг DTO ↔ domain переиспользует существующие мапперы соседних фич
 /// (не дублируем): `CareEventResponseMapper.toDomain()`,
@@ -32,11 +32,6 @@ class CareHistoryRepositoryImpl implements CareHistoryRepository {
 
   final PlantsCareApi _api;
 
-  /// Заглушка обязательного `@Header`-параметра сгенерированного клиента.
-  /// Реальный заголовок ставит `AuthInterceptor` из `AuthSession` и
-  /// перезаписывает это значение — data-слой идентичность не знает.
-  static const int _headerOverriddenByInterceptor = 0;
-
   @override
   Future<Result<CareHistoryPage>> getHistoryPage(
     int plantId, {
@@ -45,7 +40,6 @@ class CareHistoryRepositoryImpl implements CareHistoryRepository {
   }) async {
     try {
       final response = await _api.plantHistory.getPlantHistory(
-        xChatId: _headerOverriddenByInterceptor,
         id: plantId,
         limit: limit,
         offset: offset,
@@ -70,7 +64,6 @@ class CareHistoryRepositoryImpl implements CareHistoryRepository {
   Future<Result<Streak>> getStreak(int plantId) async {
     try {
       final response = await _api.stats.getPlantStreak(
-        xChatId: _headerOverriddenByInterceptor,
         plantId: plantId,
         extras: authScopeExtra(AuthScope.chat),
       );
@@ -84,7 +77,6 @@ class CareHistoryRepositoryImpl implements CareHistoryRepository {
   Future<Result<Plant>> getPlant(int plantId) async {
     try {
       final dto = await _api.plants.getPlant(
-        xUserId: _headerOverriddenByInterceptor,
         id: plantId,
         extras: authScopeExtra(AuthScope.user),
       );

@@ -20,6 +20,10 @@ sealed class ApiError with _$ApiError implements Exception {
   /// 400 LOCATION_NOT_EMPTY — удаление непустой локации без targetLocationId.
   const factory ApiError.locationNotEmpty() = LocationNotEmptyError;
 
+  /// 401 — нет/просрочен токен и refresh не помог (`TOKEN_REVOKED` и пр.).
+  /// Сессия к этому моменту уже сброшена `RefreshInterceptor`.
+  const factory ApiError.unauthorized() = UnauthorizedError;
+
   /// 403 ACCESS_DENIED — ресурс принадлежит другому пользователю.
   const factory ApiError.accessDenied() = AccessDeniedError;
 
@@ -40,6 +44,7 @@ sealed class ApiError with _$ApiError implements Exception {
         ValidationError() => 'Проверьте введённые данные',
         BadRequestError(:final message) => message ?? 'Некорректный запрос',
         LocationNotEmptyError() => 'Локация не пуста',
+        UnauthorizedError() => 'Нужно войти заново',
         AccessDeniedError() => 'Нет доступа',
         NotFoundError() => 'Не найдено',
         ConflictError() => 'Конфликт данных',

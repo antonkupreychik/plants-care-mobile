@@ -15,8 +15,8 @@ import 'mappers/species_mapper.dart';
 /// (MADR-007). Зеркалит `HomeRepositoryImpl` / `CareEventRepositoryImpl`.
 ///
 /// Scope per-request: `/species` — публичный ([AuthScope.none]), `POST /plants`
-/// — [AuthScope.user] (`X-User-Id` ставит `AuthInterceptor` из `AuthSession`,
-/// data идентичность не знает — см. [_headerOverriddenByInterceptor]).
+/// — [AuthScope.user] (`Authorization` ставит `AuthInterceptor` из `AuthSession`,
+/// data идентичность не знает — см. `AuthInterceptor`).
 ///
 /// Ошибки dio ловит `ErrorInterceptor` и кладёт [ApiError] в
 /// `DioException.error`; здесь это разворачивается в `Result.failure`
@@ -25,11 +25,6 @@ class AddPlantRepositoryImpl implements AddPlantRepository {
   const AddPlantRepositoryImpl(this._api);
 
   final PlantsCareApi _api;
-
-  /// Заглушка обязательного `@Header`-параметра сгенерированного клиента.
-  /// Реальный `X-User-Id` ставит `AuthInterceptor` и перезаписывает это
-  /// значение — data-слой идентичность не знает.
-  static const int _headerOverriddenByInterceptor = 0;
 
   @override
   Future<Result<List<SpeciesSummary>>> searchSpecies({
@@ -72,7 +67,6 @@ class AddPlantRepositoryImpl implements AddPlantRepository {
   }) async {
     try {
       final dto = await _api.plants.createPlant(
-        xUserId: _headerOverriddenByInterceptor,
         body: PlantCreateRequest(
           name: name,
           locationId: locationId,

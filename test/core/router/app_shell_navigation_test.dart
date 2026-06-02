@@ -48,8 +48,6 @@ class _MockCatalogRepo extends Mock implements CatalogRepository {}
 const _config = AppConfig(
   flavor: Flavor.dev,
   apiUrl: 'https://example.test',
-  chatId: '9000001',
-  userId: '1',
 );
 
 /// «Сегодня» зафиксировано (детерминизм заголовков «сегодня» в обоих экранах).

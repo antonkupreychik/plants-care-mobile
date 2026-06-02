@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'plant_schedules_client.dart';
+part of 'me_client.dart';
 
 // dart format off
 
@@ -10,8 +10,8 @@ part of 'plant_schedules_client.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main,avoid_redundant_argument_values
 
-class _PlantSchedulesClient implements PlantSchedulesClient {
-  _PlantSchedulesClient(this._dio, {this.baseUrl, this.errorLogger});
+class _MeClient implements MeClient {
+  _MeClient(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -20,36 +20,27 @@ class _PlantSchedulesClient implements PlantSchedulesClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<CareScheduleDto>> listPlantSchedules({
-    required int xUserId,
-    required int id,
-    Map<String, dynamic>? extras,
-  }) async {
+  Future<MeResponse> getMe({Map<String, dynamic>? extras}) async {
     final _extra = <String, dynamic>{};
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<CareScheduleDto>>(
+    final _options = _setStreamType<MeResponse>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/plants/${id}/schedules',
+            '/api/v1/me',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<CareScheduleDto> _value;
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late MeResponse _value;
     try {
-      _value = _result.data!
-          .map(
-            (dynamic i) => CareScheduleDto.fromJson(i as Map<String, dynamic>),
-          )
-          .toList();
+      _value = MeResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -58,35 +49,31 @@ class _PlantSchedulesClient implements PlantSchedulesClient {
   }
 
   @override
-  Future<CareScheduleDto> updatePlantSchedule({
-    required int xUserId,
-    required int id,
-    required String type,
-    required CareScheduleUpdateRequest body,
+  Future<MeResponse> updateMe({
+    required MeUpdateRequest body,
     Map<String, dynamic>? extras,
   }) async {
     final _extra = <String, dynamic>{};
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<CareScheduleDto>(
-      Options(method: 'PUT', headers: _headers, extra: _extra)
+    final _options = _setStreamType<MeResponse>(
+      Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/plants/${id}/schedules/${type}',
+            '/api/v1/me',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, Object?>>(_options);
-    late CareScheduleDto _value;
+    late MeResponse _value;
     try {
-      _value = CareScheduleDto.fromJson(_result.data!);
+      _value = MeResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

@@ -1,9 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:plantcare_mobile/core/api/generated/clients/plant_schedules_client.dart';
+import 'package:plantcare_mobile/core/api/generated/clients/schedules_client.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto_type.dart';
+import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto_unit.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_schedule_update_request.dart';
+import 'package:plantcare_mobile/core/api/generated/models/care_schedule_update_request_unit.dart';
+import 'package:plantcare_mobile/core/api/generated/models/type.dart';
 import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
@@ -16,7 +20,7 @@ import 'package:plantcare_mobile/features/edit_schedule/domain/plant_care_schedu
 
 class _MockApi extends Mock implements PlantsCareApi {}
 
-class _MockSchedulesClient extends Mock implements PlantSchedulesClient {}
+class _MockSchedulesClient extends Mock implements SchedulesClient {}
 
 class _FakeUpdateRequest extends Fake implements CareScheduleUpdateRequest {}
 
@@ -26,9 +30,9 @@ DioException _dioWith(Object? error) => DioException(
     );
 
 CareScheduleDto _wateringDto({int every = 7}) => CareScheduleDto(
-      type: 'WATERING',
+      type: CareScheduleDtoType.watering,
       every: every,
-      unit: 'DAY',
+      unit: CareScheduleDtoUnit.day,
       enabled: true,
       amountMl: 200,
       nextDueAt: DateTime.utc(2026, 6, 1, 9),
@@ -47,6 +51,7 @@ const _wateringDomain = PlantCareSchedule(
 void main() {
   setUpAll(() {
     registerFallbackValue(_FakeUpdateRequest());
+    registerFallbackValue(Type.watering);
   });
 
   late _MockApi api;
@@ -56,14 +61,13 @@ void main() {
   setUp(() {
     api = _MockApi();
     client = _MockSchedulesClient();
-    when(() => api.plantSchedules).thenReturn(client);
+    when(() => api.schedules).thenReturn(client);
     repo = EditScheduleRepositoryImpl(api);
   });
 
   group('getSchedules', () {
     test('should_return_success_with_mapped_domain_list', () async {
       when(() => client.listPlantSchedules(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => [_wateringDto()]);
@@ -79,7 +83,6 @@ void main() {
 
     test('should_forward_plantId_as_path_id', () async {
       when(() => client.listPlantSchedules(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => [_wateringDto()]);
@@ -87,7 +90,6 @@ void main() {
       await repo.getSchedules(42);
 
       verify(() => client.listPlantSchedules(
-            xUserId: any(named: 'xUserId'),
             id: 42,
             extras: any(named: 'extras'),
           )).called(1);
@@ -97,7 +99,6 @@ void main() {
     // регрессию scope при подключении реального auth.
     test('should_send_user_authScope_in_extras', () async {
       when(() => client.listPlantSchedules(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => const <CareScheduleDto>[]);
@@ -105,7 +106,6 @@ void main() {
       await repo.getSchedules(1);
 
       final captured = verify(() => client.listPlantSchedules(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
@@ -115,7 +115,6 @@ void main() {
     test('should_return_failure_with_ApiError_from_DioException_without_throw',
         () async {
       when(() => client.listPlantSchedules(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.network()));
@@ -128,7 +127,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => client.listPlantSchedules(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith('boom'));
@@ -142,7 +140,6 @@ void main() {
   group('updateSchedule', () {
     test('should_return_success_with_updated_domain', () async {
       when(() => client.updatePlantSchedule(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             type: any(named: 'type'),
             body: any(named: 'body'),
@@ -159,7 +156,6 @@ void main() {
 
     test('should_send_rawType_as_path_type_and_mapped_body', () async {
       when(() => client.updatePlantSchedule(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             type: any(named: 'type'),
             body: any(named: 'body'),
@@ -169,22 +165,22 @@ void main() {
       await repo.updateSchedule(7, _wateringDomain);
 
       final body = verify(() => client.updatePlantSchedule(
-            xUserId: any(named: 'xUserId'),
             id: 7,
-            type: 'WATERING',
+            // Path-параметр {type} кодген отдал enum Type; репозиторий
+            // восстанавливает его из rawType домена ('WATERING').
+            type: Type.watering,
             body: captureAny(named: 'body'),
             extras: any(named: 'extras'),
           )).captured.single as CareScheduleUpdateRequest;
       // Тело собрано маппером из домена: every/unit(rawUnit)/amountMl/enabled.
       expect(body.every, 5);
-      expect(body.unit, 'DAY');
+      expect(body.unit, CareScheduleUpdateRequestUnit.day);
       expect(body.amountMl, 250);
       expect(body.enabled, isTrue);
     });
 
     test('should_send_user_authScope_in_extras', () async {
       when(() => client.updatePlantSchedule(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             type: any(named: 'type'),
             body: any(named: 'body'),
@@ -194,7 +190,6 @@ void main() {
       await repo.updateSchedule(1, _wateringDomain);
 
       final captured = verify(() => client.updatePlantSchedule(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             type: any(named: 'type'),
             body: any(named: 'body'),
@@ -205,7 +200,6 @@ void main() {
 
     test('should_return_failure_with_ApiError_without_throw', () async {
       when(() => client.updatePlantSchedule(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             type: any(named: 'type'),
             body: any(named: 'body'),

@@ -7,8 +7,10 @@ import 'package:retrofit/retrofit.dart';
 
 import '../models/page_response_plant_dto.dart';
 import '../models/plant_create_request.dart';
+import '../models/plant_diagnosis_dto.dart';
 import '../models/plant_dto.dart';
-import '../models/plant_health_response.dart';
+import '../models/plant_family_response.dart';
+import '../models/plant_health_dto.dart';
 import '../models/plant_update_request.dart';
 
 part 'plants_client.g.dart';
@@ -19,9 +21,9 @@ abstract class PlantsClient {
 
   /// Список растений пользователя.
   ///
-  /// Возвращает страницу растений, принадлежащих пользователю из заголовка.
-  /// `X-User-Id`. Архивированные (soft-deleted) растения в выдачу не.
-  /// попадают.
+  /// Возвращает страницу растений, принадлежащих текущему пользователю.
+  /// (`sub` из bearer-токена). Архивированные (soft-deleted) растения в.
+  /// выдачу не попадают.
   ///
   /// Можно фильтровать по локации параметром `locationId`. Пагинация —.
   /// классическая `offset/limit`.
@@ -31,10 +33,6 @@ abstract class PlantsClient {
   ///   становится 100; всё, что меньше 1 — становится 1);.
   /// * `offset` ниже нуля становится 0.
   ///
-  /// [xUserId] - Внутренний идентификатор пользователя (поле `users.id` в БД). Временный.
-  /// способ идентификации до появления настоящей авторизации.
-  ///
-  ///
   /// [locationId] - Идентификатор локации. Если задан, возвращаются только растения из неё.
   ///
   /// [offset] - Сдвиг от начала выборки. Значения < 0 трактуются как 0.
@@ -42,7 +40,6 @@ abstract class PlantsClient {
   /// [limit] - Размер страницы. Обрезается до [1, 100] на сервере.
   @GET('/api/v1/plants')
   Future<PageResponsePlantDto> listPlants({
-    @Header('X-User-Id') required int xUserId,
     @Query('offset') int? offset = 0,
     @Query('limit') int? limit = 20,
     @Query('locationId') int? locationId,
@@ -51,34 +48,26 @@ abstract class PlantsClient {
 
   /// Создать растение.
   ///
-  /// Создаёт растение от имени пользователя из `X-User-Id`. Если.
-  /// `locationId` не указан, растение попадает в дефолтную локацию.
-  /// пользователя.
-  ///
-  /// [xUserId] - Внутренний идентификатор пользователя (поле `users.id` в БД). Временный.
-  /// способ идентификации до появления настоящей авторизации.
+  /// Создаёт растение от имени текущего пользователя (`sub` из.
+  /// bearer-токена). Если `locationId` не указан, растение попадает в.
+  /// дефолтную локацию пользователя. Если `parentPlantId` указан, растение.
+  /// создаётся как отводок/потомок материнского растения.
   @POST('/api/v1/plants')
   Future<PlantDto> createPlant({
-    @Header('X-User-Id') required int xUserId,
     @Body() required PlantCreateRequest body,
     @Extras() Map<String, dynamic>? extras,
   });
 
   /// Получить растение по ID.
   ///
-  /// Возвращает растение, если оно принадлежит пользователю из `X-User-Id`.
-  /// и не архивировано. Чужие или несуществующие растения отдаются как 404,.
-  /// чужие активные — как 403 (когда сервис уже знает, что запись есть, но.
-  /// принадлежит другому пользователю).
-  ///
-  /// [xUserId] - Внутренний идентификатор пользователя (поле `users.id` в БД). Временный.
-  /// способ идентификации до появления настоящей авторизации.
-  ///
+  /// Возвращает растение, если оно принадлежит текущему пользователю.
+  /// (`sub` из bearer-токена) и не архивировано. Чужие или несуществующие.
+  /// растения отдаются как 404, чужие активные — как 403 (когда сервис уже.
+  /// знает, что запись есть, но принадлежит другому пользователю).
   ///
   /// [id] - Идентификатор растения.
   @GET('/api/v1/plants/{id}')
   Future<PlantDto> getPlant({
-    @Header('X-User-Id') required int xUserId,
     @Path('id') required int id,
     @Extras() Map<String, dynamic>? extras,
   });
@@ -92,14 +81,9 @@ abstract class PlantsClient {
   /// Пример: чтобы переместить растение в другую локацию, достаточно.
   /// отправить `{ "locationId": 5 }`.
   ///
-  /// [xUserId] - Внутренний идентификатор пользователя (поле `users.id` в БД). Временный.
-  /// способ идентификации до появления настоящей авторизации.
-  ///
-  ///
   /// [id] - Идентификатор растения.
   @PUT('/api/v1/plants/{id}')
   Future<PlantDto> updatePlant({
-    @Header('X-User-Id') required int xUserId,
     @Path('id') required int id,
     @Body() required PlantUpdateRequest body,
     @Extras() Map<String, dynamic>? extras,
@@ -111,33 +95,64 @@ abstract class PlantsClient {
   /// в БД остаётся, но перестаёт появляться во всех `/api/v1/plants/*`.
   /// выборках. Восстановления через API в этой версии нет.
   ///
-  /// [xUserId] - Внутренний идентификатор пользователя (поле `users.id` в БД). Временный.
-  /// способ идентификации до появления настоящей авторизации.
-  ///
-  ///
   /// [id] - Идентификатор растения.
   @DELETE('/api/v1/plants/{id}')
   Future<void> deletePlant({
-    @Header('X-User-Id') required int xUserId,
     @Path('id') required int id,
     @Extras() Map<String, dynamic>? extras,
   });
 
-  /// Health Score растения.
+  /// Health-score растения.
   ///
-  /// Возвращает индекс здоровья растения (`score` 0..100) и его зону.
-  /// (`GREEN`/`YELLOW`/`RED`), посчитанные backend по истории ухода.
-  /// Клиент значения НЕ пересчитывает.
+  /// Возвращает числовой балл здоровья растения 0–100 и цветовую зону.
+  /// (mobile gap G1, issue #138). Балл считается поверх истории ухода за.
+  /// окно 30 дней в таймзоне пользователя плюс бонусы за фото/заметки.
   ///
-  /// Если данных для достоверной оценки недостаточно, `insufficientData`.
-  /// равно `true` — в этом случае `score`/`zone` носят справочный характер,.
-  /// а UI отображает нейтральное состояние.
+  /// Если активных записей ухода меньше порога (`< 3`), балл не.
+  /// вычисляется: `insufficientData = true`, а `score`/`zone` приходят.
+  /// `null` (клиент рисует кольцо нейтральным / «Пока мало данных»).
   ///
-  /// Эндпоинт публичный: идентификация по заголовкам не требуется.
+  /// Доступ только к своему неархивированному растению (как `GET /plants/{id}`).
   ///
   /// [id] - Идентификатор растения.
   @GET('/api/v1/plants/{id}/health')
-  Future<PlantHealthResponse> getPlantHealth({
+  Future<PlantHealthDto> getPlantHealth({
+    @Path('id') required int id,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Родословная растения.
+  ///
+  /// Возвращает материнское растение и прямых потомков/отводки.
+  /// для текущего растения. Доступ только к растениям текущего пользователя.
+  ///
+  /// [id] - Идентификатор растения.
+  @GET('/api/v1/plants/{id}/family')
+  Future<PlantFamilyResponse> getPlantFamily({
+    @Path('id') required int id,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Пассивная диагностика растения.
+  ///
+  /// Возвращает список выявленных проблем (`issues`) и рекомендаций.
+  /// (`recommendations`) для растения (mobile screen 15 «Диагноз»,.
+  /// issue #193). Диагноз пассивный — выводится только из уже имеющихся.
+  /// данных (просроченные расписания ухода, health-зона), без ИИ и без.
+  /// интерактивного опросника. Новой схемы БД не требует.
+  ///
+  /// Если активных записей ухода меньше порога (`< 3`), диагноз не.
+  /// строится: `issues` пустой, в `recommendations` — единственная.
+  /// подсказка продолжать отмечать уход.
+  ///
+  /// У здорового растения (данных достаточно, нет просрочек, зона не `RED`).
+  /// и `issues`, и `recommendations` пустые.
+  ///
+  /// Доступ только к своему неархивированному растению (как `GET /plants/{id}`).
+  ///
+  /// [id] - Идентификатор растения.
+  @GET('/api/v1/plants/{id}/diagnosis')
+  Future<PlantDiagnosisDto> getPlantDiagnosis({
     @Path('id') required int id,
     @Extras() Map<String, dynamic>? extras,
   });

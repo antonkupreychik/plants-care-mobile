@@ -1,13 +1,26 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../env/app_config.dart';
 import 'auth_session.dart';
-import 'dev_auth_session.dart';
+import 'jwt_auth_session.dart';
+import 'token_store.dart';
 
 part 'auth_providers.g.dart';
 
-/// Текущая сессия (MADR-008). Сейчас всегда dev-слот; при появлении JWT —
-/// ветка на `JwtAuthSession`, остальной код не меняется.
+/// Защищённое хранилище токенов (MADR-008). Реальный экземпляр проставляется
+/// override'ом в `bootstrap()` (нужен async-доступ к Keychain/Keystore на
+/// старте).
 @riverpod
-AuthSession authSession(Ref ref) =>
-    DevAuthSession(ref.watch(appConfigProvider));
+TokenStore tokenStore(Ref ref) =>
+    throw UnimplementedError('tokenStoreProvider overridden in bootstrap()');
+
+/// JWT-сессия (MADR-008) — единый держатель пары токенов. Создаётся в
+/// `bootstrap()` уже с прочитанной из [TokenStore] парой (или dev-токеном из
+/// `--dart-define`) и проставляется override'ом.
+@riverpod
+JwtAuthSession jwtAuthSession(Ref ref) =>
+    throw UnimplementedError('jwtAuthSessionProvider overridden in bootstrap()');
+
+/// Текущий auth-слот (MADR-008). За интерфейсом [AuthSession] — [JwtAuthSession];
+/// сетевой слой/интерсепторы зависят только от интерфейса.
+@riverpod
+AuthSession authSession(Ref ref) => ref.watch(jwtAuthSessionProvider);

@@ -1,17 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plantcare_mobile/core/api/generated/models/weather_snapshot_response.dart';
-import 'package:plantcare_mobile/core/api/generated/models/weather_snapshot_response_recommendation.dart';
+import 'package:plantcare_mobile/core/api/generated/models/weather_snapshot_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/weather_snapshot_dto_recommendation.dart';
 import 'package:plantcare_mobile/features/weather/data/mappers/weather_snapshot_mapper.dart';
 import 'package:plantcare_mobile/features/weather/domain/watering_recommendation.dart';
 
 void main() {
-  group('WeatherSnapshotResponseMapper.toDomain', () {
+  group('WeatherSnapshotDtoMapper.toDomain', () {
     test('should_map_all_fields_when_available_true', () {
       final fetchedAt = DateTime.utc(2026, 5, 28, 9, 30);
-      final dto = WeatherSnapshotResponse(
+      final dto = WeatherSnapshotDto(
         available: true,
         humidityPercent: 88,
-        recommendation: WeatherSnapshotResponseRecommendation.deferOk,
+        recommendation: WeatherSnapshotDtoRecommendation.deferOk,
         fetchedAt: fetchedAt,
         fromCache: true,
       );
@@ -30,7 +30,7 @@ void main() {
     // все остальные поля null. Десериализация и маппинг не должны падать,
     // hasData=false → UI не рисует строку (урок G1 про null-поля).
     test('should_map_nulls_and_hasData_false_when_available_false', () {
-      const dto = WeatherSnapshotResponse(
+      const dto = WeatherSnapshotDto(
         available: false,
         humidityPercent: null,
         recommendation: null,
@@ -49,10 +49,10 @@ void main() {
     });
 
     test('should_map_doNotDefer_recommendation', () {
-      const dto = WeatherSnapshotResponse(
+      const dto = WeatherSnapshotDto(
         available: true,
         humidityPercent: 20,
-        recommendation: WeatherSnapshotResponseRecommendation.doNotDefer,
+        recommendation: WeatherSnapshotDtoRecommendation.doNotDefer,
       );
 
       final snapshot = dto.toDomain();
@@ -61,10 +61,10 @@ void main() {
     });
 
     test('should_map_neutral_recommendation', () {
-      const dto = WeatherSnapshotResponse(
+      const dto = WeatherSnapshotDto(
         available: true,
         humidityPercent: 50,
-        recommendation: WeatherSnapshotResponseRecommendation.neutral,
+        recommendation: WeatherSnapshotDtoRecommendation.neutral,
       );
 
       final snapshot = dto.toDomain();
@@ -74,10 +74,10 @@ void main() {
 
     test('should_degrade_unknown_recommendation_to_neutral_without_throwing',
         () {
-      const dto = WeatherSnapshotResponse(
+      const dto = WeatherSnapshotDto(
         available: true,
         humidityPercent: 50,
-        recommendation: WeatherSnapshotResponseRecommendation.$unknown,
+        recommendation: WeatherSnapshotDtoRecommendation.$unknown,
       );
 
       final snapshot = dto.toDomain();
@@ -88,10 +88,10 @@ void main() {
     // Маппер клампит влажность в [0,100] — генерированный клиент границы не
     // валидирует, так что защита от мусора с backend проверяется честно.
     test('should_clamp_humidity_above_100', () {
-      const dto = WeatherSnapshotResponse(
+      const dto = WeatherSnapshotDto(
         available: true,
         humidityPercent: 150,
-        recommendation: WeatherSnapshotResponseRecommendation.neutral,
+        recommendation: WeatherSnapshotDtoRecommendation.neutral,
       );
 
       final snapshot = dto.toDomain();
@@ -100,10 +100,10 @@ void main() {
     });
 
     test('should_clamp_humidity_below_0', () {
-      const dto = WeatherSnapshotResponse(
+      const dto = WeatherSnapshotDto(
         available: true,
         humidityPercent: -5,
-        recommendation: WeatherSnapshotResponseRecommendation.neutral,
+        recommendation: WeatherSnapshotDtoRecommendation.neutral,
       );
 
       final snapshot = dto.toDomain();

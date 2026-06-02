@@ -1,16 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plantcare_mobile/core/api/generated/models/plant_health_response.dart';
-import 'package:plantcare_mobile/core/api/generated/models/plant_health_response_zone.dart';
+import 'package:plantcare_mobile/core/api/generated/models/plant_health_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/plant_health_dto_zone.dart';
 import 'package:plantcare_mobile/features/plant_card/data/mappers/plant_health_mapper.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/health_zone.dart';
 
 void main() {
-  group('PlantHealthResponseMapper.toDomain', () {
+  group('PlantHealthDtoMapper.toDomain', () {
     test('should_map_green_zone_and_score_when_reliable', () {
-      const dto = PlantHealthResponse(
+      const dto = PlantHealthDto(
         insufficientData: false,
         score: 92,
-        zone: PlantHealthResponseZone.green,
+        zone: PlantHealthDtoZone.green,
       );
 
       final health = dto.toDomain();
@@ -22,10 +22,10 @@ void main() {
     });
 
     test('should_map_yellow_zone', () {
-      const dto = PlantHealthResponse(
+      const dto = PlantHealthDto(
         insufficientData: false,
         score: 55,
-        zone: PlantHealthResponseZone.yellow,
+        zone: PlantHealthDtoZone.yellow,
       );
 
       final health = dto.toDomain();
@@ -35,10 +35,10 @@ void main() {
     });
 
     test('should_map_red_zone', () {
-      const dto = PlantHealthResponse(
+      const dto = PlantHealthDto(
         insufficientData: false,
         score: 12,
-        zone: PlantHealthResponseZone.red,
+        zone: PlantHealthDtoZone.red,
       );
 
       final health = dto.toDomain();
@@ -48,10 +48,10 @@ void main() {
     });
 
     test('should_degrade_unknown_zone_to_green_without_throwing', () {
-      const dto = PlantHealthResponse(
+      const dto = PlantHealthDto(
         insufficientData: false,
         score: 40,
-        zone: PlantHealthResponseZone.$unknown,
+        zone: PlantHealthDtoZone.$unknown,
       );
 
       final health = dto.toDomain();
@@ -61,7 +61,7 @@ void main() {
 
     test('should_map_null_score_and_zone_when_insufficientData_true', () {
       // Реальный ответ бэка при < 3 записей ухода: score/zone = null.
-      const dto = PlantHealthResponse(
+      const dto = PlantHealthDto(
         insufficientData: true,
         score: null,
         zone: null,
@@ -76,10 +76,10 @@ void main() {
     });
 
     test('should_set_hasReliableScore_true_when_insufficientData_false', () {
-      const dto = PlantHealthResponse(
+      const dto = PlantHealthDto(
         insufficientData: false,
         score: 70,
-        zone: PlantHealthResponseZone.green,
+        zone: PlantHealthDtoZone.green,
       );
 
       final health = dto.toDomain();
