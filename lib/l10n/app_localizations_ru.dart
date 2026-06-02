@@ -1487,6 +1487,85 @@ class AppLocalizationsRu extends AppLocalizations {
       'Не удалось сохранить расписание. Попробуй ещё раз.';
 
   @override
+  String get notificationsTitle => 'Уведомления';
+
+  @override
+  String notificationsHeroCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count новых от твоего сада',
+      many: '$count новых от твоего сада',
+      few: '$count новых от твоего сада',
+      one: '$count новое от твоего сада',
+      zero: 'Пока тихо в твоём саду',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationsMarkAllRead => 'Прочитать';
+
+  @override
+  String get notificationsGroupToday => 'Сегодня';
+
+  @override
+  String get notificationsGroupYesterday => 'Вчера';
+
+  @override
+  String notificationsTimeAt(String time) {
+    return 'в $time';
+  }
+
+  @override
+  String get notificationsLoadMoreError => 'Не удалось дозагрузить уведомления';
+
+  @override
+  String get notificationsUnreadSemantic => 'непрочитано';
+
+  @override
+  String get notificationsTypeCare => 'Уход';
+
+  @override
+  String get notificationsTypeAlert => 'Тревога';
+
+  @override
+  String get notificationsTypeAward => 'Достижение';
+
+  @override
+  String get notificationsTypeReport => 'Отчёт';
+
+  @override
+  String get notificationsTypeSystem => 'Системное';
+
+  @override
+  String get notificationsEmptyTitleLead => 'Пока ';
+
+  @override
+  String get notificationsEmptyTitleAccent => 'тихо';
+
+  @override
+  String get notificationsEmptyMessage =>
+      'Все растения довольны — ни одной заботы не пропущено. Загляну сюда, когда кому-то понадобится внимание.';
+
+  @override
+  String get notificationsEmptyChip => 'Сад в порядке';
+
+  @override
+  String notificationsBadgeTooltip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Уведомления: $count непрочитанных',
+      many: 'Уведомления: $count непрочитанных',
+      few: 'Уведомления: $count непрочитанных',
+      one: 'Уведомления: $count непрочитанное',
+      zero: 'Уведомления',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get plantCardScheduleTitle => 'Расписание ухода';
 
   @override

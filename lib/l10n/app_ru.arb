@@ -2070,6 +2070,105 @@
     "description": "Снэкбар при ошибке сохранения, когда тип ошибки общий"
   },
 
+  "notificationsTitle": "Уведомления",
+  "@notificationsTitle": {
+    "description": "Заголовок-overline экрана 24 «Лента уведомлений»"
+  },
+
+  "notificationsHeroCount": "{count, plural, =0{Пока тихо в твоём саду} one{{count} новое от твоего сада} few{{count} новых от твоего сада} many{{count} новых от твоего сада} other{{count} новых от твоего сада}}",
+  "@notificationsHeroCount": {
+    "description": "Серифный заголовок экрана 24: число непрочитанных уведомлений",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "notificationsMarkAllRead": "Прочитать",
+  "@notificationsMarkAllRead": {
+    "description": "Кнопка в шапке экрана 24 — пометить видимые непрочитанные прочитанными"
+  },
+
+  "notificationsGroupToday": "Сегодня",
+  "@notificationsGroupToday": {
+    "description": "Заголовок группы уведомлений за сегодня (экран 24)"
+  },
+
+  "notificationsGroupYesterday": "Вчера",
+  "@notificationsGroupYesterday": {
+    "description": "Заголовок группы уведомлений за вчера (экран 24)"
+  },
+
+  "notificationsTimeAt": "в {time}",
+  "@notificationsTimeAt": {
+    "description": "Метка времени уведомления (час:минута в локальной TZ)",
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+
+  "notificationsLoadMoreError": "Не удалось дозагрузить уведомления",
+  "@notificationsLoadMoreError": {
+    "description": "Текст ошибки дозагрузки страницы ленты (экран 24)"
+  },
+
+  "notificationsUnreadSemantic": "непрочитано",
+  "@notificationsUnreadSemantic": {
+    "description": "Семантическая метка для индикатора непрочитанного уведомления"
+  },
+
+  "notificationsTypeCare": "Уход",
+  "@notificationsTypeCare": {
+    "description": "Категорийная/семантическая метка типа уведомления «уход»"
+  },
+
+  "notificationsTypeAlert": "Тревога",
+  "@notificationsTypeAlert": {
+    "description": "Метка типа уведомления «тревога»"
+  },
+
+  "notificationsTypeAward": "Достижение",
+  "@notificationsTypeAward": {
+    "description": "Метка типа уведомления «награда/достижение»"
+  },
+
+  "notificationsTypeReport": "Отчёт",
+  "@notificationsTypeReport": {
+    "description": "Метка типа уведомления «отчёт»"
+  },
+
+  "notificationsTypeSystem": "Системное",
+  "@notificationsTypeSystem": {
+    "description": "Метка типа уведомления «системное»"
+  },
+
+  "notificationsEmptyTitleLead": "Пока ",
+  "@notificationsEmptyTitleLead": {
+    "description": "Лид серифного заголовка пустой ленты (экран 32) перед акцентным словом"
+  },
+
+  "notificationsEmptyTitleAccent": "тихо",
+  "@notificationsEmptyTitleAccent": {
+    "description": "Акцентная часть заголовка пустой ленты (экран 32)"
+  },
+
+  "notificationsEmptyMessage": "Все растения довольны — ни одной заботы не пропущено. Загляну сюда, когда кому-то понадобится внимание.",
+  "@notificationsEmptyMessage": {
+    "description": "Подзаголовок пустой ленты (экран 32)"
+  },
+
+  "notificationsEmptyChip": "Сад в порядке",
+  "@notificationsEmptyChip": {
+    "description": "Успокаивающий чип на пустой ленте (экран 32). Без числа растений — провайдера счётчика растений в порядке здесь нет"
+  },
+
+  "notificationsBadgeTooltip": "{count, plural, =0{Уведомления} one{Уведомления: {count} непрочитанное} few{Уведомления: {count} непрочитанных} many{Уведомления: {count} непрочитанных} other{Уведомления: {count} непрочитанных}}",
+  "@notificationsBadgeTooltip": {
+    "description": "Подсказка/семантика колокольчика на главной с числом непрочитанных",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
   "plantCardScheduleTitle": "Расписание ухода",
   "@plantCardScheduleTitle": {
     "description": "Заголовок секции-входа в редактирование расписания на карточке растения"
