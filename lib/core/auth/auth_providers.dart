@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'auth_session.dart';
+import 'auth_status_notifier.dart';
 import 'jwt_auth_session.dart';
 import 'token_store.dart';
 
@@ -24,3 +25,16 @@ JwtAuthSession jwtAuthSession(Ref ref) =>
 /// сетевой слой/интерсепторы зависят только от интерфейса.
 @riverpod
 AuthSession authSession(Ref ref) => ref.watch(jwtAuthSessionProvider);
+
+/// Реактивный флаг авторизации для router-guard (MADR-008). Стабильный
+/// keepAlive-инстанс [AuthStatusNotifier], который слушает go_router через
+/// `refreshListenable` (см. `appRouterProvider`). Стартовое значение берётся
+/// из текущей сессии (на старте — есть ли валидная пара токенов в [TokenStore]
+/// / dev-токен). Флипают флаг data-слой входа/выхода и
+/// `RefreshInterceptor.onSessionExpired`.
+@Riverpod(keepAlive: true)
+AuthStatusNotifier authStatus(Ref ref) {
+  final n = AuthStatusNotifier(ref.read(jwtAuthSessionProvider).isAuthenticated);
+  ref.onDispose(n.dispose);
+  return n;
+}

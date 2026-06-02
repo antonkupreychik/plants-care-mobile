@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:plantcare_mobile/core/auth/auth_providers.dart';
+import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
@@ -51,25 +53,33 @@ void main() {
     when(() => scheduleRepo.getSchedules(any()))
         .thenAnswer((_) async => const Result.success(<PlantCareSchedule>[]));
 
+    final container = ProviderContainer(
+      overrides: [
+        // Снимаем auth-гард, иначе redirect увёл бы старт на /auth/welcome.
+        authStatusProvider.overrideWithValue(AuthStatusNotifier(true)),
+        clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
+        plantCardRepositoryProvider.overrideWithValue(cardRepo),
+        editScheduleRepositoryProvider.overrideWithValue(scheduleRepo),
+      ],
+    );
+    addTearDown(container.dispose);
+    final router = container.read(appRouterProvider);
+
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
-          plantCardRepositoryProvider.overrideWithValue(cardRepo),
-          editScheduleRepositoryProvider.overrideWithValue(scheduleRepo),
-        ],
+      UncontrolledProviderScope(
+        container: container,
         child: MaterialApp.router(
           locale: const Locale('ru'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           theme: AppTheme.light(),
-          routerConfig: appRouter,
+          routerConfig: router,
         ),
       ),
     );
     await tester.pumpAndSettle();
 
-    appRouter.go('/home/plants/77');
+    router.go('/home/plants/77');
     await tester.pumpAndSettle();
 
     final l10n =

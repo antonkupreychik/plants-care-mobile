@@ -14,6 +14,21 @@
 
 ---
 
+## Срез 2 входа — email magic-link (2026-06-03)
+
+🟡 **Формат magic-link URL в письме.** Мобилка реализовала возврат из письма по deep link
+**`plantcare://auth/verify?token=<opaque>`** (custom scheme; `AndroidManifest` intent-filter +
+iOS `CFBundleURLTypes` настроены под `scheme=plantcare`, `host=auth`). Слушатель (`app_links`)
+толерантен — реагирует на любую `plantcare://`-ссылку с непустым `token`. **Нужно от backend:**
+точный URL, который письмо реально содержит. Если он другой (иной scheme/host или https
+universal link) — поправить нативную конфигурацию и/или `_handleDeepLink` в `lib/app.dart`.
+
+🔴 **Доставка magic-link писем на dev.** Неизвестно, отправляет ли dev-backend письма
+(`/auth/email/request`) и куда. До подтверждения флоу проверяется dev-хуком (ручной ввод
+токена на `/auth/verify`) — реальный E2E не верифицирован.
+
+---
+
 ## Сводка сверки — 2026-05-30 (сверка с веткой `develop`)
 
 > Сверено с веткой `develop` репозитория `antonkupreychik/plants-care` (в `main` ещё

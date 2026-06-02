@@ -9,8 +9,9 @@ import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/env/app_config.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/core/auth/auth_providers.dart';
+import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
-import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/core/widgets/app_bottom_nav.dart';
 import 'package:plantcare_mobile/features/catalog/data/catalog_repository_provider.dart';
 import 'package:plantcare_mobile/features/catalog/domain/catalog_repository.dart';
@@ -56,6 +57,8 @@ Widget _wrap(RoomsRepository roomsRepo) {
 
   return ProviderScope(
     overrides: [
+      // Снимаем auth-гард: иначе redirect увёл бы старт на /auth/welcome.
+      authStatusProvider.overrideWithValue(AuthStatusNotifier(true)),
       appConfigProvider.overrideWithValue(_config),
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
       homeTasksProvider.overrideWith((ref) async => const <CareTask>[]),
@@ -73,8 +76,6 @@ void main() {
   setUpAll(() async {
     await initializeDateFormatting('ru');
   });
-
-  setUp(() => appRouter.go('/home'));
 
   AppLocalizations l10nOf(WidgetTester tester) =>
       AppLocalizations.of(tester.element(find.byType(AppBottomNav)));

@@ -1459,6 +1459,66 @@
     "description": "Вторичная ссылка экрана 09: уйти на главную без добавления растения"
   },
 
+  "authEmailTitle": "Вход по почте",
+  "@authEmailTitle": {
+    "description": "Заголовок экрана ввода email для magic link"
+  },
+
+  "authEmailSubtitle": "Введите адрес — пришлём ссылку для входа. Пароль не нужен.",
+  "@authEmailSubtitle": {
+    "description": "Подзаголовок экрана ввода email: объяснение magic-link флоу"
+  },
+
+  "authEmailLabel": "Электронная почта",
+  "@authEmailLabel": {
+    "description": "Подпись поля ввода email"
+  },
+
+  "authEmailHint": "you@example.com",
+  "@authEmailHint": {
+    "description": "Плейсхолдер поля ввода email"
+  },
+
+  "authEmailInvalid": "Проверьте адрес почты",
+  "@authEmailInvalid": {
+    "description": "Сообщение о неверном формате email под полем ввода"
+  },
+
+  "authSendLink": "Получить ссылку",
+  "@authSendLink": {
+    "description": "Основная кнопка экрана ввода email: запросить magic link"
+  },
+
+  "authLinkSentTitle": "Проверьте почту",
+  "@authLinkSentTitle": {
+    "description": "Заголовок состояния после отправки magic link"
+  },
+
+  "authLinkSentSubtitle": "Мы отправили ссылку для входа. Откройте её на этом устройстве.",
+  "@authLinkSentSubtitle": {
+    "description": "Подзаголовок состояния после отправки magic link"
+  },
+
+  "authVerifying": "Проверяем ссылку…",
+  "@authVerifying": {
+    "description": "Текст экрана проверки magic-link токена во время обмена"
+  },
+
+  "authVerifyError": "Ссылка недействительна или устарела. Запросите новую.",
+  "@authVerifyError": {
+    "description": "Сообщение об ошибке проверки magic-link токена"
+  },
+
+  "authVerifyRetry": "Вернуться ко входу",
+  "@authVerifyRetry": {
+    "description": "Кнопка возврата на экран входа после ошибки проверки токена"
+  },
+
+  "authDevTokenLabel": "Dev: вставить токен",
+  "@authDevTokenLabel": {
+    "description": "Подпись dev-хука ручного ввода magic-link токена (только дебаг)"
+  },
+
   "profileArchiveTitle": "Архив",
   "@profileArchiveTitle": {
     "description": "Заголовок строки настроек, ведущей на экран «Архив» (17)"

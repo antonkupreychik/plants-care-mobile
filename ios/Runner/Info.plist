@@ -66,5 +66,20 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- Deep link для magic-link входа (MADR-008): plantcare://auth/verify?token=…
+	     Custom URL scheme; захват URI — через app_links (см. PlantCareApp). -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.plantcare.auth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>plantcare</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

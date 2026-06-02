@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:go_router/go_router.dart';
+import 'package:plantcare_mobile/core/auth/auth_providers.dart';
+import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
@@ -46,9 +49,14 @@ LoggedCareEvent _logged({
       onTime: onTime,
     );
 
-Widget _harness(_MockCareEventRepo repo) {
-  return ProviderScope(
+/// Поднимает карточку под реальным роутером (`appRouterProvider`) со снятым
+/// auth-гардом. Возвращает виджет + роутер из того же контейнера (для прямой
+/// навигации и проверки текущего пути).
+({Widget widget, GoRouter router}) _harness(_MockCareEventRepo repo) {
+  final container = ProviderContainer(
     overrides: [
+      // Снимаем auth-гард, иначе redirect увёл бы старт на /auth/welcome.
+      authStatusProvider.overrideWithValue(AuthStatusNotifier(true)),
       clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
       careEventRepositoryProvider.overrideWithValue(repo),
       plantDetailProvider(_plantId).overrideWith(
@@ -61,24 +69,33 @@ Widget _harness(_MockCareEventRepo repo) {
         (ref) async => const <CareHistoryEntry>[],
       ),
     ],
-    child: MaterialApp.router(
-      locale: const Locale('ru'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: AppTheme.light(),
-      routerConfig: appRouter,
+  );
+  addTearDown(container.dispose);
+  final router = container.read(appRouterProvider);
+
+  return (
+    widget: UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp.router(
+        locale: const Locale('ru'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: AppTheme.light(),
+        routerConfig: router,
+      ),
     ),
+    router: router,
   );
 }
 
-Future<void> _openSheetAndSubmit(WidgetTester tester) async {
+Future<void> _openSheetAndSubmit(WidgetTester tester, GoRouter router) async {
   // Высокий вьюпорт, чтобы кнопки гарантированно были в кадре.
   tester.view.physicalSize = const Size(1080, 2400);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
 
-  appRouter.go('/home/plants/$_plantId');
+  router.go('/home/plants/$_plantId');
   await tester.pumpAndSettle();
 
   final l10n =
@@ -106,7 +123,8 @@ void main() {
 
   setUp(() {
     repo = _MockCareEventRepo();
-    appRouter.go('/home'); // сброс на старт между тестами
+    // Роутер теперь per-container (см. _harness): глобального состояния нет,
+    // межтестовый сброс не нужен.
   });
 
   testWidgets(
@@ -121,8 +139,9 @@ void main() {
       ),
     );
 
-    await tester.pumpWidget(_harness(repo));
-    await _openSheetAndSubmit(tester);
+    final h = _harness(repo);
+    await tester.pumpWidget(h.widget);
+    await _openSheetAndSubmit(tester, h.router);
 
     // Sheet закрылся, экран 33 на стеке с careKind/onTime из ответа backend.
     final screen = tester.widget<FirstCareSuccessScreen>(
@@ -142,8 +161,9 @@ void main() {
       (_) async => Result.success(_logged(onTime: false)),
     );
 
-    await tester.pumpWidget(_harness(repo));
-    await _openSheetAndSubmit(tester);
+    final h = _harness(repo);
+    await tester.pumpWidget(h.widget);
+    await _openSheetAndSubmit(tester, h.router);
 
     final screen = tester.widget<FirstCareSuccessScreen>(
       find.byType(FirstCareSuccessScreen),
@@ -163,8 +183,9 @@ void main() {
     when(() => repo.logCareEvent(any()))
         .thenAnswer((_) async => Result.success(_logged()));
 
-    await tester.pumpWidget(_harness(repo));
-    await _openSheetAndSubmit(tester);
+    final h = _harness(repo);
+    await tester.pumpWidget(h.widget);
+    await _openSheetAndSubmit(tester, h.router);
 
     expect(find.byType(FirstCareSuccessScreen), findsNothing);
     final l10n =
@@ -178,8 +199,9 @@ void main() {
     when(() => repo.logCareEvent(any()))
         .thenAnswer((_) async => Result.success(_logged()));
 
-    await tester.pumpWidget(_harness(repo));
-    await _openSheetAndSubmit(tester);
+    final h = _harness(repo);
+    await tester.pumpWidget(h.widget);
+    await _openSheetAndSubmit(tester, h.router);
 
     expect(find.byType(FirstCareSuccessScreen), findsOneWidget);
 
@@ -191,7 +213,7 @@ void main() {
     // CTA «Вернуться в сад» → context.go('/home'): экран 33 ушёл со стека.
     expect(find.byType(FirstCareSuccessScreen), findsNothing);
     expect(
-      appRouter.routerDelegate.currentConfiguration.uri.path,
+      h.router.routerDelegate.currentConfiguration.uri.path,
       '/home',
     );
   });
@@ -215,8 +237,9 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(_harness(repo));
-      await _openSheetAndSubmit(tester);
+      final h = _harness(repo);
+      await tester.pumpWidget(h.widget);
+      await _openSheetAndSubmit(tester, h.router);
 
       // Дошли до экрана 33 без падения; draft ушёл в UTC.
       expect(find.byType(FirstCareSuccessScreen), findsOneWidget);

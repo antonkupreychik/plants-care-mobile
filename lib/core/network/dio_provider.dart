@@ -38,8 +38,10 @@ Dio dio(Ref ref) {
       session: jwtSession,
       refreshClient: refreshClient,
       retryDio: dio,
-      // onSessionExpired подключит router-guard в срезе 2 (UI входа);
-      // сейчас невозвратный отказ просто чистит сессию.
+      // Невозвратный отказ refresh: RefreshInterceptor уже почистил сессию —
+      // здесь только флипаем реактивный флаг, чтобы router-guard (MADR-008)
+      // увёл на `/auth/welcome`.
+      onSessionExpired: () => ref.read(authStatusProvider).set(false),
     ),
     RetryInterceptor(dio: dio, retries: 3),
     ErrorInterceptor(),

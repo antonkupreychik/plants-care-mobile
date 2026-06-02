@@ -39,6 +39,15 @@ productFlavors (`--flavor`) пока не настроены — сборка и
 получат `401`. Локальный `run-dev.sh` нужно обновить: вместо `CHAT_ID`/`USER_ID`
 прокидывать `ACCESS_TOKEN`/`REFRESH_TOKEN`.
 
+**Вход через UI (срез 2, MADR-008).** Без dev-токена приложение стартует на экране входа
+(router-guard). Метод — email magic-link: ввод email → письмо → возврат по deep link
+`plantcare://auth/verify?token=…` (custom scheme; Android intent-filter + iOS
+`CFBundleURLTypes` уже настроены). Точный формат ссылки задаёт backend — при расхождении
+поправить схему/хост (см. `docs/BACKEND-GAPS.md`). **Проверка без реального письма:** на
+экране `/auth/verify` в dev-флейворе есть поле ручного ввода токена — вставить opaque-токен
+(или открыть `plantcare://auth/verify?token=…` на устройстве) и прогнать обмен. E2E с
+письмом — только на реальном устройстве.
+
 ## ⚠️ Сетевой обходной путь: Maven Central недоступен
 
 На этой машине/сети **`repo.maven.apache.org` (Maven Central) недоступен** —
