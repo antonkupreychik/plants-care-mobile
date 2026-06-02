@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
+import 'package:plantcare_mobile/features/auth/data/auth_repository_provider.dart';
+import 'package:plantcare_mobile/features/auth/domain/auth_repository.dart';
+import 'package:plantcare_mobile/features/auth/domain/social_auth_outcome.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_code_screen.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_welcome_back_screen.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_welcome_screen.dart';
@@ -15,7 +20,13 @@ import 'package:plantcare_mobile/l10n/app_localizations.dart';
 /// используют `context.push` / `context.go`, которым нужен Router-контекст.
 /// Заглушки-маршруты `/auth/email`, `/auth/code`, `/auth/welcome-back`,
 /// `/home`, `/home/add` дают навигации куда уходить, не падая.
-Future<void> _pump(WidgetTester tester, Widget child) async {
+class _MockAuthRepo extends Mock implements AuthRepository {}
+
+Future<void> _pump(
+  WidgetTester tester,
+  Widget child, {
+  List<Override> overrides = const [],
+}) async {
   final router = GoRouter(
     initialLocation: '/',
     routes: [
@@ -45,6 +56,7 @@ Future<void> _pump(WidgetTester tester, Widget child) async {
 
   await tester.pumpWidget(
     ProviderScope(
+      overrides: overrides,
       child: MaterialApp.router(
         locale: const Locale('ru'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -66,7 +78,7 @@ void main() {
         (tester) async {
       await _pump(tester, const AuthWelcomeScreen());
       final l10n = _l10n(tester, AuthWelcomeScreen);
-      // Google (coming-soon), email-вход (реальный CTA, accent) и гость.
+      // Google (соц-вход), email-вход (реальный CTA, accent) и гость.
       expect(find.widgetWithText(AuthSocialButton, l10n.authContinueGoogle),
           findsOneWidget);
       expect(find.widgetWithText(AuthSocialButton, l10n.authEmailTitle),
@@ -74,15 +86,24 @@ void main() {
       expect(find.text(l10n.authContinueGuest), findsOneWidget);
     });
 
-    testWidgets('should_show_coming_soon_snackbar_when_google_tapped',
+    testWidgets('should_trigger_google_sign_in_when_google_tapped',
         (tester) async {
-      await _pump(tester, const AuthWelcomeScreen());
+      final authRepo = _MockAuthRepo();
+      when(authRepo.signInWithGoogle)
+          .thenAnswer((_) async => const SocialAuthCancelled());
+
+      await _pump(
+        tester,
+        const AuthWelcomeScreen(),
+        overrides: [authRepositoryProvider.overrideWithValue(authRepo)],
+      );
       final l10n = _l10n(tester, AuthWelcomeScreen);
       await tester.tap(
           find.widgetWithText(AuthSocialButton, l10n.authContinueGoogle));
       await tester.pump();
-      expect(find.byType(SnackBar), findsOneWidget);
-      expect(find.text(l10n.comingSoon), findsOneWidget);
+
+      // Google-кнопка запускает реальный соц-вход (не coming-soon).
+      verify(authRepo.signInWithGoogle).called(1);
     });
 
     testWidgets('should_navigate_to_auth_email_when_email_cta_tapped',

@@ -1606,6 +1606,18 @@ abstract class AppLocalizations {
   /// **'Продолжить через Google'**
   String get authContinueGoogle;
 
+  /// Кнопка входа через Apple (только iOS)
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить через Apple'**
+  String get authContinueApple;
+
+  /// Текст ошибки социального входа (Google/Apple)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось войти. Попробуйте ещё раз.'**
+  String get authSocialError;
+
   /// Кнопка входа через Telegram (переход к вводу кода)
   ///
   /// In ru, this message translates to:

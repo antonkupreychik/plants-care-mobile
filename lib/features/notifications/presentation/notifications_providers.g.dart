@@ -53,7 +53,7 @@ final class NotificationsControllerProvider
 }
 
 String _$notificationsControllerHash() =>
-    r'7a728b47c876dd671df5b9ce11822e306052573e';
+    r'212690dbfe40a3523ec85ea4e0861b56c369b01d';
 
 /// Контроллер ленты с накоплением страниц, отметкой прочтения (оптимистичной)
 /// и счётчиком непрочитанных. Зеркалит `CareHistoryController`.

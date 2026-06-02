@@ -1002,6 +1002,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authContinueGoogle => 'Продолжить через Google';
 
   @override
+  String get authContinueApple => 'Продолжить через Apple';
+
+  @override
+  String get authSocialError => 'Не удалось войти. Попробуйте ещё раз.';
+
+  @override
   String get authContinueTelegram => 'Продолжить через Telegram';
 
   @override
