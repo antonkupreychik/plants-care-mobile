@@ -2356,6 +2356,114 @@ abstract class AppLocalizations {
   /// **'Не удалось сохранить расписание. Попробуй ещё раз.'**
   String get editScheduleSaveError;
 
+  /// Заголовок-overline экрана 24 «Лента уведомлений»
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления'**
+  String get notificationsTitle;
+
+  /// Серифный заголовок экрана 24: число непрочитанных уведомлений
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Пока тихо в твоём саду} one{{count} новое от твоего сада} few{{count} новых от твоего сада} many{{count} новых от твоего сада} other{{count} новых от твоего сада}}'**
+  String notificationsHeroCount(int count);
+
+  /// Кнопка в шапке экрана 24 — пометить видимые непрочитанные прочитанными
+  ///
+  /// In ru, this message translates to:
+  /// **'Прочитать'**
+  String get notificationsMarkAllRead;
+
+  /// Заголовок группы уведомлений за сегодня (экран 24)
+  ///
+  /// In ru, this message translates to:
+  /// **'Сегодня'**
+  String get notificationsGroupToday;
+
+  /// Заголовок группы уведомлений за вчера (экран 24)
+  ///
+  /// In ru, this message translates to:
+  /// **'Вчера'**
+  String get notificationsGroupYesterday;
+
+  /// Метка времени уведомления (час:минута в локальной TZ)
+  ///
+  /// In ru, this message translates to:
+  /// **'в {time}'**
+  String notificationsTimeAt(String time);
+
+  /// Текст ошибки дозагрузки страницы ленты (экран 24)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось дозагрузить уведомления'**
+  String get notificationsLoadMoreError;
+
+  /// Семантическая метка для индикатора непрочитанного уведомления
+  ///
+  /// In ru, this message translates to:
+  /// **'непрочитано'**
+  String get notificationsUnreadSemantic;
+
+  /// Категорийная/семантическая метка типа уведомления «уход»
+  ///
+  /// In ru, this message translates to:
+  /// **'Уход'**
+  String get notificationsTypeCare;
+
+  /// Метка типа уведомления «тревога»
+  ///
+  /// In ru, this message translates to:
+  /// **'Тревога'**
+  String get notificationsTypeAlert;
+
+  /// Метка типа уведомления «награда/достижение»
+  ///
+  /// In ru, this message translates to:
+  /// **'Достижение'**
+  String get notificationsTypeAward;
+
+  /// Метка типа уведомления «отчёт»
+  ///
+  /// In ru, this message translates to:
+  /// **'Отчёт'**
+  String get notificationsTypeReport;
+
+  /// Метка типа уведомления «системное»
+  ///
+  /// In ru, this message translates to:
+  /// **'Системное'**
+  String get notificationsTypeSystem;
+
+  /// Лид серифного заголовка пустой ленты (экран 32) перед акцентным словом
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока '**
+  String get notificationsEmptyTitleLead;
+
+  /// Акцентная часть заголовка пустой ленты (экран 32)
+  ///
+  /// In ru, this message translates to:
+  /// **'тихо'**
+  String get notificationsEmptyTitleAccent;
+
+  /// Подзаголовок пустой ленты (экран 32)
+  ///
+  /// In ru, this message translates to:
+  /// **'Все растения довольны — ни одной заботы не пропущено. Загляну сюда, когда кому-то понадобится внимание.'**
+  String get notificationsEmptyMessage;
+
+  /// Успокаивающий чип на пустой ленте (экран 32). Без числа растений — провайдера счётчика растений в порядке здесь нет
+  ///
+  /// In ru, this message translates to:
+  /// **'Сад в порядке'**
+  String get notificationsEmptyChip;
+
+  /// Подсказка/семантика колокольчика на главной с числом непрочитанных
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Уведомления} one{Уведомления: {count} непрочитанное} few{Уведомления: {count} непрочитанных} many{Уведомления: {count} непрочитанных} other{Уведомления: {count} непрочитанных}}'**
+  String notificationsBadgeTooltip(int count);
+
   /// Заголовок секции-входа в редактирование расписания на карточке растения
   ///
   /// In ru, this message translates to:

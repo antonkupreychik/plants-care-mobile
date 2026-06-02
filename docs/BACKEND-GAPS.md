@@ -347,15 +347,19 @@ G7 (дешёвый клиентский enum-маппинг), G8 (тулинг).
   `AppLocalizations` (MADR-012), синк в `/me` подключим позже.
 
 ## G17 · Лента уведомлений 🟢
-> Закрыто develop 2026-05-30 (#183) — `GET /notifications` + `POST /notifications/{id}/read`. Мобилке подключить (экран 24, badge 🔔).
+> Закрыто develop 2026-05-30 (#183) — `GET /notifications` + `POST /notifications/{id}/read`. **Подключено** (фича `lib/features/notifications/`, экраны 24/32, badge 🔔).
 - **Экран:** 24 Лента уведомлений, 32 Пустая лента; badge 🔔 на Home 01.
 - **Нужно:** список уведомлений (care/alert/award/report/system) с прочитанностью +
   отметка прочтения. Тексты «голосом растения» — ср. **G2** (voiceLine).
-- **Сейчас:** эндпоинтов нет.
-- **Предложение:** `GET /api/v1/notifications` → `{items[{id, type, title, body,
-  plantId?, createdAt, readAt?}], unreadCount}` + `POST /api/v1/notifications/{id}/read`
-  (api-contract §12.9). Badge на Home берётся из `unreadCount` (закрывает часть G5).
-- **Заглушка мобилки:** экран и badge не делаем, пока нет фида.
+- **Подключено (2026-06-03):** фича `lib/features/notifications/` (domain → data поверх
+  сгенерированного `NotificationsClient` → presentation на Riverpod). `GET /api/v1/notifications`
+  (`limit`/`offset`, пагинация) → `notificationsControllerProvider`: накопление страниц,
+  pull-to-refresh, группировка по дням (Сегодня/Вчера/дата, локальное время), счётчик
+  непрочитанных. Отметка прочтения через `POST /api/v1/notifications/{id}/read` — одиночная
+  (тап, оптимистично с откатом) и «Прочитать всё» (оптимистично + реконсиляция через refresh
+  при ошибке). Неизвестный `type` маппер деградирует в `system`. Badge на Home — из
+  `unreadCountProvider`, тап → роут `/home/notifications`. Auth — существующий слот
+  (`AuthScope.user`), без экрана логина.
 
 ## G18 · Регистрация push-устройства 🔴
 - **Экран:** 27 Онбординг разрешения на пуши.

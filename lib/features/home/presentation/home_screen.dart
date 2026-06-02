@@ -94,6 +94,9 @@ class _HomeContent extends ConsumerWidget {
     // Открыть мастер добавления растения (экран 04) поверх shell.
     void openAddPlant() => context.push('/home/add');
 
+    // Открыть ленту уведомлений (экран 24) поверх shell.
+    void openNotifications() => context.push('/home/notifications');
+
     final tasks = ref.watch(homeTasksProvider);
     final plants = ref.watch(homePlantsProvider);
     final locations = ref.watch(homeLocationsProvider);
@@ -107,7 +110,11 @@ class _HomeContent extends ConsumerWidget {
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
                 sliver: SliverToBoxAdapter(
-                  child: HomeHeader(now: nowLocal, onComingSoon: comingSoon),
+                  child: HomeHeader(
+                    now: nowLocal,
+                    onComingSoon: comingSoon,
+                    onNotifications: openNotifications,
+                  ),
                 ),
               ),
 

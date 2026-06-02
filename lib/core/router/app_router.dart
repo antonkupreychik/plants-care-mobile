@@ -15,6 +15,7 @@ import '../../features/edit_schedule/presentation/edit_schedule_screen.dart';
 import '../../features/plant_card/domain/care_event_kind.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/today_screen.dart';
+import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
@@ -85,6 +86,15 @@ final appRouter = GoRouter(
                   name: 'today',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const TodayScreen(),
+                ),
+                // Экран 24 «Лента уведомлений». Полноэкранно поверх shell (своя
+                // кнопка «назад», без таб-бара), как «Сегодня»/история ухода.
+                // Вход: колокольчик 🔔 в шапке главной (01).
+                GoRoute(
+                  path: 'notifications',
+                  name: 'notifications',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const NotificationsScreen(),
                 ),
                 // Мастер добавления растения (экран 04) — полноэкранно поверх
                 // shell (на root-навигаторе, без нижней навигации), как карточка.
