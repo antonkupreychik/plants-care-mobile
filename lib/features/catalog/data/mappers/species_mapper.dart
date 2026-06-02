@@ -51,8 +51,10 @@ extension SpeciesDetailDtoMapper on SpeciesDetailDto {
 
 extension SpeciesFactDtoMapper on SpeciesFactDto {
   SpeciesFact toDomain() => SpeciesFact(
-        category: _factCategoryFromApi(category),
-        title: title,
+        // Кодген отдаёт category как enum (раньше была строка); берём backend-
+        // значение через `.json` ('' для `$unknown` → helper даст fallback).
+        category: _factCategoryFromApi(category.json ?? ''),
+        title: title ?? '',
         body: body,
         source: source,
       );

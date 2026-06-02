@@ -83,7 +83,6 @@ void main() {
 
     // Деталь и стрик — общие стабы для всех тестов флоу.
     when(() => plants.getPlant(
-          xUserId: any(named: 'xUserId'),
           id: any(named: 'id'),
           extras: any(named: 'extras'),
         )).thenAnswer(
@@ -96,7 +95,6 @@ void main() {
       ),
     );
     when(() => stats.getPlantStreak(
-          xChatId: any(named: 'xChatId'),
           plantId: any(named: 'plantId'),
           extras: any(named: 'extras'),
         )).thenAnswer(
@@ -127,7 +125,6 @@ void main() {
 
     // Страница 1 (offset 0): два water. Страница 2 (offset 2): fertilize + water.
     when(() => history.getPlantHistory(
-          xChatId: any(named: 'xChatId'),
           id: _plantId,
           limit: any(named: 'limit'),
           offset: 0,
@@ -140,7 +137,6 @@ void main() {
       ),
     );
     when(() => history.getPlantHistory(
-          xChatId: any(named: 'xChatId'),
           id: _plantId,
           limit: any(named: 'limit'),
           offset: 2,
@@ -174,7 +170,6 @@ void main() {
     // растения — со scope user. Идентичность не хардкодится в data-слое;
     // ловит молчаливую регрессию при подключении реального auth.
     final histExtras = verify(() => history.getPlantHistory(
-          xChatId: any(named: 'xChatId'),
           id: any(named: 'id'),
           limit: any(named: 'limit'),
           offset: any(named: 'offset'),
@@ -187,7 +182,6 @@ void main() {
     );
 
     final plantExtras = verify(() => plants.getPlant(
-          xUserId: any(named: 'xUserId'),
           id: any(named: 'id'),
           extras: captureAny(named: 'extras'),
         )).captured.single as Map<String, dynamic>;
@@ -199,7 +193,6 @@ void main() {
     // Offline: интерсептор завернул сетевую ошибку в ApiError.network внутри
     // DioException — repo вернёт failure, контроллер уйдёт в AsyncError.
     when(() => history.getPlantHistory(
-          xChatId: any(named: 'xChatId'),
           id: any(named: 'id'),
           limit: any(named: 'limit'),
           offset: any(named: 'offset'),

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:plantcare_mobile/core/api/generated/models/page_response_species_summary_dto.dart';
 import 'package:plantcare_mobile/core/api/generated/models/species_detail_dto.dart';
 import 'package:plantcare_mobile/core/api/generated/models/species_fact_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/species_fact_dto_category.dart';
 import 'package:plantcare_mobile/core/api/generated/models/species_summary_dto.dart';
 import 'package:plantcare_mobile/features/catalog/data/mappers/species_mapper.dart';
 import 'package:plantcare_mobile/features/catalog/domain/care_difficulty.dart';
@@ -110,18 +111,19 @@ void main() {
         name: 'Спатифиллум',
         facts: [
           SpeciesFactDto(
-            category: 'CARE',
+            category: SpeciesFactDtoCategory.care,
             title: 'Полив',
             body: 'Раз в неделю.',
             source: null,
           ),
+          // Нераспознанная backend-категория кодген парсит в $unknown.
           SpeciesFactDto(
-            category: 'WONDERLAND',
+            category: SpeciesFactDtoCategory.$unknown,
             title: 'Неизвестно',
             body: 'Странная категория.',
           ),
           SpeciesFactDto(
-            category: 'TOXICITY',
+            category: SpeciesFactDtoCategory.toxicity,
             title: 'Токсично для кошек',
             body: 'Оксалаты кальция в листьях.',
             source: 'ASPCA',
@@ -153,12 +155,16 @@ void main() {
       expect(tox.source, 'ASPCA');
     });
 
-    test('should_map_lowercase_toxicity_category_to_toxicity', () {
+    test('should_map_toxicity_category_to_toxicity', () {
       const dto = SpeciesDetailDto(
         id: 4,
         name: 'x',
         facts: [
-          SpeciesFactDto(category: 'toxicity', title: 't', body: 'b'),
+          SpeciesFactDto(
+            category: SpeciesFactDtoCategory.toxicity,
+            title: 't',
+            body: 'b',
+          ),
         ],
       );
 
@@ -192,8 +198,16 @@ void main() {
         id: 7,
         name: 'Нетоксичный',
         facts: [
-          SpeciesFactDto(category: 'CARE', title: 'c', body: 'b'),
-          SpeciesFactDto(category: 'ORIGIN', title: 'o', body: 'b'),
+          SpeciesFactDto(
+            category: SpeciesFactDtoCategory.care,
+            title: 'c',
+            body: 'b',
+          ),
+          SpeciesFactDto(
+            category: SpeciesFactDtoCategory.origin,
+            title: 'o',
+            body: 'b',
+          ),
         ],
       );
 

@@ -34,8 +34,6 @@ class _FixedClock implements Clock {
 const _config = AppConfig(
   flavor: Flavor.dev,
   apiUrl: 'https://example.test',
-  chatId: '9000001',
-  userId: '1',
 );
 
 final _utcNow = DateTime.utc(2026, 5, 27, 9);

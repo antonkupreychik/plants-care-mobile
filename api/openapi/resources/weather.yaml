@@ -1,85 +1,72 @@
-# Погода на Home (G4). Снапшот влажности и рекомендации backend по поливу.
-#
-# Эндпоинт ЖИВОЙ на dev-бэке, но отсутствовал в курированной статической
-# спеке — добавлен здесь вручную по реальной схеме (curl на dev). Источник
-# правды до синхронизации с GitHub — этот файл.
-#
-# Все значения посчитаны backend; клиент рекомендацию НЕ пересчитывает.
+# Снепшот текущей влажности для текущего пользователя (mobile gap G4, issue #69).
+# Обёртка над WeatherService.getCurrentHumidity — наружу выставляется то, что
+# раньше использовалось только Telegram-ботом.
 
 paths:
   Snapshot:
     get:
       tags: [Weather]
       operationId: getWeatherSnapshot
-      summary: Снапшот погоды для рекомендаций по поливу
+      summary: Снепшот погоды (влажность) для пользователя
       description: |
-        Возвращает текущий снапшот погоды (влажность воздуха) и рекомендацию
-        backend, стоит ли отложить полив. Значения посчитаны backend по
-        внешнему источнику погоды и кэшируются (~60 мин, см. `fromCache`).
+        Возвращает текущую относительную влажность и рекомендацию по поливу
+        для **текущего пользователя** (координаты и флаг погоды берутся из
+        профиля).
 
-        Если погода не настроена или источник недоступен, `available` равно
-        `false`, а остальные поля приходят `null` — UI не показывает строку
-        погоды.
+        Если погода у пользователя не настроена (выключена или нет координат)
+        либо внешний источник недоступен — отвечает `200` с
+        `available = false` и пустыми полями (клиент просто скрывает строку
+        погоды, это не ошибка).
 
-        Эндпоинт публичный: идентификация по заголовкам не требуется.
+        Значение кешируется на стороне сервера (~60 мин), повторные запросы в
+        пределах окна не ходят во внешний API (`fromCache = true`).
+      security:
+        - bearerAuth: []
       responses:
         '200':
-          description: Снапшот погоды.
+          description: Снепшот погоды (или `available = false`, если недоступно).
           content:
             application/json:
               schema:
-                $ref: '#/schemas/WeatherSnapshotResponse'
-              example:
-                available: true
-                humidityPercent: 88
-                recommendation: DEFER_OK
-                fetchedAt: '2026-05-28T20:09:38.777692Z'
-                fromCache: true
+                $ref: '#/schemas/WeatherSnapshotDto'
 
 schemas:
-  WeatherSnapshotResponse:
+  WeatherSnapshotDto:
     type: object
     description: |
-      Снапшот погоды для рекомендаций по поливу, посчитанный backend.
-      При `available=false` все остальные поля — `null`.
+      Снепшот влажности (mobile gap G4). При `available = false` остальные
+      поля равны `null` — погода у пользователя не настроена или источник
+      временно недоступен.
     required: [available]
     properties:
       available:
         type: boolean
         description: |
-          `true`, если данные погоды доступны (источник настроен и ответил).
-          При `false` остальные поля приходят `null`, UI не рисует строку погоды.
-        example: true
+          `true` — данные о влажности получены; `false` — погода не настроена
+          (нет координат / выключена) или внешний источник недоступен.
       humidityPercent:
         type: integer
         format: int32
         minimum: 0
         maximum: 100
         nullable: true
-        description: |
-          Относительная влажность воздуха [0, 100]. `null`, если `available=false`.
-        example: 88
+        description: Относительная влажность 0–100%. `null`, если `available = false`.
       recommendation:
         type: string
         enum: [DEFER_OK, DO_NOT_DEFER, NEUTRAL]
         nullable: true
         description: |
-          Рекомендация backend по поливу: можно отложить (`DEFER_OK`),
-          откладывать не стоит (`DO_NOT_DEFER`), нейтрально (`NEUTRAL`).
-          `null`, если `available=false`. Клиент рекомендацию не пересчитывает.
-        example: DEFER_OK
+          Рекомендация по поливу: `DEFER_OK` (RH ≥ 80% — можно отложить),
+          `DO_NOT_DEFER` (RH ≤ 35% — лучше не откладывать), `NEUTRAL`.
+          `null`, если `available = false`.
       fetchedAt:
         type: string
         format: date-time
         nullable: true
-        description: |
-          Момент получения данных от источника (UTC, ISO-8601). `null`, если
-          `available=false`.
-        example: '2026-05-28T20:09:38.777692Z'
+        description: Когда значение было получено из внешнего источника (UTC). `null`, если `available = false`.
       fromCache:
         type: boolean
         nullable: true
         description: |
-          `true`, если снапшот отдан из серверного кеша (~60 мин), а не запрошен
-          у источника заново. `null`, если `available=false`.
-        example: true
+          `true` — значение взято из серверного кеша (60-мин окно), без
+          обращения к внешнему API. `null`, если `available = false`.

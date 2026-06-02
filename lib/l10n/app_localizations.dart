@@ -484,6 +484,12 @@ abstract class AppLocalizations {
   /// **'Нет доступа к этим данным'**
   String get errorAccessDenied;
 
+  /// Текст ошибки 401 — токен недействителен, нужен повторный вход
+  ///
+  /// In ru, this message translates to:
+  /// **'Сессия истекла. Войдите снова'**
+  String get errorUnauthorized;
+
   /// Текст ошибки валидации
   ///
   /// In ru, this message translates to:

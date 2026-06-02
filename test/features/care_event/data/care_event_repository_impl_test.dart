@@ -76,7 +76,6 @@ void main() {
   group('logCareEvent success', () {
     test('should_return_success_with_mapped_LoggedCareEvent', () async {
       when(() => client.createCareEvent(
-            xChatId: any(named: 'xChatId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _response());
@@ -92,7 +91,6 @@ void main() {
 
     test('should_send_draft_fields_in_request_body', () async {
       when(() => client.createCareEvent(
-            xChatId: any(named: 'xChatId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _response());
@@ -100,7 +98,6 @@ void main() {
       await repo.logCareEvent(_draft(type: CareEventKind.fertilize));
 
       final body = verify(() => client.createCareEvent(
-            xChatId: any(named: 'xChatId'),
             body: captureAny(named: 'body'),
             extras: any(named: 'extras'),
           )).captured.single as CreateCareEventRequest;
@@ -114,7 +111,6 @@ void main() {
   group('logCareEvent auth slot', () {
     test('should_send_chat_authScope_in_extras', () async {
       when(() => client.createCareEvent(
-            xChatId: any(named: 'xChatId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _response());
@@ -122,7 +118,6 @@ void main() {
       await repo.logCareEvent(_draft());
 
       final extras = verify(() => client.createCareEvent(
-            xChatId: any(named: 'xChatId'),
             body: any(named: 'body'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
@@ -138,7 +133,6 @@ void main() {
 
       expect((result as Failure).error, isA<BadRequestError>());
       verifyNever(() => client.createCareEvent(
-            xChatId: any(named: 'xChatId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           ));
@@ -149,7 +143,6 @@ void main() {
     test('should_return_failure_with_ApiError_when_DioException_carries_it',
         () async {
       when(() => client.createCareEvent(
-            xChatId: any(named: 'xChatId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.conflict()));
@@ -162,7 +155,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => client.createCareEvent(
-            xChatId: any(named: 'xChatId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith('boom'));
@@ -176,7 +168,6 @@ void main() {
   group('priorCareEventCount success', () {
     test('should_map_total_from_history_response', () async {
       when(() => historyClient.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -198,7 +189,6 @@ void main() {
     test('should_request_plantId_with_minimal_page', () async {
       // limit:1, offset:0 — нужен только `total`, записи не тянем.
       when(() => historyClient.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -215,7 +205,6 @@ void main() {
       await repo.priorCareEventCount(42);
 
       verify(() => historyClient.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: 42,
             limit: 1,
             offset: 0,
@@ -228,7 +217,6 @@ void main() {
     test('should_send_chat_authScope_and_not_leak_hardcoded_identity',
         () async {
       when(() => historyClient.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -244,21 +232,17 @@ void main() {
 
       await repo.priorCareEventCount(42);
 
-      final captured = verify(() => historyClient.getPlantHistory(
-            xChatId: captureAny(named: 'xChatId'),
+      final extras = verify(() => historyClient.getPlantHistory(
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
             extras: captureAny(named: 'extras'),
-          )).captured;
-      final chatId = captured[0] as int;
-      final extras = captured[1] as Map<String, dynamic>;
+          )).captured.single as Map<String, dynamic>;
 
-      // Scope chat → X-Chat-Id ставит AuthInterceptor из AuthSession.
+      // Scope chat → Authorization: Bearer ставит AuthInterceptor из AuthSession.
+      // Идентичность НЕ хардкодится в data-слое: клиент больше не принимает
+      // X-Chat-Id, заголовок целиком на интерсепторе.
       expect(extras[kAuthScopeExtraKey], AuthScope.chat);
-      // Идентичность НЕ хардкодится в data-слое: заглушка-заголовок == 0,
-      // никакого dev USER_ID/CHAT_ID не утекает мимо интерцептора.
-      expect(chatId, 0);
     });
   });
 
@@ -266,7 +250,6 @@ void main() {
     test('should_return_failure_with_ApiError_when_DioException_carries_it',
         () async {
       when(() => historyClient.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),
@@ -281,7 +264,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => historyClient.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             offset: any(named: 'offset'),

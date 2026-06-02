@@ -10,7 +10,7 @@ CareScheduleUpdateRequest _$CareScheduleUpdateRequestFromJson(
   Map<String, dynamic> json,
 ) => CareScheduleUpdateRequest(
   every: (json['every'] as num).toInt(),
-  unit: json['unit'] as String,
+  unit: CareScheduleUpdateRequestUnit.fromJson(json['unit'] as String),
   enabled: json['enabled'] as bool,
   amountMl: (json['amountMl'] as num?)?.toInt(),
 );

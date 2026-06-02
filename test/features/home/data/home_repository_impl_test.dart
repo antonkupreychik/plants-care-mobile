@@ -9,6 +9,7 @@ import 'package:plantcare_mobile/core/api/generated/models/page_response_plant_d
 import 'package:plantcare_mobile/core/api/generated/models/plant_dto.dart';
 import 'package:plantcare_mobile/core/api/generated/models/task_dto.dart';
 import 'package:plantcare_mobile/core/api/generated/models/today_response.dart';
+import 'package:plantcare_mobile/core/api/generated/models/today_summary.dart';
 import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
@@ -54,7 +55,6 @@ void main() {
     test('should_return_success_with_mapped_tasks_when_client_returns_dto',
         () async {
       when(() => today.getToday(
-            xChatId: any(named: 'xChatId'),
             extras: any(named: 'extras'),
           )).thenAnswer(
         (_) async => TodayResponse(
@@ -68,6 +68,12 @@ void main() {
             ),
           ],
           count: 1,
+          summary: const TodaySummary(
+            total: 1,
+            done: 0,
+            remaining: 1,
+            overdue: 0,
+          ),
         ),
       );
 
@@ -82,14 +88,21 @@ void main() {
 
     test('should_send_chat_authScope_in_extras', () async {
       when(() => today.getToday(
-            xChatId: any(named: 'xChatId'),
             extras: any(named: 'extras'),
-          )).thenAnswer((_) async => const TodayResponse(tasks: [], count: 0));
+          )).thenAnswer((_) async => const TodayResponse(
+                tasks: [],
+                count: 0,
+                summary: TodaySummary(
+                  total: 0,
+                  done: 0,
+                  remaining: 0,
+                  overdue: 0,
+                ),
+              ));
 
       await repo.getTodayTasks();
 
       final captured = verify(() => today.getToday(
-            xChatId: any(named: 'xChatId'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
       expect(captured[kAuthScopeExtraKey], AuthScope.chat);
@@ -98,7 +111,6 @@ void main() {
     test('should_return_failure_notFound_when_DioException_carries_ApiError',
         () async {
       when(() => today.getToday(
-            xChatId: any(named: 'xChatId'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.notFound()));
 
@@ -111,7 +123,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => today.getToday(
-            xChatId: any(named: 'xChatId'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith('plain string error'));
 
@@ -124,7 +135,6 @@ void main() {
   group('getPlants', () {
     test('should_return_success_with_mapped_plants', () async {
       when(() => plants.listPlants(
-            xUserId: any(named: 'xUserId'),
             limit: any(named: 'limit'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -145,7 +155,6 @@ void main() {
 
     test('should_send_user_authScope_in_extras', () async {
       when(() => plants.listPlants(
-            xUserId: any(named: 'xUserId'),
             limit: any(named: 'limit'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -160,7 +169,6 @@ void main() {
       await repo.getPlants();
 
       final captured = verify(() => plants.listPlants(
-            xUserId: any(named: 'xUserId'),
             limit: any(named: 'limit'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
@@ -170,7 +178,6 @@ void main() {
     test('should_return_failure_accessDenied_when_DioException_carries_it',
         () async {
       when(() => plants.listPlants(
-            xUserId: any(named: 'xUserId'),
             limit: any(named: 'limit'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.accessDenied()));
@@ -184,7 +191,6 @@ void main() {
   group('getLocations', () {
     test('should_return_success_with_mapped_locations', () async {
       when(() => locations.listLocations(
-            xUserId: any(named: 'xUserId'),
             extras: any(named: 'extras'),
           )).thenAnswer(
         (_) async => const [
@@ -201,14 +207,12 @@ void main() {
 
     test('should_send_user_authScope_in_extras', () async {
       when(() => locations.listLocations(
-            xUserId: any(named: 'xUserId'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => const []);
 
       await repo.getLocations();
 
       final captured = verify(() => locations.listLocations(
-            xUserId: any(named: 'xUserId'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
       expect(captured[kAuthScopeExtraKey], AuthScope.user);
@@ -217,7 +221,6 @@ void main() {
     test('should_return_failure_network_when_DioException_carries_it',
         () async {
       when(() => locations.listLocations(
-            xUserId: any(named: 'xUserId'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.network()));
 

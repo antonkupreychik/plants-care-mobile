@@ -21,15 +21,13 @@ class _LocationsClient implements LocationsClient {
 
   @override
   Future<List<LocationDto>> listLocations({
-    required int xUserId,
     Map<String, dynamic>? extras,
   }) async {
     final _extra = <String, dynamic>{};
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<LocationDto>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -56,7 +54,6 @@ class _LocationsClient implements LocationsClient {
 
   @override
   Future<LocationDto> createLocation({
-    required int xUserId,
     required LocationCreateRequest body,
     Map<String, dynamic>? extras,
   }) async {
@@ -64,8 +61,7 @@ class _LocationsClient implements LocationsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _options = _setStreamType<LocationDto>(
@@ -91,7 +87,6 @@ class _LocationsClient implements LocationsClient {
 
   @override
   Future<LocationDto> getLocation({
-    required int xUserId,
     required int id,
     Map<String, dynamic>? extras,
   }) async {
@@ -99,8 +94,7 @@ class _LocationsClient implements LocationsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<LocationDto>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -125,7 +119,6 @@ class _LocationsClient implements LocationsClient {
 
   @override
   Future<LocationDto> updateLocation({
-    required int xUserId,
     required int id,
     required LocationUpdateRequest body,
     Map<String, dynamic>? extras,
@@ -134,8 +127,7 @@ class _LocationsClient implements LocationsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _options = _setStreamType<LocationDto>(
@@ -161,7 +153,6 @@ class _LocationsClient implements LocationsClient {
 
   @override
   Future<void> deleteLocation({
-    required int xUserId,
     required int id,
     int? targetLocationId,
     Map<String, dynamic>? extras,
@@ -172,8 +163,7 @@ class _LocationsClient implements LocationsClient {
       r'targetLocationId': targetLocationId,
     };
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<void>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)

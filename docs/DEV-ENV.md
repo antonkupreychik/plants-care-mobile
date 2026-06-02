@@ -28,8 +28,16 @@ export PATH="$HOME/development/flutter/bin:$PATH"
 ```
 
 Точки входа: `lib/main_dev.dart` / `lib/main_prod.dart` (MADR-010). Конфиг —
-через `--dart-define` (API_URL / CHAT_ID / USER_ID). Android productFlavors
-(`--flavor`) пока не настроены — сборка идёт через `-t` + `--dart-define`.
+через `--dart-define` (API_URL / ACCESS_TOKEN / REFRESH_TOKEN). Android
+productFlavors (`--flavor`) пока не настроены — сборка идёт через `-t` +
+`--dart-define`.
+
+**Auth — JWT bearer (MADR-008).** PoC-заголовки `CHAT_ID`/`USER_ID` сняты:
+теперь dev-сборка засевает `TokenStore` заранее выпущенной парой токенов из
+`--dart-define=ACCESS_TOKEN=…/REFRESH_TOKEN=…` (получить с dev-backend через
+`/auth/**`). Без пары приложение поднимется, но пользовательские запросы
+получат `401`. Локальный `run-dev.sh` нужно обновить: вместо `CHAT_ID`/`USER_ID`
+прокидывать `ACCESS_TOKEN`/`REFRESH_TOKEN`.
 
 ## ⚠️ Сетевой обходной путь: Maven Central недоступен
 

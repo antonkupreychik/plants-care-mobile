@@ -8,20 +8,124 @@ part of 'auth_providers.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Текущая сессия (MADR-008). Сейчас всегда dev-слот; при появлении JWT —
-/// ветка на `JwtAuthSession`, остальной код не меняется.
+/// Защищённое хранилище токенов (MADR-008). Реальный экземпляр проставляется
+/// override'ом в `bootstrap()` (нужен async-доступ к Keychain/Keystore на
+/// старте).
+
+@ProviderFor(tokenStore)
+final tokenStoreProvider = TokenStoreProvider._();
+
+/// Защищённое хранилище токенов (MADR-008). Реальный экземпляр проставляется
+/// override'ом в `bootstrap()` (нужен async-доступ к Keychain/Keystore на
+/// старте).
+
+final class TokenStoreProvider
+    extends $FunctionalProvider<TokenStore, TokenStore, TokenStore>
+    with $Provider<TokenStore> {
+  /// Защищённое хранилище токенов (MADR-008). Реальный экземпляр проставляется
+  /// override'ом в `bootstrap()` (нужен async-доступ к Keychain/Keystore на
+  /// старте).
+  TokenStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'tokenStoreProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$tokenStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<TokenStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  TokenStore create(Ref ref) {
+    return tokenStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(TokenStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<TokenStore>(value),
+    );
+  }
+}
+
+String _$tokenStoreHash() => r'132b2bfbb4c378899756bb02ea51b8f0708e2c3f';
+
+/// JWT-сессия (MADR-008) — единый держатель пары токенов. Создаётся в
+/// `bootstrap()` уже с прочитанной из [TokenStore] парой (или dev-токеном из
+/// `--dart-define`) и проставляется override'ом.
+
+@ProviderFor(jwtAuthSession)
+final jwtAuthSessionProvider = JwtAuthSessionProvider._();
+
+/// JWT-сессия (MADR-008) — единый держатель пары токенов. Создаётся в
+/// `bootstrap()` уже с прочитанной из [TokenStore] парой (или dev-токеном из
+/// `--dart-define`) и проставляется override'ом.
+
+final class JwtAuthSessionProvider
+    extends $FunctionalProvider<JwtAuthSession, JwtAuthSession, JwtAuthSession>
+    with $Provider<JwtAuthSession> {
+  /// JWT-сессия (MADR-008) — единый держатель пары токенов. Создаётся в
+  /// `bootstrap()` уже с прочитанной из [TokenStore] парой (или dev-токеном из
+  /// `--dart-define`) и проставляется override'ом.
+  JwtAuthSessionProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'jwtAuthSessionProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$jwtAuthSessionHash();
+
+  @$internal
+  @override
+  $ProviderElement<JwtAuthSession> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  JwtAuthSession create(Ref ref) {
+    return jwtAuthSession(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(JwtAuthSession value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<JwtAuthSession>(value),
+    );
+  }
+}
+
+String _$jwtAuthSessionHash() => r'dbf77a5c61acc2691140f79729bb5dbb682fde86';
+
+/// Текущий auth-слот (MADR-008). За интерфейсом [AuthSession] — [JwtAuthSession];
+/// сетевой слой/интерсепторы зависят только от интерфейса.
 
 @ProviderFor(authSession)
 final authSessionProvider = AuthSessionProvider._();
 
-/// Текущая сессия (MADR-008). Сейчас всегда dev-слот; при появлении JWT —
-/// ветка на `JwtAuthSession`, остальной код не меняется.
+/// Текущий auth-слот (MADR-008). За интерфейсом [AuthSession] — [JwtAuthSession];
+/// сетевой слой/интерсепторы зависят только от интерфейса.
 
 final class AuthSessionProvider
     extends $FunctionalProvider<AuthSession, AuthSession, AuthSession>
     with $Provider<AuthSession> {
-  /// Текущая сессия (MADR-008). Сейчас всегда dev-слот; при появлении JWT —
-  /// ветка на `JwtAuthSession`, остальной код не меняется.
+  /// Текущий auth-слот (MADR-008). За интерфейсом [AuthSession] — [JwtAuthSession];
+  /// сетевой слой/интерсепторы зависят только от интерфейса.
   AuthSessionProvider._()
     : super(
         from: null,
@@ -55,4 +159,4 @@ final class AuthSessionProvider
   }
 }
 
-String _$authSessionHash() => r'45bf3af3c65b4bff4c9f454b33b58f2c9749fd51';
+String _$authSessionHash() => r'93aa61bfaba19610e1741a3d18528ac412a48390';

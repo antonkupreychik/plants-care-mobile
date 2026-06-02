@@ -1,5 +1,6 @@
 import '../../../../core/api/generated/models/care_schedule_dto.dart';
 import '../../../../core/api/generated/models/care_schedule_update_request.dart';
+import '../../../../core/api/generated/models/care_schedule_update_request_unit.dart';
 import '../../../../core/care/care_task_type.dart';
 import '../../domain/care_schedule_unit.dart';
 import '../../domain/plant_care_schedule.dart';
@@ -15,12 +16,14 @@ import '../../domain/plant_care_schedule.dart';
 /// - `every` клампится до `>= 1` на входе (backend не должен слать `< 1`, но
 ///   модель гарантирует инвариант для UI-степпера).
 extension CareScheduleDtoMapper on CareScheduleDto {
+  // Кодген отдаёт `type`/`unit` как enum (раньше строки); берём backend-
+  // значение через `.json` (null для `$unknown` → '' → helper даст fallback).
   PlantCareSchedule toDomain() => PlantCareSchedule(
-        type: CareTaskType.fromApi(type),
-        rawType: type,
+        type: CareTaskType.fromApi(type.json ?? ''),
+        rawType: type.json ?? '',
         every: every < 1 ? 1 : every,
-        unit: CareScheduleUnit.fromApi(unit),
-        rawUnit: unit,
+        unit: CareScheduleUnit.fromApi(unit.json ?? ''),
+        rawUnit: unit.json ?? '',
         amountMl: amountMl,
         enabled: enabled,
         nextDueAt: nextDueAt,
@@ -36,7 +39,9 @@ extension CareScheduleDtoMapper on CareScheduleDto {
 extension PlantCareScheduleUpdateMapper on PlantCareSchedule {
   CareScheduleUpdateRequest toUpdateRequest() => CareScheduleUpdateRequest(
         every: every,
-        unit: rawUnit,
+        // `unit` в теле PUT теперь enum (кодген); восстанавливаем из исходной
+        // строки (`DAY`). Нераспознанная → `$unknown` (бэк присылает только DAY).
+        unit: CareScheduleUpdateRequestUnit.fromJson(rawUnit),
         amountMl: amountMl,
         enabled: enabled,
       );

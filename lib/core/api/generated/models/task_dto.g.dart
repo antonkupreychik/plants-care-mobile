@@ -15,6 +15,9 @@ TaskDto _$TaskDtoFromJson(Map<String, dynamic> json) => TaskDto(
   speciesId: (json['speciesId'] as num?)?.toInt(),
   speciesName: json['speciesName'] as String?,
   locationName: json['locationName'] as String?,
+  doneAt: json['doneAt'] == null
+      ? null
+      : DateTime.parse(json['doneAt'] as String),
 );
 
 Map<String, dynamic> _$TaskDtoToJson(TaskDto instance) => <String, dynamic>{
@@ -26,4 +29,5 @@ Map<String, dynamic> _$TaskDtoToJson(TaskDto instance) => <String, dynamic>{
   'taskType': instance.taskType,
   'locationName': instance.locationName,
   'nextDueAt': instance.nextDueAt.toIso8601String(),
+  'doneAt': instance.doneAt?.toIso8601String(),
 };

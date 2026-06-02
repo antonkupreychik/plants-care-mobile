@@ -26,12 +26,8 @@ abstract class CareEventsClient {
   /// запись с таким `clientId` от того же пользователя/растения, возвращается.
   /// существующая запись без повторной вставки. Это позволяет мобильным.
   /// клиентам безопасно ретраить запрос при потере соединения.
-  ///
-  /// [xChatId] - Telegram `chat_id` авторизованного пользователя. Резолвится в `users.id`.
-  /// на стороне сервера через `UserApiResolver`.
   @POST('/api/v1/care-events')
   Future<CareEventResponse> createCareEvent({
-    @Header('X-Chat-Id') required int xChatId,
     @Body() required CreateCareEventRequest body,
     @Extras() Map<String, dynamic>? extras,
   });
@@ -44,14 +40,9 @@ abstract class CareEventsClient {
   ///
   /// Повторная отмена уже отменённой записи возвращает 409.
   ///
-  /// [xChatId] - Telegram `chat_id` авторизованного пользователя. Резолвится в `users.id`.
-  /// на стороне сервера через `UserApiResolver`.
-  ///
-  ///
   /// [id] - Идентификатор записи `care_history`.
   @DELETE('/api/v1/care-events/{id}')
   Future<void> cancelCareEvent({
-    @Header('X-Chat-Id') required int xChatId,
     @Path('id') required int id,
     @Extras() Map<String, dynamic>? extras,
   });

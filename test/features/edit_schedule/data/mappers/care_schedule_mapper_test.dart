@@ -1,5 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto_type.dart';
+import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto_unit.dart';
+import 'package:plantcare_mobile/core/api/generated/models/care_schedule_update_request_unit.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/features/edit_schedule/data/mappers/care_schedule_mapper.dart';
 import 'package:plantcare_mobile/features/edit_schedule/domain/care_schedule_unit.dart';
@@ -9,9 +12,9 @@ void main() {
   group('CareScheduleDto.toDomain', () {
     test('should_map_all_fields_and_normalize_type_unit_when_known', () {
       final dto = CareScheduleDto(
-        type: 'WATERING',
+        type: CareScheduleDtoType.watering,
         every: 7,
-        unit: 'DAY',
+        unit: CareScheduleDtoUnit.day,
         enabled: true,
         amountMl: 200,
         nextDueAt: DateTime.utc(2026, 6, 1, 9),
@@ -29,47 +32,49 @@ void main() {
       expect(domain.nextDueAt, DateTime.utc(2026, 6, 1, 9));
     });
 
-    test('should_map_unknown_type_to_unknown_but_keep_rawType', () {
+    test('should_map_unknown_type_to_unknown_when_dto_type_unknown', () {
+      // Кодген парсит нераспознанный backend-тип в $unknown (json == null);
+      // маппер сводит его к CareTaskType.unknown, rawType — пустая строка.
       const dto = CareScheduleDto(
-        type: 'PRUNING', // нет в enum
+        type: CareScheduleDtoType.$unknown,
         every: 3,
-        unit: 'DAY',
+        unit: CareScheduleDtoUnit.day,
         enabled: true,
       );
 
       final domain = dto.toDomain();
 
-      // Нераспознанный тип → unknown, но исходная строка сохранена для PUT.
       expect(domain.type, CareTaskType.unknown);
-      expect(domain.rawType, 'PRUNING');
+      expect(domain.rawType, '');
     });
 
-    test('should_map_unknown_unit_to_unknown_but_keep_rawUnit_for_roundtrip', () {
+    test('should_map_unknown_unit_to_unknown_when_dto_unit_unknown', () {
+      // Нераспознанная единица из backend → $unknown (json == null);
+      // маппер сводит её к CareScheduleUnit.unknown, rawUnit — пустая строка.
       const dto = CareScheduleDto(
-        type: 'MISTING',
+        type: CareScheduleDtoType.misting,
         every: 2,
-        unit: 'WEEK', // нет в enum CareScheduleUnit
+        unit: CareScheduleDtoUnit.$unknown,
         enabled: true,
       );
 
       final domain = dto.toDomain();
 
       expect(domain.unit, CareScheduleUnit.unknown);
-      // rawUnit держит исходную строку, чтобы PUT не потерял единицу.
-      expect(domain.rawUnit, 'WEEK');
+      expect(domain.rawUnit, '');
     });
 
     test('should_clamp_every_to_at_least_1_when_dto_below_1', () {
       const dtoZero = CareScheduleDto(
-        type: 'FERTILIZING',
+        type: CareScheduleDtoType.fertilizing,
         every: 0,
-        unit: 'DAY',
+        unit: CareScheduleDtoUnit.day,
         enabled: true,
       );
       const dtoNegative = CareScheduleDto(
-        type: 'FERTILIZING',
+        type: CareScheduleDtoType.fertilizing,
         every: -5,
-        unit: 'DAY',
+        unit: CareScheduleDtoUnit.day,
         enabled: true,
       );
 
@@ -79,9 +84,9 @@ void main() {
 
     test('should_keep_null_nextDueAt_and_null_amountMl', () {
       const dto = CareScheduleDto(
-        type: 'SOIL_CHECK',
+        type: CareScheduleDtoType.soilCheck,
         every: 14,
-        unit: 'DAY',
+        unit: CareScheduleDtoUnit.day,
         enabled: false,
         // amountMl и nextDueAt не заданы.
       );
@@ -109,14 +114,16 @@ void main() {
       final req = schedule.toUpdateRequest();
 
       expect(req.every, 5);
-      // unit отправляется как исходная backend-строка (rawUnit), не enum.
-      expect(req.unit, 'DAY');
+      // unit тела PUT восстанавливается из исходной backend-строки (rawUnit
+      // 'DAY') в соответствующее enum-значение кодгена.
+      expect(req.unit, CareScheduleUpdateRequestUnit.day);
       expect(req.amountMl, 250);
       expect(req.enabled, isTrue);
     });
 
-    test('should_send_original_rawUnit_even_when_unit_is_unknown', () {
-      // Round-trip нераспознанной единицы: enum unknown, но rawUnit не теряется.
+    test('should_map_unknown_rawUnit_to_unknown_enum_in_request', () {
+      // Round-trip нераспознанной единицы: rawUnit 'WEEK' не входит в enum
+      // кодгена → $unknown (контракт сейчас знает только DAY).
       const schedule = PlantCareSchedule(
         type: CareTaskType.misting,
         rawType: 'MISTING',
@@ -128,7 +135,7 @@ void main() {
 
       final req = schedule.toUpdateRequest();
 
-      expect(req.unit, 'WEEK');
+      expect(req.unit, CareScheduleUpdateRequestUnit.$unknown);
     });
 
     test('should_keep_null_amountMl_when_not_set', () {

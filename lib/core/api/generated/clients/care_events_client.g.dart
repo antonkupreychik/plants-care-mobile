@@ -21,7 +21,6 @@ class _CareEventsClient implements CareEventsClient {
 
   @override
   Future<CareEventResponse> createCareEvent({
-    required int xChatId,
     required CreateCareEventRequest body,
     Map<String, dynamic>? extras,
   }) async {
@@ -29,8 +28,7 @@ class _CareEventsClient implements CareEventsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-Chat-Id': xChatId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _options = _setStreamType<CareEventResponse>(
@@ -56,7 +54,6 @@ class _CareEventsClient implements CareEventsClient {
 
   @override
   Future<void> cancelCareEvent({
-    required int xChatId,
     required int id,
     Map<String, dynamic>? extras,
   }) async {
@@ -64,8 +61,7 @@ class _CareEventsClient implements CareEventsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-Chat-Id': xChatId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<void>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)

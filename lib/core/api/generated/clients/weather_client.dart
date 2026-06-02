@@ -5,7 +5,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../models/weather_snapshot_response.dart';
+import '../models/weather_snapshot_dto.dart';
 
 part 'weather_client.g.dart';
 
@@ -13,19 +13,21 @@ part 'weather_client.g.dart';
 abstract class WeatherClient {
   factory WeatherClient(Dio dio, {String? baseUrl}) = _WeatherClient;
 
-  /// Снапшот погоды для рекомендаций по поливу.
+  /// Снепшот погоды (влажность) для пользователя.
   ///
-  /// Возвращает текущий снапшот погоды (влажность воздуха) и рекомендацию.
-  /// backend, стоит ли отложить полив. Значения посчитаны backend по.
-  /// внешнему источнику погоды и кэшируются (~60 мин, см. `fromCache`).
+  /// Возвращает текущую относительную влажность и рекомендацию по поливу.
+  /// для **текущего пользователя** (координаты и флаг погоды берутся из.
+  /// профиля).
   ///
-  /// Если погода не настроена или источник недоступен, `available` равно.
-  /// `false`, а остальные поля приходят `null` — UI не показывает строку.
-  /// погоды.
+  /// Если погода у пользователя не настроена (выключена или нет координат).
+  /// либо внешний источник недоступен — отвечает `200` с.
+  /// `available = false` и пустыми полями (клиент просто скрывает строку.
+  /// погоды, это не ошибка).
   ///
-  /// Эндпоинт публичный: идентификация по заголовкам не требуется.
+  /// Значение кешируется на стороне сервера (~60 мин), повторные запросы в.
+  /// пределах окна не ходят во внешний API (`fromCache = true`).
   @GET('/api/v1/weather/snapshot')
-  Future<WeatherSnapshotResponse> getWeatherSnapshot({
+  Future<WeatherSnapshotDto> getWeatherSnapshot({
     @Extras() Map<String, dynamic>? extras,
   });
 }

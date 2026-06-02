@@ -21,16 +21,14 @@ class _ReportsClient implements ReportsClient {
 
   @override
   Future<MonthlyReportResponse> getMonthlyReport({
-    required int xUserId,
-    String? month,
+    required String month,
     Map<String, dynamic>? extras,
   }) async {
     final _extra = <String, dynamic>{};
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{r'month': month};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<MonthlyReportResponse>(
       Options(method: 'GET', headers: _headers, extra: _extra)

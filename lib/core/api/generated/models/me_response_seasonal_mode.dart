@@ -4,24 +4,21 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-/// Рекомендация backend по поливу: можно отложить (`DEFER_OK`),.
-/// откладывать не стоит (`DO_NOT_DEFER`), нейтрально (`NEUTRAL`).
-/// `null`, если `available=false`. Клиент рекомендацию не пересчитывает.
+/// Режим сезонности: `MULTIPLIER` (коэффициент к базовому интервалу) или.
+/// `FIXED` (фиксированные интервалы на сезон).
 ///
 @JsonEnum()
-enum WeatherSnapshotResponseRecommendation {
-  @JsonValue('DEFER_OK')
-  deferOk('DEFER_OK'),
-  @JsonValue('DO_NOT_DEFER')
-  doNotDefer('DO_NOT_DEFER'),
-  @JsonValue('NEUTRAL')
-  neutral('NEUTRAL'),
+enum MeResponseSeasonalMode {
+  @JsonValue('MULTIPLIER')
+  multiplier('MULTIPLIER'),
+  @JsonValue('FIXED')
+  fixed('FIXED'),
   /// Default value for all unparsed values, allows backward compatibility when adding new values on the backend.
   $unknown(null);
 
-  const WeatherSnapshotResponseRecommendation(this.json);
+  const MeResponseSeasonalMode(this.json);
 
-  factory WeatherSnapshotResponseRecommendation.fromJson(String json) => values.firstWhere(
+  factory MeResponseSeasonalMode.fromJson(String json) => values.firstWhere(
         (e) => e.json == json,
         orElse: () => $unknown,
       );
@@ -39,5 +36,5 @@ enum WeatherSnapshotResponseRecommendation {
   @override
   String toString() => json?.toString() ?? super.toString();
   /// Returns all defined enum values excluding the $unknown value.
-  static List<WeatherSnapshotResponseRecommendation> get $valuesDefined => values.where((value) => value != $unknown).toList();
+  static List<MeResponseSeasonalMode> get $valuesDefined => values.where((value) => value != $unknown).toList();
 }

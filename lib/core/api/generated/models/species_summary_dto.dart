@@ -19,6 +19,9 @@ class SpeciesSummaryDto {
     this.soilCheckDays,
     this.careDifficulty,
     this.lightPreference,
+    this.toxicToCats,
+    this.toxicToDogs,
+    this.toxicToHumans,
   });
   
   factory SpeciesSummaryDto.fromJson(Map<String, Object?> json) => _$SpeciesSummaryDtoFromJson(json);
@@ -38,6 +41,15 @@ class SpeciesSummaryDto {
 
   /// Имя enum'а `LightPreference.name()`.
   final String? lightPreference;
+
+  /// Токсично для кошек. null — данных нет.
+  final bool? toxicToCats;
+
+  /// Токсично для собак. null — данных нет.
+  final bool? toxicToDogs;
+
+  /// Токсично для человека. null — данных нет.
+  final bool? toxicToHumans;
 
   Map<String, Object?> toJson() => _$SpeciesSummaryDtoToJson(this);
 }

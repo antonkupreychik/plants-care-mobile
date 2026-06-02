@@ -21,7 +21,6 @@ class _PlantHistoryClient implements PlantHistoryClient {
 
   @override
   Future<PlantHistoryResponse> getPlantHistory({
-    required int xChatId,
     required int id,
     int? limit = 20,
     int? offset = 0,
@@ -34,8 +33,7 @@ class _PlantHistoryClient implements PlantHistoryClient {
       r'offset': offset,
     };
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-Chat-Id': xChatId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<PlantHistoryResponse>(
       Options(method: 'GET', headers: _headers, extra: _extra)

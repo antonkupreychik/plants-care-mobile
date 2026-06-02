@@ -275,6 +275,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorAccessDenied => 'Нет доступа к этим данным';
 
   @override
+  String get errorUnauthorized => 'Сессия истекла. Войдите снова';
+
+  @override
   String get errorValidation => 'Проверьте введённые данные';
 
   @override

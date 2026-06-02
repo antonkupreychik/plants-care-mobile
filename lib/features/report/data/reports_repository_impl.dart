@@ -11,9 +11,9 @@ import 'mappers/monthly_report_mapper.dart';
 
 /// Реализация [ReportsRepository] поверх сгенерированного API-клиента
 /// (MADR-007). User-scoped: на запрос проставляет [AuthScope.user] через
-/// `authScopeExtra` — заголовок `X-User-Id` подставит `AuthInterceptor` из
+/// `authScopeExtra` — заголовок `Authorization` подставит `AuthInterceptor` из
 /// текущей `AuthSession` (MADR-006/008). Идентичность здесь НЕ хардкодится:
-/// см. [_headerOverriddenByInterceptor].
+/// см. `AuthInterceptor`.
 ///
 /// Ошибки dio ловит `ErrorInterceptor` и кладёт [ApiError] в
 /// `DioException.error`; здесь это разворачивается в `Result.failure`
@@ -23,17 +23,10 @@ class ReportsRepositoryImpl implements ReportsRepository {
 
   final PlantsCareApi _api;
 
-  /// Заглушка required-параметра `@Header('X-User-Id')` сгенерированного
-  /// клиента: реальный заголовок ставит `AuthInterceptor` из `AuthSession` и
-  /// перезаписывает это значение. Data-слой идентичность не знает и не
-  /// хардкодит (как в `HomeRepositoryImpl`).
-  static const int _headerOverriddenByInterceptor = 0;
-
   @override
-  Future<Result<MonthlyReport>> getMonthlyReport({String? month}) async {
+  Future<Result<MonthlyReport>> getMonthlyReport({required String month}) async {
     try {
       final dto = await _api.reports.getMonthlyReport(
-        xUserId: _headerOverriddenByInterceptor,
         month: month,
         extras: authScopeExtra(AuthScope.user),
       );

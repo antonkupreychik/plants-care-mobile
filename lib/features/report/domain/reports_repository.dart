@@ -10,5 +10,5 @@ import 'monthly_report.dart';
 abstract interface class ReportsRepository {
   /// Месячный отчёт за [month] (`YYYY-MM`). Если [month] равен `null` —
   /// backend берёт текущий месяц пользователя.
-  Future<Result<MonthlyReport>> getMonthlyReport({String? month});
+  Future<Result<MonthlyReport>> getMonthlyReport({required String month});
 }

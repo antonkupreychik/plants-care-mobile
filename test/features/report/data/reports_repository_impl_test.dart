@@ -49,7 +49,6 @@ void main() {
   group('getMonthlyReport success', () {
     test('should_return_success_with_mapped_domain', () async {
       when(() => reports.getMonthlyReport(
-            xUserId: any(named: 'xUserId'),
             month: any(named: 'month'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _response());
@@ -70,7 +69,6 @@ void main() {
 
     test('should_forward_month_query_to_client', () async {
       when(() => reports.getMonthlyReport(
-            xUserId: any(named: 'xUserId'),
             month: any(named: 'month'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _response());
@@ -78,7 +76,6 @@ void main() {
       await repo.getMonthlyReport(month: '2026-04');
 
       verify(() => reports.getMonthlyReport(
-            xUserId: any(named: 'xUserId'),
             month: '2026-04',
             extras: any(named: 'extras'),
           )).called(1);
@@ -89,7 +86,6 @@ void main() {
     // регрессию scope при подключении реального auth.
     test('should_send_user_authScope_in_extras', () async {
       when(() => reports.getMonthlyReport(
-            xUserId: any(named: 'xUserId'),
             month: any(named: 'month'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _response());
@@ -97,7 +93,6 @@ void main() {
       await repo.getMonthlyReport(month: '2026-05');
 
       final captured = verify(() => reports.getMonthlyReport(
-            xUserId: any(named: 'xUserId'),
             month: any(named: 'month'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
@@ -109,7 +104,6 @@ void main() {
     test('should_return_failure_with_ApiError_from_DioException_without_throw',
         () async {
       when(() => reports.getMonthlyReport(
-            xUserId: any(named: 'xUserId'),
             month: any(named: 'month'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.network()));
@@ -123,7 +117,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => reports.getMonthlyReport(
-            xUserId: any(named: 'xUserId'),
             month: any(named: 'month'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith('boom'));

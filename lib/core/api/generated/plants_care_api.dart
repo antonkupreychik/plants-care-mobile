@@ -4,19 +4,23 @@
 
 import 'package:dio/dio.dart';
 
+import 'clients/auth_client.dart';
 import 'clients/health_client.dart';
 import 'clients/plants_client.dart';
 import 'clients/plant_history_client.dart';
-import 'clients/plant_schedules_client.dart';
+import 'clients/schedules_client.dart';
 import 'clients/locations_client.dart';
 import 'clients/care_events_client.dart';
 import 'clients/calendar_client.dart';
 import 'clients/today_client.dart';
+import 'clients/weather_client.dart';
 import 'clients/stats_client.dart';
+import 'clients/reports_client.dart';
 import 'clients/species_client.dart';
 import 'clients/care_types_client.dart';
-import 'clients/weather_client.dart';
-import 'clients/reports_client.dart';
+import 'clients/shopping_client.dart';
+import 'clients/notifications_client.dart';
+import 'clients/me_client.dart';
 
 /// Plants Care API `v0.1.0`.
 ///
@@ -25,17 +29,14 @@ import 'clients/reports_client.dart';
 ///
 /// ## Аутентификация.
 ///
-/// В текущей версии (PoC, issue #85/#86) большинство пользовательских.
-/// эндпоинтов идентифицируют вызывающего по числовому заголовку:.
+/// Пользовательские эндпоинты защищены JWT bearer-токеном (issue #88, ADR-011).
+/// Клиент получает пару токенов через `/api/v1/auth/*` (Apple / Google / email.
+/// magic link), затем передаёт access-токен в заголовке.
+/// `Authorization: Bearer <token>`. Идентификатор пользователя (`users.id`).
+/// берётся из claim `sub`.
 ///
-/// * **`X-User-Id`** — внутренний идентификатор пользователя в БД. Используется.
-///   эндпоинтами `/api/v1/plants`, `/api/v1/locations`.
-/// * **`X-Chat-Id`** — Telegram `chat_id`. Используется эндпоинтами.
-///   `/api/v1/care-events`, `/api/v1/today`, `/api/v1/calendar`,.
-///   `/api/v1/stats/streak` и историей растения.
-///
-/// Публичные справочники (`/api/v1/species`, `/api/v1/care-types`) аутентификацию.
-/// не требуют.
+/// Эндпоинты `/api/v1/auth/**` и публичные справочники (`/api/v1/species`,.
+/// `/api/v1/care-types`) аутентификацию не требуют.
 ///
 /// ## Таймзоны и время.
 ///
@@ -60,19 +61,25 @@ class PlantsCareApi {
 
   static String get version => '0.1.0';
 
+  AuthClient? _auth;
   HealthClient? _health;
   PlantsClient? _plants;
   PlantHistoryClient? _plantHistory;
-  PlantSchedulesClient? _plantSchedules;
+  SchedulesClient? _schedules;
   LocationsClient? _locations;
   CareEventsClient? _careEvents;
   CalendarClient? _calendar;
   TodayClient? _today;
+  WeatherClient? _weather;
   StatsClient? _stats;
+  ReportsClient? _reports;
   SpeciesClient? _species;
   CareTypesClient? _careTypes;
-  WeatherClient? _weather;
-  ReportsClient? _reports;
+  ShoppingClient? _shopping;
+  NotificationsClient? _notifications;
+  MeClient? _me;
+
+  AuthClient get auth => _auth ??= AuthClient(_dio, baseUrl: _baseUrl);
 
   HealthClient get health => _health ??= HealthClient(_dio, baseUrl: _baseUrl);
 
@@ -80,7 +87,7 @@ class PlantsCareApi {
 
   PlantHistoryClient get plantHistory => _plantHistory ??= PlantHistoryClient(_dio, baseUrl: _baseUrl);
 
-  PlantSchedulesClient get plantSchedules => _plantSchedules ??= PlantSchedulesClient(_dio, baseUrl: _baseUrl);
+  SchedulesClient get schedules => _schedules ??= SchedulesClient(_dio, baseUrl: _baseUrl);
 
   LocationsClient get locations => _locations ??= LocationsClient(_dio, baseUrl: _baseUrl);
 
@@ -90,13 +97,19 @@ class PlantsCareApi {
 
   TodayClient get today => _today ??= TodayClient(_dio, baseUrl: _baseUrl);
 
+  WeatherClient get weather => _weather ??= WeatherClient(_dio, baseUrl: _baseUrl);
+
   StatsClient get stats => _stats ??= StatsClient(_dio, baseUrl: _baseUrl);
+
+  ReportsClient get reports => _reports ??= ReportsClient(_dio, baseUrl: _baseUrl);
 
   SpeciesClient get species => _species ??= SpeciesClient(_dio, baseUrl: _baseUrl);
 
   CareTypesClient get careTypes => _careTypes ??= CareTypesClient(_dio, baseUrl: _baseUrl);
 
-  WeatherClient get weather => _weather ??= WeatherClient(_dio, baseUrl: _baseUrl);
+  ShoppingClient get shopping => _shopping ??= ShoppingClient(_dio, baseUrl: _baseUrl);
 
-  ReportsClient get reports => _reports ??= ReportsClient(_dio, baseUrl: _baseUrl);
+  NotificationsClient get notifications => _notifications ??= NotificationsClient(_dio, baseUrl: _baseUrl);
+
+  MeClient get me => _me ??= MeClient(_dio, baseUrl: _baseUrl);
 }

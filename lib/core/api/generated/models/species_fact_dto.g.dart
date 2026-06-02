@@ -8,9 +8,9 @@ part of 'species_fact_dto.dart';
 
 SpeciesFactDto _$SpeciesFactDtoFromJson(Map<String, dynamic> json) =>
     SpeciesFactDto(
-      category: json['category'] as String,
-      title: json['title'] as String,
+      category: SpeciesFactDtoCategory.fromJson(json['category'] as String),
       body: json['body'] as String,
+      title: json['title'] as String?,
       source: json['source'] as String?,
     );
 

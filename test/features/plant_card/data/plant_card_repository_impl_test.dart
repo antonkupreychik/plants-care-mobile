@@ -7,8 +7,8 @@ import 'package:plantcare_mobile/core/api/generated/clients/stats_client.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_event_response.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_event_type.dart';
 import 'package:plantcare_mobile/core/api/generated/models/plant_dto.dart';
-import 'package:plantcare_mobile/core/api/generated/models/plant_health_response.dart';
-import 'package:plantcare_mobile/core/api/generated/models/plant_health_response_zone.dart';
+import 'package:plantcare_mobile/core/api/generated/models/plant_health_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/plant_health_dto_zone.dart';
 import 'package:plantcare_mobile/core/api/generated/models/plant_history_response.dart';
 import 'package:plantcare_mobile/core/api/generated/models/streak_response.dart';
 import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
@@ -57,7 +57,6 @@ void main() {
     test('should_return_success_with_mapped_plant_when_client_returns_dto',
         () async {
       when(() => plants.getPlant(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -79,7 +78,6 @@ void main() {
 
     test('should_send_user_authScope_in_extras', () async {
       when(() => plants.getPlant(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -89,7 +87,6 @@ void main() {
       await repo.getPlant(42);
 
       final captured = verify(() => plants.getPlant(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
@@ -99,7 +96,6 @@ void main() {
     test('should_return_failure_notFound_when_DioException_carries_ApiError',
         () async {
       when(() => plants.getPlant(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.notFound()));
@@ -112,7 +108,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => plants.getPlant(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith('plain string'));
@@ -134,7 +129,6 @@ void main() {
 
     test('should_return_success_with_mapped_entries', () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             extras: any(named: 'extras'),
@@ -161,7 +155,6 @@ void main() {
 
     test('should_send_chat_authScope_in_extras', () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             extras: any(named: 'extras'),
@@ -170,7 +163,6 @@ void main() {
       await repo.getHistory(42);
 
       final captured = verify(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             extras: captureAny(named: 'extras'),
@@ -181,7 +173,6 @@ void main() {
     test('should_return_failure_network_when_DioException_carries_it',
         () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             extras: any(named: 'extras'),
@@ -195,7 +186,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => history.getPlantHistory(
-            xChatId: any(named: 'xChatId'),
             id: any(named: 'id'),
             limit: any(named: 'limit'),
             extras: any(named: 'extras'),
@@ -210,7 +200,6 @@ void main() {
   group('getStreak', () {
     test('should_return_success_with_mapped_streak', () async {
       when(() => stats.getPlantStreak(
-            xChatId: any(named: 'xChatId'),
             plantId: any(named: 'plantId'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -226,7 +215,6 @@ void main() {
 
     test('should_send_chat_authScope_in_extras', () async {
       when(() => stats.getPlantStreak(
-            xChatId: any(named: 'xChatId'),
             plantId: any(named: 'plantId'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -236,7 +224,6 @@ void main() {
       await repo.getStreak(42);
 
       final captured = verify(() => stats.getPlantStreak(
-            xChatId: any(named: 'xChatId'),
             plantId: any(named: 'plantId'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
@@ -246,7 +233,6 @@ void main() {
     test('should_return_failure_accessDenied_when_DioException_carries_it',
         () async {
       when(() => stats.getPlantStreak(
-            xChatId: any(named: 'xChatId'),
             plantId: any(named: 'plantId'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.accessDenied()));
@@ -259,7 +245,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => stats.getPlantStreak(
-            xChatId: any(named: 'xChatId'),
             plantId: any(named: 'plantId'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(null));
@@ -277,10 +262,10 @@ void main() {
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenAnswer(
-        (_) async => const PlantHealthResponse(
+        (_) async => const PlantHealthDto(
           insufficientData: false,
           score: 92,
-          zone: PlantHealthResponseZone.green,
+          zone: PlantHealthDtoZone.green,
         ),
       );
 
@@ -301,10 +286,10 @@ void main() {
             id: any(named: 'id'),
             extras: any(named: 'extras'),
           )).thenAnswer(
-        (_) async => const PlantHealthResponse(
+        (_) async => const PlantHealthDto(
           insufficientData: false,
           score: 50,
-          zone: PlantHealthResponseZone.yellow,
+          zone: PlantHealthDtoZone.yellow,
         ),
       );
 
