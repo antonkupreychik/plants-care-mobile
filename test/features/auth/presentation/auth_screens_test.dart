@@ -13,13 +13,17 @@ import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 /// Монтирует [child] на корневом маршруте через настоящий GoRouter — экраны
 /// используют `context.push` / `context.go`, которым нужен Router-контекст.
-/// Заглушки-маршруты `/auth/code`, `/auth/welcome-back`, `/home`, `/home/add`
-/// дают навигации куда уходить, не падая.
+/// Заглушки-маршруты `/auth/email`, `/auth/code`, `/auth/welcome-back`,
+/// `/home`, `/home/add` дают навигации куда уходить, не падая.
 Future<void> _pump(WidgetTester tester, Widget child) async {
   final router = GoRouter(
     initialLocation: '/',
     routes: [
       GoRoute(path: '/', builder: (_, _) => child),
+      GoRoute(
+        path: '/auth/email',
+        builder: (_, _) => const Scaffold(body: Text('email-route')),
+      ),
       GoRoute(
         path: '/auth/code',
         builder: (_, _) => const Scaffold(body: Text('code-route')),
@@ -58,12 +62,14 @@ AppLocalizations _l10n(WidgetTester tester, Type screen) =>
 
 void main() {
   group('AuthWelcomeScreen (07)', () {
-    testWidgets('should_render_all_three_entry_buttons', (tester) async {
+    testWidgets('should_render_google_email_and_guest_entry_buttons',
+        (tester) async {
       await _pump(tester, const AuthWelcomeScreen());
       final l10n = _l10n(tester, AuthWelcomeScreen);
+      // Google (coming-soon), email-вход (реальный CTA, accent) и гость.
       expect(find.widgetWithText(AuthSocialButton, l10n.authContinueGoogle),
           findsOneWidget);
-      expect(find.widgetWithText(AuthSocialButton, l10n.authContinueTelegram),
+      expect(find.widgetWithText(AuthSocialButton, l10n.authEmailTitle),
           findsOneWidget);
       expect(find.text(l10n.authContinueGuest), findsOneWidget);
     });
@@ -77,6 +83,29 @@ void main() {
       await tester.pump();
       expect(find.byType(SnackBar), findsOneWidget);
       expect(find.text(l10n.comingSoon), findsOneWidget);
+    });
+
+    testWidgets('should_navigate_to_auth_email_when_email_cta_tapped',
+        (tester) async {
+      // Главный CTA входа теперь ведёт на email magic-link (`/auth/email`),
+      // а не на Telegram-превью `/auth/code`.
+      // Высокий вьюпорт, чтобы email-CTA гарантированно была в кадре и
+      // кликабельна (welcome — длинный ListView с иллюстрацией сверху).
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await _pump(tester, const AuthWelcomeScreen());
+      final l10n = _l10n(tester, AuthWelcomeScreen);
+
+      final emailCta =
+          find.widgetWithText(AuthSocialButton, l10n.authEmailTitle);
+      await tester.ensureVisible(emailCta);
+      await tester.tap(emailCta);
+      await tester.pumpAndSettle();
+
+      expect(find.text('email-route'), findsOneWidget);
     });
   });
 

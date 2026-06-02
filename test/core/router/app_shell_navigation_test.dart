@@ -8,6 +8,8 @@ import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/env/app_config.dart';
+import 'package:plantcare_mobile/core/auth/auth_providers.dart';
+import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/core/widgets/app_bottom_nav.dart';
@@ -67,10 +69,19 @@ ScheduleWeek _emptyWeek(DateTime monday) => ScheduleWeek(
       ),
     );
 
-/// Поднимает реальный [appRouter] + [AppShell] под [PlantCareApp] с замоканными
-/// провайдерами всех экранов (home/schedule/plant_card) — без сети.
-/// [scheduleRepo] прокидывается, чтобы можно было его проверить/настроить.
-Widget _wrap({ScheduleRepository? scheduleRepo}) {
+/// Поднимает реальный роутер ([appRouterProvider]) + [AppShell] под
+/// [PlantCareApp] с замоканными провайдерами всех экранов
+/// (home/schedule/plant_card) — без сети. Auth-гард снят
+/// (`authStatusProvider` = authenticated), иначе redirect увёл бы на
+/// `/auth/welcome`. [scheduleRepo] прокидывается, чтобы можно было его
+/// проверить/настроить.
+///
+/// Возвращает контейнер + смонтированный виджет; через контейнер тест читает
+/// `appRouterProvider` для прямой навигации (`router.go(...)`).
+({Widget widget, ProviderContainer container}) _wrap(
+  WidgetTester tester, {
+  ScheduleRepository? scheduleRepo,
+}) {
   // Catalog: репозиторий-мок отдаёт пустую страницу → CatalogScreen строится
   // без сети (empty-каталог), не виснет на бесконечном спиннере.
   final catalogRepo = _MockCatalogRepo();
@@ -84,8 +95,10 @@ Widget _wrap({ScheduleRepository? scheduleRepo}) {
     ),
   );
 
-  return ProviderScope(
+  final container = ProviderContainer(
     overrides: [
+      // Снимаем auth-гард: без этого redirect увёл бы старт на /auth/welcome.
+      authStatusProvider.overrideWithValue(AuthStatusNotifier(true)),
       appConfigProvider.overrideWithValue(_config),
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
       // Home: три секции пустые → детерминированный empty-сад без сети.
@@ -112,7 +125,15 @@ Widget _wrap({ScheduleRepository? scheduleRepo}) {
         (ref) async => const <CareHistoryEntry>[],
       ),
     ],
-    child: const PlantCareApp(),
+  );
+  addTearDown(container.dispose);
+
+  return (
+    widget: UncontrolledProviderScope(
+      container: container,
+      child: const PlantCareApp(),
+    ),
+    container: container,
   );
 }
 
@@ -122,11 +143,9 @@ void main() {
     await initializeDateFormatting('ru');
   });
 
-  // appRouter — глобальный singleton: состояние навигации переживает тесты.
-  // Сбрасываем на стартовый branch перед каждым тестом, чтобы изоляция держалась.
-  setUp(() {
-    appRouter.go('/home');
-  });
+  // Роутер теперь per-container (см. _wrap): каждый тест поднимает свой
+  // инстанс из своего ProviderContainer, глобального singleton-состояния нет —
+  // межтестовый сброс не нужен.
 
   AppLocalizations l10nOf(WidgetTester tester) =>
       AppLocalizations.of(tester.element(find.byType(AppBottomNav)));
@@ -134,7 +153,7 @@ void main() {
   group('AppShell navigation', () {
     testWidgets('should_start_on_garden_with_bottom_nav_when_app_launches',
         (tester) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(_wrap(tester).widget);
       await tester.pumpAndSettle();
 
       // Стартовый branch — «Сад».
@@ -153,7 +172,7 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(_wrap(scheduleRepo: repo));
+      await tester.pumpWidget(_wrap(tester, scheduleRepo: repo).widget);
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(l10nOf(tester).navSchedule));
@@ -180,7 +199,7 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(_wrap(scheduleRepo: repo));
+      await tester.pumpWidget(_wrap(tester, scheduleRepo: repo).widget);
       await tester.pumpAndSettle();
 
       // Сад → График → Сад.
@@ -196,7 +215,7 @@ void main() {
     });
 
     testWidgets('should_show_catalog_when_catalog_tab_tapped', (tester) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(_wrap(tester).widget);
       await tester.pumpAndSettle();
 
       final l10n = l10nOf(tester);
@@ -214,14 +233,15 @@ void main() {
 
     testWidgets('should_hide_bottom_nav_when_plant_card_pushed_over_shell',
         (tester) async {
-      await tester.pumpWidget(_wrap());
+      final w = _wrap(tester);
+      await tester.pumpWidget(w.widget);
       await tester.pumpAndSettle();
 
       // Старт: таб-бар виден над shell.
       expect(find.byType(AppBottomNav), findsOneWidget);
 
       // Переход на карточку растения (push на root-навигаторе поверх shell).
-      appRouter.go('/home/plants/$_plantId');
+      w.container.read(appRouterProvider).go('/home/plants/$_plantId');
       await tester.pumpAndSettle();
 
       // Карточка отрисована, таб-бар скрыт (detail-экран на root-навигаторе).
@@ -231,13 +251,14 @@ void main() {
 
     testWidgets('should_open_add_plant_wizard_over_shell_without_bottom_nav',
         (tester) async {
-      await tester.pumpWidget(_wrap());
+      final w = _wrap(tester);
+      await tester.pumpWidget(w.widget);
       await tester.pumpAndSettle();
 
       expect(find.byType(AppBottomNav), findsOneWidget);
 
       // Роут /home/add — мастер на root-навигаторе поверх shell.
-      appRouter.go('/home/add');
+      w.container.read(appRouterProvider).go('/home/add');
       await tester.pumpAndSettle();
 
       expect(find.byType(AddPlantWizardScreen), findsOneWidget);

@@ -1714,6 +1714,78 @@ abstract class AppLocalizations {
   /// **'Я просто посмотрю'**
   String get authGoHome;
 
+  /// Заголовок экрана ввода email для magic link
+  ///
+  /// In ru, this message translates to:
+  /// **'Вход по почте'**
+  String get authEmailTitle;
+
+  /// Подзаголовок экрана ввода email: объяснение magic-link флоу
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите адрес — пришлём ссылку для входа. Пароль не нужен.'**
+  String get authEmailSubtitle;
+
+  /// Подпись поля ввода email
+  ///
+  /// In ru, this message translates to:
+  /// **'Электронная почта'**
+  String get authEmailLabel;
+
+  /// Плейсхолдер поля ввода email
+  ///
+  /// In ru, this message translates to:
+  /// **'you@example.com'**
+  String get authEmailHint;
+
+  /// Сообщение о неверном формате email под полем ввода
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверьте адрес почты'**
+  String get authEmailInvalid;
+
+  /// Основная кнопка экрана ввода email: запросить magic link
+  ///
+  /// In ru, this message translates to:
+  /// **'Получить ссылку'**
+  String get authSendLink;
+
+  /// Заголовок состояния после отправки magic link
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверьте почту'**
+  String get authLinkSentTitle;
+
+  /// Подзаголовок состояния после отправки magic link
+  ///
+  /// In ru, this message translates to:
+  /// **'Мы отправили ссылку для входа. Откройте её на этом устройстве.'**
+  String get authLinkSentSubtitle;
+
+  /// Текст экрана проверки magic-link токена во время обмена
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверяем ссылку…'**
+  String get authVerifying;
+
+  /// Сообщение об ошибке проверки magic-link токена
+  ///
+  /// In ru, this message translates to:
+  /// **'Ссылка недействительна или устарела. Запросите новую.'**
+  String get authVerifyError;
+
+  /// Кнопка возврата на экран входа после ошибки проверки токена
+  ///
+  /// In ru, this message translates to:
+  /// **'Вернуться ко входу'**
+  String get authVerifyRetry;
+
+  /// Подпись dev-хука ручного ввода magic-link токена (только дебаг)
+  ///
+  /// In ru, this message translates to:
+  /// **'Dev: вставить токен'**
+  String get authDevTokenLabel;
+
   /// Заголовок строки настроек, ведущей на экран «Архив» (17)
   ///
   /// In ru, this message translates to:

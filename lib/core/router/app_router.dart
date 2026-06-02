@@ -1,10 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../features/add_plant/presentation/add_plant_wizard_screen.dart';
 import '../../features/archive/presentation/archive_screen.dart';
 import '../../features/report/presentation/monthly_report_screen.dart';
 import '../../features/auth/presentation/auth_code_screen.dart';
+import '../../features/auth/presentation/auth_email_screen.dart';
+import '../../features/auth/presentation/auth_verify_screen.dart';
 import '../../features/auth/presentation/auth_welcome_back_screen.dart';
 import '../../features/auth/presentation/auth_welcome_screen.dart';
 import '../../features/care_event/presentation/first_care_success_screen.dart';
@@ -20,7 +23,10 @@ import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
+import '../auth/auth_providers.dart';
 import 'app_shell.dart';
+
+part 'app_router.g.dart';
 
 /// Корневой навигатор: на нём рисуются полноэкранные push-маршруты поверх
 /// [AppShell] (без нижней навигации) — напр. карточка растения.
@@ -41,32 +47,61 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 ///
 /// Старт — `/home` (экран «Мой сад»), это фиксирует контракт стартового экрана.
 ///
-/// Группа `/auth/*` — полноэкранные экраны входа (07/08/09) ВНЕ табов, на
-/// [_rootNavigatorKey] (рядом с shell, top-level). Это ПРЕВЬЮ-флоу: без
-/// redirect/guard и без гейтинга — роуты просто доступны (точка входа из
-/// профиля). Реального auth/токена/сети нет.
-final appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: '/home',
-  routes: [
-    GoRoute(
-      path: '/auth/welcome',
-      name: 'authWelcome',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => const AuthWelcomeScreen(),
-    ),
-    GoRoute(
-      path: '/auth/code',
-      name: 'authCode',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => const AuthCodeScreen(),
-    ),
-    GoRoute(
-      path: '/auth/welcome-back',
-      name: 'authWelcomeBack',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => const AuthWelcomeBackScreen(),
-    ),
+/// Группа `/auth/*` — полноэкранные экраны входа ВНЕ табов, на
+/// [_rootNavigatorKey] (рядом с shell, top-level). Это РЕАЛЬНЫЙ auth-флоу с
+/// router-guard (MADR-008): email magic-link (`/auth/email` → `/auth/verify`)
+/// + legacy-превью (07/08/09). [redirect] гейтит всё приложение по
+/// [AuthStatusNotifier] (`authStatusProvider`): неавторизованного уводит на
+/// `/auth/welcome`, авторизованного из `/auth/*` — на `/home`. Реактивность —
+/// через [GoRouter.refreshListenable] на тот же notifier (роутер сам по себе
+/// keepAlive и не пересобирается).
+@Riverpod(keepAlive: true)
+GoRouter appRouter(Ref ref) {
+  final authStatus = ref.watch(authStatusProvider);
+
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/home',
+    refreshListenable: authStatus,
+    redirect: (context, state) {
+      final authed = ref.read(authStatusProvider).isAuthenticated;
+      final atAuth = state.matchedLocation.startsWith('/auth');
+      if (!authed) return atAuth ? null : '/auth/welcome';
+      if (atAuth) return '/home';
+      return null;
+    },
+    routes: [
+      GoRoute(
+        path: '/auth/welcome',
+        name: 'authWelcome',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AuthWelcomeScreen(),
+      ),
+      GoRoute(
+        path: '/auth/email',
+        name: 'authEmail',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AuthEmailScreen(),
+      ),
+      GoRoute(
+        path: '/auth/verify',
+        name: 'authVerify',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) =>
+            AuthVerifyScreen(token: state.uri.queryParameters['token']),
+      ),
+      GoRoute(
+        path: '/auth/code',
+        name: 'authCode',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AuthCodeScreen(),
+      ),
+      GoRoute(
+        path: '/auth/welcome-back',
+        name: 'authWelcomeBack',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AuthWelcomeBackScreen(),
+      ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
           AppShell(navigationShell: navigationShell),
@@ -261,8 +296,9 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-  ],
-);
+    ],
+  );
+}
 
 /// Парсит query-параметр `kind` экрана 33 в [CareEventKind]. Неизвестное/пустое
 /// значение → [CareEventKind.water] (нейтральный fallback — экран не падает).

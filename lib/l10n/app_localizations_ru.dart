@@ -1065,6 +1065,45 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authGoHome => 'Я просто посмотрю';
 
   @override
+  String get authEmailTitle => 'Вход по почте';
+
+  @override
+  String get authEmailSubtitle =>
+      'Введите адрес — пришлём ссылку для входа. Пароль не нужен.';
+
+  @override
+  String get authEmailLabel => 'Электронная почта';
+
+  @override
+  String get authEmailHint => 'you@example.com';
+
+  @override
+  String get authEmailInvalid => 'Проверьте адрес почты';
+
+  @override
+  String get authSendLink => 'Получить ссылку';
+
+  @override
+  String get authLinkSentTitle => 'Проверьте почту';
+
+  @override
+  String get authLinkSentSubtitle =>
+      'Мы отправили ссылку для входа. Откройте её на этом устройстве.';
+
+  @override
+  String get authVerifying => 'Проверяем ссылку…';
+
+  @override
+  String get authVerifyError =>
+      'Ссылка недействительна или устарела. Запросите новую.';
+
+  @override
+  String get authVerifyRetry => 'Вернуться ко входу';
+
+  @override
+  String get authDevTokenLabel => 'Dev: вставить токен';
+
+  @override
   String get profileArchiveTitle => 'Архив';
 
   @override

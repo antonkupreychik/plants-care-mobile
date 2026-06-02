@@ -160,3 +160,70 @@ final class AuthSessionProvider
 }
 
 String _$authSessionHash() => r'93aa61bfaba19610e1741a3d18528ac412a48390';
+
+/// Реактивный флаг авторизации для router-guard (MADR-008). Стабильный
+/// keepAlive-инстанс [AuthStatusNotifier], который слушает go_router через
+/// `refreshListenable` (см. `appRouterProvider`). Стартовое значение берётся
+/// из текущей сессии (на старте — есть ли валидная пара токенов в [TokenStore]
+/// / dev-токен). Флипают флаг data-слой входа/выхода и
+/// `RefreshInterceptor.onSessionExpired`.
+
+@ProviderFor(authStatus)
+final authStatusProvider = AuthStatusProvider._();
+
+/// Реактивный флаг авторизации для router-guard (MADR-008). Стабильный
+/// keepAlive-инстанс [AuthStatusNotifier], который слушает go_router через
+/// `refreshListenable` (см. `appRouterProvider`). Стартовое значение берётся
+/// из текущей сессии (на старте — есть ли валидная пара токенов в [TokenStore]
+/// / dev-токен). Флипают флаг data-слой входа/выхода и
+/// `RefreshInterceptor.onSessionExpired`.
+
+final class AuthStatusProvider
+    extends
+        $FunctionalProvider<
+          AuthStatusNotifier,
+          AuthStatusNotifier,
+          AuthStatusNotifier
+        >
+    with $Provider<AuthStatusNotifier> {
+  /// Реактивный флаг авторизации для router-guard (MADR-008). Стабильный
+  /// keepAlive-инстанс [AuthStatusNotifier], который слушает go_router через
+  /// `refreshListenable` (см. `appRouterProvider`). Стартовое значение берётся
+  /// из текущей сессии (на старте — есть ли валидная пара токенов в [TokenStore]
+  /// / dev-токен). Флипают флаг data-слой входа/выхода и
+  /// `RefreshInterceptor.onSessionExpired`.
+  AuthStatusProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authStatusProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authStatusHash();
+
+  @$internal
+  @override
+  $ProviderElement<AuthStatusNotifier> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AuthStatusNotifier create(Ref ref) {
+    return authStatus(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthStatusNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthStatusNotifier>(value),
+    );
+  }
+}
+
+String _$authStatusHash() => r'f4ddbeecb92778f8f2b011a0b3083222e9b2343d';
