@@ -2262,5 +2262,192 @@
   "plantCardScheduleEdit": "Изменить",
   "@plantCardScheduleEdit": {
     "description": "Ссылка-вход «Изменить» в редактирование расписания (карточка растения)"
+  },
+
+  "profileNotificationsTitle": "Уведомления и время",
+  "@profileNotificationsTitle": {
+    "description": "Строка профиля — вход на экран 23 «Тихие часы»"
+  },
+
+  "quietHoursBack": "Назад",
+  "@quietHoursBack": {
+    "description": "Кнопка «назад» экрана 23"
+  },
+
+  "quietHoursOverline": "Уведомления и время",
+  "@quietHoursOverline": {
+    "description": "Оверлайн шапки экрана 23"
+  },
+
+  "quietHoursTitleLead": "Тихие ",
+  "@quietHoursTitleLead": {
+    "description": "Серифный заголовок 23, обычная часть перед акцентом"
+  },
+
+  "quietHoursTitleAccent": "часы",
+  "@quietHoursTitleAccent": {
+    "description": "Серифный заголовок 23, акцентная курсивная часть"
+  },
+
+  "quietHoursSubtitle": "Ночью растения подождут до утра — не разбудят пушем.",
+  "@quietHoursSubtitle": {
+    "description": "Подзаголовок экрана 23"
+  },
+
+  "quietHoursRingCount": "{hours, plural, one{{hours} час тишины} few{{hours} часа тишины} many{{hours} часов тишины} other{{hours} часа тишины}}",
+  "@quietHoursRingCount": {
+    "description": "Подпись в центре кольца: сколько часов тишины",
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+
+  "quietHoursLegendOn": "Напоминания идут",
+  "@quietHoursLegendOn": {
+    "description": "Легенда кольца — период активных напоминаний"
+  },
+
+  "quietHoursLegendQuiet": "Тишина",
+  "@quietHoursLegendQuiet": {
+    "description": "Легенда кольца — период тишины"
+  },
+
+  "quietHoursStartLabel": "Засыпаю в",
+  "@quietHoursStartLabel": {
+    "description": "Карточка-кнопка начала тихих часов на экране 23"
+  },
+
+  "quietHoursEndLabel": "Просыпаюсь в",
+  "@quietHoursEndLabel": {
+    "description": "Карточка-кнопка конца тихих часов на экране 23"
+  },
+
+  "quietHoursParamsSection": "Параметры",
+  "@quietHoursParamsSection": {
+    "description": "Заголовок секции параметров на экране 23"
+  },
+
+  "quietHoursTimezoneTitle": "Таймзона",
+  "@quietHoursTimezoneTitle": {
+    "description": "Строка «Таймзона» в секции параметров (экран 23)"
+  },
+
+  "quietHoursTimezoneValue": "{city} · {gmt}",
+  "@quietHoursTimezoneValue": {
+    "description": "Значение таймзоны: город и GMT-метка",
+    "placeholders": {
+      "city": { "type": "String" },
+      "gmt": { "type": "String" }
+    }
+  },
+
+  "quietHoursDndTitle": "Не беспокоить ночью",
+  "@quietHoursDndTitle": {
+    "description": "Декоративная (неактивная) строка-тумблер на экране 23, не покрыта backend"
+  },
+
+  "quietHoursDndSubtitle": "Перенести просроченное на утро",
+  "@quietHoursDndSubtitle": {
+    "description": "Подпись декоративной строки «Не беспокоить ночью»"
+  },
+
+  "quietHoursDigestTitle": "Утренний дайджест",
+  "@quietHoursDigestTitle": {
+    "description": "Декоративная (неактивная) строка дайджеста на экране 23, не покрыта backend"
+  },
+
+  "quietHoursDigestSubtitle": "Все заботы дня одним сообщением",
+  "@quietHoursDigestSubtitle": {
+    "description": "Подпись декоративной строки «Утренний дайджест»"
+  },
+
+  "quietHoursDigestTime": "9:00",
+  "@quietHoursDigestTime": {
+    "description": "Декоративное фиксированное время утреннего дайджеста"
+  },
+
+  "quietHoursSoon": "Скоро",
+  "@quietHoursSoon": {
+    "description": "Бейдж «скоро» для контролов, ещё не покрытых backend (экран 23)"
+  },
+
+  "quietHoursQuote": "«Если меня надо полить в 3 ночи — напомню в 8 утра. Спи спокойно.»",
+  "@quietHoursQuote": {
+    "description": "Декоративная цитата внизу экрана 23"
+  },
+
+  "quietHoursSaveError": "Не удалось сохранить. Попробуй ещё раз.",
+  "@quietHoursSaveError": {
+    "description": "Снэкбар при ошибке сохранения тихих часов/таймзоны (общий тип)"
+  },
+
+  "timePickerStartOverline": "Тихие часы начинаются",
+  "@timePickerStartOverline": {
+    "description": "Оверлайн пикера 36 при выборе начала тихих часов"
+  },
+
+  "timePickerEndOverline": "Тихие часы заканчиваются",
+  "@timePickerEndOverline": {
+    "description": "Оверлайн пикера 36 при выборе конца тихих часов"
+  },
+
+  "timePickerStartTitle": "Засыпаю в",
+  "@timePickerStartTitle": {
+    "description": "Заголовок пикера 36 при выборе начала"
+  },
+
+  "timePickerEndTitle": "Просыпаюсь в",
+  "@timePickerEndTitle": {
+    "description": "Заголовок пикера 36 при выборе конца"
+  },
+
+  "timePickerDone": "Готово",
+  "@timePickerDone": {
+    "description": "Кнопка применения выбора времени (пикер 36)"
+  },
+
+  "timezoneBack": "Назад",
+  "@timezoneBack": {
+    "description": "Кнопка «назад» экрана 37"
+  },
+
+  "timezoneOverline": "Таймзона",
+  "@timezoneOverline": {
+    "description": "Оверлайн шапки экрана 37"
+  },
+
+  "timezoneTitleLead": "Когда у тебя ",
+  "@timezoneTitleLead": {
+    "description": "Серифный заголовок 37, обычная часть перед акцентом"
+  },
+
+  "timezoneTitleAccent": "утро",
+  "@timezoneTitleAccent": {
+    "description": "Серифный заголовок 37, акцентная курсивная часть"
+  },
+
+  "timezoneTitleTail": "?",
+  "@timezoneTitleTail": {
+    "description": "Серифный заголовок 37, хвост после акцента (знак вопроса)"
+  },
+
+  "timezoneSearchHint": "Город или регион…",
+  "@timezoneSearchHint": {
+    "description": "Плейсхолдер поля поиска на экране 37"
+  },
+
+  "timezoneSectionRussia": "Россия",
+  "@timezoneSectionRussia": {
+    "description": "Заголовок секции списка таймзон (экран 37)"
+  },
+
+  "timezoneEmpty": "Ничего не найдено",
+  "@timezoneEmpty": {
+    "description": "Пустой результат поиска по таймзонам (экран 37)"
+  },
+
+  "timezoneSelectedHint": "Выбрано",
+  "@timezoneSelectedHint": {
+    "description": "Semantics-метка галочки выбранной таймзоны (экран 37)"
   }
 }

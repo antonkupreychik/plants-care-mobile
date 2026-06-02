@@ -1625,4 +1625,126 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get plantCardScheduleEdit => 'Изменить';
+
+  @override
+  String get profileNotificationsTitle => 'Уведомления и время';
+
+  @override
+  String get quietHoursBack => 'Назад';
+
+  @override
+  String get quietHoursOverline => 'Уведомления и время';
+
+  @override
+  String get quietHoursTitleLead => 'Тихие ';
+
+  @override
+  String get quietHoursTitleAccent => 'часы';
+
+  @override
+  String get quietHoursSubtitle =>
+      'Ночью растения подождут до утра — не разбудят пушем.';
+
+  @override
+  String quietHoursRingCount(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours часа тишины',
+      many: '$hours часов тишины',
+      few: '$hours часа тишины',
+      one: '$hours час тишины',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quietHoursLegendOn => 'Напоминания идут';
+
+  @override
+  String get quietHoursLegendQuiet => 'Тишина';
+
+  @override
+  String get quietHoursStartLabel => 'Засыпаю в';
+
+  @override
+  String get quietHoursEndLabel => 'Просыпаюсь в';
+
+  @override
+  String get quietHoursParamsSection => 'Параметры';
+
+  @override
+  String get quietHoursTimezoneTitle => 'Таймзона';
+
+  @override
+  String quietHoursTimezoneValue(String city, String gmt) {
+    return '$city · $gmt';
+  }
+
+  @override
+  String get quietHoursDndTitle => 'Не беспокоить ночью';
+
+  @override
+  String get quietHoursDndSubtitle => 'Перенести просроченное на утро';
+
+  @override
+  String get quietHoursDigestTitle => 'Утренний дайджест';
+
+  @override
+  String get quietHoursDigestSubtitle => 'Все заботы дня одним сообщением';
+
+  @override
+  String get quietHoursDigestTime => '9:00';
+
+  @override
+  String get quietHoursSoon => 'Скоро';
+
+  @override
+  String get quietHoursQuote =>
+      '«Если меня надо полить в 3 ночи — напомню в 8 утра. Спи спокойно.»';
+
+  @override
+  String get quietHoursSaveError => 'Не удалось сохранить. Попробуй ещё раз.';
+
+  @override
+  String get timePickerStartOverline => 'Тихие часы начинаются';
+
+  @override
+  String get timePickerEndOverline => 'Тихие часы заканчиваются';
+
+  @override
+  String get timePickerStartTitle => 'Засыпаю в';
+
+  @override
+  String get timePickerEndTitle => 'Просыпаюсь в';
+
+  @override
+  String get timePickerDone => 'Готово';
+
+  @override
+  String get timezoneBack => 'Назад';
+
+  @override
+  String get timezoneOverline => 'Таймзона';
+
+  @override
+  String get timezoneTitleLead => 'Когда у тебя ';
+
+  @override
+  String get timezoneTitleAccent => 'утро';
+
+  @override
+  String get timezoneTitleTail => '?';
+
+  @override
+  String get timezoneSearchHint => 'Город или регион…';
+
+  @override
+  String get timezoneSectionRussia => 'Россия';
+
+  @override
+  String get timezoneEmpty => 'Ничего не найдено';
+
+  @override
+  String get timezoneSelectedHint => 'Выбрано';
 }

@@ -2577,6 +2577,222 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Изменить'**
   String get plantCardScheduleEdit;
+
+  /// Строка профиля — вход на экран 23 «Тихие часы»
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления и время'**
+  String get profileNotificationsTitle;
+
+  /// Кнопка «назад» экрана 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get quietHoursBack;
+
+  /// Оверлайн шапки экрана 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления и время'**
+  String get quietHoursOverline;
+
+  /// Серифный заголовок 23, обычная часть перед акцентом
+  ///
+  /// In ru, this message translates to:
+  /// **'Тихие '**
+  String get quietHoursTitleLead;
+
+  /// Серифный заголовок 23, акцентная курсивная часть
+  ///
+  /// In ru, this message translates to:
+  /// **'часы'**
+  String get quietHoursTitleAccent;
+
+  /// Подзаголовок экрана 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Ночью растения подождут до утра — не разбудят пушем.'**
+  String get quietHoursSubtitle;
+
+  /// Подпись в центре кольца: сколько часов тишины
+  ///
+  /// In ru, this message translates to:
+  /// **'{hours, plural, one{{hours} час тишины} few{{hours} часа тишины} many{{hours} часов тишины} other{{hours} часа тишины}}'**
+  String quietHoursRingCount(int hours);
+
+  /// Легенда кольца — период активных напоминаний
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания идут'**
+  String get quietHoursLegendOn;
+
+  /// Легенда кольца — период тишины
+  ///
+  /// In ru, this message translates to:
+  /// **'Тишина'**
+  String get quietHoursLegendQuiet;
+
+  /// Карточка-кнопка начала тихих часов на экране 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Засыпаю в'**
+  String get quietHoursStartLabel;
+
+  /// Карточка-кнопка конца тихих часов на экране 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Просыпаюсь в'**
+  String get quietHoursEndLabel;
+
+  /// Заголовок секции параметров на экране 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Параметры'**
+  String get quietHoursParamsSection;
+
+  /// Строка «Таймзона» в секции параметров (экран 23)
+  ///
+  /// In ru, this message translates to:
+  /// **'Таймзона'**
+  String get quietHoursTimezoneTitle;
+
+  /// Значение таймзоны: город и GMT-метка
+  ///
+  /// In ru, this message translates to:
+  /// **'{city} · {gmt}'**
+  String quietHoursTimezoneValue(String city, String gmt);
+
+  /// Декоративная (неактивная) строка-тумблер на экране 23, не покрыта backend
+  ///
+  /// In ru, this message translates to:
+  /// **'Не беспокоить ночью'**
+  String get quietHoursDndTitle;
+
+  /// Подпись декоративной строки «Не беспокоить ночью»
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенести просроченное на утро'**
+  String get quietHoursDndSubtitle;
+
+  /// Декоративная (неактивная) строка дайджеста на экране 23, не покрыта backend
+  ///
+  /// In ru, this message translates to:
+  /// **'Утренний дайджест'**
+  String get quietHoursDigestTitle;
+
+  /// Подпись декоративной строки «Утренний дайджест»
+  ///
+  /// In ru, this message translates to:
+  /// **'Все заботы дня одним сообщением'**
+  String get quietHoursDigestSubtitle;
+
+  /// Декоративное фиксированное время утреннего дайджеста
+  ///
+  /// In ru, this message translates to:
+  /// **'9:00'**
+  String get quietHoursDigestTime;
+
+  /// Бейдж «скоро» для контролов, ещё не покрытых backend (экран 23)
+  ///
+  /// In ru, this message translates to:
+  /// **'Скоро'**
+  String get quietHoursSoon;
+
+  /// Декоративная цитата внизу экрана 23
+  ///
+  /// In ru, this message translates to:
+  /// **'«Если меня надо полить в 3 ночи — напомню в 8 утра. Спи спокойно.»'**
+  String get quietHoursQuote;
+
+  /// Снэкбар при ошибке сохранения тихих часов/таймзоны (общий тип)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось сохранить. Попробуй ещё раз.'**
+  String get quietHoursSaveError;
+
+  /// Оверлайн пикера 36 при выборе начала тихих часов
+  ///
+  /// In ru, this message translates to:
+  /// **'Тихие часы начинаются'**
+  String get timePickerStartOverline;
+
+  /// Оверлайн пикера 36 при выборе конца тихих часов
+  ///
+  /// In ru, this message translates to:
+  /// **'Тихие часы заканчиваются'**
+  String get timePickerEndOverline;
+
+  /// Заголовок пикера 36 при выборе начала
+  ///
+  /// In ru, this message translates to:
+  /// **'Засыпаю в'**
+  String get timePickerStartTitle;
+
+  /// Заголовок пикера 36 при выборе конца
+  ///
+  /// In ru, this message translates to:
+  /// **'Просыпаюсь в'**
+  String get timePickerEndTitle;
+
+  /// Кнопка применения выбора времени (пикер 36)
+  ///
+  /// In ru, this message translates to:
+  /// **'Готово'**
+  String get timePickerDone;
+
+  /// Кнопка «назад» экрана 37
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get timezoneBack;
+
+  /// Оверлайн шапки экрана 37
+  ///
+  /// In ru, this message translates to:
+  /// **'Таймзона'**
+  String get timezoneOverline;
+
+  /// Серифный заголовок 37, обычная часть перед акцентом
+  ///
+  /// In ru, this message translates to:
+  /// **'Когда у тебя '**
+  String get timezoneTitleLead;
+
+  /// Серифный заголовок 37, акцентная курсивная часть
+  ///
+  /// In ru, this message translates to:
+  /// **'утро'**
+  String get timezoneTitleAccent;
+
+  /// Серифный заголовок 37, хвост после акцента (знак вопроса)
+  ///
+  /// In ru, this message translates to:
+  /// **'?'**
+  String get timezoneTitleTail;
+
+  /// Плейсхолдер поля поиска на экране 37
+  ///
+  /// In ru, this message translates to:
+  /// **'Город или регион…'**
+  String get timezoneSearchHint;
+
+  /// Заголовок секции списка таймзон (экран 37)
+  ///
+  /// In ru, this message translates to:
+  /// **'Россия'**
+  String get timezoneSectionRussia;
+
+  /// Пустой результат поиска по таймзонам (экран 37)
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не найдено'**
+  String get timezoneEmpty;
+
+  /// Semantics-метка галочки выбранной таймзоны (экран 37)
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрано'**
+  String get timezoneSelectedHint;
 }
 
 class _AppLocalizationsDelegate

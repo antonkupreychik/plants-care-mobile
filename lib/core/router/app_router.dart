@@ -21,6 +21,8 @@ import '../../features/home/presentation/today_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
+import '../../features/quiet_hours/presentation/timezone_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
 import '../auth/auth_providers.dart';
@@ -289,6 +291,24 @@ GoRouter appRouter(Ref ref) {
                   name: 'monthlyReport',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const MonthlyReportScreen(),
+                ),
+                // Экран 23 «Тихие часы» — полноэкранно поверх shell (своя
+                // кнопка «назад», без таб-бара), как report/archive. Пикер
+                // времени (экран 36) внутри открывается showModalBottomSheet
+                // (не маршрут).
+                GoRoute(
+                  path: 'quiet-hours',
+                  name: 'quietHours',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const QuietHoursScreen(),
+                ),
+                // Экран 37 «Выбор таймзоны» — полноэкранно поверх shell, push
+                // из экрана 23 (строка «Таймзона»).
+                GoRoute(
+                  path: 'timezone',
+                  name: 'timezone',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const TimezoneScreen(),
                 ),
               ],
             ),
