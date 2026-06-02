@@ -12,6 +12,7 @@ class SettingsRow extends StatelessWidget {
     required this.onTap,
     this.value,
     this.divider = false,
+    this.destructive = false,
   });
 
   final String title;
@@ -24,9 +25,15 @@ class SettingsRow extends StatelessWidget {
   /// Рисовать ли разделитель сверху (для строк, кроме первой в секции).
   final bool divider;
 
+  /// Деструктивное действие (например «Выйти»): иконка/текст в `terracotta`,
+  /// без шеврона (это не навигация вглубь).
+  final bool destructive;
+
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
+    final iconColor = destructive ? c.terracotta : c.inkSoft;
+    final titleColor = destructive ? c.terracotta : c.ink;
     return Semantics(
       button: true,
       label: title,
@@ -44,7 +51,7 @@ class SettingsRow extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: c.inkSoft),
+                Icon(icon, size: 20, color: iconColor),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -52,7 +59,7 @@ class SettingsRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: c.ink,
+                      color: titleColor,
                     ),
                   ),
                 ),
@@ -63,7 +70,9 @@ class SettingsRow extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                 ],
-                Icon(Icons.chevron_right_rounded, size: 20, color: c.inkMute),
+                if (!destructive)
+                  Icon(Icons.chevron_right_rounded,
+                      size: 20, color: c.inkMute),
               ],
             ),
           ),

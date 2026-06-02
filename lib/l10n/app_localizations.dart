@@ -1324,6 +1324,36 @@ abstract class AppLocalizations {
   /// **'Дома и места'**
   String get profileRoomsTitle;
 
+  /// Строка настроек: выход из аккаунта (деструктивное действие)
+  ///
+  /// In ru, this message translates to:
+  /// **'Выйти'**
+  String get profileSignOut;
+
+  /// Заголовок диалога подтверждения выхода
+  ///
+  /// In ru, this message translates to:
+  /// **'Выйти из аккаунта?'**
+  String get profileSignOutConfirmTitle;
+
+  /// Текст диалога подтверждения выхода
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы вернётесь к экрану входа. Чтобы снова открыть свой сад, понадобится войти по почте.'**
+  String get profileSignOutConfirmMessage;
+
+  /// Кнопка отмены в диалоге выхода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get profileSignOutConfirmCancel;
+
+  /// Кнопка подтверждения выхода в диалоге
+  ///
+  /// In ru, this message translates to:
+  /// **'Выйти'**
+  String get profileSignOutConfirmAction;
+
   /// Серифный заголовок экрана управления комнатами
   ///
   /// In ru, this message translates to:

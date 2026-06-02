@@ -841,6 +841,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileRoomsTitle => 'Дома и места';
 
   @override
+  String get profileSignOut => 'Выйти';
+
+  @override
+  String get profileSignOutConfirmTitle => 'Выйти из аккаунта?';
+
+  @override
+  String get profileSignOutConfirmMessage =>
+      'Вы вернётесь к экрану входа. Чтобы снова открыть свой сад, понадобится войти по почте.';
+
+  @override
+  String get profileSignOutConfirmCancel => 'Отмена';
+
+  @override
+  String get profileSignOutConfirmAction => 'Выйти';
+
+  @override
   String get roomsTitle => 'Дома и места';
 
   @override

@@ -1,23 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../auth/data/auth_repository_provider.dart';
 import 'widgets/settings_row.dart';
 
 /// Экран «Профиль» (таб 4, branch `/profile`).
 ///
-/// МИНИМАЛЬНЫЙ экран настроек под дизайн-язык (`screens-v4.jsx`, блок «Ещё»):
-/// секция со скруглением 22 и border `line`, внутри строки [SettingsRow].
-/// В объёме — единственная рабочая строка «Дома и места» → push `/profile/rooms`
-/// (управление комнатами). Прочие строки дизайна (Язык, Тема, Выйти и т.д.) —
-/// вне объёма задачи и не добавлены.
-class ProfileScreen extends StatelessWidget {
+/// Экран настроек под дизайн-язык (`screens-v4.jsx`, блок «Ещё»): секция со
+/// скруглением 22 и border `line`, внутри строки [SettingsRow]. Рабочие строки:
+/// «Дома и места», «Архив», «Месячный отчёт» и деструктивная «Выйти» (выход из
+/// аккаунта, MADR-008). Прочие строки дизайна (Язык, Тема) — вне объёма.
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
+  /// Подтверждение и выход: после `signOut` сбрасывается auth-статус, и
+  /// router-guard (MADR-008) сам уводит на `/auth/welcome` — навигацию здесь не
+  /// делаем (поэтому `context` после await не трогаем).
+  Future<void> _confirmAndSignOut(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.profileSignOutConfirmTitle),
+        content: Text(l10n.profileSignOutConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.profileSignOutConfirmCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.profileSignOutConfirmAction),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await ref.read(authRepositoryProvider).signOut();
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
 
@@ -72,13 +99,14 @@ class ProfileScreen extends StatelessWidget {
                     divider: true,
                     onTap: () => context.push('/profile/report'),
                   ),
-                  // Превью-флоу экранов входа (07/08/09) — визуальная заглушка,
-                  // полноэкранно поверх shell на root-навигаторе.
+                  // Выход из аккаунта (MADR-008): сбрасывает токены/сессию,
+                  // router-guard уводит на экран входа. Деструктивная строка.
                   SettingsRow(
-                    title: l10n.profileAuthPreviewTitle,
-                    icon: Icons.login_outlined,
+                    title: l10n.profileSignOut,
+                    icon: Icons.logout_rounded,
                     divider: true,
-                    onTap: () => context.push('/auth/welcome'),
+                    destructive: true,
+                    onTap: () => _confirmAndSignOut(context, ref),
                   ),
                 ],
               ),

@@ -1110,6 +1110,31 @@
     "description": "Строка настроек: переход к управлению комнатами"
   },
 
+  "profileSignOut": "Выйти",
+  "@profileSignOut": {
+    "description": "Строка настроек: выход из аккаунта (деструктивное действие)"
+  },
+
+  "profileSignOutConfirmTitle": "Выйти из аккаунта?",
+  "@profileSignOutConfirmTitle": {
+    "description": "Заголовок диалога подтверждения выхода"
+  },
+
+  "profileSignOutConfirmMessage": "Вы вернётесь к экрану входа. Чтобы снова открыть свой сад, понадобится войти по почте.",
+  "@profileSignOutConfirmMessage": {
+    "description": "Текст диалога подтверждения выхода"
+  },
+
+  "profileSignOutConfirmCancel": "Отмена",
+  "@profileSignOutConfirmCancel": {
+    "description": "Кнопка отмены в диалоге выхода"
+  },
+
+  "profileSignOutConfirmAction": "Выйти",
+  "@profileSignOutConfirmAction": {
+    "description": "Кнопка подтверждения выхода в диалоге"
+  },
+
   "roomsTitle": "Дома и места",
   "@roomsTitle": {
     "description": "Серифный заголовок экрана управления комнатами"
