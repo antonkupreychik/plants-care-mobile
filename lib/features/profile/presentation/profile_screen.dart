@@ -12,8 +12,9 @@ import 'widgets/settings_row.dart';
 ///
 /// Экран настроек под дизайн-язык (`screens-v4.jsx`, блок «Ещё»): секция со
 /// скруглением 22 и border `line`, внутри строки [SettingsRow]. Рабочие строки:
-/// «Дома и места», «Архив», «Месячный отчёт» и деструктивная «Выйти» (выход из
-/// аккаунта, MADR-008). Прочие строки дизайна (Язык, Тема) — вне объёма.
+/// «Дома и места», «Архив», «Месячный отчёт», «Уведомления и время» (экран 23)
+/// и деструктивная «Выйти» (выход из аккаунта, MADR-008). Прочие строки дизайна
+/// (Язык, Тема) — вне объёма.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -98,6 +99,14 @@ class ProfileScreen extends ConsumerWidget {
                     icon: Icons.bar_chart_rounded,
                     divider: true,
                     onTap: () => context.push('/profile/report'),
+                  ),
+                  // Экран 23 «Тихие часы» (уведомления и время) → push поверх
+                  // shell.
+                  SettingsRow(
+                    title: l10n.profileNotificationsTitle,
+                    icon: Icons.notifications_none_rounded,
+                    divider: true,
+                    onTap: () => context.push('/profile/quiet-hours'),
                   ),
                   // Выход из аккаунта (MADR-008): сбрасывает токены/сессию,
                   // router-guard уводит на экран входа. Деструктивная строка.
