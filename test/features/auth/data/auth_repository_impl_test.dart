@@ -13,10 +13,13 @@ import 'package:plantcare_mobile/core/auth/token_store.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/features/auth/data/auth_repository_impl.dart';
+import 'package:plantcare_mobile/features/auth/domain/social_sign_in.dart';
 
 class _MockApi extends Mock implements PlantsCareApi {}
 
 class _MockAuthClient extends Mock implements AuthClient {}
+
+class _MockSocialSignIn extends Mock implements SocialSignIn {}
 
 /// Учётная in-memory реализация [TokenStore] — пишем/читаем честно (не мок БД),
 /// чтобы проверить, что сессия реально персистит пару.
@@ -71,6 +74,7 @@ void main() {
 
   late _MockApi api;
   late _MockAuthClient auth;
+  late _MockSocialSignIn social;
   late _FakeStorage storage;
   late JwtAuthSession session;
   late AuthStatusNotifier status;
@@ -79,11 +83,12 @@ void main() {
   setUp(() {
     api = _MockApi();
     auth = _MockAuthClient();
+    social = _MockSocialSignIn();
     storage = _FakeStorage();
     session = JwtAuthSession(_FakeTokenStore(storage));
     status = AuthStatusNotifier(false);
     when(() => api.auth).thenReturn(auth);
-    repo = AuthRepositoryImpl(api, session, status);
+    repo = AuthRepositoryImpl(api, session, status, social);
   });
 
   group('requestMagicLink', () {

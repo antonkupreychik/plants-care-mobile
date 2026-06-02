@@ -1,4 +1,5 @@
 import '../../../core/error/result.dart';
+import 'social_auth_outcome.dart';
 
 /// Контракт data-слоя авторизации по email magic-link (MADR-008).
 ///
@@ -22,6 +23,16 @@ abstract interface class AuthRepository {
   /// сессию. По успеху сессия аутентифицирована (токены сохранены, auth-флаг
   /// поднят). Токен одноразовый: повторный обмен вернёт ошибку.
   Future<Result<void>> verifyMagicLink(String token);
+
+  /// Войти через Google: получить OIDC `id_token` нативным SDK и обменять его на
+  /// пару JWT (`POST /auth/google`), подняв сессию. Не бросает наружу — исход
+  /// (успех / отмена / ошибка) виден в [SocialAuthOutcome].
+  Future<SocialAuthOutcome> signInWithGoogle();
+
+  /// Войти через Apple (iOS): получить `identityToken` нативным SDK и обменять
+  /// его на пару JWT (`POST /auth/apple`), подняв сессию. Не бросает наружу —
+  /// исход виден в [SocialAuthOutcome].
+  Future<SocialAuthOutcome> signInWithApple();
 
   /// Выйти: отозвать refresh-токен (best-effort) и погасить локальную сессию.
   /// Идемпотентно, наружу не бросает — локальная сессия чистится в любом случае.

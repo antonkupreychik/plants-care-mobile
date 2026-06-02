@@ -1357,6 +1357,16 @@
     "description": "Кнопка входа через Google (coming soon)"
   },
 
+  "authContinueApple": "Продолжить через Apple",
+  "@authContinueApple": {
+    "description": "Кнопка входа через Apple (только iOS)"
+  },
+
+  "authSocialError": "Не удалось войти. Попробуйте ещё раз.",
+  "@authSocialError": {
+    "description": "Текст ошибки социального входа (Google/Apple)"
+  },
+
   "authContinueTelegram": "Продолжить через Telegram",
   "@authContinueTelegram": {
     "description": "Кнопка входа через Telegram (переход к вводу кода)"

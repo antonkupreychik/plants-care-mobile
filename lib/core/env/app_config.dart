@@ -15,12 +15,27 @@ class AppConfig {
     required this.apiUrl,
     this.accessToken,
     this.refreshToken,
+    this.googleServerClientId,
+    this.googleIosClientId,
   });
 
   final Flavor flavor;
   final String apiUrl;
   final String? accessToken;
   final String? refreshToken;
+
+  /// Web (server) OAuth client ID Google'а (`GOOGLE_SERVER_CLIENT_ID`).
+  /// Передаётся в `GoogleSignIn.initialize(serverClientId:)` — именно под него
+  /// Google выпустит `id_token`, который понимает backend (audience = этот id).
+  /// На Android (Credential Manager, google_sign_in 7.x) это единственный
+  /// нужный client ID. Публичный (не секрет), но env-specific. `null` — если не
+  /// задан в сборке.
+  final String? googleServerClientId;
+
+  /// iOS OAuth client ID Google'а (`GOOGLE_IOS_CLIENT_ID`). Передаётся в
+  /// `GoogleSignIn.initialize(clientId:)` на iOS; должен совпадать с `GIDClientID`
+  /// в `Info.plist`. Публичный, env-specific. `null` — если не задан.
+  final String? googleIosClientId;
 
   bool get isDev => flavor == Flavor.dev;
 
@@ -30,6 +45,10 @@ class AppConfig {
   );
   static const String _accessToken = String.fromEnvironment('ACCESS_TOKEN');
   static const String _refreshToken = String.fromEnvironment('REFRESH_TOKEN');
+  static const String _googleServerClientId =
+      String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID');
+  static const String _googleIosClientId =
+      String.fromEnvironment('GOOGLE_IOS_CLIENT_ID');
 
   factory AppConfig.fromEnv(Flavor flavor) {
     return AppConfig(
@@ -37,6 +56,10 @@ class AppConfig {
       apiUrl: _apiUrl,
       accessToken: _accessToken.isEmpty ? null : _accessToken,
       refreshToken: _refreshToken.isEmpty ? null : _refreshToken,
+      googleServerClientId:
+          _googleServerClientId.isEmpty ? null : _googleServerClientId,
+      googleIosClientId:
+          _googleIosClientId.isEmpty ? null : _googleIosClientId,
     );
   }
 }

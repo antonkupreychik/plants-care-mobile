@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Sign in with Apple (sign_in_with_apple 8.x).
+	     Чтобы capability заработала, этот файл должен быть подключён к target
+	     Runner через CODE_SIGN_ENTITLEMENTS в project.pbxproj (или вкладка
+	     Signing & Capabilities в Xcode: + Capability → Sign in with Apple).
+	     См. docs/SOCIAL-AUTH-SETUP.md. -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+</dict>
+</plist>
