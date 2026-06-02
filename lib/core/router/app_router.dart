@@ -25,6 +25,7 @@ import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
+import '../../features/shopping/presentation/shopping_screen.dart';
 import '../auth/auth_providers.dart';
 import 'app_shell.dart';
 
@@ -309,6 +310,14 @@ GoRouter appRouter(Ref ref) {
                   name: 'timezone',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const TimezoneScreen(),
+                ),
+                // Экран 19 «Список покупок» — полноэкранно поверх shell (своя
+                // кнопка «назад», без таб-бара), как rooms/archive.
+                GoRoute(
+                  path: 'shopping',
+                  name: 'shopping',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const ShoppingScreen(),
                 ),
               ],
             ),

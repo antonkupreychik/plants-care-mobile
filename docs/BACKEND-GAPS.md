@@ -482,11 +482,15 @@ G7 (дешёвый клиентский enum-маппинг), G8 (тулинг).
 - **Заглушка мобилки:** экран не делаем.
 
 ## G27 · Список покупок 🟢
-> Закрыто develop 2026-05-30 (#196) — `GET/POST/PATCH/DELETE /shopping`. Мобилке подключить (экран 19).
+> Закрыто develop 2026-05-30 (#196) — `GET/POST/PATCH/DELETE /shopping`. **Подключено** (фича `lib/features/shopping/`, экран 19).
 - **Экран:** 19 Список покупок.
-- **Сейчас:** нет (#136).
-- **Предложение:** `GET /api/v1/shopping`, мутации добавления/отметки. Форма — по дизайну экрана 19.
-- **Заглушка мобилки:** экран не делаем.
+- **Подключено (2026-06-03):** фича `lib/features/shopping/` (domain → data поверх
+  сгенерированного `ShoppingClient` → presentation на Riverpod). `GET /api/v1/shopping` →
+  `shoppingControllerProvider`; мутации `POST` (add, c re-fetch ради id/порядка), `PATCH {checked}`
+  (toggle, оптимистично с откатом), `DELETE` (удаление, оптимистично с откатом). Auth — bearer,
+  scope `user`. Реализован плоский список по полям контракта `ShoppingItemDto`
+  (id/title/checked/createdAt); категории и AI-бейджи из дизайн-мока не реализованы — этих
+  полей в контракте нет.
 
 ## G28 · Структурный флаг токсичности вида `toxic` 🟢
 > Закрыто develop 2026-05-30 (#186) — `SpeciesSummaryDto` получил `toxicToCats/toxicToDogs/toxicToHumans` (bool). Бейдж каталога 🐈 (экран 12) можно оживить без парсинга текста.

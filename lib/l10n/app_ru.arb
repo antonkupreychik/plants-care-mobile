@@ -2459,5 +2459,84 @@
   "timezoneSelectedHint": "Выбрано",
   "@timezoneSelectedHint": {
     "description": "Semantics-метка галочки выбранной таймзоны (экран 37)"
+  },
+
+  "profileShoppingTitle": "Список покупок",
+  "@profileShoppingTitle": {
+    "description": "Строка профиля — вход на экран 19 «Список покупок»"
+  },
+
+  "shoppingTitle": "Список покупок",
+  "@shoppingTitle": {
+    "description": "Заголовок-overline экрана 19 «Список покупок»"
+  },
+
+  "shoppingHeroSummary": "{total, plural, =0{Список пуст} one{{total} позиция · {bought} куплено} few{{total} позиции · {bought} куплено} many{{total} позиций · {bought} куплено} other{{total} позиций · {bought} куплено}}",
+  "@shoppingHeroSummary": {
+    "description": "Серифный заголовок экрана 19: счётчик «N позиций · M куплено»",
+    "placeholders": {
+      "total": { "type": "int" },
+      "bought": { "type": "int" }
+    }
+  },
+
+  "shoppingAddItem": "Добавить позицию",
+  "@shoppingAddItem": {
+    "description": "Кнопка/строка добавления новой позиции в список покупок (экран 19)"
+  },
+
+  "shoppingAddSheetOverline": "Список покупок",
+  "@shoppingAddSheetOverline": {
+    "description": "Overline в шите добавления позиции (экран 19)"
+  },
+
+  "shoppingAddSheetTitle": "Новая позиция",
+  "@shoppingAddSheetTitle": {
+    "description": "Заголовок шита добавления позиции (экран 19)"
+  },
+
+  "shoppingAddSheetLabel": "Что купить",
+  "@shoppingAddSheetLabel": {
+    "description": "Метка поля ввода названия позиции (экран 19)"
+  },
+
+  "shoppingAddSheetHint": "Например, грунт для суккулентов",
+  "@shoppingAddSheetHint": {
+    "description": "Плейсхолдер поля ввода названия позиции (экран 19)"
+  },
+
+  "shoppingAddSheetSubmit": "Добавить",
+  "@shoppingAddSheetSubmit": {
+    "description": "Кнопка подтверждения добавления позиции (экран 19)"
+  },
+
+  "shoppingItemDelete": "Удалить позицию",
+  "@shoppingItemDelete": {
+    "description": "Semantics/тултип кнопки удаления позиции из списка покупок (экран 19)"
+  },
+
+  "shoppingItemToggle": "Отметить купленным",
+  "@shoppingItemToggle": {
+    "description": "Semantics-метка чекбокса «куплено» у позиции (экран 19)"
+  },
+
+  "shoppingItemDeleted": "Позиция удалена",
+  "@shoppingItemDeleted": {
+    "description": "Снэкбар после удаления позиции (экран 19)"
+  },
+
+  "shoppingEmptyTitleLead": "Список ",
+  "@shoppingEmptyTitleLead": {
+    "description": "Лид серифного заголовка пустого списка покупок (экран 19) перед акцентным словом"
+  },
+
+  "shoppingEmptyTitleAccent": "пуст",
+  "@shoppingEmptyTitleAccent": {
+    "description": "Акцентная часть заголовка пустого списка покупок (экран 19)"
+  },
+
+  "shoppingEmptyMessage": "Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.",
+  "@shoppingEmptyMessage": {
+    "description": "Подзаголовок пустого списка покупок (экран 19)"
   }
 }

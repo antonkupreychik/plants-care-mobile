@@ -2805,6 +2805,96 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Выбрано'**
   String get timezoneSelectedHint;
+
+  /// Строка профиля — вход на экран 19 «Список покупок»
+  ///
+  /// In ru, this message translates to:
+  /// **'Список покупок'**
+  String get profileShoppingTitle;
+
+  /// Заголовок-overline экрана 19 «Список покупок»
+  ///
+  /// In ru, this message translates to:
+  /// **'Список покупок'**
+  String get shoppingTitle;
+
+  /// Серифный заголовок экрана 19: счётчик «N позиций · M куплено»
+  ///
+  /// In ru, this message translates to:
+  /// **'{total, plural, =0{Список пуст} one{{total} позиция · {bought} куплено} few{{total} позиции · {bought} куплено} many{{total} позиций · {bought} куплено} other{{total} позиций · {bought} куплено}}'**
+  String shoppingHeroSummary(int total, int bought);
+
+  /// Кнопка/строка добавления новой позиции в список покупок (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить позицию'**
+  String get shoppingAddItem;
+
+  /// Overline в шите добавления позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Список покупок'**
+  String get shoppingAddSheetOverline;
+
+  /// Заголовок шита добавления позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Новая позиция'**
+  String get shoppingAddSheetTitle;
+
+  /// Метка поля ввода названия позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Что купить'**
+  String get shoppingAddSheetLabel;
+
+  /// Плейсхолдер поля ввода названия позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Например, грунт для суккулентов'**
+  String get shoppingAddSheetHint;
+
+  /// Кнопка подтверждения добавления позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить'**
+  String get shoppingAddSheetSubmit;
+
+  /// Semantics/тултип кнопки удаления позиции из списка покупок (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить позицию'**
+  String get shoppingItemDelete;
+
+  /// Semantics-метка чекбокса «куплено» у позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить купленным'**
+  String get shoppingItemToggle;
+
+  /// Снэкбар после удаления позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Позиция удалена'**
+  String get shoppingItemDeleted;
+
+  /// Лид серифного заголовка пустого списка покупок (экран 19) перед акцентным словом
+  ///
+  /// In ru, this message translates to:
+  /// **'Список '**
+  String get shoppingEmptyTitleLead;
+
+  /// Акцентная часть заголовка пустого списка покупок (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'пуст'**
+  String get shoppingEmptyTitleAccent;
+
+  /// Подзаголовок пустого списка покупок (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.'**
+  String get shoppingEmptyMessage;
 }
 
 class _AppLocalizationsDelegate

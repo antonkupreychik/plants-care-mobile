@@ -87,6 +87,13 @@ class ProfileScreen extends ConsumerWidget {
                     icon: Icons.home_outlined,
                     onTap: () => context.push('/profile/rooms'),
                   ),
+                  // Экран 19 «Список покупок» → push поверх shell.
+                  SettingsRow(
+                    title: l10n.profileShoppingTitle,
+                    icon: Icons.shopping_basket_outlined,
+                    divider: true,
+                    onTap: () => context.push('/profile/shopping'),
+                  ),
                   SettingsRow(
                     title: l10n.profileArchiveTitle,
                     icon: Icons.inventory_2_outlined,
