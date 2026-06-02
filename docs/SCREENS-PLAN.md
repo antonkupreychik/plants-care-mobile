@@ -20,7 +20,7 @@
 | 03 | Сегодня | `home` (today_*) |
 | 04 | Мастер добавления (шаги 1–4) | `add_plant` |
 | 06 | Sheet'ы ухода (полить/опрыскать/подкормить) | `care_event` |
-| 07–09 | Auth (welcome / Telegram-код / welcome back) | `auth` (dev-слот) |
+| 07–09 | Auth (welcome / welcome back) + реальный вход | `auth` — email magic-link (`/auth/email`→`/auth/verify`) + соц-вход Google/Apple (PR #53, #55); router-guard MADR-008 по `authStatusProvider`; dev-слот сеет токены через `--dart-define`. Legacy-превью Telegram-кода `/auth/code` оставлено |
 | 10 | Пустой сад | `home` |
 | 11 | График недели | `schedule` |
 | 12 | Каталог видов | `catalog` |
