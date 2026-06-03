@@ -1753,4 +1753,61 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get timezoneSelectedHint => 'Выбрано';
+
+  @override
+  String get profileShoppingTitle => 'Список покупок';
+
+  @override
+  String get shoppingTitle => 'Список покупок';
+
+  @override
+  String shoppingHeroSummary(int total, int bought) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$total позиций · $bought куплено',
+      many: '$total позиций · $bought куплено',
+      few: '$total позиции · $bought куплено',
+      one: '$total позиция · $bought куплено',
+      zero: 'Список пуст',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shoppingAddItem => 'Добавить позицию';
+
+  @override
+  String get shoppingAddSheetOverline => 'Список покупок';
+
+  @override
+  String get shoppingAddSheetTitle => 'Новая позиция';
+
+  @override
+  String get shoppingAddSheetLabel => 'Что купить';
+
+  @override
+  String get shoppingAddSheetHint => 'Например, грунт для суккулентов';
+
+  @override
+  String get shoppingAddSheetSubmit => 'Добавить';
+
+  @override
+  String get shoppingItemDelete => 'Удалить позицию';
+
+  @override
+  String get shoppingItemToggle => 'Отметить купленным';
+
+  @override
+  String get shoppingItemDeleted => 'Позиция удалена';
+
+  @override
+  String get shoppingEmptyTitleLead => 'Список ';
+
+  @override
+  String get shoppingEmptyTitleAccent => 'пуст';
+
+  @override
+  String get shoppingEmptyMessage =>
+      'Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.';
 }
