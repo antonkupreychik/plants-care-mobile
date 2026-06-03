@@ -1845,4 +1845,26 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get diagnosisErrorMessage => 'Не удалось загрузить диагноз';
+
+  @override
+  String catalogSearchEmptyTitle(String query) {
+    return 'Не нашли «$query»';
+  }
+
+  @override
+  String get catalogSearchEmptyMessage =>
+      'Возможно, опечатка. Попробуй иначе или загляни в популярное.';
+
+  @override
+  String get catalogSuggestionsTitle => 'Может, ты искал(а)';
+
+  @override
+  String get catalogNotInCatalogTitle => 'Нет в каталоге?';
+
+  @override
+  String get catalogNotInCatalogHint =>
+      'Заведи растение вручную — расписание настроишь сам(а).';
+
+  @override
+  String get catalogNotInCatalogAdd => 'Добавить';
 }

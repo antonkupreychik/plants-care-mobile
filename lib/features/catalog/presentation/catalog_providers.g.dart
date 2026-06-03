@@ -249,3 +249,59 @@ final class SpeciesDetailFamily extends $Family
   @override
   String toString() => r'speciesDetailProvider';
 }
+
+/// Топ-4 популярных вида для чипов-подсказок в empty-search (экран 30).
+///
+/// autoDispose (дефолт): провайдер живёт пока виден CatalogSearchEmpty.
+/// При следующем появлении empty-state грузится заново — повторная попытка
+/// после сетевой ошибки происходит автоматически без ручного retry.
+
+@ProviderFor(popularSpecies)
+final popularSpeciesProvider = PopularSpeciesProvider._();
+
+/// Топ-4 популярных вида для чипов-подсказок в empty-search (экран 30).
+///
+/// autoDispose (дефолт): провайдер живёт пока виден CatalogSearchEmpty.
+/// При следующем появлении empty-state грузится заново — повторная попытка
+/// после сетевой ошибки происходит автоматически без ручного retry.
+
+final class PopularSpeciesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Species>>,
+          List<Species>,
+          FutureOr<List<Species>>
+        >
+    with $FutureModifier<List<Species>>, $FutureProvider<List<Species>> {
+  /// Топ-4 популярных вида для чипов-подсказок в empty-search (экран 30).
+  ///
+  /// autoDispose (дефолт): провайдер живёт пока виден CatalogSearchEmpty.
+  /// При следующем появлении empty-state грузится заново — повторная попытка
+  /// после сетевой ошибки происходит автоматически без ручного retry.
+  PopularSpeciesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'popularSpeciesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$popularSpeciesHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<Species>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<Species>> create(Ref ref) {
+    return popularSpecies(ref);
+  }
+}
+
+String _$popularSpeciesHash() => r'0890f97447d5fd2a054f812ec735fdedb661f1a9';

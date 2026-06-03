@@ -2961,6 +2961,42 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Не удалось загрузить диагноз'**
   String get diagnosisErrorMessage;
+
+  /// Серифный заголовок экрана 30 «Пустой поиск каталога» с запросом пользователя
+  ///
+  /// In ru, this message translates to:
+  /// **'Не нашли «{query}»'**
+  String catalogSearchEmptyTitle(String query);
+
+  /// Подпись под заголовком экрана 30 «Пустой поиск каталога»
+  ///
+  /// In ru, this message translates to:
+  /// **'Возможно, опечатка. Попробуй иначе или загляни в популярное.'**
+  String get catalogSearchEmptyMessage;
+
+  /// Надпись над чипами популярных видов на экране 30
+  ///
+  /// In ru, this message translates to:
+  /// **'Может, ты искал(а)'**
+  String get catalogSuggestionsTitle;
+
+  /// Серифный заголовок CTA-карточки «Нет в каталоге» на экране 30
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет в каталоге?'**
+  String get catalogNotInCatalogTitle;
+
+  /// Подпись CTA-карточки «Нет в каталоге» на экране 30
+  ///
+  /// In ru, this message translates to:
+  /// **'Заведи растение вручную — расписание настроишь сам(а).'**
+  String get catalogNotInCatalogHint;
+
+  /// Кнопка CTA-карточки «Нет в каталоге» на экране 30: добавить растение вручную
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить'**
+  String get catalogNotInCatalogAdd;
 }
 
 class _AppLocalizationsDelegate

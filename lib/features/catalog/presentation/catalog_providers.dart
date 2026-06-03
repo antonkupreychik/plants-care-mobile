@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/error/result.dart';
 import '../data/catalog_repository_provider.dart';
+import '../domain/species.dart';
 import '../domain/species_detail.dart';
 import '../domain/species_page.dart';
 import 'species_list_state.dart';
@@ -143,5 +144,21 @@ Future<SpeciesDetail> speciesDetail(Ref ref, int id) async {
   return switch (result) {
     Success(:final value) => value,
     Failure(:final error) => throw error,
+  };
+}
+
+/// Топ-4 популярных вида для чипов-подсказок в empty-search (экран 30).
+///
+/// autoDispose (дефолт): провайдер живёт пока виден CatalogSearchEmpty.
+/// При следующем появлении empty-state грузится заново — повторная попытка
+/// после сетевой ошибки происходит автоматически без ручного retry.
+@riverpod
+Future<List<Species>> popularSpecies(Ref ref) async {
+  final result = await ref
+      .read(catalogRepositoryProvider)
+      .searchSpecies(query: '', offset: 0, limit: 4);
+  return switch (result) {
+    Success(:final value) => value.items,
+    Failure() => const [],
   };
 }
