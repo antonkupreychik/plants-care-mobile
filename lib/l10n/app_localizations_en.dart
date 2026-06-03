@@ -1783,7 +1783,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diagnosisRetry => 'Retry';
 
   @override
-  String get diagnosisBadgeWarning => '⚠ Something's wrong';
+  String get diagnosisBadgeWarning => '⚠ Somethings wrong';
 
   @override
   String get diagnosisHealthyTitle => 'All good';
