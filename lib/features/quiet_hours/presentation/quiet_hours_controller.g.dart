@@ -88,7 +88,7 @@ final class QuietHoursControllerProvider
 }
 
 String _$quietHoursControllerHash() =>
-    r'a3b383156a8c0e5376151e17e47f0d766b4864c9';
+    r'cb0c728d0a18592a45531b89222b6a91f59858ac';
 
 /// Контроллер экрана «Тихие часы и время» (23). Не family (настройки текущего
 /// пользователя одни).

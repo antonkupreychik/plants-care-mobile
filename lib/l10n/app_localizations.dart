@@ -2895,6 +2895,72 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.'**
   String get shoppingEmptyMessage;
+
+  /// Заголовок секции проблем на экране «Диагноз растения» (15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Проблемы'**
+  String get diagnosisTitleIssues;
+
+  /// Заголовок секции рекомендаций на экране «Диагноз растения» (15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Рекомендации'**
+  String get diagnosisTitleRecommendations;
+
+  /// Бейдж-предупреждение в hero-секции когда есть проблемы (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'⚠ Что‑то не так'**
+  String get diagnosisBadgeWarning;
+
+  /// Заголовок пустого состояния «Всё в порядке» (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё в порядке'**
+  String get diagnosisHealthyTitle;
+
+  /// Подпись к пустому состоянию «Всё в порядке» (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение здорово — проблем не обнаружено'**
+  String get diagnosisHealthyMessage;
+
+  /// Бейдж серьёзности проблемы: критично (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Критично'**
+  String get diagnosisSeverityHigh;
+
+  /// Бейдж серьёзности проблемы: умеренно (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Умеренно'**
+  String get diagnosisSeverityMedium;
+
+  /// Бейдж серьёзности проблемы: незначительно (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Незначительно'**
+  String get diagnosisSeverityLow;
+
+  /// Бейдж серьёзности проблемы: неизвестно / forward-compat (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get diagnosisSeverityUnknown;
+
+  /// Кнопка повтора загрузки диагноза (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторить'**
+  String get diagnosisRetry;
+
+  /// Сообщение об ошибке загрузки диагноза (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить диагноз'**
+  String get diagnosisErrorMessage;
 }
 
 class _AppLocalizationsDelegate

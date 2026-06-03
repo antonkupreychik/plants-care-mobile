@@ -25,6 +25,7 @@ import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
+import '../../features/plant_diagnosis/presentation/plant_diagnosis_screen.dart';
 import '../../features/shopping/presentation/shopping_screen.dart';
 import '../auth/auth_providers.dart';
 import 'app_shell.dart';
@@ -221,6 +222,19 @@ GoRouter appRouter(Ref ref) {
                             ? state.extra as String
                             : null;
                         return EditScheduleScreen(plantId: id, plantName: name);
+                      },
+                    ),
+                    // Экран 15 «Диагноз растения» — полноэкранно поверх shell
+                    // (своя кнопка «назад», без таб-бара), как история/расписание.
+                    // Вход: карточка растения 02 → кнопка диагноза.
+                    GoRoute(
+                      path: 'diagnosis',
+                      name: 'plantDiagnosis',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final id =
+                            int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                        return PlantDiagnosisScreen(plantId: id);
                       },
                     ),
                   ],
