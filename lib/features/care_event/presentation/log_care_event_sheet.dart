@@ -12,6 +12,7 @@ import '../../plant_card/domain/care_event_kind.dart';
 import '../../plant_card/presentation/care_event_kind_l10n.dart';
 import 'care_event_form_state.dart';
 import 'care_event_kind_action_l10n.dart';
+import 'care_event_providers.dart';
 import 'log_care_event_controller.dart';
 
 /// Открывает sheet отметки ухода (экран 06) для [plantId].
@@ -101,6 +102,14 @@ class _LogCareEventSheet extends ConsumerWidget {
             _TypeSelector(
               selected: form.type,
               onSelected: controller.setType,
+              availableKinds: ref
+                  .watch(enabledCareKindsProvider(plantId))
+                  .value ??
+                  const [
+                    CareEventKind.water,
+                    CareEventKind.spray,
+                    CareEventKind.fertilize,
+                  ],
             ),
             const SizedBox(height: 20),
 
@@ -212,24 +221,23 @@ class _FieldLabel extends StatelessWidget {
   }
 }
 
-/// Выбор типа ухода: сегменты-чипы WATER / SPRAY / FERTILIZE.
+/// Выбор типа ухода: сегменты-чипы по включённым расписаниям растения.
 class _TypeSelector extends StatelessWidget {
-  const _TypeSelector({required this.selected, required this.onSelected});
+  const _TypeSelector({
+    required this.selected,
+    required this.onSelected,
+    required this.availableKinds,
+  });
 
   final CareEventKind selected;
   final ValueChanged<CareEventKind> onSelected;
-
-  static const _kinds = <CareEventKind>[
-    CareEventKind.water,
-    CareEventKind.spray,
-    CareEventKind.fertilize,
-  ];
+  final List<CareEventKind> availableKinds;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (final kind in _kinds) ...[
+        for (final kind in availableKinds) ...[
           Expanded(
             child: _TypeChip(
               kind: kind,
@@ -237,7 +245,7 @@ class _TypeSelector extends StatelessWidget {
               onTap: () => onSelected(kind),
             ),
           ),
-          if (kind != _kinds.last) const SizedBox(width: 8),
+          if (kind != availableKinds.last) const SizedBox(width: 8),
         ],
       ],
     );
