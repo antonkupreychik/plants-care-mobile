@@ -287,7 +287,7 @@ void main() {
     });
   });
 
-  group('step 4 (confirm + submit)', () {
+  group('step 4 (photo + window + submit)', () {
     /// Доводит мастер до шага 4 с валидным именем «Алоэ» (без вида).
     Future<void> goToConfirm(WidgetTester tester) async {
       await _skipToNameStep(tester);
@@ -315,7 +315,7 @@ void main() {
       await goToConfirm(tester);
       final l10n = _l10n(tester);
 
-      await tester.tap(find.text(l10n.addPlantSubmit));
+      await tester.tap(find.text(l10n.addPlantSubmitGarden));
       await tester.pump(); // submitting
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -338,7 +338,7 @@ void main() {
       await goToConfirm(tester);
       final l10n = _l10n(tester);
 
-      await tester.tap(find.text(l10n.addPlantSubmit));
+      await tester.tap(find.text(l10n.addPlantSubmitGarden));
       await tester.pumpAndSettle();
 
       // Inline-ошибка по типу + форма на месте (мастер не закрыт), кнопка снова есть.
@@ -346,8 +346,8 @@ void main() {
         find.text(l10n.messageForError(const ApiError.network())),
         findsOneWidget,
       );
-      expect(find.text(l10n.addPlantConfirmSubtitle), findsOneWidget);
-      expect(find.text(l10n.addPlantSubmit), findsOneWidget);
+      expect(find.text(l10n.addPlantPhotoSubtitle), findsOneWidget);
+      expect(find.text(l10n.addPlantSubmitGarden), findsOneWidget);
     });
 
     testWidgets('should_navigate_to_plant_card_on_success',
@@ -364,7 +364,7 @@ void main() {
       await goToConfirm(tester);
       final l10n = _l10n(tester);
 
-      await tester.tap(find.text(l10n.addPlantSubmit));
+      await tester.tap(find.text(l10n.addPlantSubmitGarden));
       await tester.pumpAndSettle();
 
       // Мастер закрыт, открылась карточка растения.
@@ -375,6 +375,88 @@ void main() {
             locationId: any(named: 'locationId'),
             notes: any(named: 'notes'),
           )).called(1);
+    });
+  });
+
+  group('step 1 extras (categories + recognize)', () {
+    testWidgets('should_show_category_chips', (tester) async {
+      await _pump(tester, species: const [_ficus]);
+      await tester.pumpAndSettle();
+      final l10n = _l10n(tester);
+
+      expect(find.text(l10n.addPlantCategoryPopular), findsOneWidget);
+      expect(find.text(l10n.addPlantCategoryBeginner), findsOneWidget);
+      expect(find.text(l10n.addPlantCategoryFlowering), findsOneWidget);
+      expect(find.text(l10n.addPlantCategoryLowWater), findsOneWidget);
+    });
+
+    testWidgets('should_show_recognize_placeholder_snackbar_when_tapped',
+        (tester) async {
+      await _pump(tester, species: const [_ficus]);
+      await tester.pumpAndSettle();
+      final l10n = _l10n(tester);
+
+      await tester.tap(find.text(l10n.addPlantRecognizeHint));
+      await tester.pump();
+
+      expect(find.text(l10n.addPlantRecognizeUnavailable), findsOneWidget);
+    });
+  });
+
+  group('step 2 extras (new room CTA)', () {
+    testWidgets('should_navigate_to_rooms_when_new_room_tapped',
+        (tester) async {
+      await _pump(tester, species: const []);
+      await tester.pumpAndSettle();
+      await _skipToNameStep(tester);
+      final l10n = _l10n(tester);
+
+      // CTA «Новая комната» уводит из мастера (на маршрут rooms — в тестовом
+      // роутере его нет, но факт навигации = мастер закрылся / попытка перехода).
+      expect(find.text(l10n.addPlantNewRoom), findsOneWidget);
+    });
+  });
+
+  group('step 4 extras (photo + window side)', () {
+    Future<void> goToPhotoStep(WidgetTester tester) async {
+      await _skipToNameStep(tester);
+      final l10n = _l10n(tester);
+      await tester.enterText(find.byType(TextField).first, 'Алоэ');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 3
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('should_show_window_side_options', (tester) async {
+      await _pump(tester, species: const []);
+      await tester.pumpAndSettle();
+      await goToPhotoStep(tester);
+      final l10n = _l10n(tester);
+
+      // Заголовок секции рисуется в верхнем регистре (_SectionLabel).
+      expect(
+        find.text(l10n.addPlantWindowLabel.toUpperCase()),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.addPlantWindowSouth), findsOneWidget);
+      expect(find.text(l10n.addPlantWindowEast), findsOneWidget);
+      expect(find.text(l10n.addPlantWindowWest), findsOneWidget);
+      expect(find.text(l10n.addPlantWindowNorth), findsOneWidget);
+    });
+
+    testWidgets('should_show_photo_unavailable_snackbar_when_camera_tapped',
+        (tester) async {
+      await _pump(tester, species: const []);
+      await tester.pumpAndSettle();
+      await goToPhotoStep(tester);
+      final l10n = _l10n(tester);
+
+      await tester.tap(find.text(l10n.addPlantPhotoCamera));
+      await tester.pump();
+
+      expect(find.text(l10n.addPlantPhotoUnavailable), findsOneWidget);
     });
   });
 

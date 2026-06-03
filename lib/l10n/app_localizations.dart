@@ -1294,6 +1294,162 @@ abstract class AppLocalizations {
   /// **'Растение добавлено'**
   String get addPlantSubmitted;
 
+  /// CTA финального шага: создать растение и добавить в сад
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить в сад'**
+  String get addPlantSubmitGarden;
+
+  /// Бейдж внутри поля поиска вида: распознать по фото (заглушка)
+  ///
+  /// In ru, this message translates to:
+  /// **'ФОТО'**
+  String get addPlantRecognizeBadge;
+
+  /// Подсказка-заглушка распознавания вида по фото на шаге выбора вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Сфотографируй — определим по листу'**
+  String get addPlantRecognizeHint;
+
+  /// Снэкбар: функция распознавания по фото ещё не готова
+  ///
+  /// In ru, this message translates to:
+  /// **'Распознавание по фото скоро появится'**
+  String get addPlantRecognizeUnavailable;
+
+  /// Чип категории видов: популярные
+  ///
+  /// In ru, this message translates to:
+  /// **'Популярное'**
+  String get addPlantCategoryPopular;
+
+  /// Чип категории видов: для новичка
+  ///
+  /// In ru, this message translates to:
+  /// **'Для новичка'**
+  String get addPlantCategoryBeginner;
+
+  /// Чип категории видов: цветущие
+  ///
+  /// In ru, this message translates to:
+  /// **'Цветущие'**
+  String get addPlantCategoryFlowering;
+
+  /// Чип категории видов: суккуленты и редкий полив
+  ///
+  /// In ru, this message translates to:
+  /// **'Без полива'**
+  String get addPlantCategoryLowWater;
+
+  /// CTA на шаге имя+комната: создать новую комнату
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить своё помещение'**
+  String get addPlantNewRoom;
+
+  /// Заголовок шага фото + сторона окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделай портрет'**
+  String get addPlantPhotoTitle;
+
+  /// Надзаголовок шага фото + сторона окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Последний штрих'**
+  String get addPlantPhotoOverline;
+
+  /// Подпись под заголовком шага фото + сторона окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Фото поможет узнать растение и отслеживать его рост.'**
+  String get addPlantPhotoSubtitle;
+
+  /// Подпись плейсхолдера фото: реальная загрузка ещё не готова
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока используется иллюстрация'**
+  String get addPlantPhotoPlaceholder;
+
+  /// Кнопка-заглушка: снять фото камерой
+  ///
+  /// In ru, this message translates to:
+  /// **'Камера'**
+  String get addPlantPhotoCamera;
+
+  /// Кнопка-заглушка: выбрать фото из галереи
+  ///
+  /// In ru, this message translates to:
+  /// **'Из галереи'**
+  String get addPlantPhotoGallery;
+
+  /// Снэкбар: загрузка фото ещё не готова
+  ///
+  /// In ru, this message translates to:
+  /// **'Загрузка фото скоро появится'**
+  String get addPlantPhotoUnavailable;
+
+  /// Заголовок секции выбора стороны окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Куда смотрит окно'**
+  String get addPlantWindowLabel;
+
+  /// Подпись: выбор стороны окна необязателен
+  ///
+  /// In ru, this message translates to:
+  /// **'необязательно'**
+  String get addPlantWindowOptional;
+
+  /// Сторона окна: юг
+  ///
+  /// In ru, this message translates to:
+  /// **'Юг'**
+  String get addPlantWindowSouth;
+
+  /// Подпись стороны окна: юг
+  ///
+  /// In ru, this message translates to:
+  /// **'много солнца'**
+  String get addPlantWindowSouthHint;
+
+  /// Сторона окна: восток
+  ///
+  /// In ru, this message translates to:
+  /// **'Восток'**
+  String get addPlantWindowEast;
+
+  /// Подпись стороны окна: восток
+  ///
+  /// In ru, this message translates to:
+  /// **'мягкое утро'**
+  String get addPlantWindowEastHint;
+
+  /// Сторона окна: запад
+  ///
+  /// In ru, this message translates to:
+  /// **'Запад'**
+  String get addPlantWindowWest;
+
+  /// Подпись стороны окна: запад
+  ///
+  /// In ru, this message translates to:
+  /// **'тёплый вечер'**
+  String get addPlantWindowWestHint;
+
+  /// Сторона окна: север
+  ///
+  /// In ru, this message translates to:
+  /// **'Север'**
+  String get addPlantWindowNorth;
+
+  /// Подпись стороны окна: север
+  ///
+  /// In ru, this message translates to:
+  /// **'мало света'**
+  String get addPlantWindowNorthHint;
+
   /// Уровень сложности ухода за видом: лёгкий
   ///
   /// In ru, this message translates to:

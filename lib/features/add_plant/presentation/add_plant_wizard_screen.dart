@@ -3,17 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/error/api_error_l10n.dart';
-import '../../../core/locations/garden_location.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../home/presentation/home_providers.dart';
 import '../domain/species_summary.dart';
 import 'add_plant_wizard_controller.dart';
 import 'add_plant_wizard_state.dart';
 import 'species_providers.dart';
 import 'widgets/step_care_plan.dart';
-import 'widgets/step_confirm.dart';
 import 'widgets/step_name_room.dart';
+import 'widgets/step_photo_window.dart';
 import 'widgets/step_species.dart';
 import 'widgets/wizard_chrome.dart';
 
@@ -130,6 +128,21 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
     await ref.read(addPlantWizardControllerProvider.notifier).submit();
   }
 
+  /// CTA «Новая комната» (шаг 2): уводит в управление комнатами (`/profile/rooms`).
+  /// Управление локациями живёт в фиче rooms; визард не дублирует CRUD.
+  void _openRooms() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    context.goNamed('rooms');
+  }
+
+  /// Снэкбар-заглушка для функций из бэклога (загрузка фото).
+  void _showComingSoon(String message) {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
@@ -193,6 +206,9 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
                     child: StepSpecies(
                       onSelected: _onSelectSpecies,
                       onSkip: _next,
+                      onRecognize: () => _showComingSoon(
+                        l10n.addPlantRecognizeUnavailable,
+                      ),
                     ),
                   ),
                   _StepScroll(
@@ -202,6 +218,7 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
                       isNameValid: draft.isNameValid,
                       onNameChanged: controller.setName,
                       onLocationChanged: controller.setLocation,
+                      onNewRoom: _openRooms,
                     ),
                   ),
                   _StepScroll(
@@ -212,10 +229,14 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
                     ),
                   ),
                   _StepScroll(
-                    child: _ConfirmStep(
-                      state: state,
+                    child: StepPhotoWindow(
+                      draft: draft,
                       errorMessage: errorMessage,
+                      onWindowSideChanged: controller.setWindowSide,
                       onNoteChanged: controller.setNotes,
+                      onPhotoUnavailable: () => _showComingSoon(
+                        l10n.addPlantPhotoUnavailable,
+                      ),
                     ),
                   ),
                 ],
@@ -227,7 +248,7 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                 child: _step == _totalSteps - 1
                     ? WizardActionBar(
-                        primaryLabel: l10n.addPlantSubmit,
+                        primaryLabel: l10n.addPlantSubmitGarden,
                         primaryIcon: Icons.check_rounded,
                         primaryEnabled: state.canSubmit,
                         primaryLoading: submitting,
@@ -263,45 +284,5 @@ class _StepScroll extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 20),
       child: child,
     );
-  }
-}
-
-/// Шаг подтверждения: резолвит имя комнаты из [homeLocationsProvider] по
-/// `draft.locationId` (UI-обвязка, не бизнес-логика).
-class _ConfirmStep extends ConsumerWidget {
-  const _ConfirmStep({
-    required this.state,
-    required this.errorMessage,
-    required this.onNoteChanged,
-  });
-
-  final AddPlantWizardState state;
-  final String? errorMessage;
-  final ValueChanged<String?> onNoteChanged;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final draft = state.draft;
-    final locationId = draft.locationId;
-    final locationName = locationId == null
-        ? null
-        : ref.watch(homeLocationsProvider).maybeWhen(
-              data: (locs) => _nameFor(locs, locationId),
-              orElse: () => null,
-            );
-
-    return StepConfirm(
-      draft: draft,
-      locationName: locationName,
-      errorMessage: errorMessage,
-      onNoteChanged: onNoteChanged,
-    );
-  }
-
-  String? _nameFor(List<GardenLocation> locs, int id) {
-    for (final loc in locs) {
-      if (loc.id == id) return loc.name;
-    }
-    return null;
   }
 }
