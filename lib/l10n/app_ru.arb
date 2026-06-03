@@ -2593,5 +2593,38 @@
   "diagnosisErrorMessage": "Не удалось загрузить диагноз",
   "@diagnosisErrorMessage": {
     "description": "Сообщение об ошибке загрузки диагноза (экран 15)"
+  },
+
+  "catalogSearchEmptyTitle": "Не нашли «{query}»",
+  "@catalogSearchEmptyTitle": {
+    "description": "Серифный заголовок экрана 30 «Пустой поиск каталога» с запросом пользователя",
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+
+  "catalogSearchEmptyMessage": "Возможно, опечатка. Попробуй иначе или загляни в популярное.",
+  "@catalogSearchEmptyMessage": {
+    "description": "Подпись под заголовком экрана 30 «Пустой поиск каталога»"
+  },
+
+  "catalogSuggestionsTitle": "Может, ты искал(а)",
+  "@catalogSuggestionsTitle": {
+    "description": "Надпись над чипами популярных видов на экране 30"
+  },
+
+  "catalogNotInCatalogTitle": "Нет в каталоге?",
+  "@catalogNotInCatalogTitle": {
+    "description": "Серифный заголовок CTA-карточки «Нет в каталоге» на экране 30"
+  },
+
+  "catalogNotInCatalogHint": "Заведи растение вручную — расписание настроишь сам(а).",
+  "@catalogNotInCatalogHint": {
+    "description": "Подпись CTA-карточки «Нет в каталоге» на экране 30"
+  },
+
+  "catalogNotInCatalogAdd": "Добавить",
+  "@catalogNotInCatalogAdd": {
+    "description": "Кнопка CTA-карточки «Нет в каталоге» на экране 30: добавить растение вручную"
   }
 }

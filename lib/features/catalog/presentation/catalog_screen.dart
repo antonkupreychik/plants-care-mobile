@@ -11,6 +11,7 @@ import 'catalog_providers.dart';
 import 'species_list_state.dart';
 import 'widgets/catalog_empty.dart';
 import 'widgets/catalog_load_more_footer.dart';
+import 'widgets/catalog_search_empty.dart';
 import 'widgets/catalog_search_field.dart';
 import 'widgets/species_card.dart';
 
@@ -99,6 +100,9 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
               onRetryInitial: () => ref.invalidate(speciesListProvider),
               onRetryLoadMore: () =>
                   ref.read(speciesListProvider.notifier).retryLoadMore(),
+              onAddPlant: () => context.go('/home/add'),
+              onSuggestionTap: (name) =>
+                  ref.read(speciesQueryProvider.notifier).setQuery(name),
             ),
 
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
@@ -199,6 +203,8 @@ class _CatalogBody extends StatelessWidget {
     required this.onTapSpecies,
     required this.onRetryInitial,
     required this.onRetryLoadMore,
+    required this.onAddPlant,
+    required this.onSuggestionTap,
   });
 
   final AsyncValue<SpeciesListState> listState;
@@ -206,6 +212,8 @@ class _CatalogBody extends StatelessWidget {
   final void Function(int id) onTapSpecies;
   final VoidCallback onRetryInitial;
   final VoidCallback onRetryLoadMore;
+  final VoidCallback onAddPlant;
+  final ValueChanged<String> onSuggestionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -232,16 +240,19 @@ class _CatalogBody extends StatelessWidget {
       ),
       data: (state) {
         if (state.items.isEmpty) {
-          final isSearch = query.isNotEmpty;
           return SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
             sliver: SliverToBoxAdapter(
-              child: CatalogEmpty(
-                title: isSearch ? l10n.catalogSearchEmpty : l10n.catalogEmpty,
-                hint: isSearch
-                    ? l10n.catalogSearchEmptyHint(query)
-                    : l10n.catalogEmptyHint,
-              ),
+              child: query.isNotEmpty
+                  ? CatalogSearchEmpty(
+                      query: query,
+                      onSuggestionTap: onSuggestionTap,
+                      onAddPlant: onAddPlant,
+                    )
+                  : CatalogEmpty(
+                      title: l10n.catalogEmpty,
+                      hint: l10n.catalogEmptyHint,
+                    ),
             ),
           );
         }

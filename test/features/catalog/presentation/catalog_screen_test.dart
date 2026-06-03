@@ -12,6 +12,7 @@ import 'package:plantcare_mobile/features/catalog/presentation/catalog_screen.da
 import 'package:plantcare_mobile/features/catalog/presentation/species_list_state.dart';
 import 'package:plantcare_mobile/features/catalog/presentation/widgets/catalog_empty.dart';
 import 'package:plantcare_mobile/features/catalog/presentation/widgets/catalog_load_more_footer.dart';
+import 'package:plantcare_mobile/features/catalog/presentation/widgets/catalog_search_empty.dart';
 import 'package:plantcare_mobile/features/catalog/presentation/widgets/species_card.dart';
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
@@ -34,6 +35,10 @@ Widget _wrap({
               () async => SpeciesListState(items: _species(3), total: 3),
         ),
       ),
+      // popularSpeciesProvider используется CatalogSearchEmpty (экран 30);
+      // в тестах экрана возвращаем пустой список — чипы не появятся, но
+      // виджет не пытается ходить в сеть.
+      popularSpeciesProvider.overrideWith((_) async => const <Species>[]),
     ],
     child: MaterialApp(
       locale: const Locale('ru'),
@@ -105,10 +110,11 @@ void main() {
       await tester.pumpAndSettle();
 
       final l10n = _l10n(tester);
-      expect(find.byType(CatalogEmpty), findsOneWidget);
-      expect(find.text(l10n.catalogSearchEmpty), findsOneWidget);
-      // Подсказка содержит сам запрос — load-bearing для empty-search ветки.
-      expect(find.text(l10n.catalogSearchEmptyHint('кактус')), findsOneWidget);
+      // Экран 30: поиск без результатов → CatalogSearchEmpty, не CatalogEmpty.
+      expect(find.byType(CatalogSearchEmpty), findsOneWidget);
+      expect(find.byType(CatalogEmpty), findsNothing);
+      // Заголовок содержит запрос пользователя.
+      expect(find.text(l10n.catalogSearchEmptyTitle('кактус')), findsOneWidget);
     });
 
     testWidgets('should_render_species_cards_when_data', (tester) async {
