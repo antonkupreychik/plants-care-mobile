@@ -137,22 +137,24 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
     final state = ref.watch(addPlantWizardControllerProvider);
     final controller = ref.read(addPlantWizardControllerProvider.notifier);
 
-    // Навигация на экран расписания — при успехе и при ошибке PUT (растение
-    // уже создано, интервалы настроит пользователь на editSchedule).
+    // Навигация после сабмита:
+    // - AddPlantSuccess → карточка растения (интервалы уже применены на шаге 3).
+    // - AddPlantScheduleFailure → editSchedule, чтобы пользователь мог повторить
+    //   PUT (растение создано, но сохранить расписание не удалось).
     ref.listen(
       addPlantWizardControllerProvider.select((s) => s.status),
       (prev, next) {
-        final int? plantId = switch (next) {
-          AddPlantSuccess(:final plantId) => plantId,
-          AddPlantScheduleFailure(:final plantId) => plantId,
-          _ => null,
-        };
-        if (plantId != null) {
-          context.goNamed(
-            'editSchedule',
-            pathParameters: {'id': plantId.toString()},
-            extra: state.draft.trimmedName,
-          );
+        switch (next) {
+          case AddPlantSuccess(:final plantId):
+            context.go('/home/plants/$plantId');
+          case AddPlantScheduleFailure(:final plantId):
+            context.goNamed(
+              'editSchedule',
+              pathParameters: {'id': plantId.toString()},
+              extra: state.draft.trimmedName,
+            );
+          default:
+            break;
         }
       },
     );
