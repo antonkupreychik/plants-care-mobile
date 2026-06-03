@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../core/care/care_task_type.dart';
 import 'species_summary.dart';
 
 part 'new_plant_draft.freezed.dart';
@@ -13,8 +14,12 @@ part 'new_plant_draft.freezed.dart';
 /// Что персистится при создании: [name], [locationId], [notes] и id выбранного
 /// [species] (`POST /plants` принимает `{name, notes?, locationId?, speciesId?}`).
 /// При заданном `speciesId` backend связывает растение с видом; расписания ухода
-/// при этом НЕ создаются (gap G14). [species] также используется для префилла
-/// имени и показа read-only «плана ухода».
+/// при этом НЕ создаются (gap G14). [species] используется для префилла имени,
+/// показа плана ухода и стартовых значений степперов интервалов.
+///
+/// [intervalOverrides] хранит только типы, которые пользователь явно изменил
+/// относительно рекомендаций вида. При сабмите по ним делается
+/// `PUT /plants/{id}/schedules/{type}`.
 @freezed
 abstract class NewPlantDraft with _$NewPlantDraft {
   const factory NewPlantDraft({
@@ -31,6 +36,11 @@ abstract class NewPlantDraft with _$NewPlantDraft {
 
     /// Заметки пользователя (шаг 4).
     String? notes,
+
+    /// Пользовательские интервалы, изменённые относительно рекомендаций вида
+    /// (шаг 3). Ключ — тип ухода, значение — интервал в днях (>= 1).
+    /// Пустая карта → пользователь ничего не менял, лишних PUT не делаем.
+    @Default({}) Map<CareTaskType, int> intervalOverrides,
   }) = _NewPlantDraft;
 
   const NewPlantDraft._();

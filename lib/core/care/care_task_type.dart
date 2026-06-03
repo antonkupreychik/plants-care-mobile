@@ -27,4 +27,13 @@ enum CareTaskType {
         'SOIL_CHECK' => CareTaskType.soilCheck,
         _ => CareTaskType.unknown,
       };
+
+  /// Обратное отображение в backend-строку для path-параметра `PUT`.
+  String get apiString => switch (this) {
+        CareTaskType.watering => 'WATERING',
+        CareTaskType.misting => 'MISTING',
+        CareTaskType.fertilizing => 'FERTILIZING',
+        CareTaskType.soilCheck => 'SOIL_CHECK',
+        CareTaskType.unknown => '',
+      };
 }

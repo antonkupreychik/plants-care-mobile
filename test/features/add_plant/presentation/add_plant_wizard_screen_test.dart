@@ -13,7 +13,9 @@ import 'package:plantcare_mobile/core/widgets/error_state.dart';
 import 'package:plantcare_mobile/features/add_plant/data/add_plant_repository_provider.dart';
 import 'package:plantcare_mobile/features/add_plant/domain/add_plant_repository.dart';
 import 'package:plantcare_mobile/features/add_plant/domain/species_summary.dart';
+import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_controller.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_screen.dart';
+import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_state.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/species_providers.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/widgets/care_plan_preview.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
@@ -21,6 +23,22 @@ import 'package:plantcare_mobile/features/home/presentation/home_providers.dart'
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 class _MockRepo extends Mock implements AddPlantRepository {}
+
+/// Фейковый контроллер: стартует в idle, позволяет эмитировать
+/// [AddPlantScheduleFailure] без реального сетевого вызова.
+class _FakeWizardController extends AddPlantWizardController {
+  @override
+  AddPlantWizardState build() => const AddPlantWizardState();
+
+  void emitScheduleFailure(int plantId) {
+    state = state.copyWith(
+      status: AddPlantSubmitStatus.scheduleFailure(
+        plantId: plantId,
+        error: const ApiError.network(),
+      ),
+    );
+  }
+}
 
 const _ficus = SpeciesSummary(
   id: 7,
@@ -344,6 +362,101 @@ void main() {
             locationId: any(named: 'locationId'),
             notes: any(named: 'notes'),
           )).called(1);
+    });
+  });
+
+  group('ref.listen navigation', () {
+    /// Строит мастер поверх GoRouter с маршрутом editSchedule, используя
+    /// [_FakeWizardController] вместо реального контроллера.
+    /// Возвращает Riverpod-контейнер, чтобы тест мог вызвать методы фейкового
+    /// контроллера после рендера.
+    Future<ProviderContainer> pumpWithFakeController(
+      WidgetTester tester,
+    ) async {
+      final router = GoRouter(
+        initialLocation: '/add',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, _) => const Scaffold(
+              body: Center(child: Text('хост', key: _hostMarker)),
+            ),
+            routes: [
+              GoRoute(
+                path: 'add',
+                builder: (_, _) => const AddPlantWizardScreen(),
+              ),
+              GoRoute(
+                path: 'plants/:id',
+                routes: [
+                  GoRoute(
+                    path: 'schedule',
+                    name: 'editSchedule',
+                    builder: (_, _) => const Scaffold(
+                      body: Center(
+                        child: Text('расписание', key: _scheduleMarker),
+                      ),
+                    ),
+                  ),
+                ],
+                builder: (_, _) => const SizedBox(),
+              ),
+            ],
+          ),
+        ],
+      );
+
+      // Создаём контейнер явно, чтобы можно было обратиться к notifier-у
+      // после рендера без зависимости от внутреннего контейнера ProviderScope.
+      final container = ProviderContainer(
+        overrides: [
+          addPlantWizardControllerProvider
+              .overrideWith(() => _FakeWizardController()),
+          speciesSearchProvider('').overrideWith(
+            (ref) => Future.value(const <SpeciesSummary>[]),
+          ),
+          homeLocationsProvider.overrideWith((ref) async => _locations),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            locale: const Locale('ru'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: AppTheme.light(),
+            routerConfig: router,
+          ),
+        ),
+      );
+      await tester.pump();
+      return container;
+    }
+
+    testWidgets(
+        'should_navigate_to_editSchedule_when_AddPlantScheduleFailure_emitted',
+        (tester) async {
+      // Arrange: мастер в idle-состоянии.
+      final container = await pumpWithFakeController(tester);
+
+      // Убеждаемся, что мастер отрисован и маршрут расписания ещё не открыт.
+      expect(find.byType(AddPlantWizardScreen), findsOneWidget);
+      expect(find.byKey(_scheduleMarker), findsNothing);
+
+      // Act: контроллер эмитирует scheduleFailure (растение создано, но
+      // интервалы не применились из-за сетевой ошибки).
+      final notifier = container
+          .read(addPlantWizardControllerProvider.notifier)
+          as _FakeWizardController;
+      notifier.emitScheduleFailure(42);
+      await tester.pumpAndSettle();
+
+      // Assert: ref.listen поймал переход и навигировал на editSchedule.
+      expect(find.byType(AddPlantWizardScreen), findsNothing);
+      expect(find.byKey(_scheduleMarker), findsOneWidget);
     });
   });
 }
