@@ -24,7 +24,13 @@ mixin _$CareTask {
 /// Нужен UI для выбора SVG-иллюстрации (BACKEND-GAPS G6). Nullable:
 /// у растения может не быть привязанного вида.
  int? get speciesId;/// Имя вида растения (для иллюстрации/подписи в UI, G6). Nullable.
- String? get speciesName;
+ String? get speciesName;/// Момент отметки «сделано» (UTC), если задача выполнена сегодня
+/// (`TaskDto.doneAt`, mobile gap G11 / backend ADR-014). `null` — задача
+/// ещё не выполнена (pending). В выдаче `/calendar` всегда `null`.
+///
+/// Презентация экрана 03 «Сегодня» делит задачи на pending (секции
+/// утро/вечер) и done (свёрнутая секция «Выполнено») именно по этому полю.
+ DateTime? get doneAt;
 /// Create a copy of CareTask
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +41,16 @@ $CareTaskCopyWith<CareTask> get copyWith => _$CareTaskCopyWithImpl<CareTask>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareTask&&(identical(other.scheduleId, scheduleId) || other.scheduleId == scheduleId)&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.plantName, plantName) || other.plantName == plantName)&&(identical(other.type, type) || other.type == type)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.speciesName, speciesName) || other.speciesName == speciesName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareTask&&(identical(other.scheduleId, scheduleId) || other.scheduleId == scheduleId)&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.plantName, plantName) || other.plantName == plantName)&&(identical(other.type, type) || other.type == type)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.speciesName, speciesName) || other.speciesName == speciesName)&&(identical(other.doneAt, doneAt) || other.doneAt == doneAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,scheduleId,plantId,plantName,type,dueAt,locationName,speciesId,speciesName);
+int get hashCode => Object.hash(runtimeType,scheduleId,plantId,plantName,type,dueAt,locationName,speciesId,speciesName,doneAt);
 
 @override
 String toString() {
-  return 'CareTask(scheduleId: $scheduleId, plantId: $plantId, plantName: $plantName, type: $type, dueAt: $dueAt, locationName: $locationName, speciesId: $speciesId, speciesName: $speciesName)';
+  return 'CareTask(scheduleId: $scheduleId, plantId: $plantId, plantName: $plantName, type: $type, dueAt: $dueAt, locationName: $locationName, speciesId: $speciesId, speciesName: $speciesName, doneAt: $doneAt)';
 }
 
 
@@ -55,7 +61,7 @@ abstract mixin class $CareTaskCopyWith<$Res>  {
   factory $CareTaskCopyWith(CareTask value, $Res Function(CareTask) _then) = _$CareTaskCopyWithImpl;
 @useResult
 $Res call({
- int scheduleId, int plantId, String plantName, CareTaskType type, DateTime dueAt, String? locationName, int? speciesId, String? speciesName
+ int scheduleId, int plantId, String plantName, CareTaskType type, DateTime dueAt, String? locationName, int? speciesId, String? speciesName, DateTime? doneAt
 });
 
 
@@ -72,7 +78,7 @@ class _$CareTaskCopyWithImpl<$Res>
 
 /// Create a copy of CareTask
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? scheduleId = null,Object? plantId = null,Object? plantName = null,Object? type = null,Object? dueAt = null,Object? locationName = freezed,Object? speciesId = freezed,Object? speciesName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? scheduleId = null,Object? plantId = null,Object? plantName = null,Object? type = null,Object? dueAt = null,Object? locationName = freezed,Object? speciesId = freezed,Object? speciesName = freezed,Object? doneAt = freezed,}) {
   return _then(_self.copyWith(
 scheduleId: null == scheduleId ? _self.scheduleId : scheduleId // ignore: cast_nullable_to_non_nullable
 as int,plantId: null == plantId ? _self.plantId : plantId // ignore: cast_nullable_to_non_nullable
@@ -82,7 +88,8 @@ as CareTaskType,dueAt: null == dueAt ? _self.dueAt : dueAt // ignore: cast_nulla
 as DateTime,locationName: freezed == locationName ? _self.locationName : locationName // ignore: cast_nullable_to_non_nullable
 as String?,speciesId: freezed == speciesId ? _self.speciesId : speciesId // ignore: cast_nullable_to_non_nullable
 as int?,speciesName: freezed == speciesName ? _self.speciesName : speciesName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,doneAt: freezed == doneAt ? _self.doneAt : doneAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -167,10 +174,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int scheduleId,  int plantId,  String plantName,  CareTaskType type,  DateTime dueAt,  String? locationName,  int? speciesId,  String? speciesName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int scheduleId,  int plantId,  String plantName,  CareTaskType type,  DateTime dueAt,  String? locationName,  int? speciesId,  String? speciesName,  DateTime? doneAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CareTask() when $default != null:
-return $default(_that.scheduleId,_that.plantId,_that.plantName,_that.type,_that.dueAt,_that.locationName,_that.speciesId,_that.speciesName);case _:
+return $default(_that.scheduleId,_that.plantId,_that.plantName,_that.type,_that.dueAt,_that.locationName,_that.speciesId,_that.speciesName,_that.doneAt);case _:
   return orElse();
 
 }
@@ -188,10 +195,10 @@ return $default(_that.scheduleId,_that.plantId,_that.plantName,_that.type,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int scheduleId,  int plantId,  String plantName,  CareTaskType type,  DateTime dueAt,  String? locationName,  int? speciesId,  String? speciesName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int scheduleId,  int plantId,  String plantName,  CareTaskType type,  DateTime dueAt,  String? locationName,  int? speciesId,  String? speciesName,  DateTime? doneAt)  $default,) {final _that = this;
 switch (_that) {
 case _CareTask():
-return $default(_that.scheduleId,_that.plantId,_that.plantName,_that.type,_that.dueAt,_that.locationName,_that.speciesId,_that.speciesName);case _:
+return $default(_that.scheduleId,_that.plantId,_that.plantName,_that.type,_that.dueAt,_that.locationName,_that.speciesId,_that.speciesName,_that.doneAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +215,10 @@ return $default(_that.scheduleId,_that.plantId,_that.plantName,_that.type,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int scheduleId,  int plantId,  String plantName,  CareTaskType type,  DateTime dueAt,  String? locationName,  int? speciesId,  String? speciesName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int scheduleId,  int plantId,  String plantName,  CareTaskType type,  DateTime dueAt,  String? locationName,  int? speciesId,  String? speciesName,  DateTime? doneAt)?  $default,) {final _that = this;
 switch (_that) {
 case _CareTask() when $default != null:
-return $default(_that.scheduleId,_that.plantId,_that.plantName,_that.type,_that.dueAt,_that.locationName,_that.speciesId,_that.speciesName);case _:
+return $default(_that.scheduleId,_that.plantId,_that.plantName,_that.type,_that.dueAt,_that.locationName,_that.speciesId,_that.speciesName,_that.doneAt);case _:
   return null;
 
 }
@@ -222,8 +229,8 @@ return $default(_that.scheduleId,_that.plantId,_that.plantName,_that.type,_that.
 /// @nodoc
 
 
-class _CareTask implements CareTask {
-  const _CareTask({required this.scheduleId, required this.plantId, required this.plantName, required this.type, required this.dueAt, this.locationName, this.speciesId, this.speciesName});
+class _CareTask extends CareTask {
+  const _CareTask({required this.scheduleId, required this.plantId, required this.plantName, required this.type, required this.dueAt, this.locationName, this.speciesId, this.speciesName, this.doneAt}): super._();
   
 
 /// Идентификатор расписания, породившего задачу (`TaskDto.scheduleId`).
@@ -244,6 +251,13 @@ class _CareTask implements CareTask {
 @override final  int? speciesId;
 /// Имя вида растения (для иллюстрации/подписи в UI, G6). Nullable.
 @override final  String? speciesName;
+/// Момент отметки «сделано» (UTC), если задача выполнена сегодня
+/// (`TaskDto.doneAt`, mobile gap G11 / backend ADR-014). `null` — задача
+/// ещё не выполнена (pending). В выдаче `/calendar` всегда `null`.
+///
+/// Презентация экрана 03 «Сегодня» делит задачи на pending (секции
+/// утро/вечер) и done (свёрнутая секция «Выполнено») именно по этому полю.
+@override final  DateTime? doneAt;
 
 /// Create a copy of CareTask
 /// with the given fields replaced by the non-null parameter values.
@@ -255,16 +269,16 @@ _$CareTaskCopyWith<_CareTask> get copyWith => __$CareTaskCopyWithImpl<_CareTask>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareTask&&(identical(other.scheduleId, scheduleId) || other.scheduleId == scheduleId)&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.plantName, plantName) || other.plantName == plantName)&&(identical(other.type, type) || other.type == type)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.speciesName, speciesName) || other.speciesName == speciesName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareTask&&(identical(other.scheduleId, scheduleId) || other.scheduleId == scheduleId)&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.plantName, plantName) || other.plantName == plantName)&&(identical(other.type, type) || other.type == type)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.speciesName, speciesName) || other.speciesName == speciesName)&&(identical(other.doneAt, doneAt) || other.doneAt == doneAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,scheduleId,plantId,plantName,type,dueAt,locationName,speciesId,speciesName);
+int get hashCode => Object.hash(runtimeType,scheduleId,plantId,plantName,type,dueAt,locationName,speciesId,speciesName,doneAt);
 
 @override
 String toString() {
-  return 'CareTask(scheduleId: $scheduleId, plantId: $plantId, plantName: $plantName, type: $type, dueAt: $dueAt, locationName: $locationName, speciesId: $speciesId, speciesName: $speciesName)';
+  return 'CareTask(scheduleId: $scheduleId, plantId: $plantId, plantName: $plantName, type: $type, dueAt: $dueAt, locationName: $locationName, speciesId: $speciesId, speciesName: $speciesName, doneAt: $doneAt)';
 }
 
 
@@ -275,7 +289,7 @@ abstract mixin class _$CareTaskCopyWith<$Res> implements $CareTaskCopyWith<$Res>
   factory _$CareTaskCopyWith(_CareTask value, $Res Function(_CareTask) _then) = __$CareTaskCopyWithImpl;
 @override @useResult
 $Res call({
- int scheduleId, int plantId, String plantName, CareTaskType type, DateTime dueAt, String? locationName, int? speciesId, String? speciesName
+ int scheduleId, int plantId, String plantName, CareTaskType type, DateTime dueAt, String? locationName, int? speciesId, String? speciesName, DateTime? doneAt
 });
 
 
@@ -292,7 +306,7 @@ class __$CareTaskCopyWithImpl<$Res>
 
 /// Create a copy of CareTask
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? scheduleId = null,Object? plantId = null,Object? plantName = null,Object? type = null,Object? dueAt = null,Object? locationName = freezed,Object? speciesId = freezed,Object? speciesName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? scheduleId = null,Object? plantId = null,Object? plantName = null,Object? type = null,Object? dueAt = null,Object? locationName = freezed,Object? speciesId = freezed,Object? speciesName = freezed,Object? doneAt = freezed,}) {
   return _then(_CareTask(
 scheduleId: null == scheduleId ? _self.scheduleId : scheduleId // ignore: cast_nullable_to_non_nullable
 as int,plantId: null == plantId ? _self.plantId : plantId // ignore: cast_nullable_to_non_nullable
@@ -302,7 +316,8 @@ as CareTaskType,dueAt: null == dueAt ? _self.dueAt : dueAt // ignore: cast_nulla
 as DateTime,locationName: freezed == locationName ? _self.locationName : locationName // ignore: cast_nullable_to_non_nullable
 as String?,speciesId: freezed == speciesId ? _self.speciesId : speciesId // ignore: cast_nullable_to_non_nullable
 as int?,speciesName: freezed == speciesName ? _self.speciesName : speciesName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,doneAt: freezed == doneAt ? _self.doneAt : doneAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

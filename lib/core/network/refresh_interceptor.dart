@@ -31,6 +31,10 @@ class RefreshInterceptor extends QueuedInterceptor {
   })  : _session = session,
         _refreshClient = refreshClient,
         _retryDio = retryDio;
+  // Поля приватные, а параметры конструктора — публичные (session/refreshClient/
+  // retryDio): initializing formal `this._session` сделал бы приватным и
+  // именованный аргумент. Сохраняем публичные имена → подавляем лишь этот линт.
+  // ignore_for_file: prefer_initializing_formals
 
   final JwtAuthSession _session;
   final AuthClient _refreshClient;

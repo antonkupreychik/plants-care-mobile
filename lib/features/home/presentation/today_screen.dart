@@ -15,7 +15,9 @@ import 'home_providers.dart';
 import 'today_filter.dart';
 import 'today_providers.dart';
 import 'today_view.dart';
+import 'widgets/today_done_section.dart';
 import 'widgets/today_filter_pills.dart';
+import 'widgets/today_progress_card.dart';
 import 'widgets/today_task_card.dart';
 
 /// Экран 03 «Сегодня» — полный список задач ухода (`GET /today`).
@@ -27,9 +29,11 @@ import 'widgets/today_task_card.dart';
 /// TODO(nav): позже Today переедет под таб «Расписание» (StatefulShellRoute) —
 /// сейчас это push-маршрут `/home/today`, реструктуризацию табов не делаем.
 ///
-/// Скрыто (BACKEND-GAPS, см. задача 03): прогресс-кольцо «X из N выполнено» и
-/// секция «N выполнено сегодня» — фида done нет; voice line (G2). Иллюстрация
-/// по виду (G6) доступна — `TaskDto.speciesName` рисует `PlantIllustration`.
+/// Прогресс-карточка «X из N выполнено» и свёрнутая секция «Выполнено»
+/// питаются `TaskDto.doneAt` (backend gap G11 закрыт): выполненные задачи
+/// `/today` приходят с `doneAt != null` — `buildTodayView` отделяет их в
+/// `doneItems`. Иллюстрация по виду (G6) — `TaskDto.speciesName`.
+/// Скрыто (BACKEND-GAPS, см. задача 03): voice line / mood растения (G2).
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
 
@@ -144,53 +148,8 @@ class _BackButton extends StatelessWidget {
   }
 }
 
-/// Компактная summary-строка: всего задач · сколько просрочено.
-class _TodaySummary extends StatelessWidget {
-  const _TodaySummary({required this.view});
-
-  final TodayView view;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = Theme.of(context).extension<PcColors>()!;
-    final l10n = AppLocalizations.of(context);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: c.line),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            view.overdueCount > 0
-                ? Icons.warning_amber_rounded
-                : Icons.spa_outlined,
-            size: 20,
-            color: view.overdueCount > 0 ? c.terracotta : c.leaf,
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              '${l10n.todaySummary(view.totalCount)} · '
-              '${l10n.todaySummaryOverdue(view.overdueCount)}',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: c.ink,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Контент data-состояния: шапка + summary + пилюли + секции (или empty).
+/// Контент data-состояния: шапка + прогресс + пилюли + секции (или empty) +
+/// свёрнутая секция «Выполнено».
 class _TodayContent extends StatelessWidget {
   const _TodayContent({
     required this.view,
@@ -216,7 +175,7 @@ class _TodayContent extends StatelessWidget {
         ),
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(22, 14, 22, 0),
-          sliver: SliverToBoxAdapter(child: _TodaySummary(view: view)),
+          sliver: SliverToBoxAdapter(child: TodayProgressCard(view: view)),
         ),
         SliverPadding(
           padding: const EdgeInsets.only(top: 14, bottom: 4),
@@ -233,6 +192,16 @@ class _TodayContent extends StatelessWidget {
           )
         else
           ..._sections(),
+        if (view.hasDone)
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            sliver: SliverToBoxAdapter(
+              child: TodayDoneSection(
+                items: view.doneItems,
+                onTaskTap: onTaskTap,
+              ),
+            ),
+          ),
         const SliverToBoxAdapter(child: SizedBox(height: 32)),
       ],
     );

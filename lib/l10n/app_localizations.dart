@@ -286,6 +286,84 @@ abstract class AppLocalizations {
   /// **'Попробуйте другой фильтр'**
   String get todayEmptyFilterHint;
 
+  /// Прогресс-карточка экрана «Сегодня»: сколько задач выполнено из общего числа
+  ///
+  /// In ru, this message translates to:
+  /// **'{done} из {total} выполнено'**
+  String todayProgress(int done, int total);
+
+  /// Подпись прогресс-карточки: сколько забот ещё осталось
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Все заботы закрыты} one{Осталась {count} забота} few{Осталось {count} заботы} many{Осталось {count} забот} other{Осталось {count} заботы}}'**
+  String todayProgressRemaining(int count);
+
+  /// Хвост подписи прогресс-карточки: сколько просрочено
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{нет просроченных} one{{count} просрочена} few{{count} просрочены} many{{count} просрочено} other{{count} просрочено}}'**
+  String todayProgressOverdue(int count);
+
+  /// Заголовок свёрнутой секции «Выполнено» на экране «Сегодня»
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Ничего не выполнено} one{{count} выполнено сегодня} few{{count} выполнено сегодня} many{{count} выполнено сегодня} other{{count} выполнено сегодня}}'**
+  String todayDoneTitle(int count);
+
+  /// Свёрнутая секция «Выполнено»: что и когда сделано (например «Колючка · полит в 7:42»)
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} · {action} в {time}'**
+  String todayDoneSubtitle(String plant, String action, String time);
+
+  /// Семантика/подсказка: раскрыть свёрнутую секцию «Выполнено»
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать выполненные'**
+  String get todayDoneExpand;
+
+  /// Семантика/подсказка: свернуть секцию «Выполнено»
+  ///
+  /// In ru, this message translates to:
+  /// **'Скрыть выполненные'**
+  String get todayDoneCollapse;
+
+  /// Подпись на карточке выполненной задачи: действие в прошедшем времени + время (например «Полито в 7:42»)
+  ///
+  /// In ru, this message translates to:
+  /// **'{action} в {time}'**
+  String careDonePast(String action, String time);
+
+  /// Действие полива в прошедшем времени (для секции «Выполнено»)
+  ///
+  /// In ru, this message translates to:
+  /// **'Полито'**
+  String get careActionDoneWatering;
+
+  /// Действие опрыскивания в прошедшем времени
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскано'**
+  String get careActionDoneMisting;
+
+  /// Действие подкормки в прошедшем времени
+  ///
+  /// In ru, this message translates to:
+  /// **'Удобрено'**
+  String get careActionDoneFertilizing;
+
+  /// Проверка почвы в прошедшем времени
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверено'**
+  String get careActionDoneSoilCheck;
+
+  /// Нейтральное «сделано» для нераспознанного типа ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделано'**
+  String get careActionDoneUnknown;
+
   /// Заголовок секции с растениями пользователя
   ///
   /// In ru, this message translates to:

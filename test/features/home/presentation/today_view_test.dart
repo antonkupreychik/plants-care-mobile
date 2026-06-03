@@ -11,6 +11,7 @@ CareTask _task({
   CareTaskType type = CareTaskType.watering,
   int scheduleId = 1,
   String plantName = 'Monstera',
+  DateTime? doneAtUtc,
 }) =>
     CareTask(
       scheduleId: scheduleId,
@@ -18,6 +19,7 @@ CareTask _task({
       plantName: plantName,
       type: type,
       dueAt: dueUtc,
+      doneAt: doneAtUtc,
     );
 
 /// Локальный момент в [hour] для текущей TZ процесса теста.
@@ -350,6 +352,146 @@ void main() {
       expect(view.groups[0].items.single.task.scheduleId, 2);
       expect(view.groups[1].phase, TodayPhase.evening);
       expect(view.groups[1].items.single.task.scheduleId, 1);
+    });
+  });
+
+  group('buildTodayView done / progress', () {
+    test('should_move_done_tasks_to_doneItems_not_to_phase_sections', () {
+      final now = _localNow(12);
+      final tasks = [
+        // Pending — утренняя, просрочена.
+        _task(dueUtc: _localDue(8), scheduleId: 1),
+        // Выполнена сегодня в 7:42 — должна уйти в doneItems, не в секции.
+        _task(
+          dueUtc: _localDue(9),
+          scheduleId: 2,
+          doneAtUtc: _localDue(7) /* doneAt в прошлом, любой момент */,
+        ),
+      ];
+
+      final view = buildTodayView(
+        tasks: tasks,
+        nowLocal: now,
+        filter: TodayFilter.all,
+      );
+
+      // В секциях — только pending (#1).
+      final inSections =
+          view.groups.expand((g) => g.items).map((i) => i.task.scheduleId);
+      expect(inSections, [1]);
+      // Выполненная (#2) — в doneItems.
+      expect(view.doneItems.single.task.scheduleId, 2);
+      expect(view.hasDone, isTrue);
+    });
+
+    test('should_compute_done_total_remaining_for_progress_card', () {
+      final now = _localNow(12);
+      final tasks = [
+        _task(dueUtc: _localDue(8), scheduleId: 1),
+        _task(dueUtc: _localDue(9), scheduleId: 2),
+        _task(dueUtc: _localDue(10), scheduleId: 3, doneAtUtc: _localDue(7)),
+      ];
+
+      final view = buildTodayView(
+        tasks: tasks,
+        nowLocal: now,
+        filter: TodayFilter.all,
+      );
+
+      // «1 из 3 выполнено», осталось 2.
+      expect(view.totalCount, 3);
+      expect(view.doneCount, 1);
+      expect(view.remainingCount, 2);
+    });
+
+    test('should_not_count_done_task_as_overdue_even_if_due_in_past', () {
+      final now = _localNow(12);
+      final tasks = [
+        // Дедлайн в прошлом (8 < 12), но задача ВЫПОЛНЕНА → не overdue.
+        _task(dueUtc: _localDue(8), scheduleId: 1, doneAtUtc: _localDue(7)),
+        // Pending, дедлайн в прошлом → overdue.
+        _task(dueUtc: _localDue(9), scheduleId: 2),
+      ];
+
+      final view = buildTodayView(
+        tasks: tasks,
+        nowLocal: now,
+        filter: TodayFilter.all,
+      );
+
+      expect(view.overdueCount, 1);
+      // Выполненная в doneItems не помечена overdue.
+      expect(view.doneItems.single.overdue, isFalse);
+    });
+
+    test('should_keep_done_in_type_pill_counts_over_full_list', () {
+      final now = _localNow(12);
+      final tasks = [
+        // Выполненная watering — должна попасть в счётчик «Полив».
+        _task(
+            dueUtc: _localDue(8),
+            type: CareTaskType.watering,
+            scheduleId: 1,
+            doneAtUtc: _localDue(7)),
+        _task(
+            dueUtc: _localDue(9), type: CareTaskType.misting, scheduleId: 2),
+      ];
+
+      final view = buildTodayView(
+        tasks: tasks,
+        nowLocal: now,
+        filter: TodayFilter.all,
+      );
+
+      // Пилюли считаются по ПОЛНОМУ списку, включая выполненные.
+      expect(view.totalCount, 2);
+      expect(view.wateringCount, 1);
+      expect(view.mistingCount, 1);
+    });
+
+    test('should_sort_doneItems_by_doneAt_descending_latest_first', () {
+      final now = _localNow(20);
+      final tasks = [
+        _task(dueUtc: _localDue(8), scheduleId: 1, doneAtUtc: _localDue(7)),
+        _task(dueUtc: _localDue(9), scheduleId: 2, doneAtUtc: _localDue(18)),
+        _task(dueUtc: _localDue(10), scheduleId: 3, doneAtUtc: _localDue(12)),
+      ];
+
+      final view = buildTodayView(
+        tasks: tasks,
+        nowLocal: now,
+        filter: TodayFilter.all,
+      );
+
+      final order = view.doneItems.map((i) => i.task.scheduleId).toList();
+      // 18:00 → 12:00 → 7:00 (последняя отметка сверху).
+      expect(order, [2, 3, 1]);
+    });
+
+    test('should_keep_done_section_regardless_of_filter', () {
+      final now = _localNow(12);
+      final tasks = [
+        // Pending fertilizing.
+        _task(
+            dueUtc: _localDue(9), type: CareTaskType.fertilizing, scheduleId: 1),
+        // Выполненный watering.
+        _task(
+            dueUtc: _localDue(8),
+            type: CareTaskType.watering,
+            scheduleId: 2,
+            doneAtUtc: _localDue(7)),
+      ];
+
+      // Фильтр «Полив»: pending-секции должны опустеть (только fertilizing
+      // pending), но выполненный watering остаётся в doneItems.
+      final view = buildTodayView(
+        tasks: tasks,
+        nowLocal: now,
+        filter: TodayFilter.watering,
+      );
+
+      expect(view.isEmpty, isTrue); // нет pending watering
+      expect(view.doneItems.single.task.scheduleId, 2);
     });
   });
 }

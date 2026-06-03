@@ -81,6 +81,40 @@ void main() {
       expect(task.type, CareTaskType.misting);
     });
 
+    // G11: doneAt из DTO должен доходить до domain — по нему экран 03 делит
+    // задачи на pending и «Выполнено». Регрессия — если маппер его потеряет.
+    test('should_carry_doneAt_when_present', () {
+      final done = DateTime.utc(2026, 5, 27, 7, 42);
+      final dto = TaskDto(
+        scheduleId: 1,
+        plantId: 1,
+        plantName: 'Cactus',
+        taskType: 'WATERING',
+        nextDueAt: DateTime.utc(2026, 5, 27, 9),
+        doneAt: done,
+      );
+
+      final task = dto.toDomain();
+
+      expect(task.doneAt, done);
+      expect(task.isDone, isTrue);
+    });
+
+    test('should_keep_doneAt_null_for_pending_task', () {
+      final dto = TaskDto(
+        scheduleId: 1,
+        plantId: 1,
+        plantName: 'Cactus',
+        taskType: 'WATERING',
+        nextDueAt: DateTime.utc(2026, 5, 27, 9),
+      );
+
+      final task = dto.toDomain();
+
+      expect(task.doneAt, isNull);
+      expect(task.isDone, isFalse);
+    });
+
     // Маппер обязан нормализовать неизвестный backend-код, а не пробросить как есть.
     test('should_normalize_unknown_taskType_to_unknown_enum', () {
       final dto = TaskDto(

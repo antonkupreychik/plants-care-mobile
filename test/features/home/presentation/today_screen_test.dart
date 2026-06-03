@@ -22,7 +22,9 @@ import 'package:plantcare_mobile/features/home/presentation/today_filter.dart';
 import 'package:plantcare_mobile/features/home/presentation/today_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/today_screen.dart';
 import 'package:plantcare_mobile/features/home/presentation/today_view.dart';
+import 'package:plantcare_mobile/features/home/presentation/widgets/today_done_section.dart';
 import 'package:plantcare_mobile/features/home/presentation/widgets/today_filter_pills.dart';
+import 'package:plantcare_mobile/features/home/presentation/widgets/today_progress_card.dart';
 import 'package:plantcare_mobile/features/home/presentation/widgets/today_task_card.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_event_kind.dart';
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
@@ -60,6 +62,7 @@ CareTask _task({
   CareTaskType type = CareTaskType.watering,
   int scheduleId = 1,
   String plantName = 'Monstera',
+  DateTime? doneAtUtc,
 }) =>
     CareTask(
       scheduleId: scheduleId,
@@ -67,6 +70,7 @@ CareTask _task({
       plantName: plantName,
       type: type,
       dueAt: dueUtc,
+      doneAt: doneAtUtc,
     );
 
 Widget _wrap({
@@ -229,9 +233,10 @@ void main() {
       expect(find.text('Кактус'), findsOneWidget);
       // Бейдж «просрочено» — только для просроченной (одна задача).
       expect(find.text(l10n.todayOverdueBadge), findsOneWidget);
-      // Summary: всего 2, просрочена 1.
+      // Прогресс-карточка: 0 из 2 выполнено, 1 просрочена.
+      expect(find.text(l10n.todayProgress(0, 2)), findsOneWidget);
       expect(
-        find.textContaining(l10n.todaySummaryOverdue(1)),
+        find.textContaining(l10n.todayProgressOverdue(1)),
         findsOneWidget,
       );
     });
@@ -308,6 +313,140 @@ void main() {
       // Sheet 06 открыт: видна его шапка.
       expect(find.text(l10n.careSheetTitleFor('Фикус')), findsOneWidget);
       expect(find.text(l10n.careSheetTypeLabel.toUpperCase()), findsOneWidget);
+    });
+  });
+
+  group('TodayScreen progress card', () {
+    testWidgets('should_render_progress_done_of_total', (tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(_wrap(overrides: [
+        todayViewProvider.overrideWith(
+          (ref) async => buildTodayView(
+            tasks: [
+              _task(dueUtc: _localDue(8), scheduleId: 1),
+              _task(dueUtc: _localDue(9), scheduleId: 2),
+              _task(
+                  dueUtc: _localDue(10),
+                  scheduleId: 3,
+                  doneAtUtc: _localDue(7)),
+            ],
+            nowLocal: _nowUtc.toLocal(),
+            filter: TodayFilter.all,
+          ),
+        ),
+      ]));
+      await tester.pumpAndSettle();
+
+      final l10n = _l10n(tester);
+      expect(find.byType(TodayProgressCard), findsOneWidget);
+      // «1 из 3 выполнено».
+      expect(find.text(l10n.todayProgress(1, 3)), findsOneWidget);
+    });
+  });
+
+  group('TodayScreen done section', () {
+    testWidgets('should_show_collapsed_done_section_and_expand_on_tap',
+        (tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(_wrap(overrides: [
+        todayViewProvider.overrideWith(
+          (ref) async => buildTodayView(
+            tasks: [
+              _task(dueUtc: _localDue(8), scheduleId: 1, plantName: 'Фикус'),
+              _task(
+                dueUtc: _localDue(9),
+                scheduleId: 2,
+                plantName: 'Колючка',
+                doneAtUtc: _localDue(7),
+              ),
+            ],
+            nowLocal: _nowUtc.toLocal(),
+            filter: TodayFilter.all,
+          ),
+        ),
+      ]));
+      await tester.pumpAndSettle();
+
+      final l10n = _l10n(tester);
+      // Свёрнутая секция «1 выполнено сегодня».
+      expect(find.byType(TodayDoneSection), findsOneWidget);
+      expect(find.text(l10n.todayDoneTitle(1)), findsOneWidget);
+      // Свёрнуто: имя выполненного растения как отдельная строка ещё не видно
+      // (оно в подзаголовке, но не в раскрытом списке).
+      expect(find.byType(TodayDoneSection), findsOneWidget);
+
+      // Раскрываем по тапу.
+      await tester.tap(find.byType(TodayDoneSection));
+      await tester.pumpAndSettle();
+
+      // В раскрытом списке появляется строка «Колючка».
+      expect(find.text('Колючка'), findsOneWidget);
+    });
+
+    testWidgets('should_not_show_done_section_when_no_done_tasks',
+        (tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(_wrap(overrides: [
+        todayViewProvider.overrideWith(
+          (ref) async => buildTodayView(
+            tasks: [_task(dueUtc: _localDue(8), scheduleId: 1)],
+            nowLocal: _nowUtc.toLocal(),
+            filter: TodayFilter.all,
+          ),
+        ),
+      ]));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TodayDoneSection), findsNothing);
+    });
+  });
+
+  group('TodayScreen done section timezone', () {
+    // КРИТИЧНО (FLUTTER.md «Время»): подпись «в HH:mm» в секции «Выполнено»
+    // считается по ЛОКАЛЬНОЙ зоне (doneAt.toLocal()), а не по UTC-часам.
+    testWidgets('should_format_done_time_in_local_zone', (tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      // doneAt: локальные 7:42 (через _localDue-приём).
+      final doneAt = DateTime(2026, 5, 27, 7, 42).toUtc();
+
+      await tester.pumpWidget(_wrap(overrides: [
+        todayViewProvider.overrideWith(
+          (ref) async => buildTodayView(
+            tasks: [
+              _task(
+                dueUtc: _localDue(9),
+                scheduleId: 1,
+                plantName: 'Колючка',
+                doneAtUtc: doneAt,
+              ),
+            ],
+            nowLocal: _nowUtc.toLocal(),
+            filter: TodayFilter.all,
+          ),
+        ),
+      ]));
+      await tester.pumpAndSettle();
+
+      // Подзаголовок свёрнутой секции (и строка в скрытом списке) содержат
+      // локальное время 7:42 — это значит время форматируется по toLocal(),
+      // а не печатается UTC-часом.
+      expect(find.textContaining('7:42'), findsWidgets);
     });
   });
 }
