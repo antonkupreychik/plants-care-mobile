@@ -20,8 +20,11 @@ abstract class AddPlantWizardState with _$AddPlantWizardState {
   const AddPlantWizardState._();
 
   /// Можно ли отправлять: имя валидно (правило в [NewPlantDraft.isNameValid]) и
-  /// отправка не идёт. Единственное место правды о готовности к сабмиту.
-  bool get canSubmit => draft.isNameValid && status is! AddPlantSubmitting;
+  /// нет активной отправки. Единственное место правды о готовности к сабмиту.
+  bool get canSubmit =>
+      draft.isNameValid &&
+      status is! AddPlantSubmitting &&
+      status is! AddPlantSavingSchedules;
 }
 
 /// Статус сабмита мастера (sealed — UI матчит по типу, README §5/MADR-011).
@@ -33,9 +36,19 @@ sealed class AddPlantSubmitStatus with _$AddPlantSubmitStatus {
   /// Идёт `POST /plants` — UI блокирует кнопку, показывает прогресс.
   const factory AddPlantSubmitStatus.submitting() = AddPlantSubmitting;
 
-  /// Успех — UI закрывает мастер и навигирует. [plantId] — id созданной записи.
+  /// `POST /plants` прошёл, идут `PUT /schedules` для изменённых интервалов.
+  const factory AddPlantSubmitStatus.savingSchedules() = AddPlantSavingSchedules;
+
+  /// Успех — UI навигирует на экран расписания. [plantId] — id созданной записи.
   const factory AddPlantSubmitStatus.success(int plantId) = AddPlantSuccess;
 
-  /// Ошибка — UI рисует баннер/тост по типу [error] (текст через l10n).
+  /// Ошибка `POST /plants` — растение не создано.
   const factory AddPlantSubmitStatus.failure(ApiError error) = AddPlantFailure;
+
+  /// Ошибка `PUT /schedules` — растение создано ([plantId]), но интервалы не
+  /// применились. UI навигирует на editSchedule, где пользователь настроит их.
+  const factory AddPlantSubmitStatus.scheduleFailure({
+    required int plantId,
+    required ApiError error,
+  }) = AddPlantScheduleFailure;
 }

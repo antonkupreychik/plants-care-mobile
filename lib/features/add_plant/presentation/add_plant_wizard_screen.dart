@@ -137,26 +137,28 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
     final state = ref.watch(addPlantWizardControllerProvider);
     final controller = ref.read(addPlantWizardControllerProvider.notifier);
 
-    // Успех — закрываем мастер ровно один раз (listen, не в build).
+    // Навигация на экран расписания — при успехе и при ошибке PUT (растение
+    // уже создано, интервалы настроит пользователь на editSchedule).
     ref.listen(
       addPlantWizardControllerProvider.select((s) => s.status),
       (prev, next) {
-        if (next is AddPlantSuccess) {
-          // Переходим на экран редактирования расписания нового растения (G14).
-          // goNamed сбрасывает весь стек Home и открывает editSchedule
-          // поверх shell — пользователь сразу настраивает расписания.
-          final plantId = next.plantId;
-          final plantName = state.draft.trimmedName;
+        final int? plantId = switch (next) {
+          AddPlantSuccess(:final plantId) => plantId,
+          AddPlantScheduleFailure(:final plantId) => plantId,
+          _ => null,
+        };
+        if (plantId != null) {
           context.goNamed(
             'editSchedule',
             pathParameters: {'id': plantId.toString()},
-            extra: plantName,
+            extra: state.draft.trimmedName,
           );
         }
       },
     );
 
-    final submitting = state.status is AddPlantSubmitting;
+    final submitting = state.status is AddPlantSubmitting ||
+        state.status is AddPlantSavingSchedules;
     final draft = state.draft;
     final errorMessage = switch (state.status) {
       AddPlantFailure(:final error) => l10n.messageForError(error),
@@ -200,7 +202,13 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
                       onLocationChanged: controller.setLocation,
                     ),
                   ),
-                  _StepScroll(child: StepCarePlan(species: draft.species)),
+                  _StepScroll(
+                    child: StepCarePlan(
+                      species: draft.species,
+                      intervalOverrides: draft.intervalOverrides,
+                      onIntervalChanged: controller.setIntervalOverride,
+                    ),
+                  ),
                   _StepScroll(
                     child: _ConfirmStep(
                       state: state,

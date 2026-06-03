@@ -618,10 +618,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get addPlantCarePlanSubtitle =>
-      'Рекомендации по виду. Изменить пока нельзя.';
+      'Рекомендации по виду. Измените интервалы, если нужно.';
 
   @override
-  String get addPlantCarePlanReadOnly => 'Только просмотр';
+  String get addPlantCarePlanReadOnly =>
+      'После создания расписание можно настроить под себя';
 
   @override
   String addPlantCarePlanEvery(int count) {
