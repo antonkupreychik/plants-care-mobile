@@ -59,7 +59,10 @@ Future<List<SpeciesSummary>> _pending() => Completer<List<SpeciesSummary>>().fut
 /// мы должны вернуться сюда.
 const _hostMarker = Key('host-screen');
 
-/// Маркер экрана расписания — после успешного submit мастер переходит сюда.
+/// Маркер карточки растения — после успешного submit мастер переходит сюда.
+const _plantCardMarker = Key('plant-card-screen');
+
+/// Маркер экрана расписания — при AddPlantScheduleFailure мастер переходит сюда.
 const _scheduleMarker = Key('edit-schedule-screen');
 
 /// Монтирует мастер на отдельном маршруте `/add` поверх хост-экрана через
@@ -87,19 +90,29 @@ Future<void> _pump(
             builder: (_, _) => const AddPlantWizardScreen(),
           ),
           GoRoute(
-            path: 'plants/:id',
+            path: 'home',
+            builder: (_, _) => const SizedBox(),
             routes: [
               GoRoute(
-                path: 'schedule',
-                name: 'editSchedule',
+                path: 'plants/:id',
                 builder: (_, _) => const Scaffold(
                   body: Center(
-                    child: Text('расписание', key: _scheduleMarker),
+                    child: Text('карточка', key: _plantCardMarker),
                   ),
                 ),
+                routes: [
+                  GoRoute(
+                    path: 'schedule',
+                    name: 'editSchedule',
+                    builder: (_, _) => const Scaffold(
+                      body: Center(
+                        child: Text('расписание', key: _scheduleMarker),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
-            builder: (_, _) => const SizedBox(),
           ),
         ],
       ),
@@ -337,7 +350,7 @@ void main() {
       expect(find.text(l10n.addPlantSubmit), findsOneWidget);
     });
 
-    testWidgets('should_navigate_to_edit_schedule_on_success',
+    testWidgets('should_navigate_to_plant_card_on_success',
         (tester) async {
       final repo = _MockRepo();
       when(() => repo.createPlant(
@@ -354,9 +367,9 @@ void main() {
       await tester.tap(find.text(l10n.addPlantSubmit));
       await tester.pumpAndSettle();
 
-      // Мастер закрыт, открылся экран редактирования расписания (G14).
+      // Мастер закрыт, открылась карточка растения.
       expect(find.byType(AddPlantWizardScreen), findsNothing);
-      expect(find.byKey(_scheduleMarker), findsOneWidget);
+      expect(find.byKey(_plantCardMarker), findsOneWidget);
       verify(() => repo.createPlant(
             name: 'Алоэ',
             locationId: any(named: 'locationId'),
@@ -387,19 +400,29 @@ void main() {
                 builder: (_, _) => const AddPlantWizardScreen(),
               ),
               GoRoute(
-                path: 'plants/:id',
+                path: 'home',
+                builder: (_, _) => const SizedBox(),
                 routes: [
                   GoRoute(
-                    path: 'schedule',
-                    name: 'editSchedule',
+                    path: 'plants/:id',
                     builder: (_, _) => const Scaffold(
                       body: Center(
-                        child: Text('расписание', key: _scheduleMarker),
+                        child: Text('карточка', key: _plantCardMarker),
                       ),
                     ),
+                    routes: [
+                      GoRoute(
+                        path: 'schedule',
+                        name: 'editSchedule',
+                        builder: (_, _) => const Scaffold(
+                          body: Center(
+                            child: Text('расписание', key: _scheduleMarker),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-                builder: (_, _) => const SizedBox(),
               ),
             ],
           ),

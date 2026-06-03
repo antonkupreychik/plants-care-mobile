@@ -299,7 +299,7 @@ void main() {
             id: any(named: 'id'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
-      expect(captured[kAuthScopeExtraKey], AuthScope.none);
+      expect(captured[kAuthScopeExtraKey], AuthScope.user);
     });
 
     test('should_return_failure_network_when_DioException_carries_it',
