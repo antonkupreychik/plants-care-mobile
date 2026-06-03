@@ -422,6 +422,79 @@
     }
   },
 
+  "scheduleTitle": "График ухода",
+  "@scheduleTitle": {
+    "description": "Заголовок экрана 11 «График» (agenda)"
+  },
+
+  "scheduleDayLoadHint": "—",
+  "@scheduleDayLoadHint": {
+    "description": "Символ нулевой нагрузки в день-селекторе (0 задач)"
+  },
+
+  "scheduleDayProgress": "{done} из {total} готово",
+  "@scheduleDayProgress": {
+    "description": "Подзаголовок выбранного дня: сколько задач отмечено из общего числа",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "schedulePhaseMorning": "Утро",
+  "@schedulePhaseMorning": {
+    "description": "Заголовок утренней секции agenda"
+  },
+
+  "schedulePhaseEvening": "Вечер",
+  "@schedulePhaseEvening": {
+    "description": "Заголовок вечерней секции agenda"
+  },
+
+  "schedulePhaseDone": "Сделано",
+  "@schedulePhaseDone": {
+    "description": "Заголовок секции выполненных задач agenda"
+  },
+
+  "schedulePhaseMorningTime": "9:00",
+  "@schedulePhaseMorningTime": {
+    "description": "Условное время утренней секции agenda"
+  },
+
+  "schedulePhaseEveningTime": "19:00",
+  "@schedulePhaseEveningTime": {
+    "description": "Условное время вечерней секции agenda"
+  },
+
+  "scheduleOverdueSubtitle": "Просрочено · со вчера",
+  "@scheduleOverdueSubtitle": {
+    "description": "Подпись просроченной задачи в строке agenda"
+  },
+
+  "scheduleTaskSubtitle": "{action} · {species}",
+  "@scheduleTaskSubtitle": {
+    "description": "Подпись строки задачи: действие и вид растения",
+    "placeholders": {
+      "action": { "type": "String" },
+      "species": { "type": "String" }
+    }
+  },
+
+  "scheduleDayEmpty": "На этот день забот нет 🌿",
+  "@scheduleDayEmpty": {
+    "description": "Заглушка дня без задач на экране 11 «График»"
+  },
+
+  "scheduleMarkDone": "Отметить выполненным",
+  "@scheduleMarkDone": {
+    "description": "Подпись кнопки-чека (semantics) для отметки ухода"
+  },
+
+  "scheduleMarkError": "Не удалось отметить уход. Попробуйте ещё раз.",
+  "@scheduleMarkError": {
+    "description": "Баннер ошибки при неудачной оптимистичной отметке ухода"
+  },
+
   "plantCardAgeDays": "{count, plural, =0{сегодня} one{{count} день} few{{count} дня} many{{count} дней} other{{count} дня}}",
   "@plantCardAgeDays": {
     "description": "Количество дней владения растением",
