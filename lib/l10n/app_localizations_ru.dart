@@ -408,6 +408,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Отметьте первый уход — и здесь появится история';
 
   @override
+  String get plantCardJournalEmptyBubble => 'Жду первого ухода…';
+
+  @override
+  String get plantCardJournalWaterNow => 'Полить сейчас';
+
+  @override
   String get plantCardJournalOnTime => 'вовремя';
 
   @override

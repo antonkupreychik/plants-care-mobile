@@ -473,6 +473,16 @@
     "description": "Подпись к пустому состоянию истории ухода"
   },
 
+  "plantCardJournalEmptyBubble": "Жду первого ухода…",
+  "@plantCardJournalEmptyBubble": {
+    "description": "Реплика растения в speech-bubble пустого дневника (экран 31), голос от первого лица"
+  },
+
+  "plantCardJournalWaterNow": "Полить сейчас",
+  "@plantCardJournalWaterNow": {
+    "description": "CTA-кнопка пустого дневника (экран 31): открывает sheet полива"
+  },
+
   "plantCardJournalOnTime": "вовремя",
   "@plantCardJournalOnTime": {
     "description": "Бейдж записи истории: уход выполнен в срок"

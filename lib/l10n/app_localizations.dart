@@ -610,6 +610,18 @@ abstract class AppLocalizations {
   /// **'Отметьте первый уход — и здесь появится история'**
   String get plantCardJournalEmptyHint;
 
+  /// Реплика растения в speech-bubble пустого дневника (экран 31), голос от первого лица
+  ///
+  /// In ru, this message translates to:
+  /// **'Жду первого ухода…'**
+  String get plantCardJournalEmptyBubble;
+
+  /// CTA-кнопка пустого дневника (экран 31): открывает sheet полива
+  ///
+  /// In ru, this message translates to:
+  /// **'Полить сейчас'**
+  String get plantCardJournalWaterNow;
+
   /// Бейдж записи истории: уход выполнен в срок
   ///
   /// In ru, this message translates to:

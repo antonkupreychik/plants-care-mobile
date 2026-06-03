@@ -9,6 +9,7 @@ import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../care_event/presentation/log_care_event_sheet.dart';
 import '../../home/domain/plant.dart';
+import '../domain/care_event_kind.dart';
 import '../domain/care_history_entry.dart';
 import '../domain/streak.dart';
 import 'plant_card_providers.dart';
@@ -137,7 +138,7 @@ class PlantCardScreen extends ConsumerWidget {
                   ),
                 ),
 
-                // ДНЕВНИК — лента (skeleton / ошибка / empty / данные).
+                // ДНЕВНИК — лента (skeleton / ошибка / empty (экран 31) / данные).
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
                   sliver: SliverToBoxAdapter(
@@ -145,6 +146,14 @@ class PlantCardScreen extends ConsumerWidget {
                       history: history,
                       onRetry: () =>
                           ref.invalidate(plantHistoryProvider(plantId)),
+                      // CTA «Полить сейчас» (экран 31): открывает sheet (06)
+                      // с предвыбором CareEventKind.water.
+                      onWaterNow: () => showLogCareEventSheet(
+                        context,
+                        plantId: plantId,
+                        presetType: CareEventKind.water,
+                        plantName: detail.value?.name,
+                      ),
                     ),
                   ),
                 ),
@@ -309,12 +318,22 @@ class _StreakSection extends StatelessWidget {
   }
 }
 
-/// Секция дневника: skeleton / ошибка с retry / empty внутри карточки / данные.
+/// Секция дневника: skeleton / ошибка с retry / empty (экран 31) / данные.
+///
+/// При пустой истории ([entries.isEmpty]) показывает speech-bubble от растения
+/// «Жду первого ухода…» и CTA «Полить сейчас» → sheet (экран 06, полив).
 class _JournalSection extends StatelessWidget {
-  const _JournalSection({required this.history, required this.onRetry});
+  const _JournalSection({
+    required this.history,
+    required this.onRetry,
+    required this.onWaterNow,
+  });
 
   final AsyncValue<List<CareHistoryEntry>> history;
   final VoidCallback onRetry;
+
+  /// Открывает sheet (экран 06) с предвыбором полива — передаётся в [PlantJournalCard].
+  final VoidCallback onWaterNow;
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +345,10 @@ class _JournalSection extends StatelessWidget {
         retryLabel: l10n.retry,
         onRetry: onRetry,
       ),
-      data: (entries) => PlantJournalCard(entries: entries),
+      data: (entries) => PlantJournalCard(
+        entries: entries,
+        onWaterNow: onWaterNow,
+      ),
     );
   }
 }

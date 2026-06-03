@@ -109,16 +109,48 @@ void main() {
   });
 
   group('PlantCardScreen empty', () {
-    testWidgets('should_show_journal_empty_hint_when_history_empty',
+    // Экран 31 «Пустой дневник»: speech-bubble + подсказка + CTA «Полить сейчас».
+    testWidgets('should_show_journal_empty_bubble_and_water_cta_when_history_empty',
         (tester) async {
+      tester.view.physicalSize = const Size(1080, 3600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       await tester.pumpWidget(_wrap(
         history: () async => const <CareHistoryEntry>[],
       ));
       await tester.pumpAndSettle();
 
       final l10n = _l10n(tester);
-      expect(find.text(l10n.plantCardJournalEmpty), findsOneWidget);
+      // Speech-bubble text (первого лица).
+      expect(find.text(l10n.plantCardJournalEmptyBubble), findsOneWidget);
+      // Подсказка под bubble.
       expect(find.text(l10n.plantCardJournalEmptyHint), findsOneWidget);
+      // CTA «Полить сейчас» должна присутствовать.
+      expect(find.text(l10n.plantCardJournalWaterNow), findsOneWidget);
+    });
+
+    // CTA «Полить сейчас» открывает sheet (экран 06) с предвыбором полива.
+    testWidgets('should_open_water_sheet_with_preset_when_water_now_tapped',
+        (tester) async {
+      tester.view.physicalSize = const Size(1080, 3600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(_wrap(
+        detail: () async => const Plant(id: _plantId, name: 'Фикус'),
+        history: () async => const <CareHistoryEntry>[],
+      ));
+      await tester.pumpAndSettle();
+
+      final l10n = _l10n(tester);
+      await tester.tap(find.text(l10n.plantCardJournalWaterNow));
+      await tester.pumpAndSettle();
+
+      // Sheet открылся — в нём есть кнопка «Отметить».
+      expect(find.text(l10n.careSheetSubmit), findsOneWidget);
     });
 
     testWidgets('should_show_streak_empty_label_when_count_zero',
@@ -169,11 +201,12 @@ void main() {
       expect(find.text(l10n.plantCardStreakCount(7)), findsOneWidget);
       expect(find.text(l10n.plantCardStreakEmpty), findsNothing);
 
-      // Дневник: запись (подпись типа + заметка), пустой подписи нет.
+      // Дневник: запись (подпись типа + заметка), пустого bubble нет.
       expect(find.byType(PlantJournalCard), findsOneWidget);
       expect(find.text(l10n.careDoneWater), findsOneWidget);
       expect(find.text('Полил утром'), findsOneWidget);
-      expect(find.text(l10n.plantCardJournalEmpty), findsNothing);
+      expect(find.text(l10n.plantCardJournalEmptyBubble), findsNothing);
+      expect(find.text(l10n.plantCardJournalWaterNow), findsNothing);
     });
   });
 
