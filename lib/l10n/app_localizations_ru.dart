@@ -1810,4 +1810,37 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get shoppingEmptyMessage =>
       'Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.';
+
+  @override
+  String get diagnosisTitleIssues => 'Проблемы';
+
+  @override
+  String get diagnosisTitleRecommendations => 'Рекомендации';
+
+  @override
+  String get diagnosisBadgeWarning => '⚠ Что‑то не так';
+
+  @override
+  String get diagnosisHealthyTitle => 'Всё в порядке';
+
+  @override
+  String get diagnosisHealthyMessage => 'Растение здорово — проблем не обнаружено';
+
+  @override
+  String get diagnosisSeverityHigh => 'Критично';
+
+  @override
+  String get diagnosisSeverityMedium => 'Умеренно';
+
+  @override
+  String get diagnosisSeverityLow => 'Незначительно';
+
+  @override
+  String get diagnosisSeverityUnknown => '—';
+
+  @override
+  String get diagnosisRetry => 'Повторить';
+
+  @override
+  String get diagnosisErrorMessage => 'Не удалось загрузить диагноз';
 }
