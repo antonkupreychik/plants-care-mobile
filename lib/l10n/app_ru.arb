@@ -2538,5 +2538,60 @@
   "shoppingEmptyMessage": "Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.",
   "@shoppingEmptyMessage": {
     "description": "Подзаголовок пустого списка покупок (экран 19)"
+  },
+
+  "diagnosisRetry": "Повторить",
+  "@diagnosisRetry": {
+    "description": "Кнопка повтора загрузки диагноза (экран 15)"
+  },
+
+  "diagnosisBadgeWarning": "⚠ Что‑то не так",
+  "@diagnosisBadgeWarning": {
+    "description": "Бейдж-предупреждение в hero-секции когда есть проблемы (экран 15)"
+  },
+
+  "diagnosisHealthyTitle": "Всё в порядке",
+  "@diagnosisHealthyTitle": {
+    "description": "Заголовок пустого состояния «Всё в порядке» (экран 15)"
+  },
+
+  "diagnosisHealthyMessage": "Растение здорово — проблем не обнаружено",
+  "@diagnosisHealthyMessage": {
+    "description": "Подпись к пустому состоянию «Всё в порядке» (экран 15)"
+  },
+
+  "diagnosisTitleIssues": "Проблемы",
+  "@diagnosisTitleIssues": {
+    "description": "Заголовок секции проблем на экране «Диагноз растения» (15)"
+  },
+
+  "diagnosisSeverityHigh": "Критично",
+  "@diagnosisSeverityHigh": {
+    "description": "Бейдж серьёзности проблемы: критично (экран 15)"
+  },
+
+  "diagnosisSeverityMedium": "Умеренно",
+  "@diagnosisSeverityMedium": {
+    "description": "Бейдж серьёзности проблемы: умеренно (экран 15)"
+  },
+
+  "diagnosisSeverityLow": "Незначительно",
+  "@diagnosisSeverityLow": {
+    "description": "Бейдж серьёзности проблемы: незначительно (экран 15)"
+  },
+
+  "diagnosisSeverityUnknown": "—",
+  "@diagnosisSeverityUnknown": {
+    "description": "Бейдж серьёзности проблемы: неизвестно / forward-compat (экран 15)"
+  },
+
+  "diagnosisTitleRecommendations": "Рекомендации",
+  "@diagnosisTitleRecommendations": {
+    "description": "Заголовок секции рекомендаций на экране «Диагноз растения» (15)"
+  },
+
+  "diagnosisErrorMessage": "Не удалось загрузить диагноз",
+  "@diagnosisErrorMessage": {
+    "description": "Сообщение об ошибке загрузки диагноза (экран 15)"
   }
 }

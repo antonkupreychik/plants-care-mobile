@@ -1813,10 +1813,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.';
 
   @override
-  String get diagnosisTitleIssues => 'Проблемы';
-
-  @override
-  String get diagnosisTitleRecommendations => 'Рекомендации';
+  String get diagnosisRetry => 'Повторить';
 
   @override
   String get diagnosisBadgeWarning => '⚠ Что‑то не так';
@@ -1825,7 +1822,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get diagnosisHealthyTitle => 'Всё в порядке';
 
   @override
-  String get diagnosisHealthyMessage => 'Растение здорово — проблем не обнаружено';
+  String get diagnosisHealthyMessage =>
+      'Растение здорово — проблем не обнаружено';
+
+  @override
+  String get diagnosisTitleIssues => 'Проблемы';
 
   @override
   String get diagnosisSeverityHigh => 'Критично';
@@ -1840,7 +1841,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get diagnosisSeverityUnknown => '—';
 
   @override
-  String get diagnosisRetry => 'Повторить';
+  String get diagnosisTitleRecommendations => 'Рекомендации';
 
   @override
   String get diagnosisErrorMessage => 'Не удалось загрузить диагноз';

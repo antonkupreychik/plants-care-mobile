@@ -2896,17 +2896,11 @@ abstract class AppLocalizations {
   /// **'Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.'**
   String get shoppingEmptyMessage;
 
-  /// Заголовок секции проблем на экране «Диагноз растения» (15)
+  /// Кнопка повтора загрузки диагноза (экран 15)
   ///
   /// In ru, this message translates to:
-  /// **'Проблемы'**
-  String get diagnosisTitleIssues;
-
-  /// Заголовок секции рекомендаций на экране «Диагноз растения» (15)
-  ///
-  /// In ru, this message translates to:
-  /// **'Рекомендации'**
-  String get diagnosisTitleRecommendations;
+  /// **'Повторить'**
+  String get diagnosisRetry;
 
   /// Бейдж-предупреждение в hero-секции когда есть проблемы (экран 15)
   ///
@@ -2925,6 +2919,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Растение здорово — проблем не обнаружено'**
   String get diagnosisHealthyMessage;
+
+  /// Заголовок секции проблем на экране «Диагноз растения» (15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Проблемы'**
+  String get diagnosisTitleIssues;
 
   /// Бейдж серьёзности проблемы: критично (экран 15)
   ///
@@ -2950,11 +2950,11 @@ abstract class AppLocalizations {
   /// **'—'**
   String get diagnosisSeverityUnknown;
 
-  /// Кнопка повтора загрузки диагноза (экран 15)
+  /// Заголовок секции рекомендаций на экране «Диагноз растения» (15)
   ///
   /// In ru, this message translates to:
-  /// **'Повторить'**
-  String get diagnosisRetry;
+  /// **'Рекомендации'**
+  String get diagnosisTitleRecommendations;
 
   /// Сообщение об ошибке загрузки диагноза (экран 15)
   ///
