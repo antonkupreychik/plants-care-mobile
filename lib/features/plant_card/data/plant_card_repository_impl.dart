@@ -81,11 +81,9 @@ class PlantCardRepositoryImpl implements PlantCardRepository {
   @override
   Future<Result<PlantHealth>> getPlantHealth(int plantId) async {
     try {
-      // Публичный эндпоинт: AuthScope.none → интерсептор не вешает
-      // X-User-Id/X-Chat-Id. Без header-параметра в сгенерированном клиенте.
       final dto = await _api.plants.getPlantHealth(
         id: plantId,
-        extras: authScopeExtra(AuthScope.none),
+        extras: authScopeExtra(AuthScope.user),
       );
       return Result.success(dto.toDomain());
     } on DioException catch (e) {

@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'app_localizations_en.dart';
 import 'app_localizations_ru.dart';
 
 // ignore_for_file: type=lint
@@ -93,10 +92,7 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('ru'),
-    Locale('en'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('ru')];
 
   /// Надзаголовок-капс над приветствием на главном экране
   ///
@@ -3002,43 +2998,41 @@ abstract class AppLocalizations {
   /// **'Добавить'**
   String get catalogNotInCatalogAdd;
 
-  // ── language screen (issue #34) ──────────────────────────────────────────
-
-  /// Заголовок экрана выбора языка
+  /// Заголовок пункта меню «Язык» в профиле (экран 13)
   ///
   /// In ru, this message translates to:
-  /// **'Язык'**
+  /// **'Язык / Language'**
   String get languageScreenTitle;
 
-  /// Подзаголовок экрана выбора языка
-  ///
-  /// In ru, this message translates to:
-  /// **'Реплики растений тоже переведём — характер сохранится'**
-  String get languageScreenSubtitle;
-
-  /// Подсказка на экране выбора языка о системном языке и форматировании
-  ///
-  /// In ru, this message translates to:
-  /// **'Системный язык устройства — русский. Дату и время форматируем по выбранному языку.'**
-  String get languageScreenHint;
-
-  /// Кнопка/семантика возврата на экране языка
+  /// Tooltip кнопки «назад» на экране 38 «Язык приложения»
   ///
   /// In ru, this message translates to:
   /// **'Назад'**
   String get languageBack;
 
-  /// Первая (неакцентная) часть заголовка экрана языка (экран 38)
+  /// Первая (незакрашенная) часть заголовка экрана 38 — «Язык »
   ///
   /// In ru, this message translates to:
   /// **'Язык '**
   String get languageScreenTitleLead;
 
-  /// Акцентная (курсив, primary) часть заголовка экрана языка (экран 38)
+  /// Вторая (primary italic) часть заголовка экрана 38 — «приложения»
   ///
   /// In ru, this message translates to:
   /// **'приложения'**
   String get languageScreenTitleAccent;
+
+  /// Подзаголовок под заголовком на экране 38
+  ///
+  /// In ru, this message translates to:
+  /// **'Реплики растений тоже переведём — характер сохранится'**
+  String get languageScreenSubtitle;
+
+  /// Подсказка внизу экрана 38 о форматировании даты/времени
+  ///
+  /// In ru, this message translates to:
+  /// **'Дату и время форматируем по выбранному языку.'**
+  String get languageScreenHint;
 }
 
 class _AppLocalizationsDelegate
@@ -3052,7 +3046,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['ru', 'en'].contains(locale.languageCode);
+      <String>['ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -3061,8 +3055,6 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
     case 'ru':
       return AppLocalizationsRu();
   }

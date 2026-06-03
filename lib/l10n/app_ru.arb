@@ -2626,5 +2626,35 @@
   "catalogNotInCatalogAdd": "Добавить",
   "@catalogNotInCatalogAdd": {
     "description": "Кнопка CTA-карточки «Нет в каталоге» на экране 30: добавить растение вручную"
+  },
+
+  "languageScreenTitle": "Язык / Language",
+  "@languageScreenTitle": {
+    "description": "Заголовок пункта меню «Язык» в профиле (экран 13)"
+  },
+
+  "languageBack": "Назад",
+  "@languageBack": {
+    "description": "Tooltip кнопки «назад» на экране 38 «Язык приложения»"
+  },
+
+  "languageScreenTitleLead": "Язык ",
+  "@languageScreenTitleLead": {
+    "description": "Первая (незакрашенная) часть заголовка экрана 38 — «Язык »"
+  },
+
+  "languageScreenTitleAccent": "приложения",
+  "@languageScreenTitleAccent": {
+    "description": "Вторая (primary italic) часть заголовка экрана 38 — «приложения»"
+  },
+
+  "languageScreenSubtitle": "Реплики растений тоже переведём — характер сохранится",
+  "@languageScreenSubtitle": {
+    "description": "Подзаголовок под заголовком на экране 38"
+  },
+
+  "languageScreenHint": "Дату и время форматируем по выбранному языку.",
+  "@languageScreenHint": {
+    "description": "Подсказка внизу экрана 38 о форматировании даты/времени"
   }
 }

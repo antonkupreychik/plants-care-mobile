@@ -1868,18 +1868,8 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get catalogNotInCatalogAdd => 'Добавить';
 
-  // ── language screen (issue #34) ──────────────────────────────────────────
-
   @override
-  String get languageScreenTitle => 'Язык';
-
-  @override
-  String get languageScreenSubtitle =>
-      'Реплики растений тоже переведём — характер сохранится';
-
-  @override
-  String get languageScreenHint =>
-      'Системный язык устройства — русский. Дату и время форматируем по выбранному языку.';
+  String get languageScreenTitle => 'Язык / Language';
 
   @override
   String get languageBack => 'Назад';
@@ -1889,4 +1879,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get languageScreenTitleAccent => 'приложения';
+
+  @override
+  String get languageScreenSubtitle =>
+      'Реплики растений тоже переведём — характер сохранится';
+
+  @override
+  String get languageScreenHint =>
+      'Дату и время форматируем по выбранному языку.';
 }
