@@ -498,7 +498,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get catalogTitle => 'Catalog';
 
   @override
-  String get catalogHeading => 'Plant catalog';
+  String get catalogHeadingLead => 'Plant ';
+
+  @override
+  String get catalogHeadingAccent => 'catalog';
+
+  @override
+  String get catalogBadgePopular => 'HIT';
+
+  @override
+  String get catalogBadgeToxic => '⚠ TOXIC · 🐈';
+
+  @override
+  String get catalogFilterAll => 'All';
+
+  @override
+  String get catalogFilterBeginner => 'For beginners';
+
+  @override
+  String get catalogFilterPetSafe => 'Cat-safe 🐈';
+
+  @override
+  String get catalogFilterFlowering => 'Flowering';
 
   @override
   String get catalogSearchHint => 'Find a species…';

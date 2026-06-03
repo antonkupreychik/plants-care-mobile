@@ -38,5 +38,13 @@ abstract class Species with _$Species {
 
     /// Предпочтение освещённости (domain-enum, замаплен из строки backend).
     @Default(LightPreference.unknown) LightPreference lightPreference,
+
+    /// Популярный вид — показываем бейдж «HIT» рядом с именем (экран 12).
+    /// `null` — backend не отдал признак (бейдж не показываем).
+    bool? popular,
+
+    /// Токсичен (хотя бы для кошек) — показываем бейдж «⚠ ТОКСИЧНО · 🐈» в
+    /// мета-строке (экран 12). `null`/`false` — бейдж не показываем.
+    bool? toxic,
   }) = _Species;
 }
