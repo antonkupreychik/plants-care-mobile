@@ -115,6 +115,13 @@ class ProfileScreen extends ConsumerWidget {
                     divider: true,
                     onTap: () => context.push('/profile/quiet-hours'),
                   ),
+                  // Экран 38 «Язык приложения» → push поверх shell.
+                  SettingsRow(
+                    title: l10n.languageScreenTitle,
+                    icon: Icons.language_outlined,
+                    divider: true,
+                    onTap: () => context.push('/profile/language'),
+                  ),
                   // Выход из аккаунта (MADR-008): сбрасывает токены/сессию,
                   // router-guard уводит на экран входа. Деструктивная строка.
                   SettingsRow(

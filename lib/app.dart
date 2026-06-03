@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'features/language/presentation/language_providers.dart';
 import 'l10n/app_localizations.dart';
 
 /// Корневой виджет. Тема переключается по системной (light/dark), навигация —
@@ -54,6 +55,10 @@ class _PlantCareAppState extends ConsumerState<PlantCareApp> {
 
   @override
   Widget build(BuildContext context) {
+    // localeProvider хранит выбранный пользователем язык (keepAlive, persisted).
+    // .value: в состоянии loading/error возвращает null → fallback к ru.
+    final localeAsync = ref.watch(localeProvider);
+
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
@@ -62,7 +67,7 @@ class _PlantCareAppState extends ConsumerState<PlantCareApp> {
       themeMode: ThemeMode.system,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      locale: const Locale('ru'),
+      locale: localeAsync.value ?? const Locale('ru'),
       routerConfig: ref.watch(appRouterProvider),
     );
   }

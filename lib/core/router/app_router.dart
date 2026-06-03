@@ -21,6 +21,7 @@ import '../../features/home/presentation/today_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/language/presentation/language_screen.dart';
 import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
@@ -332,6 +333,14 @@ GoRouter appRouter(Ref ref) {
                   name: 'shopping',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const ShoppingScreen(),
+                ),
+                // Экран 38 «Язык приложения» — полноэкранно поверх shell (своя
+                // кнопка «назад», без таб-бара), как quiet-hours/shopping.
+                GoRoute(
+                  path: 'language',
+                  name: 'language',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const LanguageScreen(),
                 ),
               ],
             ),
