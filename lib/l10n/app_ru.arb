@@ -800,14 +800,14 @@
     "description": "Заголовок шага превью плана ухода"
   },
 
-  "addPlantCarePlanSubtitle": "Рекомендации по виду. Изменить пока нельзя.",
+  "addPlantCarePlanSubtitle": "Рекомендации по виду. После создания вы сможете настроить расписание.",
   "@addPlantCarePlanSubtitle": {
-    "description": "Подпись под заголовком шага плана ухода (read-only)"
+    "description": "Подпись под заголовком шага плана ухода"
   },
 
-  "addPlantCarePlanReadOnly": "Только просмотр",
+  "addPlantCarePlanReadOnly": "После создания расписание можно настроить под себя",
   "@addPlantCarePlanReadOnly": {
-    "description": "Бейдж-пометка на шаге плана ухода: план редактировать нельзя"
+    "description": "Информационная подсказка на шаге плана ухода"
   },
 
   "addPlantCarePlanEvery": "{count, plural, one{каждый день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}",

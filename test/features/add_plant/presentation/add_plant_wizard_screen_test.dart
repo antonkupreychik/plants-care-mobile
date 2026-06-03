@@ -41,6 +41,9 @@ Future<List<SpeciesSummary>> _pending() => Completer<List<SpeciesSummary>>().fut
 /// мы должны вернуться сюда.
 const _hostMarker = Key('host-screen');
 
+/// Маркер экрана расписания — после успешного submit мастер переходит сюда.
+const _scheduleMarker = Key('edit-schedule-screen');
+
 /// Монтирует мастер на отдельном маршруте `/add` поверх хост-экрана через
 /// настоящий GoRouter — так `context.pop()`/`context.go()` внутри мастера
 /// работают, как в проде (мастер на root-навигаторе поверх shell).
@@ -64,6 +67,21 @@ Future<void> _pump(
           GoRoute(
             path: 'add',
             builder: (_, _) => const AddPlantWizardScreen(),
+          ),
+          GoRoute(
+            path: 'plants/:id',
+            routes: [
+              GoRoute(
+                path: 'schedule',
+                name: 'editSchedule',
+                builder: (_, _) => const Scaffold(
+                  body: Center(
+                    child: Text('расписание', key: _scheduleMarker),
+                  ),
+                ),
+              ),
+            ],
+            builder: (_, _) => const SizedBox(),
           ),
         ],
       ),
@@ -301,7 +319,7 @@ void main() {
       expect(find.text(l10n.addPlantSubmit), findsOneWidget);
     });
 
-    testWidgets('should_close_wizard_and_show_snackbar_on_success',
+    testWidgets('should_navigate_to_edit_schedule_on_success',
         (tester) async {
       final repo = _MockRepo();
       when(() => repo.createPlant(
@@ -318,10 +336,9 @@ void main() {
       await tester.tap(find.text(l10n.addPlantSubmit));
       await tester.pumpAndSettle();
 
-      // Мастер закрыт (вернулись на хост-экран), snackbar показан.
+      // Мастер закрыт, открылся экран редактирования расписания (G14).
       expect(find.byType(AddPlantWizardScreen), findsNothing);
-      expect(find.byKey(_hostMarker), findsOneWidget);
-      expect(find.text(l10n.addPlantSubmitted), findsOneWidget);
+      expect(find.byKey(_scheduleMarker), findsOneWidget);
       verify(() => repo.createPlant(
             name: 'Алоэ',
             locationId: any(named: 'locationId'),

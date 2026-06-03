@@ -142,13 +142,16 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
       addPlantWizardControllerProvider.select((s) => s.status),
       (prev, next) {
         if (next is AddPlantSuccess) {
-          // Захватываем messenger до pop: после _close() этот context
-          // размонтируется, и ScaffoldMessenger.of(context) был бы хрупок.
-          final messenger = ScaffoldMessenger.of(context);
-          _close();
-          messenger
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text(l10n.addPlantSubmitted)));
+          // Переходим на экран редактирования расписания нового растения (G14).
+          // goNamed сбрасывает весь стек Home и открывает editSchedule
+          // поверх shell — пользователь сразу настраивает расписания.
+          final plantId = next.plantId;
+          final plantName = state.draft.trimmedName;
+          context.goNamed(
+            'editSchedule',
+            pathParameters: {'id': plantId.toString()},
+            extra: plantName,
+          );
         }
       },
     );

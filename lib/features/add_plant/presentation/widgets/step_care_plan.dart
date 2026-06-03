@@ -6,11 +6,11 @@ import '../../domain/species_summary.dart';
 import 'care_plan_preview.dart';
 import 'wizard_chrome.dart';
 
-/// Шаг 3 мастера: read-only превью плана ухода по выбранному виду.
+/// Шаг 3 мастера: превью плана ухода по выбранному виду.
 ///
-/// Ничего не редактируется и не персистится — это рекомендация по виду
-/// (backend не сохраняет расписания, см. BACKEND-GAPS). Если вид не выбран —
-/// нейтральная подсказка.
+/// Показывает рекомендованные интервалы из вида. После создания растения
+/// мастер открывает экран 22 «Редактирование расписания» — пользователь
+/// настраивает реальные расписания там. Если вид не выбран — нейтральная подсказка.
 class StepCarePlan extends StatelessWidget {
   const StepCarePlan({super.key, required this.species});
 
@@ -32,7 +32,7 @@ class StepCarePlan extends StatelessWidget {
           subtitle: l10n.addPlantCarePlanSubtitle,
         ),
         const SizedBox(height: 12),
-        _ReadOnlyNotice(text: l10n.addPlantCarePlanReadOnly),
+        _InfoNotice(text: l10n.addPlantCarePlanReadOnly),
         const SizedBox(height: 18),
         if (species == null)
           CarePlanHint(message: l10n.addPlantCarePlanEmpty)
@@ -47,9 +47,9 @@ class StepCarePlan extends StatelessWidget {
   }
 }
 
-/// Бейдж-пометка «рекомендация, изменить нельзя».
-class _ReadOnlyNotice extends StatelessWidget {
-  const _ReadOnlyNotice({required this.text});
+/// Информационная подсказка: расписание настроите после создания.
+class _InfoNotice extends StatelessWidget {
+  const _InfoNotice({required this.text});
 
   final String text;
 
@@ -64,7 +64,7 @@ class _ReadOnlyNotice extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.lock_outline_rounded, size: 16, color: c.primary),
+          Icon(Icons.info_outline_rounded, size: 16, color: c.primary),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
