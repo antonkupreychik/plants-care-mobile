@@ -383,6 +383,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Log the first care — and the history will appear here';
 
   @override
+  String get plantCardJournalEmptyBubble => 'Waiting for the first care…';
+
+  @override
+  String get plantCardJournalWaterNow => 'Water now';
+
+  @override
   String get plantCardJournalOnTime => 'on time';
 
   @override
