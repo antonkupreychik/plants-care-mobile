@@ -18,14 +18,25 @@ import 'wizard_chrome.dart';
 /// Шаг 1 мастера: поиск и выбор вида. Вид опционален — есть строка «создать без
 /// вида» (пропуск). Debounce ввода ~300мс держит локальный [Timer]: в state
 /// провайдера уходит только «успокоившийся» запрос, не каждый кейстрок.
+///
+/// Над списком — заглушка «распознать по фото» ([onRecognize], бэклог) и ряд
+/// чипов-категорий (пресеты текстового поиска через параметр `q`).
 class StepSpecies extends ConsumerStatefulWidget {
-  const StepSpecies({super.key, required this.onSelected, required this.onSkip});
+  const StepSpecies({
+    super.key,
+    required this.onSelected,
+    required this.onSkip,
+    required this.onRecognize,
+  });
 
   /// Вид выбран → контроллер.selectSpecies(...) + переход на шаг 2.
   final ValueChanged<SpeciesSummary> onSelected;
 
   /// Создать без вида → шаг 2 (имя вводится вручную).
   final VoidCallback onSkip;
+
+  /// Тап по заглушке «распознать по фото» (бэклог) — экран показывает снэкбар.
+  final VoidCallback onRecognize;
 
   @override
   ConsumerState<StepSpecies> createState() => _StepSpeciesState();
@@ -40,6 +51,28 @@ class _StepSpeciesState extends ConsumerState<StepSpecies> {
   /// «Успокоившийся» запрос, по которому реально дёргаем провайдер.
   String _query = '';
 
+  /// Индекс активного чипа-категории (0 — «Популярное»). Сбрасывается в -1 при
+  /// ручном вводе (пользователь ушёл от пресета).
+  int _activeCategory = 0;
+
+  /// Чипы-категории: пресеты текстового поиска. «Популярное» (query == null)
+  /// очищает строку — backend отдаёт топ видов. Лейблы берутся из l10n в build.
+  List<_SpeciesCategory> _categories(AppLocalizations l10n) => [
+        _SpeciesCategory(label: l10n.addPlantCategoryPopular),
+        _SpeciesCategory(
+          label: l10n.addPlantCategoryBeginner,
+          query: l10n.addPlantCategoryBeginner,
+        ),
+        _SpeciesCategory(
+          label: l10n.addPlantCategoryFlowering,
+          query: l10n.addPlantCategoryFlowering,
+        ),
+        _SpeciesCategory(
+          label: l10n.addPlantCategoryLowWater,
+          query: l10n.addPlantCategoryLowWater,
+        ),
+      ];
+
   @override
   void dispose() {
     _debounceTimer?.cancel();
@@ -51,7 +84,24 @@ class _StepSpeciesState extends ConsumerState<StepSpecies> {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(_debounce, () {
       if (!mounted) return;
-      setState(() => _query = value.trim());
+      setState(() {
+        _query = value.trim();
+        // Ручной ввод отвязывает активный пресет (если текст разошёлся).
+        _activeCategory = -1;
+      });
+    });
+  }
+
+  /// Применить чип-категорию: подставляем пресет в строку поиска и в `_query`
+  /// сразу (без debounce — выбор явный). Текст в поле синхронизируем.
+  void _selectCategory(int index, _SpeciesCategory category) {
+    _debounceTimer?.cancel();
+    final query = category.query ?? '';
+    _controller.text = query;
+    _controller.selection = TextSelection.collapsed(offset: query.length);
+    setState(() {
+      _activeCategory = index;
+      _query = query.trim();
     });
   }
 
@@ -59,6 +109,7 @@ class _StepSpeciesState extends ConsumerState<StepSpecies> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final results = ref.watch(speciesSearchProvider(_query));
+    final categories = _categories(l10n);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +121,15 @@ class _StepSpeciesState extends ConsumerState<StepSpecies> {
         ),
         const SizedBox(height: 18),
         _SearchField(controller: _controller, onChanged: _onChanged),
-        const SizedBox(height: 16),
+        const SizedBox(height: 10),
+        _RecognizeCard(onTap: widget.onRecognize),
+        const SizedBox(height: 14),
+        _CategoryRow(
+          categories: categories,
+          activeIndex: _activeCategory,
+          onSelected: _selectCategory,
+        ),
+        const SizedBox(height: 14),
         _SkipCard(onTap: widget.onSkip),
         const SizedBox(height: 14),
         results.when(
@@ -93,6 +152,158 @@ class _StepSpeciesState extends ConsumerState<StepSpecies> {
           },
         ),
       ],
+    );
+  }
+}
+
+/// Быстрый пресет поиска вида (чип категории). `query == null` → «Популярное»:
+/// очищаем строку, backend отдаёт топ видов. Остальные подставляют текст в
+/// существующий параметр `q` — отдельного category-эндпоинта на backend нет,
+/// чипы это пресеты текстового поиска, а не новый контракт.
+class _SpeciesCategory {
+  const _SpeciesCategory({required this.label, this.query});
+
+  final String label;
+  final String? query;
+}
+
+/// Заглушка «распознать по фото» (бэклог): терракотовая карточка-подсказка.
+/// Тап показывает снэкбар «скоро» (см. [onTap]).
+class _RecognizeCard extends StatelessWidget {
+  const _RecognizeCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.addPlantRecognizeHint,
+      child: Material(
+        color: c.surfaceWarm,
+        borderRadius: BorderRadius.circular(14),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              children: [
+                Container(
+                  width: 26,
+                  height: 26,
+                  decoration: BoxDecoration(
+                    color: c.terracotta,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.photo_camera_outlined,
+                      size: 15, color: Colors.white),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    l10n.addPlantRecognizeHint,
+                    style: TextStyle(fontSize: 12, color: c.ink),
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: c.primarySoft,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    l10n.addPlantRecognizeBadge,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.4,
+                      color: c.primary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Горизонтальный ряд чипов-категорий (пресеты поиска).
+class _CategoryRow extends StatelessWidget {
+  const _CategoryRow({
+    required this.categories,
+    required this.activeIndex,
+    required this.onSelected,
+  });
+
+  final List<_SpeciesCategory> categories;
+  final int activeIndex;
+  final void Function(int index, _SpeciesCategory category) onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      clipBehavior: Clip.none,
+      child: Row(
+        children: [
+          for (var i = 0; i < categories.length; i++) ...[
+            _CategoryChip(
+              label: categories[i].label,
+              selected: i == activeIndex,
+              onTap: () => onSelected(i, categories[i]),
+            ),
+            if (i != categories.length - 1) const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _CategoryChip extends StatelessWidget {
+  const _CategoryChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: Material(
+        color: selected ? c.fab : c.chipBg,
+        borderRadius: BorderRadius.circular(999),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: selected ? c.fabInk : c.ink,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

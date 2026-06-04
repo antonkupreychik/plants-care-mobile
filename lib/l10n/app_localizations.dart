@@ -634,6 +634,84 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Свободно} one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}'**
   String scheduleDayTasksCount(int count);
 
+  /// Заголовок экрана 11 «График» (agenda)
+  ///
+  /// In ru, this message translates to:
+  /// **'График ухода'**
+  String get scheduleTitle;
+
+  /// Символ нулевой нагрузки в день-селекторе (0 задач)
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get scheduleDayLoadHint;
+
+  /// Подзаголовок выбранного дня: сколько задач отмечено из общего числа
+  ///
+  /// In ru, this message translates to:
+  /// **'{done} из {total} готово'**
+  String scheduleDayProgress(int done, int total);
+
+  /// Заголовок утренней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Утро'**
+  String get schedulePhaseMorning;
+
+  /// Заголовок вечерней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Вечер'**
+  String get schedulePhaseEvening;
+
+  /// Заголовок секции выполненных задач agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделано'**
+  String get schedulePhaseDone;
+
+  /// Условное время утренней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'9:00'**
+  String get schedulePhaseMorningTime;
+
+  /// Условное время вечерней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'19:00'**
+  String get schedulePhaseEveningTime;
+
+  /// Подпись просроченной задачи в строке agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Просрочено · со вчера'**
+  String get scheduleOverdueSubtitle;
+
+  /// Подпись строки задачи: действие и вид растения
+  ///
+  /// In ru, this message translates to:
+  /// **'{action} · {species}'**
+  String scheduleTaskSubtitle(String action, String species);
+
+  /// Заглушка дня без задач на экране 11 «График»
+  ///
+  /// In ru, this message translates to:
+  /// **'На этот день забот нет 🌿'**
+  String get scheduleDayEmpty;
+
+  /// Подпись кнопки-чека (semantics) для отметки ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить выполненным'**
+  String get scheduleMarkDone;
+
+  /// Баннер ошибки при неудачной оптимистичной отметке ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось отметить уход. Попробуйте ещё раз.'**
+  String get scheduleMarkError;
+
   /// Количество дней владения растением
   ///
   /// In ru, this message translates to:
@@ -898,11 +976,53 @@ abstract class AppLocalizations {
   /// **'Каталог'**
   String get catalogTitle;
 
-  /// Серифный заголовок экрана каталога видов
+  /// Серифный заголовок каталога, обычная часть (перед акцентом)
   ///
   /// In ru, this message translates to:
-  /// **'Каталог растений'**
-  String get catalogHeading;
+  /// **'Каталог '**
+  String get catalogHeadingLead;
+
+  /// Серифный заголовок каталога, акцентная часть (primary, italic)
+  ///
+  /// In ru, this message translates to:
+  /// **'растений'**
+  String get catalogHeadingAccent;
+
+  /// Бейдж популярного вида рядом с именем в списке каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'HIT'**
+  String get catalogBadgePopular;
+
+  /// Бейдж токсичности вида (для кошек) в мета-строке каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'⚠ ТОКСИЧНО · 🐈'**
+  String get catalogBadgeToxic;
+
+  /// Чип-фильтр каталога «Все виды» (активен по умолчанию)
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get catalogFilterAll;
+
+  /// Чип-фильтр каталога «Для новичка»
+  ///
+  /// In ru, this message translates to:
+  /// **'Для новичка'**
+  String get catalogFilterBeginner;
+
+  /// Чип-фильтр каталога «Безопасно для котов»
+  ///
+  /// In ru, this message translates to:
+  /// **'Безопасно для котов 🐈'**
+  String get catalogFilterPetSafe;
+
+  /// Чип-фильтр каталога «Цветущие»
+  ///
+  /// In ru, this message translates to:
+  /// **'Цветущие'**
+  String get catalogFilterFlowering;
 
   /// Плейсхолдер поля поиска по каталогу видов
   ///
@@ -1371,6 +1491,162 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Растение добавлено'**
   String get addPlantSubmitted;
+
+  /// CTA финального шага: создать растение и добавить в сад
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить в сад'**
+  String get addPlantSubmitGarden;
+
+  /// Бейдж внутри поля поиска вида: распознать по фото (заглушка)
+  ///
+  /// In ru, this message translates to:
+  /// **'ФОТО'**
+  String get addPlantRecognizeBadge;
+
+  /// Подсказка-заглушка распознавания вида по фото на шаге выбора вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Сфотографируй — определим по листу'**
+  String get addPlantRecognizeHint;
+
+  /// Снэкбар: функция распознавания по фото ещё не готова
+  ///
+  /// In ru, this message translates to:
+  /// **'Распознавание по фото скоро появится'**
+  String get addPlantRecognizeUnavailable;
+
+  /// Чип категории видов: популярные
+  ///
+  /// In ru, this message translates to:
+  /// **'Популярное'**
+  String get addPlantCategoryPopular;
+
+  /// Чип категории видов: для новичка
+  ///
+  /// In ru, this message translates to:
+  /// **'Для новичка'**
+  String get addPlantCategoryBeginner;
+
+  /// Чип категории видов: цветущие
+  ///
+  /// In ru, this message translates to:
+  /// **'Цветущие'**
+  String get addPlantCategoryFlowering;
+
+  /// Чип категории видов: суккуленты и редкий полив
+  ///
+  /// In ru, this message translates to:
+  /// **'Без полива'**
+  String get addPlantCategoryLowWater;
+
+  /// CTA на шаге имя+комната: создать новую комнату
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить своё помещение'**
+  String get addPlantNewRoom;
+
+  /// Заголовок шага фото + сторона окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделай портрет'**
+  String get addPlantPhotoTitle;
+
+  /// Надзаголовок шага фото + сторона окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Последний штрих'**
+  String get addPlantPhotoOverline;
+
+  /// Подпись под заголовком шага фото + сторона окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Фото поможет узнать растение и отслеживать его рост.'**
+  String get addPlantPhotoSubtitle;
+
+  /// Подпись плейсхолдера фото: реальная загрузка ещё не готова
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока используется иллюстрация'**
+  String get addPlantPhotoPlaceholder;
+
+  /// Кнопка-заглушка: снять фото камерой
+  ///
+  /// In ru, this message translates to:
+  /// **'Камера'**
+  String get addPlantPhotoCamera;
+
+  /// Кнопка-заглушка: выбрать фото из галереи
+  ///
+  /// In ru, this message translates to:
+  /// **'Из галереи'**
+  String get addPlantPhotoGallery;
+
+  /// Снэкбар: загрузка фото ещё не готова
+  ///
+  /// In ru, this message translates to:
+  /// **'Загрузка фото скоро появится'**
+  String get addPlantPhotoUnavailable;
+
+  /// Заголовок секции выбора стороны окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Куда смотрит окно'**
+  String get addPlantWindowLabel;
+
+  /// Подпись: выбор стороны окна необязателен
+  ///
+  /// In ru, this message translates to:
+  /// **'необязательно'**
+  String get addPlantWindowOptional;
+
+  /// Сторона окна: юг
+  ///
+  /// In ru, this message translates to:
+  /// **'Юг'**
+  String get addPlantWindowSouth;
+
+  /// Подпись стороны окна: юг
+  ///
+  /// In ru, this message translates to:
+  /// **'много солнца'**
+  String get addPlantWindowSouthHint;
+
+  /// Сторона окна: восток
+  ///
+  /// In ru, this message translates to:
+  /// **'Восток'**
+  String get addPlantWindowEast;
+
+  /// Подпись стороны окна: восток
+  ///
+  /// In ru, this message translates to:
+  /// **'мягкое утро'**
+  String get addPlantWindowEastHint;
+
+  /// Сторона окна: запад
+  ///
+  /// In ru, this message translates to:
+  /// **'Запад'**
+  String get addPlantWindowWest;
+
+  /// Подпись стороны окна: запад
+  ///
+  /// In ru, this message translates to:
+  /// **'тёплый вечер'**
+  String get addPlantWindowWestHint;
+
+  /// Сторона окна: север
+  ///
+  /// In ru, this message translates to:
+  /// **'Север'**
+  String get addPlantWindowNorth;
+
+  /// Подпись стороны окна: север
+  ///
+  /// In ru, this message translates to:
+  /// **'мало света'**
+  String get addPlantWindowNorthHint;
 
   /// Уровень сложности ухода за видом: лёгкий
   ///

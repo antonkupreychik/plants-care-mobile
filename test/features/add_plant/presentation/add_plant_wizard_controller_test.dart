@@ -9,6 +9,7 @@ import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/features/add_plant/data/add_plant_repository_provider.dart';
 import 'package:plantcare_mobile/features/add_plant/domain/add_plant_repository.dart';
 import 'package:plantcare_mobile/features/add_plant/domain/species_summary.dart';
+import 'package:plantcare_mobile/features/add_plant/domain/window_side.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_controller.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_state.dart';
 import 'package:plantcare_mobile/features/edit_schedule/data/edit_schedule_repository_provider.dart';
@@ -674,6 +675,76 @@ void main() {
         const AddPlantSubmitStatus.failure(ApiError.network()),
       );
       verifyNever(() => scheduleRepo.updateSchedule(any(), any()));
+    });
+  });
+
+  group('setWindowSide (step 04c)', () {
+    test('should_set_window_side_when_selected', () {
+      final container = _makeContainer();
+      final notifier =
+          container.read(addPlantWizardControllerProvider.notifier);
+
+      notifier.setWindowSide(WindowSide.south);
+
+      expect(
+        container.read(addPlantWizardControllerProvider).draft.windowSide,
+        WindowSide.south,
+      );
+    });
+
+    test('should_clear_window_side_when_same_side_tapped_again', () {
+      final container = _makeContainer();
+      final notifier =
+          container.read(addPlantWizardControllerProvider.notifier);
+
+      notifier.setWindowSide(WindowSide.west);
+      notifier.setWindowSide(WindowSide.west);
+
+      expect(
+        container.read(addPlantWizardControllerProvider).draft.windowSide,
+        isNull,
+      );
+    });
+
+    test('should_replace_window_side_when_different_side_tapped', () {
+      final container = _makeContainer();
+      final notifier =
+          container.read(addPlantWizardControllerProvider.notifier);
+
+      notifier.setWindowSide(WindowSide.east);
+      notifier.setWindowSide(WindowSide.north);
+
+      expect(
+        container.read(addPlantWizardControllerProvider).draft.windowSide,
+        WindowSide.north,
+      );
+    });
+
+    test('should_not_send_window_side_to_createPlant_ui_only', () async {
+      final addRepo = _MockAddPlantRepo();
+      when(() => addRepo.createPlant(
+            name: any(named: 'name'),
+            locationId: any(named: 'locationId'),
+            notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+          )).thenAnswer((_) async => const Result.success(1));
+
+      final container = _makeContainer(addPlantRepo: addRepo);
+      final notifier =
+          container.read(addPlantWizardControllerProvider.notifier);
+      notifier.setName('Моника');
+      notifier.setWindowSide(WindowSide.south);
+
+      await notifier.submit();
+
+      // Сторона окна — UI-only: backend поля нет, в POST /plants не уходит.
+      // createPlant вызывается без параметра стороны окна (его в сигнатуре нет).
+      verify(() => addRepo.createPlant(
+            name: 'Моника',
+            locationId: any(named: 'locationId'),
+            notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+          )).called(1);
     });
   });
 }

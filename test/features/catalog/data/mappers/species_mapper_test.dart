@@ -53,6 +53,37 @@ void main() {
       // null enum-коды → unknown (не падаем).
       expect(species.careDifficulty, CareDifficulty.unknown);
       expect(species.lightPreference, LightPreference.unknown);
+      // Признак токсичности отсутствует → бейдж не показываем.
+      expect(species.toxic, isFalse);
+    });
+
+    test('should_map_toxic_from_toxicToCats_true', () {
+      const dto = SpeciesSummaryDto(
+        id: 3,
+        name: 'Монстера',
+        toxicToCats: true,
+      );
+
+      expect(dto.toDomain().toxic, isTrue);
+    });
+
+    test('should_not_be_toxic_when_only_toxic_to_dogs_or_humans', () {
+      // Бейдж дизайна завязан именно на кошек (⚠ ТОКСИЧНО · 🐈).
+      const dto = SpeciesSummaryDto(
+        id: 4,
+        name: 'Образец',
+        toxicToCats: false,
+        toxicToDogs: true,
+        toxicToHumans: true,
+      );
+
+      expect(dto.toDomain().toxic, isFalse);
+    });
+
+    test('should_not_be_toxic_when_toxicToCats_null', () {
+      const dto = SpeciesSummaryDto(id: 5, name: 'Образец');
+
+      expect(dto.toDomain().toxic, isFalse);
     });
   });
 

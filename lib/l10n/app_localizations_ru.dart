@@ -435,6 +435,50 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get scheduleTitle => 'График ухода';
+
+  @override
+  String get scheduleDayLoadHint => '—';
+
+  @override
+  String scheduleDayProgress(int done, int total) {
+    return '$done из $total готово';
+  }
+
+  @override
+  String get schedulePhaseMorning => 'Утро';
+
+  @override
+  String get schedulePhaseEvening => 'Вечер';
+
+  @override
+  String get schedulePhaseDone => 'Сделано';
+
+  @override
+  String get schedulePhaseMorningTime => '9:00';
+
+  @override
+  String get schedulePhaseEveningTime => '19:00';
+
+  @override
+  String get scheduleOverdueSubtitle => 'Просрочено · со вчера';
+
+  @override
+  String scheduleTaskSubtitle(String action, String species) {
+    return '$action · $species';
+  }
+
+  @override
+  String get scheduleDayEmpty => 'На этот день забот нет 🌿';
+
+  @override
+  String get scheduleMarkDone => 'Отметить выполненным';
+
+  @override
+  String get scheduleMarkError =>
+      'Не удалось отметить уход. Попробуйте ещё раз.';
+
+  @override
   String plantCardAgeDays(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -601,7 +645,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String get catalogTitle => 'Каталог';
 
   @override
-  String get catalogHeading => 'Каталог растений';
+  String get catalogHeadingLead => 'Каталог ';
+
+  @override
+  String get catalogHeadingAccent => 'растений';
+
+  @override
+  String get catalogBadgePopular => 'HIT';
+
+  @override
+  String get catalogBadgeToxic => '⚠ ТОКСИЧНО · 🐈';
+
+  @override
+  String get catalogFilterAll => 'Все';
+
+  @override
+  String get catalogFilterBeginner => 'Для новичка';
+
+  @override
+  String get catalogFilterPetSafe => 'Безопасно для котов 🐈';
+
+  @override
+  String get catalogFilterFlowering => 'Цветущие';
 
   @override
   String get catalogSearchHint => 'Найти вид…';
@@ -903,6 +968,86 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get addPlantSubmitted => 'Растение добавлено';
+
+  @override
+  String get addPlantSubmitGarden => 'Добавить в сад';
+
+  @override
+  String get addPlantRecognizeBadge => 'ФОТО';
+
+  @override
+  String get addPlantRecognizeHint => 'Сфотографируй — определим по листу';
+
+  @override
+  String get addPlantRecognizeUnavailable =>
+      'Распознавание по фото скоро появится';
+
+  @override
+  String get addPlantCategoryPopular => 'Популярное';
+
+  @override
+  String get addPlantCategoryBeginner => 'Для новичка';
+
+  @override
+  String get addPlantCategoryFlowering => 'Цветущие';
+
+  @override
+  String get addPlantCategoryLowWater => 'Без полива';
+
+  @override
+  String get addPlantNewRoom => 'Добавить своё помещение';
+
+  @override
+  String get addPlantPhotoTitle => 'Сделай портрет';
+
+  @override
+  String get addPlantPhotoOverline => 'Последний штрих';
+
+  @override
+  String get addPlantPhotoSubtitle =>
+      'Фото поможет узнать растение и отслеживать его рост.';
+
+  @override
+  String get addPlantPhotoPlaceholder => 'Пока используется иллюстрация';
+
+  @override
+  String get addPlantPhotoCamera => 'Камера';
+
+  @override
+  String get addPlantPhotoGallery => 'Из галереи';
+
+  @override
+  String get addPlantPhotoUnavailable => 'Загрузка фото скоро появится';
+
+  @override
+  String get addPlantWindowLabel => 'Куда смотрит окно';
+
+  @override
+  String get addPlantWindowOptional => 'необязательно';
+
+  @override
+  String get addPlantWindowSouth => 'Юг';
+
+  @override
+  String get addPlantWindowSouthHint => 'много солнца';
+
+  @override
+  String get addPlantWindowEast => 'Восток';
+
+  @override
+  String get addPlantWindowEastHint => 'мягкое утро';
+
+  @override
+  String get addPlantWindowWest => 'Запад';
+
+  @override
+  String get addPlantWindowWestHint => 'тёплый вечер';
+
+  @override
+  String get addPlantWindowNorth => 'Север';
+
+  @override
+  String get addPlantWindowNorthHint => 'мало света';
 
   @override
   String get careDifficultyEasy => 'Лёгкий уход';

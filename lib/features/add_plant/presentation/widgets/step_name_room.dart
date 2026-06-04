@@ -23,6 +23,7 @@ class StepNameRoom extends ConsumerStatefulWidget {
     required this.isNameValid,
     required this.onNameChanged,
     required this.onLocationChanged,
+    required this.onNewRoom,
   });
 
   final String initialName;
@@ -30,6 +31,9 @@ class StepNameRoom extends ConsumerStatefulWidget {
   final bool isNameValid;
   final ValueChanged<String> onNameChanged;
   final ValueChanged<int?> onLocationChanged;
+
+  /// CTA «Новая комната» — уводит в управление комнатами (фича rooms).
+  final VoidCallback onNewRoom;
 
   @override
   ConsumerState<StepNameRoom> createState() => _StepNameRoomState();
@@ -104,7 +108,55 @@ class _StepNameRoomState extends ConsumerState<StepNameRoom> {
             );
           },
         ),
+        const SizedBox(height: 10),
+        _NewRoomCta(label: l10n.addPlantNewRoom, onTap: widget.onNewRoom),
       ],
+    );
+  }
+}
+
+/// CTA «Добавить своё помещение» (пунктирная рамка) — уводит в фичу rooms.
+class _NewRoomCta extends StatelessWidget {
+  const _NewRoomCta({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Semantics(
+      button: true,
+      label: label,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: c.line, width: 1.5),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.add_rounded, size: 18, color: c.inkSoft),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: c.inkSoft,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
