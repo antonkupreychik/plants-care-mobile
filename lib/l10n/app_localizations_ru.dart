@@ -66,6 +66,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeTodaySeeAll => 'Посмотреть все';
 
   @override
+  String homeTodayProgressBadge(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String homeTodayProgressSemantic(int percent) {
+    return '$percent% выполнено';
+  }
+
+  @override
+  String homeTodayProgressBarSemantic(int done, int total) {
+    return 'Прогресс: $done из $total задач выполнено';
+  }
+
+  @override
   String get todayBack => 'Назад';
 
   @override
@@ -254,6 +269,9 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get homeGardenSeeAll => 'Все';
 
   @override
   String get homeLocationAll => 'Все';
@@ -625,6 +643,35 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get careSheetSubmitted => 'Уход отмечен';
+
+  @override
+  String get careSheetWaterAmountLabel => 'Объём воды';
+
+  @override
+  String careSheetWaterAmountValue(int amount) {
+    return '$amount мл';
+  }
+
+  @override
+  String get careSheetWaterAmountNotSet => 'Не указан';
+
+  @override
+  String get careSheetSoilDryLabel => 'Грунт был сухой';
+
+  @override
+  String get careSheetFertilizerNameLabel => 'Название удобрения';
+
+  @override
+  String get careSheetFertilizerNameHint => 'Например: Кемира Люкс';
+
+  @override
+  String get careSheetWaterSubmit => 'Полито';
+
+  @override
+  String get careSheetSpraySubmit => 'Опрыскано';
+
+  @override
+  String get careSheetFertilizeSubmit => 'Подкормлено';
 
   @override
   String get scheduleIcsTitle => 'Подписаться в календаре';
@@ -1489,13 +1536,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get firstCareSuccessVerbFertilize => 'удобрена';
 
   @override
-  String get firstCareSuccessBubble => '«Спасибо! Сразу легче дышится 💧»';
+  String get firstCareSuccessBubble => '«Спасибо! Ты мой лучший садовник 🌿»';
 
   @override
   String get firstCareSuccessFallbackPlantName => 'Растение';
 
   @override
-  String get firstCareSuccessStreakDayOne => 'Стрик начат · день 1';
+  String get firstCareSuccessStreakDayOne => 'День 1 🔥';
 
   @override
   String get firstCareSuccessNextHint =>
@@ -1514,7 +1561,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get firstCareSuccessNextSuffix => ', напомню сама';
 
   @override
-  String get firstCareSuccessCta => 'Вернуться в сад';
+  String get firstCareSuccessCta => 'Отлично';
 
   @override
   String get careHistoryOverline => 'Дневник ухода';
@@ -1675,6 +1722,24 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get reportShareCta => 'Поделиться отчётом';
+
+  @override
+  String reportShareTextHeader(String month) {
+    return '🌿 Мой отчёт за $month';
+  }
+
+  @override
+  String reportShareTextCares(int count) {
+    return 'Обработано уходов: $count';
+  }
+
+  @override
+  String reportShareTextOnTime(int pct) {
+    return 'Вовремя: $pct%';
+  }
+
+  @override
+  String get reportShareTextAppCredit => 'Plants Care App';
 
   @override
   String get reportEmptyTitle => 'Пока пусто';

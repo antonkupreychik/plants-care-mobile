@@ -172,97 +172,97 @@ void main() {
     });
   });
 
+  // Тест пропускается на UTC-раннере (offset == 0): граница месяца в UTC совпадает
+  // с локальной, поэтому проверить рассинхрон технически невозможно без инжекта TZ.
   group('CareHistoryScreen month grouping with non-UTC timezone', () {
+    final systemOffset = DateTime.now().timeZoneOffset;
     testWidgets(
-        'should_group_by_LOCAL_month_not_utc_when_instant_crosses_month_boundary',
-        (tester) async {
-      _tallSurface(tester);
+      'should_group_by_LOCAL_month_not_utc_when_instant_crosses_month_boundary',
+      // Пропускаем под UTC: offset==0, UTC==local, граница месяца не пересекается.
+      // Под TZ=America/Los_Angeles или TZ=Asia/... через env тест активен.
+      skip: systemOffset == Duration.zero,
+      (tester) async {
+        _tallSurface(tester);
 
-      // Окружение теста заведомо НЕ UTC (Dart берёт TZ процесса; CI/локально
-      // здесь +03). Берём смещение как есть и строим UTC-момент, который при
-      // переводе в локальную TZ перепрыгивает границу месяца — так тест честно
-      // проверяет, что группировка идёт по local-месяцу, не по UTC-месяцу.
-      final localOffset = DateTime.now().timeZoneOffset;
-      expect(
-        localOffset,
-        isNot(Duration.zero),
-        reason: 'TZ окружения должна быть не-UTC, иначе тест границы бессмыслен '
-            '(запусти под TZ=America/Los_Angeles или TZ=Asia/... через env)',
-      );
+        // Берём смещение как есть и строим UTC-момент, который при переводе в
+        // локальную TZ перепрыгивает границу месяца — так тест честно проверяет,
+        // что группировка идёт по local-месяцу, не по UTC-месяцу.
+        final localOffset = systemOffset;
 
-      // Локальная полночь 1-го мая → соответствующий UTC-инстант.
-      // При +03 это 2026-04-30T21:00Z: UTC-месяц = апрель, local-месяц = май.
-      // При отрицательном смещении строим симметрично у нижней границы месяца.
-      final DateTime utcAtMonthBoundary;
-      final int expectedLocalMonth;
-      final int otherUtcMonth;
-      if (localOffset > Duration.zero) {
-        // local 2026-05-01 00:30 → UTC раньше → может уехать в апрель.
-        final local = DateTime(2026, 5, 1, 0, 30);
-        utcAtMonthBoundary = local.toUtc();
-        expectedLocalMonth = 5;
-        otherUtcMonth = utcAtMonthBoundary.month; // ожидаем 4 при +03
-      } else {
-        // local 2026-05-31 23:30 → UTC позже → может уехать в июнь.
-        final local = DateTime(2026, 5, 31, 23, 30);
-        utcAtMonthBoundary = local.toUtc();
-        expectedLocalMonth = 5;
-        otherUtcMonth = utcAtMonthBoundary.month; // ожидаем 6 при отриц. смещ.
-      }
+        // Локальная полночь 1-го мая → соответствующий UTC-инстант.
+        // При +03 это 2026-04-30T21:00Z: UTC-месяц = апрель, local-месяц = май.
+        // При отрицательном смещении строим симметрично у нижней границы месяца.
+        final DateTime utcAtMonthBoundary;
+        final int expectedLocalMonth;
+        final int otherUtcMonth;
+        if (localOffset > Duration.zero) {
+          // local 2026-05-01 00:30 → UTC раньше → может уехать в апрель.
+          final local = DateTime(2026, 5, 1, 0, 30);
+          utcAtMonthBoundary = local.toUtc();
+          expectedLocalMonth = 5;
+          otherUtcMonth = utcAtMonthBoundary.month; // ожидаем 4 при +03
+        } else {
+          // local 2026-05-31 23:30 → UTC позже → может уехать в июнь.
+          final local = DateTime(2026, 5, 31, 23, 30);
+          utcAtMonthBoundary = local.toUtc();
+          expectedLocalMonth = 5;
+          otherUtcMonth = utcAtMonthBoundary.month; // ожидаем 6 при отриц. смещ.
+        }
 
-      // Sanity: UTC-месяц инстанта ОТЛИЧАЕТСЯ от локального — иначе тест ничего
-      // не доказывает (момент не на границе для данной TZ).
-      expect(
-        utcAtMonthBoundary.month,
-        isNot(expectedLocalMonth),
-        reason: 'Инстант должен пересекать границу месяца для текущей TZ '
-            '(local=$expectedLocalMonth, utc=$otherUtcMonth)',
-      );
+        // Sanity: UTC-месяц инстанта ОТЛИЧАЕТСЯ от локального — иначе тест ничего
+        // не доказывает (момент не на границе для данной TZ).
+        expect(
+          utcAtMonthBoundary.month,
+          isNot(expectedLocalMonth),
+          reason: 'Инстант должен пересекать границу месяца для текущей TZ '
+              '(local=$expectedLocalMonth, utc=$otherUtcMonth)',
+        );
 
-      // Вторая запись — заведомо в локальном месяце, отличном от первой
-      // (середина июня по локали), чтобы получить ДВЕ месячные группы.
-      final secondLocal = DateTime(2026, 6, 15, 12);
-      final secondUtc = secondLocal.toUtc();
+        // Вторая запись — заведомо в локальном месяце, отличном от первой
+        // (середина июня по локали), чтобы получить ДВЕ месячные группы.
+        final secondLocal = DateTime(2026, 6, 15, 12);
+        final secondUtc = secondLocal.toUtc();
 
-      _stubAux(repo);
-      when(() => repo.getHistoryPage(_plantId,
-              limit: any(named: 'limit'), offset: any(named: 'offset')))
-          .thenAnswer(
-        (_) async => Result.success(
-          _page(
-            items: [
-              _entry(2, performedAt: secondUtc), // июнь (local)
-              _entry(1, performedAt: utcAtMonthBoundary), // май (local)
-            ],
-            total: 2,
-            offset: 0,
+        _stubAux(repo);
+        when(() => repo.getHistoryPage(_plantId,
+                limit: any(named: 'limit'), offset: any(named: 'offset')))
+            .thenAnswer(
+          (_) async => Result.success(
+            _page(
+              items: [
+                _entry(2, performedAt: secondUtc), // июнь (local)
+                _entry(1, performedAt: utcAtMonthBoundary), // май (local)
+              ],
+              total: 2,
+              offset: 0,
+            ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpWidget(_wrap(repo));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(_wrap(repo));
+        await tester.pumpAndSettle();
 
-      // Две записи → две месячные группы (июнь и май по ЛОКАЛЬНОЙ TZ).
-      // Если бы группировка шла по UTC, граничная запись попала бы в чужой
-      // месяц и заголовки/состав групп отличались бы.
-      final groups = tester
-          .widgetList<CareHistoryMonthGroup>(find.byType(CareHistoryMonthGroup))
-          .toList();
-      expect(groups, hasLength(2));
+        // Две записи → две месячные группы (июнь и май по ЛОКАЛЬНОЙ TZ).
+        // Если бы группировка шла по UTC, граничная запись попала бы в чужой
+        // месяц и заголовки/состав групп отличались бы.
+        final groups = tester
+            .widgetList<CareHistoryMonthGroup>(find.byType(CareHistoryMonthGroup))
+            .toList();
+        expect(groups, hasLength(2));
 
-      // Месяц граничной записи в её группе считается по local — её сосед
-      // в группе отсутствует (она одна в своём local-месяце).
-      final boundaryGroup = groups.firstWhere(
-        (g) => g.entries.any((e) => e.id == 1),
-      );
-      expect(
-        boundaryGroup.entries.single.id,
-        1,
-        reason: 'Граничная запись группируется одна по своему ЛОКАЛЬНОМУ месяцу '
-            '($expectedLocalMonth), а не по UTC ($otherUtcMonth)',
-      );
-    });
+        // Месяц граничной записи в её группе считается по local — её сосед
+        // в группе отсутствует (она одна в своём local-месяце).
+        final boundaryGroup = groups.firstWhere(
+          (g) => g.entries.any((e) => e.id == 1),
+        );
+        expect(
+          boundaryGroup.entries.single.id,
+          1,
+          reason: 'Граничная запись группируется одна по своему ЛОКАЛЬНОМУ месяцу '
+              '($expectedLocalMonth), а не по UTC ($otherUtcMonth)',
+        );
+      },
+    );
   });
 
   group('CareHistoryScreen filter chips', () {

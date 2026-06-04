@@ -33,14 +33,32 @@ extension CareEventDraftMapper on CareEventDraft {
   /// Черновик → тело запроса. [dtoType] — уже валидированный (не-null) тип
   /// (валидацию делает репозиторий через [careEventTypeFromKind]).
   /// `performedAt` отправляем в UTC (backend хранит UTC).
+  ///
+  /// Поля [amountMl], [soilWasDry], [fertilizerName] кодируются в итоговую
+  /// заметку вместе с [note] (свободным текстом пользователя). Это временный
+  /// подход: когда backend добавит эти поля в `CreateCareEventRequest`,
+  /// маппер обновится без изменений UI.
   CreateCareEventRequest toRequest(CareEventType dtoType) =>
       CreateCareEventRequest(
         plantId: plantId,
         type: dtoType,
         performedAt: performedAtUtc.toUtc(),
-        note: note,
+        note: _buildNote(),
         clientId: clientId,
       );
+
+  /// Составляет итоговую заметку из полей-расширений и пользовательского [note].
+  String? _buildNote() {
+    final parts = <String>[];
+    if (amountMl != null && amountMl! > 0) parts.add('$amountMl мл');
+    if (soilWasDry) parts.add('грунт был сухой');
+    if (fertilizerName != null && fertilizerName!.isNotEmpty) {
+      parts.add('удобрение: $fertilizerName');
+    }
+    final userNote = note?.trim();
+    if (userNote != null && userNote.isNotEmpty) parts.add(userNote);
+    return parts.isEmpty ? null : parts.join('; ');
+  }
 }
 
 extension CareEventResponseMapper on CareEventResponse {

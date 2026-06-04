@@ -184,6 +184,24 @@ abstract class AppLocalizations {
   /// **'Посмотреть все'**
   String get homeTodaySeeAll;
 
+  /// Бейдж выполнения в правом верхнем углу карточки «Сегодня»: «N%»
+  ///
+  /// In ru, this message translates to:
+  /// **'{percent}%'**
+  String homeTodayProgressBadge(int percent);
+
+  /// Semantics-метка бейджа прогресса карточки «Сегодня»
+  ///
+  /// In ru, this message translates to:
+  /// **'{percent}% выполнено'**
+  String homeTodayProgressSemantic(int percent);
+
+  /// Semantics-метка прогресс-бара карточки «Сегодня»
+  ///
+  /// In ru, this message translates to:
+  /// **'Прогресс: {done} из {total} задач выполнено'**
+  String homeTodayProgressBarSemantic(int done, int total);
+
   /// Семантика кнопки возврата в шапке экрана «Сегодня»
   ///
   /// In ru, this message translates to:
@@ -375,6 +393,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'{count, plural, =0{Нет растений} one{{count} растение} few{{count} растения} many{{count} растений} other{{count} растения}}'**
   String homePlantsCount(int count);
+
+  /// Аффорданс «Все →» в заголовке секции «Мой сад» — сброс фильтра локации
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get homeGardenSeeAll;
 
   /// Чип «все локации» в фильтре комнат
   ///
@@ -939,6 +963,60 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Уход отмечен'**
   String get careSheetSubmitted;
+
+  /// Метка слайдера объёма воды (WATER, экран 06)
+  ///
+  /// In ru, this message translates to:
+  /// **'Объём воды'**
+  String get careSheetWaterAmountLabel;
+
+  /// Значение объёма воды с единицей мл
+  ///
+  /// In ru, this message translates to:
+  /// **'{amount} мл'**
+  String careSheetWaterAmountValue(int amount);
+
+  /// Подпись когда объём воды не выбран (слайдер в 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не указан'**
+  String get careSheetWaterAmountNotSet;
+
+  /// Тоггл «грунт был сухой» (WATER, экран 06)
+  ///
+  /// In ru, this message translates to:
+  /// **'Грунт был сухой'**
+  String get careSheetSoilDryLabel;
+
+  /// Метка поля названия удобрения (FERTILIZE, экран 06b)
+  ///
+  /// In ru, this message translates to:
+  /// **'Название удобрения'**
+  String get careSheetFertilizerNameLabel;
+
+  /// Плейсхолдер поля названия удобрения
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Кемира Люкс'**
+  String get careSheetFertilizerNameHint;
+
+  /// Кнопка подтверждения полива (WATER)
+  ///
+  /// In ru, this message translates to:
+  /// **'Полито'**
+  String get careSheetWaterSubmit;
+
+  /// Кнопка подтверждения опрыскивания (SPRAY)
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскано'**
+  String get careSheetSpraySubmit;
+
+  /// Кнопка подтверждения подкормки (FERTILIZE)
+  ///
+  /// In ru, this message translates to:
+  /// **'Подкормлено'**
+  String get careSheetFertilizeSubmit;
 
   /// Заголовок карточки экспорта расписания в календарь (.ics)
   ///
@@ -2398,10 +2476,10 @@ abstract class AppLocalizations {
   /// **'удобрена'**
   String get firstCareSuccessVerbFertilize;
 
-  /// Реплика-благодарность растения в speech-bubble экрана 33 (вариант полива из дизайна).
+  /// Реплика-благодарность растения в speech-bubble экрана 33 (голос растения — первый уход, issue #91).
   ///
   /// In ru, this message translates to:
-  /// **'«Спасибо! Сразу легче дышится 💧»'**
+  /// **'«Спасибо! Ты мой лучший садовник 🌿»'**
   String get firstCareSuccessBubble;
 
   /// Нейтральное имя растения на экране 33, если деталь не загрузилась (уход уже записан — не показываем как ошибку).
@@ -2410,10 +2488,10 @@ abstract class AppLocalizations {
   /// **'Растение'**
   String get firstCareSuccessFallbackPlantName;
 
-  /// Чип старта стрика на экране 33 (только при onTime == true).
+  /// Чип старта стрика на экране 33 (только при onTime == true). Формат из issue #91.
   ///
   /// In ru, this message translates to:
-  /// **'Стрик начат · день 1'**
+  /// **'День 1 🔥'**
   String get firstCareSuccessStreakDayOne;
 
   /// Строка ободрения внизу экрана 33 БЕЗ счётчика дней (интервал до следующего ухода недоступен, G19).
@@ -2446,10 +2524,10 @@ abstract class AppLocalizations {
   /// **', напомню сама'**
   String get firstCareSuccessNextSuffix;
 
-  /// CTA-кнопка экрана 33 → возврат в таб «Сад».
+  /// CTA-кнопка экрана 33 → возврат на карточку растения (issue #91).
   ///
   /// In ru, this message translates to:
-  /// **'Вернуться в сад'**
+  /// **'Отлично'**
   String get firstCareSuccessCta;
 
   /// Надзаголовок экрана 21 «Полная история ухода»
@@ -2578,7 +2656,7 @@ abstract class AppLocalizations {
   /// **'Месячный отчёт'**
   String get profileReportTitle;
 
-  /// Кнопка «Поделиться» в шапке отчёта (экран 14), coming-soon
+  /// Кнопка «Поделиться» в шапке отчёта (экран 14)
   ///
   /// In ru, this message translates to:
   /// **'Поделиться'**
@@ -2686,11 +2764,35 @@ abstract class AppLocalizations {
   /// **'Нед. {number}'**
   String reportWeekLabel(String number);
 
-  /// Нижняя CTA-кнопка «Поделиться отчётом» (экран 14), coming-soon
+  /// Нижняя CTA-кнопка «Поделиться отчётом» (экран 14)
   ///
   /// In ru, this message translates to:
   /// **'Поделиться отчётом'**
   String get reportShareCta;
+
+  /// Первая строка текста для share sheet: заголовок с месяцем
+  ///
+  /// In ru, this message translates to:
+  /// **'🌿 Мой отчёт за {month}'**
+  String reportShareTextHeader(String month);
+
+  /// Строка share-текста: количество выполненных уходов
+  ///
+  /// In ru, this message translates to:
+  /// **'Обработано уходов: {count}'**
+  String reportShareTextCares(int count);
+
+  /// Строка share-текста: процент уходов вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'Вовремя: {pct}%'**
+  String reportShareTextOnTime(int pct);
+
+  /// Подпись приложения в конце share-текста
+  ///
+  /// In ru, this message translates to:
+  /// **'Plants Care App'**
+  String get reportShareTextAppCredit;
 
   /// Заголовок пустого состояния отчёта (нет заботы за месяц)
   ///

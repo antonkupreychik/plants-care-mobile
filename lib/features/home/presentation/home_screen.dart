@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/care/care_task.dart';
 import '../../../core/clock/clock_provider.dart';
 import '../../../core/error/api_error_l10n.dart';
 import '../../../core/theme/app_theme.dart';
@@ -13,8 +12,10 @@ import '../../../l10n/app_localizations.dart';
 import '../../care_event/data/mappers/task_type_mapper.dart';
 import '../../care_event/presentation/log_care_event_sheet.dart';
 import '../../weather/presentation/widgets/weather_strip.dart';
+import '../../../core/care/care_task.dart';
 import '../../../core/locations/garden_location.dart';
 import '../domain/plant.dart';
+import '../domain/today_tasks_result.dart';
 import 'home_filter.dart';
 import 'home_providers.dart';
 import 'home_view_state.dart';
@@ -97,7 +98,7 @@ class _HomeContent extends ConsumerWidget {
     // Открыть ленту уведомлений (экран 24) поверх shell.
     void openNotifications() => context.push('/home/notifications');
 
-    final tasks = ref.watch(homeTasksProvider);
+    final todayResult = ref.watch(homeTasksProvider);
     final plants = ref.watch(homePlantsProvider);
     final locations = ref.watch(homeLocationsProvider);
 
@@ -128,7 +129,7 @@ class _HomeContent extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
                 sliver: SliverToBoxAdapter(
                   child: _TodaySection(
-                    tasks: tasks,
+                    todayResult: todayResult,
                     now: nowLocal,
                     // Тап по задаче /today → sheet ухода с предвыбранным
                     // типом. Внутренний taskType нормализуем в публичный
@@ -146,7 +147,7 @@ class _HomeContent extends ConsumerWidget {
                 ),
               ),
 
-              // MY GARDEN — заголовок + счётчик.
+              // MY GARDEN — заголовок + счётчик + аффорданс «Все →».
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(22, 20, 22, 0),
                 sliver: SliverToBoxAdapter(
@@ -196,14 +197,14 @@ class _HomeContent extends ConsumerWidget {
 /// внутри карточки).
 class _TodaySection extends StatelessWidget {
   const _TodaySection({
-    required this.tasks,
+    required this.todayResult,
     required this.now,
     required this.onTaskTap,
     required this.onSeeAll,
     required this.onRetry,
   });
 
-  final AsyncValue<List<CareTask>> tasks;
+  final AsyncValue<TodayTasksResult> todayResult;
   final DateTime now;
   final void Function(CareTask task) onTaskTap;
   final VoidCallback onSeeAll;
@@ -212,52 +213,97 @@ class _TodaySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return tasks.when(
+    return todayResult.when(
       loading: () => const TodayCardSkeleton(),
       error: (error, _) => ErrorState(
         message: l10n.messageForError(error),
         retryLabel: l10n.retry,
         onRetry: onRetry,
       ),
-      data: (list) => TodayCard(
-        tasks: list,
+      data: (result) => TodayCard(
+        tasks: result.tasks,
         now: now,
         onTaskTap: onTaskTap,
         onSeeAll: onSeeAll,
+        completedCount: result.completedCount,
+        totalCount: result.totalCount,
       ),
     );
   }
 }
 
-/// Заголовок «Мой сад» + счётчик растений (счётчик мягко скрывается, пока
-/// растения грузятся/в ошибке).
-class _GardenHeader extends StatelessWidget {
+/// Заголовок «Мой сад» + счётчик растений + аффорданс «Все →».
+///
+/// Счётчик мягко скрывается, пока растения грузятся/в ошибке.
+/// Тап «Все →» сбрасывает фильтр локации ([selectedLocationProvider] → null).
+class _GardenHeader extends ConsumerWidget {
   const _GardenHeader({required this.plants});
 
   final AsyncValue<List<Plant>> plants;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
     final count = plants.value?.length;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          l10n.homeGardenTitle.toUpperCase(),
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.7,
-            color: c.inkSoft,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.homeGardenTitle.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.7,
+                  color: c.inkSoft,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                count == null
+                    ? l10n.homeGardenTitle
+                    : l10n.homePlantsCount(count),
+                style: AppTheme.serif(fontSize: 24, color: c.ink),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 2),
-        Text(
-          count == null ? l10n.homeGardenTitle : l10n.homePlantsCount(count),
-          style: AppTheme.serif(fontSize: 24, color: c.ink),
+        Semantics(
+          label: l10n.homeGardenSeeAll,
+          button: true,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () =>
+                ref.read(selectedLocationProvider.notifier).select(null),
+            child: Padding(
+              // Минимальная тап-зона 44×44 dp (WCAG / Apple HIG).
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.homeGardenSeeAll,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: c.inkSoft,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 18,
+                    color: c.inkSoft,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );

@@ -11,6 +11,7 @@ import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/features/home/domain/home_repository.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
+import 'package:plantcare_mobile/features/home/domain/today_tasks_result.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 
 class _MockRepo extends Mock implements HomeRepository {}
@@ -51,7 +52,7 @@ void main() {
   setUp(() => repo = _MockRepo());
 
   group('homeTasksProvider', () {
-    test('should_emit_data_when_repository_succeeds', () async {
+    test('should_emit_data_with_progress_when_repository_succeeds', () async {
       final task = CareTask(
         scheduleId: 1,
         plantId: 1,
@@ -59,13 +60,18 @@ void main() {
         type: CareTaskType.watering,
         dueAt: DateTime.utc(2026, 5, 27, 9),
       );
-      when(repo.getTodayTasks)
-          .thenAnswer((_) async => Result.success([task]));
+      when(repo.getTodayTasks).thenAnswer(
+        (_) async => Result.success(
+          TodayTasksResult(tasks: [task], completedCount: 1, totalCount: 2),
+        ),
+      );
       final container = _containerWith(repo);
 
       final value = await container.read(homeTasksProvider.future);
 
-      expect(value, [task]);
+      expect(value.tasks, [task]);
+      expect(value.completedCount, 1);
+      expect(value.totalCount, 2);
     });
 
     test('should_throw_ApiError_into_AsyncError_when_repository_fails',
@@ -74,7 +80,7 @@ void main() {
           .thenAnswer((_) async => const Result.failure(ApiError.notFound()));
       final container = _containerWith(repo);
 
-      final error = await _awaitError<List<CareTask>>(
+      final error = await _awaitError<TodayTasksResult>(
         container,
         (listener) => container.listen(homeTasksProvider, listener),
       );

@@ -24,6 +24,13 @@ part 'care_event_draft.freezed.dart';
 /// (не на каждый build), чтобы ретрай слал тот же и backend дедуплицировал
 /// (FLUTTER.md «Идемпотентность»). На уровне черновика-формы он null;
 /// проставляется в момент `submit()`.
+///
+/// [amountMl] — объём воды (мл) для типа WATER (0–1000, шаг 50). null = не задан.
+/// [soilWasDry] — отметка «грунт был сухой» для типа WATER.
+/// [fertilizerName] — название удобрения для типа FERTILIZE (необязательно).
+///
+/// Поля, специфичные для типа, кодируются маппером в `note` при отправке,
+/// если backend-поле ещё не поддерживается в `CreateCareEventRequest`.
 @freezed
 abstract class CareEventDraft with _$CareEventDraft {
   const factory CareEventDraft({
@@ -37,10 +44,19 @@ abstract class CareEventDraft with _$CareEventDraft {
     /// допускается прошлое (backdating).
     required DateTime performedAtUtc,
 
-    /// Необязательная заметка.
+    /// Необязательная заметка (свободный текст пользователя).
     String? note,
 
     /// UUID идемпотентности; null до момента отправки.
     String? clientId,
+
+    /// Объём воды (мл) для WATER (0–1000, шаг 50). null = не задан.
+    int? amountMl,
+
+    /// Грунт был сухой — отметка для WATER (экран 06).
+    @Default(false) bool soilWasDry,
+
+    /// Название удобрения для FERTILIZE (экран 06b); null = не задано.
+    String? fertilizerName,
   }) = _CareEventDraft;
 }

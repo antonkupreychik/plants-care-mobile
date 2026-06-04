@@ -59,6 +59,9 @@ void main() {
       required DateTime performedAtUtc,
       String? note,
       String? clientId,
+      int? amountMl,
+      bool soilWasDry = false,
+      String? fertilizerName,
     }) =>
         CareEventDraft(
           plantId: 42,
@@ -66,6 +69,9 @@ void main() {
           performedAtUtc: performedAtUtc,
           note: note,
           clientId: clientId,
+          amountMl: amountMl,
+          soilWasDry: soilWasDry,
+          fertilizerName: fertilizerName,
         );
 
     test('should_map_fields_and_pass_dtoType_through', () {
@@ -98,7 +104,7 @@ void main() {
       expect(request.performedAt, local.toUtc());
     });
 
-    test('should_keep_clientId_null_when_draft_has_none', () {
+    test('should_keep_clientId_null_and_note_null_when_draft_has_no_extras', () {
       final draft = draftWith(
         type: CareEventKind.water,
         performedAtUtc: DateTime.utc(2026, 5, 27),
@@ -107,6 +113,69 @@ void main() {
       final request = draft.toRequest(CareEventType.water);
 
       expect(request.clientId, isNull);
+      // Нет amountMl (или 0), нет soilWasDry, нет note → note == null.
+      expect(request.note, isNull);
+    });
+
+    test('should_encode_amountMl_in_note_for_water', () {
+      final draft = draftWith(
+        type: CareEventKind.water,
+        performedAtUtc: DateTime.utc(2026, 5, 27),
+        amountMl: 300,
+      );
+
+      final request = draft.toRequest(CareEventType.water);
+
+      expect(request.note, contains('300 мл'));
+    });
+
+    test('should_encode_soilWasDry_in_note_for_water', () {
+      final draft = draftWith(
+        type: CareEventKind.water,
+        performedAtUtc: DateTime.utc(2026, 5, 27),
+        soilWasDry: true,
+      );
+
+      final request = draft.toRequest(CareEventType.water);
+
+      expect(request.note, contains('грунт был сухой'));
+    });
+
+    test('should_combine_amountMl_soilWasDry_and_user_note', () {
+      final draft = draftWith(
+        type: CareEventKind.water,
+        performedAtUtc: DateTime.utc(2026, 5, 27),
+        amountMl: 500,
+        soilWasDry: true,
+        note: 'полил до поддона',
+      );
+
+      final request = draft.toRequest(CareEventType.water);
+
+      expect(request.note, '500 мл; грунт был сухой; полил до поддона');
+    });
+
+    test('should_encode_fertilizerName_in_note_for_fertilize', () {
+      final draft = draftWith(
+        type: CareEventKind.fertilize,
+        performedAtUtc: DateTime.utc(2026, 5, 27),
+        fertilizerName: 'Кемира Люкс',
+      );
+
+      final request = draft.toRequest(CareEventType.fertilize);
+
+      expect(request.note, contains('Кемира Люкс'));
+    });
+
+    test('should_return_null_note_when_no_extras_and_no_user_note', () {
+      // SPRAY без каких-либо дополнений → note null.
+      final draft = draftWith(
+        type: CareEventKind.spray,
+        performedAtUtc: DateTime.utc(2026, 5, 27),
+      );
+
+      final request = draft.toRequest(CareEventType.spray);
+
       expect(request.note, isNull);
     });
   });

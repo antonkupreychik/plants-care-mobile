@@ -149,8 +149,8 @@ void main() {
       await tester.tap(find.text(l10n.plantCardJournalWaterNow));
       await tester.pumpAndSettle();
 
-      // Sheet открылся — в нём есть кнопка «Отметить».
-      expect(find.text(l10n.careSheetSubmit), findsOneWidget);
+      // Sheet открылся — в нём есть кнопка «Полито» (WATER по умолчанию).
+      expect(find.text(l10n.careSheetWaterSubmit), findsOneWidget);
     });
 
     testWidgets('should_show_streak_empty_label_when_count_zero',
@@ -221,15 +221,16 @@ void main() {
       final l10n = _l10n(tester);
 
       // До тапа sheet не открыт — его контролов на экране нет.
-      expect(find.text(l10n.careSheetSubmit), findsNothing);
+      // Кнопки «Полито»/«Опрыскано»/«Подкормлено» тоже нет.
+      expect(find.text(l10n.careSheetWaterSubmit), findsNothing);
 
       await tester.tap(find.text(l10n.plantCardLogCare));
       await tester.pumpAndSettle(); // проиграть анимацию открытия sheet
 
       // Открылся sheet отметки ухода (а не comingSoon snackbar):
-      // присутствуют его маркеры — лейбл «Тип ухода» и кнопка «Отметить».
+      // присутствуют его маркеры — лейбл «Тип ухода» и кнопка «Полито» (WATER).
       expect(find.text(l10n.careSheetTypeLabel.toUpperCase()), findsOneWidget);
-      expect(find.text(l10n.careSheetSubmit), findsOneWidget);
+      expect(find.text(l10n.careSheetWaterSubmit), findsOneWidget);
       expect(find.text(l10n.comingSoon), findsNothing);
     });
   });

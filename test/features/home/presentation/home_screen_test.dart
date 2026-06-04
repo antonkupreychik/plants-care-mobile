@@ -14,6 +14,7 @@ import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
+import 'package:plantcare_mobile/features/home/domain/today_tasks_result.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';
 import 'package:plantcare_mobile/features/home/presentation/widgets/garden_empty.dart';
@@ -38,6 +39,12 @@ typedef _Tasks = Future<List<CareTask>> Function();
 typedef _Plants = Future<List<Plant>> Function();
 typedef _Locations = Future<List<GardenLocation>> Function();
 
+/// Оборачивает список задач в [TodayTasksResult] с нулевым прогрессом.
+Future<TodayTasksResult> _tasksToResult(Future<List<CareTask>> tasksFuture) async {
+  final tasks = await tasksFuture;
+  return TodayTasksResult(tasks: tasks, completedCount: 0, totalCount: tasks.length);
+}
+
 Widget _wrap({
   _Tasks? tasks,
   _Plants? plants,
@@ -47,7 +54,7 @@ Widget _wrap({
     overrides: [
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
       homeTasksProvider.overrideWith(
-        (ref) => (tasks ?? () async => const <CareTask>[])(),
+        (ref) => _tasksToResult((tasks ?? () async => const <CareTask>[])()),
       ),
       homePlantsProvider.overrideWith(
         (ref) => (plants ?? () async => const <Plant>[])(),
@@ -74,7 +81,7 @@ void main() {
     testWidgets('should_show_section_skeletons_when_secondary_providers_loading',
         (tester) async {
       await tester.pumpWidget(_wrap(
-        tasks: _pending<List<CareTask>>,
+        tasks: () => _pending<List<CareTask>>(),
         plants: () async => const [Plant(id: 1, name: 'Фикус')],
         locations: _pending<List<GardenLocation>>,
       ));

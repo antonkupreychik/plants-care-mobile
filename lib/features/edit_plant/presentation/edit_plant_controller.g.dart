@@ -99,7 +99,7 @@ final class EditPlantControllerProvider
 }
 
 String _$editPlantControllerHash() =>
-    r'97c816ac9945f6d2161f1cb4a2af6f06a3beaafe';
+    r'4ed1023d7989b073ad7cab773606bcb59b54fb73';
 
 /// Контроллер экрана «Редактировать растение». Family по [plantId].
 ///

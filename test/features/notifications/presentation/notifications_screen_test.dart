@@ -208,75 +208,76 @@ void main() {
   });
 
   // КЛЮЧЕВОЙ регрессионный тест: группировка по дням считается из
-  // createdAt.toLocal(), а НЕ по UTC. Окружение теста заведомо не-UTC (Dart
-  // берёт TZ процесса); строим UTC-инстант, который при переводе в локаль
-  // перепрыгивает границу суток — он обязан попасть в группу по локальному дню.
+  // createdAt.toLocal(), а НЕ по UTC. Строим UTC-инстант, который при переводе в
+  // локаль перепрыгивает границу суток — он обязан попасть в группу по локальному дню.
+  // Тест пропускается на UTC-раннере (offset == 0): граница суток в UTC совпадает
+  // с локальной, поэтому проверить рассинхрон технически невозможно без инжекта TZ.
   group('day grouping with non-UTC timezone', () {
-    testWidgets('should_group_boundary_item_by_LOCAL_day_not_utc',
-        (tester) async {
-      _tallSurface(tester);
+    final systemOffset = DateTime.now().timeZoneOffset;
+    testWidgets(
+      'should_group_boundary_item_by_LOCAL_day_not_utc',
+      // Пропускаем под UTC: offset==0, UTC==local, граница суток не пересекается.
+      // Под TZ=America/Los_Angeles или TZ=Asia/... тест активен.
+      skip: systemOffset == Duration.zero,
+      (tester) async {
+        _tallSurface(tester);
 
-      final localOffset = DateTime.now().timeZoneOffset;
-      expect(
-        localOffset,
-        isNot(Duration.zero),
-        reason: 'TZ окружения должна быть не-UTC, иначе тест границы суток '
-            'бессмыслен (запусти под TZ=America/Los_Angeles или TZ=Asia/...).',
-      );
+        final localOffset = systemOffset;
 
-      // Берём «сегодня» по локали и строим UTC-инстант, который при переводе в
-      // локаль остаётся внутри СЕГОДНЯ, но его UTC-календарный день другой.
-      final nowLocal = DateTime.now();
-      final today = DateTime(nowLocal.year, nowLocal.month, nowLocal.day);
+        // Берём «сегодня» по локали и строим UTC-инстант, который при переводе в
+        // локаль остаётся внутри СЕГОДНЯ, но его UTC-календарный день другой.
+        final nowLocal = DateTime.now();
+        final today = DateTime(nowLocal.year, nowLocal.month, nowLocal.day);
 
-      // Локальный момент у границы суток (00:30 при +TZ / 23:30 при -TZ), так
-      // что соответствующий UTC попадёт на соседний календарный день.
-      final boundaryLocal = localOffset > Duration.zero
-          ? today.add(const Duration(minutes: 30)) // сегодня 00:30 local
-          : today.add(const Duration(hours: 23, minutes: 30)); // сегодня 23:30
-      final boundaryUtc = boundaryLocal.toUtc();
+        // Локальный момент у границы суток (00:30 при +TZ / 23:30 при -TZ), так
+        // что соответствующий UTC попадёт на соседний календарный день.
+        final boundaryLocal = localOffset > Duration.zero
+            ? today.add(const Duration(minutes: 30)) // сегодня 00:30 local
+            : today.add(const Duration(hours: 23, minutes: 30)); // сегодня 23:30
+        final boundaryUtc = boundaryLocal.toUtc();
 
-      // Sanity: UTC-день инстанта ОТЛИЧАЕТСЯ от локального — иначе тест ничего
-      // не доказывает.
-      final boundaryUtcDay = DateTime(
-        boundaryUtc.year,
-        boundaryUtc.month,
-        boundaryUtc.day,
-      );
-      final boundaryLocalDay = DateTime(
-        boundaryLocal.year,
-        boundaryLocal.month,
-        boundaryLocal.day,
-      );
-      expect(
-        boundaryUtcDay,
-        isNot(boundaryLocalDay),
-        reason: 'Инстант должен пересекать границу суток для текущей TZ.',
-      );
+        // Sanity: UTC-день инстанта ОТЛИЧАЕТСЯ от локального — иначе тест ничего
+        // не доказывает.
+        final boundaryUtcDay = DateTime(
+          boundaryUtc.year,
+          boundaryUtc.month,
+          boundaryUtc.day,
+        );
+        final boundaryLocalDay = DateTime(
+          boundaryLocal.year,
+          boundaryLocal.month,
+          boundaryLocal.day,
+        );
+        expect(
+          boundaryUtcDay,
+          isNot(boundaryLocalDay),
+          reason: 'Инстант должен пересекать границу суток для текущей TZ.',
+        );
 
-      stubFeed(
-        Result.success(
-          _feed([_item(1, createdAt: boundaryUtc)], unread: 1),
-        ),
-      );
+        stubFeed(
+          Result.success(
+            _feed([_item(1, createdAt: boundaryUtc)], unread: 1),
+          ),
+        );
 
-      await tester.pumpWidget(_wrap(repo));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(_wrap(repo));
+        await tester.pumpAndSettle();
 
-      // По локальному дню запись — «Сегодня». Если бы группировка шла по UTC,
-      // запись попала бы во «Вчера»/дату (другой календарный день).
-      final headers = tester
-          .widgetList<NotificationsGroupHeader>(
-            find.byType(NotificationsGroupHeader),
-          )
-          .toList();
-      expect(headers, hasLength(1));
-      expect(
-        headers.single.label,
-        _l10n(tester).notificationsGroupToday,
-        reason: 'Группа считается по createdAt.toLocal(), не по UTC.',
-      );
-    });
+        // По локальному дню запись — «Сегодня». Если бы группировка шла по UTC,
+        // запись попала бы во «Вчера»/дату (другой календарный день).
+        final headers = tester
+            .widgetList<NotificationsGroupHeader>(
+              find.byType(NotificationsGroupHeader),
+            )
+            .toList();
+        expect(headers, hasLength(1));
+        expect(
+          headers.single.label,
+          _l10n(tester).notificationsGroupToday,
+          reason: 'Группа считается по createdAt.toLocal(), не по UTC.',
+        );
+      },
+    );
   });
 
   group('pull to refresh on empty', () {

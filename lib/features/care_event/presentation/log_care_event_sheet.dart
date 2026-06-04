@@ -86,6 +86,13 @@ class _LogCareEventSheet extends ConsumerWidget {
     // Запас под клавиатуру: поднимаем содержимое над инсетом ввода.
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
+    final submitLabel = switch (form.type) {
+      CareEventKind.water => l10n.careSheetWaterSubmit,
+      CareEventKind.spray => l10n.careSheetSpraySubmit,
+      CareEventKind.fertilize => l10n.careSheetFertilizeSubmit,
+      _ => l10n.careSheetSubmit,
+    };
+
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
       child: SingleChildScrollView(
@@ -112,6 +119,33 @@ class _LogCareEventSheet extends ConsumerWidget {
                   ],
             ),
             const SizedBox(height: 20),
+
+            // Секция, специфичная для типа WATER: слайдер мл + quick-chips + тоггл.
+            if (form.type == CareEventKind.water) ...[
+              _FieldLabel(text: l10n.careSheetWaterAmountLabel),
+              const SizedBox(height: 8),
+              _WaterAmountSection(
+                amountMl: form.amountMl,
+                soilWasDry: form.soilWasDry,
+                onAmountChanged: controller.setAmountMl,
+                onSoilWasDryChanged: (v) => controller.setSoilWasDry(value: v),
+              ),
+              const SizedBox(height: 20),
+            ],
+
+            // Секция, специфичная для FERTILIZE: поле названия удобрения.
+            if (form.type == CareEventKind.fertilize) ...[
+              _FieldLabel(
+                text: l10n.careSheetFertilizerNameLabel,
+                trailing: l10n.careSheetNoteOptional,
+              ),
+              const SizedBox(height: 8),
+              _FertilizerNameField(
+                initial: form.fertilizerName,
+                onChanged: controller.setFertilizerName,
+              ),
+              const SizedBox(height: 20),
+            ],
 
             _FieldLabel(text: l10n.careSheetWhenLabel),
             const SizedBox(height: 8),
@@ -141,7 +175,7 @@ class _LogCareEventSheet extends ConsumerWidget {
             _SubmitButton(
               enabled: form.canSubmit,
               submitting: form.status is Submitting,
-              label: l10n.careSheetSubmit,
+              label: submitLabel,
               onPressed: controller.submit,
             ),
           ],
@@ -398,6 +432,267 @@ class _WhenRow extends ConsumerWidget {
     // Не позволяем выбрать будущее (уход «сделан» — не позже сейчас).
     if (picked.isAfter(nowLocal)) picked = nowLocal;
     onPick(picked);
+  }
+}
+
+/// Секция WATER: слайдер объёма (0–1000 мл, шаг 50) + quick-chips +
+/// тоггл «грунт был сухой». Разделена на виджеты по ~80 строк.
+class _WaterAmountSection extends StatelessWidget {
+  const _WaterAmountSection({
+    required this.amountMl,
+    required this.soilWasDry,
+    required this.onAmountChanged,
+    required this.onSoilWasDryChanged,
+  });
+
+  final int? amountMl;
+  final bool soilWasDry;
+  final ValueChanged<int?> onAmountChanged;
+  final ValueChanged<bool> onSoilWasDryChanged;
+
+  static const _quickChips = [100, 200, 300, 500];
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    final currentMl = amountMl ?? 0;
+    final valueText = currentMl == 0
+        ? l10n.careSheetWaterAmountNotSet
+        : l10n.careSheetWaterAmountValue(currentMl);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Текущее значение
+        Text(
+          valueText,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: currentMl == 0 ? c.inkMute : c.primary,
+          ),
+        ),
+        // Слайдер
+        SliderTheme(
+          data: SliderThemeData(
+            activeTrackColor: c.primary,
+            inactiveTrackColor: c.primarySoft,
+            thumbColor: c.primary,
+            overlayColor: c.primary.withValues(alpha: 0.15),
+          ),
+          child: Slider(
+            value: currentMl.toDouble(),
+            min: 0,
+            max: 1000,
+            divisions: 20, // шаг 50 → 1000/50 = 20 делений
+            onChanged: (v) => onAmountChanged(v.round()),
+          ),
+        ),
+        // Quick-chips
+        _AmountChips(
+          selectedMl: amountMl,
+          chips: _quickChips,
+          onSelected: onAmountChanged,
+        ),
+        const SizedBox(height: 12),
+        // Тоггл «Грунт был сухой»
+        _SoilDryToggle(
+          value: soilWasDry,
+          onChanged: onSoilWasDryChanged,
+        ),
+      ],
+    );
+  }
+}
+
+/// Быстрые чипы объёма воды: 100 / 200 / 300 / 500 мл.
+class _AmountChips extends StatelessWidget {
+  const _AmountChips({
+    required this.selectedMl,
+    required this.chips,
+    required this.onSelected,
+  });
+
+  final int? selectedMl;
+  final List<int> chips;
+  final ValueChanged<int?> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final ml in chips) ...[
+            _AmountChip(
+              label: '$ml мл',
+              selected: selectedMl == ml,
+              onTap: () => onSelected(selectedMl == ml ? null : ml),
+              activeColor: c.primary,
+              activeFgColor: c.fabInk,
+              inactiveBg: c.chipBg,
+              inactiveFg: c.ink,
+            ),
+            if (ml != chips.last) const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AmountChip extends StatelessWidget {
+  const _AmountChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    required this.activeColor,
+    required this.activeFgColor,
+    required this.inactiveBg,
+    required this.inactiveFg,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final Color activeColor;
+  final Color activeFgColor;
+  final Color inactiveBg;
+  final Color inactiveFg;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: Material(
+        color: selected ? activeColor : inactiveBg,
+        borderRadius: BorderRadius.circular(20),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: selected ? activeFgColor : inactiveFg,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Тоггл «Грунт был сухой» для WATER.
+class _SoilDryToggle extends StatelessWidget {
+  const _SoilDryToggle({required this.value, required this.onChanged});
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    return Material(
+      color: c.surface,
+      borderRadius: BorderRadius.circular(18),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => onChanged(!value),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 56),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: c.line),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.careSheetSoilDryLabel,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: c.ink,
+                  ),
+                ),
+              ),
+              Switch(
+                value: value,
+                onChanged: onChanged,
+                activeThumbColor: c.fabInk,
+                activeTrackColor: c.primary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Поле ввода названия удобрения (FERTILIZE, экран 06b).
+class _FertilizerNameField extends StatefulWidget {
+  const _FertilizerNameField({required this.initial, required this.onChanged});
+
+  final String? initial;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  State<_FertilizerNameField> createState() => _FertilizerNameFieldState();
+}
+
+class _FertilizerNameFieldState extends State<_FertilizerNameField> {
+  late final TextEditingController _controller =
+      TextEditingController(text: widget.initial ?? '');
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    return TextField(
+      controller: _controller,
+      onChanged: widget.onChanged,
+      maxLines: 1,
+      textInputAction: TextInputAction.done,
+      style: TextStyle(fontSize: 14, color: c.ink),
+      decoration: InputDecoration(
+        hintText: l10n.careSheetFertilizerNameHint,
+        hintStyle: TextStyle(fontSize: 14, color: c.inkMute),
+        filled: true,
+        fillColor: c.surface,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(color: c.line),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(color: c.line),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(color: c.leafDark),
+        ),
+      ),
+    );
   }
 }
 
