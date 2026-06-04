@@ -13,11 +13,11 @@ part of 'report_providers.dart';
 /// Контракт для ui-builder:
 /// - [currentReportMonthProvider] → строка `YYYY-MM` текущего месяца (из
 ///   `clockProvider`, в локальной TZ пользователя).
-/// - [selectedReportMonthNotifierProvider] → строка `YYYY-MM` выбранного месяца;
+/// - [selectedReportMonthProvider] → строка `YYYY-MM` выбранного месяца;
 ///   по умолчанию — текущий месяц. Переключается через [SelectedReportMonthNotifier].
 /// - [monthlyReportProvider]`(month)` → `AsyncValue<MonthlyReport>` (family по
 ///   строке `YYYY-MM`). Экран дёргает
-///   `monthlyReportProvider(ref.watch(selectedReportMonthNotifierProvider))`.
+///   `monthlyReportProvider(ref.watch(selectedReportMonthProvider))`.
 ///
 /// В `AsyncError` лежит типизированный [ApiError] (см. [_unwrap]) — UI маппит
 /// его в текст через `AppLocalizations`. Empty-state экрана определяется по
@@ -34,11 +34,11 @@ final currentReportMonthProvider = CurrentReportMonthProvider._();
 /// Контракт для ui-builder:
 /// - [currentReportMonthProvider] → строка `YYYY-MM` текущего месяца (из
 ///   `clockProvider`, в локальной TZ пользователя).
-/// - [selectedReportMonthNotifierProvider] → строка `YYYY-MM` выбранного месяца;
+/// - [selectedReportMonthProvider] → строка `YYYY-MM` выбранного месяца;
 ///   по умолчанию — текущий месяц. Переключается через [SelectedReportMonthNotifier].
 /// - [monthlyReportProvider]`(month)` → `AsyncValue<MonthlyReport>` (family по
 ///   строке `YYYY-MM`). Экран дёргает
-///   `monthlyReportProvider(ref.watch(selectedReportMonthNotifierProvider))`.
+///   `monthlyReportProvider(ref.watch(selectedReportMonthProvider))`.
 ///
 /// В `AsyncError` лежит типизированный [ApiError] (см. [_unwrap]) — UI маппит
 /// его в текст через `AppLocalizations`. Empty-state экрана определяется по
@@ -55,11 +55,11 @@ final class CurrentReportMonthProvider
   /// Контракт для ui-builder:
   /// - [currentReportMonthProvider] → строка `YYYY-MM` текущего месяца (из
   ///   `clockProvider`, в локальной TZ пользователя).
-  /// - [selectedReportMonthNotifierProvider] → строка `YYYY-MM` выбранного месяца;
+  /// - [selectedReportMonthProvider] → строка `YYYY-MM` выбранного месяца;
   ///   по умолчанию — текущий месяц. Переключается через [SelectedReportMonthNotifier].
   /// - [monthlyReportProvider]`(month)` → `AsyncValue<MonthlyReport>` (family по
   ///   строке `YYYY-MM`). Экран дёргает
-  ///   `monthlyReportProvider(ref.watch(selectedReportMonthNotifierProvider))`.
+  ///   `monthlyReportProvider(ref.watch(selectedReportMonthProvider))`.
   ///
   /// В `AsyncError` лежит типизированный [ApiError] (см. [_unwrap]) — UI маппит
   /// его в текст через `AppLocalizations`. Empty-state экрана определяется по
@@ -110,7 +110,7 @@ String _$currentReportMonthHash() =>
 /// - назад: не более [_kMaxMonthsBack] месяцев от текущего;
 /// - вперёд: не дальше текущего месяца (нет будущих месяцев).
 ///
-/// Кодген генерирует **`selectedReportMonthNotifierProvider`**.
+/// Кодген генерирует **`selectedReportMonthProvider`**.
 
 @ProviderFor(SelectedReportMonthNotifier)
 final selectedReportMonthProvider = SelectedReportMonthNotifierProvider._();
@@ -122,7 +122,7 @@ final selectedReportMonthProvider = SelectedReportMonthNotifierProvider._();
 /// - назад: не более [_kMaxMonthsBack] месяцев от текущего;
 /// - вперёд: не дальше текущего месяца (нет будущих месяцев).
 ///
-/// Кодген генерирует **`selectedReportMonthNotifierProvider`**.
+/// Кодген генерирует **`selectedReportMonthProvider`**.
 final class SelectedReportMonthNotifierProvider
     extends $NotifierProvider<SelectedReportMonthNotifier, String> {
   /// Notifier выбранного месяца отчёта (экран 14).
@@ -132,7 +132,7 @@ final class SelectedReportMonthNotifierProvider
   /// - назад: не более [_kMaxMonthsBack] месяцев от текущего;
   /// - вперёд: не дальше текущего месяца (нет будущих месяцев).
   ///
-  /// Кодген генерирует **`selectedReportMonthNotifierProvider`**.
+  /// Кодген генерирует **`selectedReportMonthProvider`**.
   SelectedReportMonthNotifierProvider._()
     : super(
         from: null,
@@ -170,7 +170,7 @@ String _$selectedReportMonthNotifierHash() =>
 /// - назад: не более [_kMaxMonthsBack] месяцев от текущего;
 /// - вперёд: не дальше текущего месяца (нет будущих месяцев).
 ///
-/// Кодген генерирует **`selectedReportMonthNotifierProvider`**.
+/// Кодген генерирует **`selectedReportMonthProvider`**.
 
 abstract class _$SelectedReportMonthNotifier extends $Notifier<String> {
   String build();

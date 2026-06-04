@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../../../core/care/care_task_l10n.dart';
+import '../../../core/care/care_task_type.dart';
 import '../../../core/error/api_error_l10n.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
+import '../domain/monthly_report.dart';
+import 'report_format.dart';
 import 'report_providers.dart';
 import 'widgets/report_big_numbers.dart';
 import 'widgets/report_by_type.dart';
@@ -32,8 +37,8 @@ import 'widgets/report_weekly_trend.dart';
 /// Переключение перезапрашивает данные через [monthlyReportProvider] family.
 ///
 /// Per-plant блоки «Звёзды месяца»/«Личный рекорд» и дельты дизайна v4 опущены —
-/// backend этих данных не отдаёт. «Поделиться» (шапка и нижняя CTA) — coming-soon
-/// (SnackBar `l10n.comingSoon`).
+/// backend этих данных не отдаёт. «Поделиться» (шапка и нижняя CTA) открывает
+/// системный share sheet с текстовым резюме отчёта.
 class MonthlyReportScreen extends ConsumerWidget {
   const MonthlyReportScreen({super.key});
 
@@ -50,16 +55,45 @@ class MonthlyReportScreen extends ConsumerWidget {
     final canGoPrev = notifier.canGoPrev;
     final canGoNext = notifier.canGoNext;
 
-    void comingSoon() {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
+    /// Строит текст для share sheet на основе данных отчёта.
+    String buildShareText(MonthlyReport report) {
+      final monthLabel =
+          ReportFormat.monthLabel(report.month, l10n.localeName);
+      final lines = <String>[
+        l10n.reportShareTextHeader(monthLabel),
+        l10n.reportShareTextCares(report.done),
+        if (report.onTimePct != null)
+          l10n.reportShareTextOnTime((report.onTimePct! * 100).round()),
+      ];
+
+      // Топ-типы ухода (только ненулевые, в порядке enum-а).
+      final topTypes = CareTaskType.values
+          .where((t) => (report.byType[t] ?? 0) > 0)
+          .toList(growable: false);
+      if (topTypes.isNotEmpty) {
+        final typeLabels =
+            topTypes.map((t) => t.label(l10n)).join(', ');
+        lines.add(typeLabels);
+      }
+
+      lines.add('');
+      lines.add(l10n.reportShareTextAppCredit);
+      return lines.join('\n');
     }
 
-    Widget buildHeader() => Column(
+    /// Открывает системный share sheet. При [report] == null (loading/error)
+    /// кнопки «Поделиться» в этих состояниях не показываются, но метод
+    /// вызывается только из data-состояния.
+    void shareReport(MonthlyReport report) {
+      final text = buildShareText(report);
+      Share.share(text);
+    }
+
+    /// Шапка экрана: кнопка «Поделиться» ([onShare]) + переключатель месяцев.
+    Widget buildHeader({required VoidCallback onShare}) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ReportHeader(onShare: comingSoon),
+            ReportHeader(onShare: onShare),
             const SizedBox(height: 8),
             ReportMonthPicker(
               month: month,
@@ -76,11 +110,11 @@ class MonthlyReportScreen extends ConsumerWidget {
       body: SafeArea(
         bottom: false,
         child: async.when(
-          loading: () => ReportLoading(onShare: comingSoon),
+          loading: () => ReportLoading(onShare: () {}),
           error: (error, _) => ListView(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
             children: [
-              buildHeader(),
+              buildHeader(onShare: () {}),
               const SizedBox(height: 24),
               ErrorState(
                 message: l10n.messageForError(error),
@@ -95,7 +129,7 @@ class MonthlyReportScreen extends ConsumerWidget {
               return ListView(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
                 children: [
-                  buildHeader(),
+                  buildHeader(onShare: () => shareReport(report)),
                   const SizedBox(height: 24),
                   const ReportEmpty(),
                 ],
@@ -104,7 +138,7 @@ class MonthlyReportScreen extends ConsumerWidget {
             return ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 36),
               children: [
-                buildHeader(),
+                buildHeader(onShare: () => shareReport(report)),
                 const SizedBox(height: 14),
                 ReportHero(report: report),
                 const SizedBox(height: 16),
@@ -116,7 +150,7 @@ class MonthlyReportScreen extends ConsumerWidget {
                   ReportWeeklyTrend(buckets: report.healthTrend),
                 ],
                 const SizedBox(height: 28),
-                ReportShareCta(onTap: comingSoon),
+                ReportShareCta(onTap: () => shareReport(report)),
               ],
             );
           },

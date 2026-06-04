@@ -178,7 +178,7 @@ void main() {
       expect(find.text(l10n.reportWeekLabel('19')), findsOneWidget);
     });
 
-    testWidgets('should_show_comingSoon_snackbar_when_share_cta_tapped',
+    testWidgets('should_not_show_comingSoon_snackbar_when_share_cta_tapped',
         (tester) async {
       when(() => repo.getMonthlyReport(month: any(named: 'month')))
           .thenAnswer((_) async => Result.success(_fullReport));
@@ -194,10 +194,11 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       await tester.tap(find.byType(ReportShareCta));
-      await tester.pump(); // запускаем анимацию SnackBar
+      await tester.pump();
 
+      // coming-soon SnackBar убран — кнопка запускает системный share sheet.
       expect(tester.takeException(), isNull);
-      expect(find.text(l10n.comingSoon), findsOneWidget);
+      expect(find.text(l10n.comingSoon), findsNothing);
     });
   });
 }

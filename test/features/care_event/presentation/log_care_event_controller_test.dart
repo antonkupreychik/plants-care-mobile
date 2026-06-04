@@ -14,9 +14,9 @@ import 'package:plantcare_mobile/features/care_event/domain/logged_care_event.da
 import 'package:plantcare_mobile/features/care_event/presentation/care_event_form_state.dart';
 import 'package:plantcare_mobile/features/care_event/presentation/log_care_event_controller.dart';
 import 'package:plantcare_mobile/features/home/data/home_repository_provider.dart';
-import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/features/home/domain/home_repository.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
+import 'package:plantcare_mobile/features/home/domain/today_tasks_result.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/plant_card/data/plant_card_repository_provider.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_event_kind.dart';
@@ -232,6 +232,78 @@ void main() {
 
       expect(
         container.read(logCareEventControllerProvider(_plantId)).note,
+        isNull,
+      );
+    });
+
+    test('should_set_amountMl_clamped_to_0_1000_and_rounded_to_50', () {
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      notifier.setAmountMl(375); // 375 → ближайший шаг 50 → 350
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).amountMl,
+        350,
+      );
+
+      notifier.setAmountMl(1200); // выше макс → 1000
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).amountMl,
+        1000,
+      );
+
+      notifier.setAmountMl(-50); // ниже мин → 0
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).amountMl,
+        0,
+      );
+    });
+
+    test('should_set_soilWasDry_when_setSoilWasDry_called', () {
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).soilWasDry,
+        isFalse,
+      );
+
+      notifier.setSoilWasDry(value: true);
+
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).soilWasDry,
+        isTrue,
+      );
+    });
+
+    test('should_set_fertilizerName_trimmed_when_setFertilizerName_called', () {
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      notifier.setFertilizerName('  Кемира Люкс  ');
+
+      expect(
+        container
+            .read(logCareEventControllerProvider(_plantId))
+            .fertilizerName,
+        'Кемира Люкс',
+      );
+    });
+
+    test('should_set_fertilizerName_null_when_blank', () {
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      notifier.setFertilizerName('   ');
+
+      expect(
+        container
+            .read(logCareEventControllerProvider(_plantId))
+            .fertilizerName,
         isNull,
       );
     });
@@ -596,7 +668,9 @@ void main() {
       final homeRepo = _MockHomeRepo();
       final cardRepo = _MockPlantCardRepo();
       when(homeRepo.getTodayTasks).thenAnswer(
-        (_) async => const Result<List<CareTask>>.success(<CareTask>[]),
+        (_) async => Result<TodayTasksResult>.success(
+          TodayTasksResult(tasks: const [], completedCount: 0, totalCount: 0),
+        ),
       );
       when(() => cardRepo.getHistory(_plantId)).thenAnswer(
         (_) async =>

@@ -51,7 +51,9 @@ ProviderContainer _container({
     retry: (_, _) => null,
     overrides: [
       clockProvider.overrideWithValue(_FixedClock(_nowUtc)),
-      homeTasksProvider.overrideWith((ref) => tasks()),
+      // todayViewProvider использует homeTasksListProvider (плоский список),
+      // поэтому в тестах переопределяем именно его.
+      homeTasksListProvider.overrideWith((ref) => tasks()),
       if (filter != null)
         selectedTodayFilterProvider.overrideWith(
           () => _StubFilter(filter),

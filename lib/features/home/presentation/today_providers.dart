@@ -24,7 +24,7 @@ part 'today_providers.g.dart';
 /// UI маппит его в текст через `AppLocalizations`.
 @riverpod
 Future<TodayView> todayView(Ref ref) async {
-  final tasks = await ref.watch(homeTasksProvider.future);
+  final tasks = await ref.watch(homeTasksListProvider.future);
   final filter = ref.watch(selectedTodayFilterProvider);
   final nowLocal = ref.watch(clockProvider).nowUtc().toLocal();
 

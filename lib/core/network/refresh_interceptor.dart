@@ -24,13 +24,11 @@ import '../auth/token_store.dart';
 /// ошибка пробрасывается дальше в [ErrorInterceptor].
 class RefreshInterceptor extends QueuedInterceptor {
   RefreshInterceptor({
-    required JwtAuthSession session,
-    required AuthClient refreshClient,
-    required Dio retryDio,
+    required this._session,
+    required this._refreshClient,
+    required this._retryDio,
     this.onSessionExpired,
-  })  : _session = session, // ignore: prefer_initializing_formals
-        _refreshClient = refreshClient, // ignore: prefer_initializing_formals
-        _retryDio = retryDio; // ignore: prefer_initializing_formals
+  });
 
   final JwtAuthSession _session;
   final AuthClient _refreshClient;

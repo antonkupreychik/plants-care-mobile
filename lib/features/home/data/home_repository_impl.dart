@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 
 import '../../../core/api/generated/plants_care_api.dart';
-import '../../../core/care/care_task.dart';
 import '../../../core/care/task_mapper.dart';
 import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
@@ -11,6 +10,7 @@ import '../../../core/network/auth_scope.dart';
 import '../../../core/network/request_extra.dart';
 import '../domain/home_repository.dart';
 import '../domain/plant.dart';
+import '../domain/today_tasks_result.dart';
 import 'mappers/plant_mapper.dart';
 
 /// Реализация [HomeRepository] поверх сгенерированного API-клиента (MADR-007).
@@ -28,13 +28,17 @@ class HomeRepositoryImpl implements HomeRepository {
   final PlantsCareApi _api;
 
   @override
-  Future<Result<List<CareTask>>> getTodayTasks() async {
+  Future<Result<TodayTasksResult>> getTodayTasks() async {
     try {
       final response = await _api.today.getToday(
         extras: authScopeExtra(AuthScope.chat),
       );
       return Result.success(
-        response.tasks.map((dto) => dto.toDomain()).toList(growable: false),
+        TodayTasksResult(
+          tasks: response.tasks.map((dto) => dto.toDomain()).toList(growable: false),
+          completedCount: response.summary.done,
+          totalCount: response.summary.total,
+        ),
       );
     } on DioException catch (e) {
       return Result.failure(_toApiError(e));

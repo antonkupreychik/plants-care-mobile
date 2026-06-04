@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/app.dart';
-import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/env/app_config.dart';
@@ -23,6 +22,7 @@ import 'package:plantcare_mobile/features/catalog/presentation/catalog_providers
 import 'package:plantcare_mobile/features/catalog/presentation/catalog_screen.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
+import 'package:plantcare_mobile/features/home/domain/today_tasks_result.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_history_entry.dart';
@@ -102,7 +102,9 @@ ScheduleWeek _emptyWeek(DateTime monday) => ScheduleWeek(
       appConfigProvider.overrideWithValue(_config),
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
       // Home: три секции пустые → детерминированный empty-сад без сети.
-      homeTasksProvider.overrideWith((ref) async => const <CareTask>[]),
+      homeTasksProvider.overrideWith(
+        (ref) async => TodayTasksResult(tasks: const [], completedCount: 0, totalCount: 0),
+      ),
       homePlantsProvider.overrideWith((ref) async => const <Plant>[]),
       homeLocationsProvider
           .overrideWith((ref) async => const <GardenLocation>[]),
