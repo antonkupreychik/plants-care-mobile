@@ -682,6 +682,18 @@
   "@plantCardJournalOnTime": {
     "description": "Бейдж записи истории: уход выполнен в срок"
   },
+  "plantCardJournalLoadMore": "Показать ещё",
+  "@plantCardJournalLoadMore": {
+    "description": "Кнопка дозагрузки следующих 5 записей дневника на карточке растения"
+  },
+  "plantCardJournalOpenFull": "Открыть полный дневник",
+  "@plantCardJournalOpenFull": {
+    "description": "Кнопка перехода в полный дневник (экран 21), когда все записи дозагружены и их больше 5"
+  },
+  "plantCardJournalLoadMoreError": "Не удалось дозагрузить",
+  "@plantCardJournalLoadMoreError": {
+    "description": "Компактная плашка ошибки дозагрузки дневника на карточке растения"
+  },
 
   "plantCardLogCare": "Отметить уход",
   "@plantCardLogCare": {

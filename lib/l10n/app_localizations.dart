@@ -814,6 +814,24 @@ abstract class AppLocalizations {
   /// **'вовремя'**
   String get plantCardJournalOnTime;
 
+  /// Кнопка дозагрузки следующих 5 записей дневника на карточке растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать ещё'**
+  String get plantCardJournalLoadMore;
+
+  /// Кнопка перехода в полный дневник (экран 21), когда все записи дозагружены и их больше 5
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть полный дневник'**
+  String get plantCardJournalOpenFull;
+
+  /// Компактная плашка ошибки дозагрузки дневника на карточке растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось дозагрузить'**
+  String get plantCardJournalLoadMoreError;
+
   /// Основная кнопка действия на карточке растения
   ///
   /// In ru, this message translates to:
