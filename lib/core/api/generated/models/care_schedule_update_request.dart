@@ -15,6 +15,7 @@ class CareScheduleUpdateRequest {
     required this.unit,
     required this.enabled,
     this.amountMl,
+    this.seasonalOverride,
   });
   
   factory CareScheduleUpdateRequest.fromJson(Map<String, Object?> json) => _$CareScheduleUpdateRequestFromJson(json);
@@ -25,6 +26,14 @@ class CareScheduleUpdateRequest {
   /// Объём полива в миллилитрах. Только для type=WATERING.
   final int? amountMl;
   final bool enabled;
+
+  /// Per-plant переопределение авто-подстройки по сезонам.
+  /// INHERIT — следовать глобальной настройке пользователя;.
+  /// ON — включить только для этого растения;.
+  /// OFF — выключить только для этого растения.
+  /// Отсутствие поля — текущее значение не меняется.
+  ///
+  final String? seasonalOverride;
 
   Map<String, Object?> toJson() => _$CareScheduleUpdateRequestToJson(this);
 }

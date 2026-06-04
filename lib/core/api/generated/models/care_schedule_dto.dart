@@ -6,6 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'care_schedule_dto_type.dart';
 import 'care_schedule_dto_unit.dart';
+import 'seasonal_schedule_dto.dart';
 
 part 'care_schedule_dto.g.dart';
 
@@ -17,6 +18,7 @@ class CareScheduleDto {
     required this.every,
     required this.unit,
     required this.enabled,
+    required this.seasonal,
     this.amountMl,
     this.nextDueAt,
   });
@@ -37,6 +39,7 @@ class CareScheduleDto {
 
   /// Ближайшее срабатывание (UTC). Заполнено только если enabled=true.
   final DateTime? nextDueAt;
+  final SeasonalScheduleDto seasonal;
 
   Map<String, Object?> toJson() => _$CareScheduleDtoToJson(this);
 }

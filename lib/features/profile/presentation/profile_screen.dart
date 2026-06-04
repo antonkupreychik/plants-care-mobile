@@ -115,6 +115,13 @@ class ProfileScreen extends ConsumerWidget {
                     divider: true,
                     onTap: () => context.push('/profile/quiet-hours'),
                   ),
+                  // Экран 35 «Сезонные интервалы» → push поверх shell.
+                  SettingsRow(
+                    title: l10n.profileSeasonalTitle,
+                    icon: Icons.wb_sunny_outlined,
+                    divider: true,
+                    onTap: () => context.push('/profile/seasonal'),
+                  ),
                   // Экран 38 «Язык приложения» → push поверх shell.
                   SettingsRow(
                     title: l10n.languageScreenTitle,

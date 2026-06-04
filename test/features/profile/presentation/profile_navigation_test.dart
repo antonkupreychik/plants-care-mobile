@@ -162,6 +162,9 @@ void main() {
     await tester.pumpAndSettle();
 
     // Тап по «Выйти» открывает диалог подтверждения (репозиторий ещё не зван).
+    // Строка внизу списка настроек — скроллим её в зону видимости.
+    await tester.ensureVisible(find.text(l10n.profileSignOut));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(l10n.profileSignOut));
     await tester.pumpAndSettle();
     expect(find.text(l10n.profileSignOutConfirmTitle), findsOneWidget);
@@ -194,6 +197,9 @@ void main() {
     await tester.tap(find.text(l10n.navProfile));
     await tester.pumpAndSettle();
 
+    // Строка внизу списка настроек — скроллим её в зону видимости.
+    await tester.ensureVisible(find.text(l10n.profileSignOut));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(l10n.profileSignOut));
     await tester.pumpAndSettle();
     await tester.tap(find.text(l10n.profileSignOutConfirmCancel));

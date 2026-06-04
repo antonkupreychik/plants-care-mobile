@@ -3082,6 +3082,12 @@ abstract class AppLocalizations {
   /// **'Уведомления и время'**
   String get profileNotificationsTitle;
 
+  /// Строка профиля — вход на экран 35 «Сезонные интервалы»
+  ///
+  /// In ru, this message translates to:
+  /// **'Сезонные интервалы'**
+  String get profileSeasonalTitle;
+
   /// Кнопка «назад» экрана 23
   ///
   /// In ru, this message translates to:
@@ -3567,6 +3573,174 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Изменения сохранены'**
   String get editPlantSuccessSnackbar;
+
+  /// Оверлайн шапки экрана 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Сезонные интервалы'**
+  String get seasonalOverline;
+
+  /// Кнопка «назад» экрана 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get seasonalBack;
+
+  /// Серифный заголовок 35, обычная часть перед акцентом
+  ///
+  /// In ru, this message translates to:
+  /// **'Уход '**
+  String get seasonalTitleLead;
+
+  /// Серифный заголовок 35, акцентная курсивная часть
+  ///
+  /// In ru, this message translates to:
+  /// **'по сезону'**
+  String get seasonalTitleAccent;
+
+  /// Подзаголовок экрана 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Летом растения пьют чаще, зимой почти спят. Подстраиваем расписание автоматически.'**
+  String get seasonalSubtitle;
+
+  /// Заголовок тумблера авто-подстройки на экране 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Автоматически по сезону'**
+  String get seasonalToggleTitle;
+
+  /// Подпись тумблера авто-подстройки на экране 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Менять частоту полива и опрыскивания'**
+  String get seasonalToggleSubtitle;
+
+  /// Пояснение режима MULTIPLIER на экране 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Множитель к базовому интервалу'**
+  String get seasonalModeMultiplier;
+
+  /// Пояснение режима FIXED на экране 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Фиксированные интервалы на сезон'**
+  String get seasonalModeFixed;
+
+  /// Оверлайн карточки текущего сезона на экране 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Сейчас · {season}'**
+  String seasonalNowLabel(String season);
+
+  /// Название сезона «весна» с эмодзи (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'весна 🌱'**
+  String get seasonalSpring;
+
+  /// Название сезона «лето» с эмодзи (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'лето ☀️'**
+  String get seasonalSummer;
+
+  /// Название сезона «осень» с эмодзи (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'осень 🍂'**
+  String get seasonalAutumn;
+
+  /// Название сезона «зима» с эмодзи (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'зима ❄️'**
+  String get seasonalWinter;
+
+  /// Заголовок карточки текущего сезона, когда авто-подстройка включена (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'Подстраиваем под сезон'**
+  String get seasonalCardOnTitle;
+
+  /// Текст карточки сезона: весна, авто-подстройка включена
+  ///
+  /// In ru, this message translates to:
+  /// **'Весной растения просыпаются — поливаем чуть чаще.'**
+  String get seasonalCardOnSpring;
+
+  /// Текст карточки сезона: лето, авто-подстройка включена
+  ///
+  /// In ru, this message translates to:
+  /// **'Летом растения пьют активнее — поливаем чаще.'**
+  String get seasonalCardOnSummer;
+
+  /// Текст карточки сезона: осень, авто-подстройка включена
+  ///
+  /// In ru, this message translates to:
+  /// **'Осенью рост замедляется — поливаем реже.'**
+  String get seasonalCardOnAutumn;
+
+  /// Текст карточки сезона: зима, авто-подстройка включена
+  ///
+  /// In ru, this message translates to:
+  /// **'Зимой растения отдыхают — поливаем заметно реже.'**
+  String get seasonalCardOnWinter;
+
+  /// Заголовок карточки, когда авто-подстройка выключена (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'Авто-подстройка выключена'**
+  String get seasonalCardOffTitle;
+
+  /// Текст карточки, когда авто-подстройка выключена (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'Расписание не меняется по сезонам. Включите тумблер, чтобы летом поливать чаще, а зимой реже.'**
+  String get seasonalCardOffBody;
+
+  /// Заголовок секции со столбчатой диаграммой сезонов (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'Частота полива по году'**
+  String get seasonalSeasonsSection;
+
+  /// Относительная частота полива весной (диаграмма экрана 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'+10%'**
+  String get seasonalSpringFactor;
+
+  /// Относительная частота полива летом (диаграмма экрана 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'+20%'**
+  String get seasonalSummerFactor;
+
+  /// Относительная частота полива осенью (диаграмма экрана 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'базовый'**
+  String get seasonalAutumnFactor;
+
+  /// Относительная частота полива зимой (диаграмма экрана 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'−30%'**
+  String get seasonalWinterFactor;
+
+  /// Декоративная цитата внизу экрана 35
+  ///
+  /// In ru, this message translates to:
+  /// **'«Зимой не заливай меня — я отдыхаю и пью совсем мало.»'**
+  String get seasonalQuote;
+
+  /// Сноска про per-plant интервалы на экране 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Точные интервалы по сезонам считаются для каждого растения индивидуально на основе его расписания ухода.'**
+  String get seasonalNote;
 }
 
 class _AppLocalizationsDelegate

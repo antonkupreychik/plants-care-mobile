@@ -53,6 +53,7 @@ export 'models/shopping_item_create_request.dart';
 export 'models/shopping_item_update_request.dart';
 export 'models/care_type_dto.dart';
 export 'models/weather_snapshot_dto.dart';
+export 'models/seasonal_schedule_dto.dart';
 export 'models/care_event_type.dart';
 export 'models/create_care_event_request.dart';
 export 'models/care_event_response.dart';
