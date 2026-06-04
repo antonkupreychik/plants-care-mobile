@@ -235,6 +235,78 @@ void main() {
         isNull,
       );
     });
+
+    test('should_set_amountMl_clamped_to_0_1000_and_rounded_to_50', () {
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      notifier.setAmountMl(375); // 375 → ближайший шаг 50 → 350
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).amountMl,
+        350,
+      );
+
+      notifier.setAmountMl(1200); // выше макс → 1000
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).amountMl,
+        1000,
+      );
+
+      notifier.setAmountMl(-50); // ниже мин → 0
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).amountMl,
+        0,
+      );
+    });
+
+    test('should_set_soilWasDry_when_setSoilWasDry_called', () {
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).soilWasDry,
+        isFalse,
+      );
+
+      notifier.setSoilWasDry(value: true);
+
+      expect(
+        container.read(logCareEventControllerProvider(_plantId)).soilWasDry,
+        isTrue,
+      );
+    });
+
+    test('should_set_fertilizerName_trimmed_when_setFertilizerName_called', () {
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      notifier.setFertilizerName('  Кемира Люкс  ');
+
+      expect(
+        container
+            .read(logCareEventControllerProvider(_plantId))
+            .fertilizerName,
+        'Кемира Люкс',
+      );
+    });
+
+    test('should_set_fertilizerName_null_when_blank', () {
+      final container = _container(repo);
+      final notifier =
+          container.read(logCareEventControllerProvider(_plantId).notifier);
+
+      notifier.setFertilizerName('   ');
+
+      expect(
+        container
+            .read(logCareEventControllerProvider(_plantId))
+            .fertilizerName,
+        isNull,
+      );
+    });
   });
 
   group('canSubmit', () {

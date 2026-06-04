@@ -18,9 +18,12 @@ mixin _$CareEventDraft {
  int get plantId;/// Выбранный тип ухода. `unknown` невалиден для отправки.
  CareEventKind get type;/// Момент выполнения в UTC. По умолчанию — «сейчас» (ставит presentation),
 /// допускается прошлое (backdating).
- DateTime get performedAtUtc;/// Необязательная заметка.
+ DateTime get performedAtUtc;/// Необязательная заметка (свободный текст пользователя).
  String? get note;/// UUID идемпотентности; null до момента отправки.
- String? get clientId;
+ String? get clientId;/// Объём воды (мл) для WATER (0–1000, шаг 50). null = не задан.
+ int? get amountMl;/// Грунт был сухой — отметка для WATER (экран 06).
+ bool get soilWasDry;/// Название удобрения для FERTILIZE (экран 06b); null = не задано.
+ String? get fertilizerName;
 /// Create a copy of CareEventDraft
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,16 +34,16 @@ $CareEventDraftCopyWith<CareEventDraft> get copyWith => _$CareEventDraftCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareEventDraft&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.type, type) || other.type == type)&&(identical(other.performedAtUtc, performedAtUtc) || other.performedAtUtc == performedAtUtc)&&(identical(other.note, note) || other.note == note)&&(identical(other.clientId, clientId) || other.clientId == clientId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareEventDraft&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.type, type) || other.type == type)&&(identical(other.performedAtUtc, performedAtUtc) || other.performedAtUtc == performedAtUtc)&&(identical(other.note, note) || other.note == note)&&(identical(other.clientId, clientId) || other.clientId == clientId)&&(identical(other.amountMl, amountMl) || other.amountMl == amountMl)&&(identical(other.soilWasDry, soilWasDry) || other.soilWasDry == soilWasDry)&&(identical(other.fertilizerName, fertilizerName) || other.fertilizerName == fertilizerName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,plantId,type,performedAtUtc,note,clientId);
+int get hashCode => Object.hash(runtimeType,plantId,type,performedAtUtc,note,clientId,amountMl,soilWasDry,fertilizerName);
 
 @override
 String toString() {
-  return 'CareEventDraft(plantId: $plantId, type: $type, performedAtUtc: $performedAtUtc, note: $note, clientId: $clientId)';
+  return 'CareEventDraft(plantId: $plantId, type: $type, performedAtUtc: $performedAtUtc, note: $note, clientId: $clientId, amountMl: $amountMl, soilWasDry: $soilWasDry, fertilizerName: $fertilizerName)';
 }
 
 
@@ -51,7 +54,7 @@ abstract mixin class $CareEventDraftCopyWith<$Res>  {
   factory $CareEventDraftCopyWith(CareEventDraft value, $Res Function(CareEventDraft) _then) = _$CareEventDraftCopyWithImpl;
 @useResult
 $Res call({
- int plantId, CareEventKind type, DateTime performedAtUtc, String? note, String? clientId
+ int plantId, CareEventKind type, DateTime performedAtUtc, String? note, String? clientId, int? amountMl, bool soilWasDry, String? fertilizerName
 });
 
 
@@ -68,13 +71,16 @@ class _$CareEventDraftCopyWithImpl<$Res>
 
 /// Create a copy of CareEventDraft
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? plantId = null,Object? type = null,Object? performedAtUtc = null,Object? note = freezed,Object? clientId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? plantId = null,Object? type = null,Object? performedAtUtc = null,Object? note = freezed,Object? clientId = freezed,Object? amountMl = freezed,Object? soilWasDry = null,Object? fertilizerName = freezed,}) {
   return _then(_self.copyWith(
 plantId: null == plantId ? _self.plantId : plantId // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as CareEventKind,performedAtUtc: null == performedAtUtc ? _self.performedAtUtc : performedAtUtc // ignore: cast_nullable_to_non_nullable
 as DateTime,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,clientId: freezed == clientId ? _self.clientId : clientId // ignore: cast_nullable_to_non_nullable
+as String?,amountMl: freezed == amountMl ? _self.amountMl : amountMl // ignore: cast_nullable_to_non_nullable
+as int?,soilWasDry: null == soilWasDry ? _self.soilWasDry : soilWasDry // ignore: cast_nullable_to_non_nullable
+as bool,fertilizerName: freezed == fertilizerName ? _self.fertilizerName : fertilizerName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -160,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  String? note,  String? clientId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  String? note,  String? clientId,  int? amountMl,  bool soilWasDry,  String? fertilizerName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CareEventDraft() when $default != null:
-return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.note,_that.clientId);case _:
+return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.note,_that.clientId,_that.amountMl,_that.soilWasDry,_that.fertilizerName);case _:
   return orElse();
 
 }
@@ -181,10 +187,10 @@ return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.note,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  String? note,  String? clientId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  String? note,  String? clientId,  int? amountMl,  bool soilWasDry,  String? fertilizerName)  $default,) {final _that = this;
 switch (_that) {
 case _CareEventDraft():
-return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.note,_that.clientId);case _:
+return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.note,_that.clientId,_that.amountMl,_that.soilWasDry,_that.fertilizerName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +207,10 @@ return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.note,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  String? note,  String? clientId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  String? note,  String? clientId,  int? amountMl,  bool soilWasDry,  String? fertilizerName)?  $default,) {final _that = this;
 switch (_that) {
 case _CareEventDraft() when $default != null:
-return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.note,_that.clientId);case _:
+return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.note,_that.clientId,_that.amountMl,_that.soilWasDry,_that.fertilizerName);case _:
   return null;
 
 }
@@ -216,7 +222,7 @@ return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.note,_that.c
 
 
 class _CareEventDraft implements CareEventDraft {
-  const _CareEventDraft({required this.plantId, required this.type, required this.performedAtUtc, this.note, this.clientId});
+  const _CareEventDraft({required this.plantId, required this.type, required this.performedAtUtc, this.note, this.clientId, this.amountMl, this.soilWasDry = false, this.fertilizerName});
   
 
 /// Растение, для которого отмечается уход.
@@ -226,10 +232,16 @@ class _CareEventDraft implements CareEventDraft {
 /// Момент выполнения в UTC. По умолчанию — «сейчас» (ставит presentation),
 /// допускается прошлое (backdating).
 @override final  DateTime performedAtUtc;
-/// Необязательная заметка.
+/// Необязательная заметка (свободный текст пользователя).
 @override final  String? note;
 /// UUID идемпотентности; null до момента отправки.
 @override final  String? clientId;
+/// Объём воды (мл) для WATER (0–1000, шаг 50). null = не задан.
+@override final  int? amountMl;
+/// Грунт был сухой — отметка для WATER (экран 06).
+@override@JsonKey() final  bool soilWasDry;
+/// Название удобрения для FERTILIZE (экран 06b); null = не задано.
+@override final  String? fertilizerName;
 
 /// Create a copy of CareEventDraft
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +253,16 @@ _$CareEventDraftCopyWith<_CareEventDraft> get copyWith => __$CareEventDraftCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareEventDraft&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.type, type) || other.type == type)&&(identical(other.performedAtUtc, performedAtUtc) || other.performedAtUtc == performedAtUtc)&&(identical(other.note, note) || other.note == note)&&(identical(other.clientId, clientId) || other.clientId == clientId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareEventDraft&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.type, type) || other.type == type)&&(identical(other.performedAtUtc, performedAtUtc) || other.performedAtUtc == performedAtUtc)&&(identical(other.note, note) || other.note == note)&&(identical(other.clientId, clientId) || other.clientId == clientId)&&(identical(other.amountMl, amountMl) || other.amountMl == amountMl)&&(identical(other.soilWasDry, soilWasDry) || other.soilWasDry == soilWasDry)&&(identical(other.fertilizerName, fertilizerName) || other.fertilizerName == fertilizerName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,plantId,type,performedAtUtc,note,clientId);
+int get hashCode => Object.hash(runtimeType,plantId,type,performedAtUtc,note,clientId,amountMl,soilWasDry,fertilizerName);
 
 @override
 String toString() {
-  return 'CareEventDraft(plantId: $plantId, type: $type, performedAtUtc: $performedAtUtc, note: $note, clientId: $clientId)';
+  return 'CareEventDraft(plantId: $plantId, type: $type, performedAtUtc: $performedAtUtc, note: $note, clientId: $clientId, amountMl: $amountMl, soilWasDry: $soilWasDry, fertilizerName: $fertilizerName)';
 }
 
 
@@ -261,7 +273,7 @@ abstract mixin class _$CareEventDraftCopyWith<$Res> implements $CareEventDraftCo
   factory _$CareEventDraftCopyWith(_CareEventDraft value, $Res Function(_CareEventDraft) _then) = __$CareEventDraftCopyWithImpl;
 @override @useResult
 $Res call({
- int plantId, CareEventKind type, DateTime performedAtUtc, String? note, String? clientId
+ int plantId, CareEventKind type, DateTime performedAtUtc, String? note, String? clientId, int? amountMl, bool soilWasDry, String? fertilizerName
 });
 
 
@@ -278,13 +290,16 @@ class __$CareEventDraftCopyWithImpl<$Res>
 
 /// Create a copy of CareEventDraft
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? plantId = null,Object? type = null,Object? performedAtUtc = null,Object? note = freezed,Object? clientId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? plantId = null,Object? type = null,Object? performedAtUtc = null,Object? note = freezed,Object? clientId = freezed,Object? amountMl = freezed,Object? soilWasDry = null,Object? fertilizerName = freezed,}) {
   return _then(_CareEventDraft(
 plantId: null == plantId ? _self.plantId : plantId // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as CareEventKind,performedAtUtc: null == performedAtUtc ? _self.performedAtUtc : performedAtUtc // ignore: cast_nullable_to_non_nullable
 as DateTime,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,clientId: freezed == clientId ? _self.clientId : clientId // ignore: cast_nullable_to_non_nullable
+as String?,amountMl: freezed == amountMl ? _self.amountMl : amountMl // ignore: cast_nullable_to_non_nullable
+as int?,soilWasDry: null == soilWasDry ? _self.soilWasDry : soilWasDry // ignore: cast_nullable_to_non_nullable
+as bool,fertilizerName: freezed == fertilizerName ? _self.fertilizerName : fertilizerName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

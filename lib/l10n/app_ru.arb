@@ -795,6 +795,56 @@
     "description": "Снэкбар-подтверждение после успешной отметки ухода"
   },
 
+  "careSheetWaterAmountLabel": "Объём воды",
+  "@careSheetWaterAmountLabel": {
+    "description": "Метка слайдера объёма воды (WATER, экран 06)"
+  },
+
+  "careSheetWaterAmountValue": "{amount} мл",
+  "@careSheetWaterAmountValue": {
+    "description": "Значение объёма воды с единицей мл",
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+
+  "careSheetWaterAmountNotSet": "Не указан",
+  "@careSheetWaterAmountNotSet": {
+    "description": "Подпись когда объём воды не выбран (слайдер в 0)"
+  },
+
+  "careSheetSoilDryLabel": "Грунт был сухой",
+  "@careSheetSoilDryLabel": {
+    "description": "Тоггл «грунт был сухой» (WATER, экран 06)"
+  },
+
+  "careSheetFertilizerNameLabel": "Название удобрения",
+  "@careSheetFertilizerNameLabel": {
+    "description": "Метка поля названия удобрения (FERTILIZE, экран 06b)"
+  },
+
+  "careSheetFertilizerNameHint": "Например: Кемира Люкс",
+  "@careSheetFertilizerNameHint": {
+    "description": "Плейсхолдер поля названия удобрения"
+  },
+
+  "careSheetWaterSubmit": "Полито",
+  "@careSheetWaterSubmit": {
+    "description": "Кнопка подтверждения полива (WATER)"
+  },
+
+  "careSheetSpraySubmit": "Опрыскано",
+  "@careSheetSpraySubmit": {
+    "description": "Кнопка подтверждения опрыскивания (SPRAY)"
+  },
+
+  "careSheetFertilizeSubmit": "Подкормлено",
+  "@careSheetFertilizeSubmit": {
+    "description": "Кнопка подтверждения подкормки (FERTILIZE)"
+  },
+
   "scheduleIcsTitle": "Подписаться в календаре",
   "@scheduleIcsTitle": {
     "description": "Заголовок карточки экспорта расписания в календарь (.ics)"

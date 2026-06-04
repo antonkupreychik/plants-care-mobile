@@ -627,6 +627,33 @@ class AppLocalizationsRu extends AppLocalizations {
   String get careSheetSubmitted => 'Уход отмечен';
 
   @override
+  String get careSheetWaterAmountLabel => 'Объём воды';
+
+  @override
+  String careSheetWaterAmountValue(int amount) => '$amount мл';
+
+  @override
+  String get careSheetWaterAmountNotSet => 'Не указан';
+
+  @override
+  String get careSheetSoilDryLabel => 'Грунт был сухой';
+
+  @override
+  String get careSheetFertilizerNameLabel => 'Название удобрения';
+
+  @override
+  String get careSheetFertilizerNameHint => 'Например: Кемира Люкс';
+
+  @override
+  String get careSheetWaterSubmit => 'Полито';
+
+  @override
+  String get careSheetSpraySubmit => 'Опрыскано';
+
+  @override
+  String get careSheetFertilizeSubmit => 'Подкормлено';
+
+  @override
   String get scheduleIcsTitle => 'Подписаться в календаре';
 
   @override

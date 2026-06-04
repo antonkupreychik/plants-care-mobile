@@ -940,6 +940,60 @@ abstract class AppLocalizations {
   /// **'Уход отмечен'**
   String get careSheetSubmitted;
 
+  /// Метка слайдера объёма воды (WATER, экран 06)
+  ///
+  /// In ru, this message translates to:
+  /// **'Объём воды'**
+  String get careSheetWaterAmountLabel;
+
+  /// Значение объёма воды с единицей мл
+  ///
+  /// In ru, this message translates to:
+  /// **'{amount} мл'**
+  String careSheetWaterAmountValue(int amount);
+
+  /// Подпись когда объём воды не выбран (слайдер в 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не указан'**
+  String get careSheetWaterAmountNotSet;
+
+  /// Тоггл «грунт был сухой» (WATER, экран 06)
+  ///
+  /// In ru, this message translates to:
+  /// **'Грунт был сухой'**
+  String get careSheetSoilDryLabel;
+
+  /// Метка поля названия удобрения (FERTILIZE, экран 06b)
+  ///
+  /// In ru, this message translates to:
+  /// **'Название удобрения'**
+  String get careSheetFertilizerNameLabel;
+
+  /// Плейсхолдер поля названия удобрения
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Кемира Люкс'**
+  String get careSheetFertilizerNameHint;
+
+  /// Кнопка подтверждения полива (WATER)
+  ///
+  /// In ru, this message translates to:
+  /// **'Полито'**
+  String get careSheetWaterSubmit;
+
+  /// Кнопка подтверждения опрыскивания (SPRAY)
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскано'**
+  String get careSheetSpraySubmit;
+
+  /// Кнопка подтверждения подкормки (FERTILIZE)
+  ///
+  /// In ru, this message translates to:
+  /// **'Подкормлено'**
+  String get careSheetFertilizeSubmit;
+
   /// Заголовок карточки экспорта расписания в календарь (.ics)
   ///
   /// In ru, this message translates to:
