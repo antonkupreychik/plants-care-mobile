@@ -2087,9 +2087,9 @@
     "description": "Акцентное слово-глагол hero-заголовка экрана 33 (удобрение)."
   },
 
-  "firstCareSuccessBubble": "«Спасибо! Сразу легче дышится 💧»",
+  "firstCareSuccessBubble": "«Спасибо! Ты мой лучший садовник 🌿»",
   "@firstCareSuccessBubble": {
-    "description": "Реплика-благодарность растения в speech-bubble экрана 33 (вариант полива из дизайна)."
+    "description": "Реплика-благодарность растения в speech-bubble экрана 33 (голос растения — первый уход, issue #91)."
   },
 
   "firstCareSuccessFallbackPlantName": "Растение",
@@ -2097,9 +2097,9 @@
     "description": "Нейтральное имя растения на экране 33, если деталь не загрузилась (уход уже записан — не показываем как ошибку)."
   },
 
-  "firstCareSuccessStreakDayOne": "Стрик начат · день 1",
+  "firstCareSuccessStreakDayOne": "День 1 🔥",
   "@firstCareSuccessStreakDayOne": {
-    "description": "Чип старта стрика на экране 33 (только при onTime == true)."
+    "description": "Чип старта стрика на экране 33 (только при onTime == true). Формат из issue #91."
   },
 
   "firstCareSuccessNextHint": "Я напомню, когда придёт время следующего ухода.",
@@ -2127,9 +2127,9 @@
     "description": "Суффикс строки-счётчика экрана 33 после болд-части «через N дн.» (общий для всех типов ухода)."
   },
 
-  "firstCareSuccessCta": "Вернуться в сад",
+  "firstCareSuccessCta": "Отлично",
   "@firstCareSuccessCta": {
-    "description": "CTA-кнопка экрана 33 → возврат в таб «Сад»."
+    "description": "CTA-кнопка экрана 33 → возврат на карточку растения (issue #91)."
   },
 
   "careHistoryOverline": "Дневник ухода",

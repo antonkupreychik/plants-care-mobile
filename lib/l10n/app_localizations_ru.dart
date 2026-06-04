@@ -1489,13 +1489,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get firstCareSuccessVerbFertilize => 'удобрена';
 
   @override
-  String get firstCareSuccessBubble => '«Спасибо! Сразу легче дышится 💧»';
+  String get firstCareSuccessBubble => '«Спасибо! Ты мой лучший садовник 🌿»';
 
   @override
   String get firstCareSuccessFallbackPlantName => 'Растение';
 
   @override
-  String get firstCareSuccessStreakDayOne => 'Стрик начат · день 1';
+  String get firstCareSuccessStreakDayOne => 'День 1 🔥';
 
   @override
   String get firstCareSuccessNextHint =>
@@ -1514,7 +1514,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get firstCareSuccessNextSuffix => ', напомню сама';
 
   @override
-  String get firstCareSuccessCta => 'Вернуться в сад';
+  String get firstCareSuccessCta => 'Отлично';
 
   @override
   String get careHistoryOverline => 'Дневник ухода';

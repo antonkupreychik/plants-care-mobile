@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,7 +33,10 @@ import 'next_care_due_provider.dart';
 /// - error  — деградируем мягко: то же празднование с нейтральным именем
 ///   («Растение»), уход УЖЕ записан, не показываем как ошибку;
 /// - data   — полное празднование.
-class FirstCareSuccessScreen extends ConsumerWidget {
+///
+/// При первом рендере выдаёт `HapticFeedback.mediumImpact` (issue #91:
+/// «конфетти или haptic medium impact»).
+class FirstCareSuccessScreen extends ConsumerStatefulWidget {
   const FirstCareSuccessScreen({
     required this.plantId,
     required this.careKind,
@@ -50,9 +54,25 @@ class FirstCareSuccessScreen extends ConsumerWidget {
   final bool onTime;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FirstCareSuccessScreen> createState() =>
+      _FirstCareSuccessScreenState();
+}
+
+class _FirstCareSuccessScreenState extends ConsumerState<FirstCareSuccessScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Haptic medium impact — тактильный отклик на успех (issue #91).
+    // Запускаем после первого кадра, чтобы не задерживать отрисовку.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      HapticFeedback.mediumImpact();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
-    final detail = ref.watch(plantDetailProvider(plantId));
+    final detail = ref.watch(plantDetailProvider(widget.plantId));
 
     // Празднование рисуем во всех состояниях: уход уже записан успешно, поэтому
     // ошибка детали — не повод показывать стену ошибки. На loading — лоадер
@@ -74,20 +94,20 @@ class FirstCareSuccessScreen extends ConsumerWidget {
                       plantName:
                           AppLocalizations.of(context).firstCareSuccessFallbackPlantName,
                       speciesName: null,
-                      careKind: careKind,
-                      onTime: onTime,
+                      careKind: widget.careKind,
+                      onTime: widget.onTime,
                     ),
                     data: (plant) => _Celebration(
                       plantName: plant.name,
                       speciesName: plant.speciesName,
-                      careKind: careKind,
-                      onTime: onTime,
+                      careKind: widget.careKind,
+                      onTime: widget.onTime,
                     ),
                   ),
                 ),
                 _Footer(
-                  plantId: plantId,
-                  careKind: careKind,
+                  plantId: widget.plantId,
+                  careKind: widget.careKind,
                   onReturn: () => context.go('/home'),
                 ),
               ],
