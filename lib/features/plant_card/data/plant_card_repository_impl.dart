@@ -91,6 +91,19 @@ class PlantCardRepositoryImpl implements PlantCardRepository {
     }
   }
 
+  @override
+  Future<Result<void>> archivePlant(int plantId) async {
+    try {
+      await _api.plants.deletePlant(
+        id: plantId,
+        extras: authScopeExtra(AuthScope.user),
+      );
+      return const Result.success(null);
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
   /// `ErrorInterceptor` уже нормализовал ошибку в [ApiError] и положил её в
   /// `DioException.error`. Если там не [ApiError] — безопасный fallback.
   ApiError _toApiError(DioException e) =>

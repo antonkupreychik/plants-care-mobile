@@ -2214,4 +2214,26 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get editPlantSuccessSnackbar => 'Изменения сохранены';
+
+  @override
+  String get plantCardMenuEdit => 'Редактировать';
+
+  @override
+  String get archivePlantMenuLabel => 'В архив';
+
+  @override
+  String get archivePlantConfirmTitle => 'Отправить в архив?';
+
+  @override
+  String get archivePlantConfirmBody =>
+      'Растение переместится в архив. Вернуть его в список можно будет из экрана «Архив».';
+
+  @override
+  String get archivePlantConfirmAction => 'Архивировать';
+
+  @override
+  String get archivePlantSuccess => 'Растение перемещено в архив';
+
+  @override
+  String get cancel => 'Отмена';
 }

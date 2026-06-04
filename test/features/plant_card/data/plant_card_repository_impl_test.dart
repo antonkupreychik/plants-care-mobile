@@ -326,4 +326,55 @@ void main() {
       expect((result as Failure).error, const ApiError.unknown());
     });
   });
+
+  group('archivePlant', () {
+    test('should_return_success_void_when_client_completes', () async {
+      when(() => plants.deletePlant(
+            id: any(named: 'id'),
+            extras: any(named: 'extras'),
+          )).thenAnswer((_) async {});
+
+      final result = await repo.archivePlant(42);
+
+      expect(result, isA<Success<void>>());
+    });
+
+    test('should_send_user_authScope_in_extras', () async {
+      when(() => plants.deletePlant(
+            id: any(named: 'id'),
+            extras: any(named: 'extras'),
+          )).thenAnswer((_) async {});
+
+      await repo.archivePlant(42);
+
+      final captured = verify(() => plants.deletePlant(
+            id: any(named: 'id'),
+            extras: captureAny(named: 'extras'),
+          )).captured.single as Map<String, dynamic>;
+      expect(captured[kAuthScopeExtraKey], AuthScope.user);
+    });
+
+    test('should_return_failure_when_DioException_carries_ApiError', () async {
+      when(() => plants.deletePlant(
+            id: any(named: 'id'),
+            extras: any(named: 'extras'),
+          )).thenThrow(_dioWith(const ApiError.notFound()));
+
+      final result = await repo.archivePlant(42);
+
+      expect((result as Failure).error, const ApiError.notFound());
+    });
+
+    test('should_return_failure_unknown_when_DioException_error_not_ApiError',
+        () async {
+      when(() => plants.deletePlant(
+            id: any(named: 'id'),
+            extras: any(named: 'extras'),
+          )).thenThrow(_dioWith('boom'));
+
+      final result = await repo.archivePlant(42);
+
+      expect((result as Failure).error, const ApiError.unknown());
+    });
+  });
 }

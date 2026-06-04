@@ -3567,6 +3567,48 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Изменения сохранены'**
   String get editPlantSuccessSnackbar;
+
+  /// Пункт меню «ещё» на карточке растения — открыть редактирование
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактировать'**
+  String get plantCardMenuEdit;
+
+  /// Пункт меню «ещё» на карточке растения — отправить растение в архив
+  ///
+  /// In ru, this message translates to:
+  /// **'В архив'**
+  String get archivePlantMenuLabel;
+
+  /// Заголовок диалога подтверждения архивации растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить в архив?'**
+  String get archivePlantConfirmTitle;
+
+  /// Текст диалога подтверждения архивации растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение переместится в архив. Вернуть его в список можно будет из экрана «Архив».'**
+  String get archivePlantConfirmBody;
+
+  /// Кнопка подтверждения архивации в диалоге
+  ///
+  /// In ru, this message translates to:
+  /// **'Архивировать'**
+  String get archivePlantConfirmAction;
+
+  /// Снэкбар-подтверждение успешной архивации растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение перемещено в архив'**
+  String get archivePlantSuccess;
+
+  /// Универсальная кнопка отмены действия в диалогах
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

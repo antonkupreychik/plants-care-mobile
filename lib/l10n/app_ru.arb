@@ -3155,5 +3155,40 @@
   "editPlantSuccessSnackbar": "Изменения сохранены",
   "@editPlantSuccessSnackbar": {
     "description": "Снэкбар-подтверждение после успешного сохранения изменений растения"
+  },
+
+  "plantCardMenuEdit": "Редактировать",
+  "@plantCardMenuEdit": {
+    "description": "Пункт меню «ещё» на карточке растения — открыть редактирование"
+  },
+
+  "archivePlantMenuLabel": "В архив",
+  "@archivePlantMenuLabel": {
+    "description": "Пункт меню «ещё» на карточке растения — отправить растение в архив"
+  },
+
+  "archivePlantConfirmTitle": "Отправить в архив?",
+  "@archivePlantConfirmTitle": {
+    "description": "Заголовок диалога подтверждения архивации растения"
+  },
+
+  "archivePlantConfirmBody": "Растение переместится в архив. Вернуть его в список можно будет из экрана «Архив».",
+  "@archivePlantConfirmBody": {
+    "description": "Текст диалога подтверждения архивации растения"
+  },
+
+  "archivePlantConfirmAction": "Архивировать",
+  "@archivePlantConfirmAction": {
+    "description": "Кнопка подтверждения архивации в диалоге"
+  },
+
+  "archivePlantSuccess": "Растение перемещено в архив",
+  "@archivePlantSuccess": {
+    "description": "Снэкбар-подтверждение успешной архивации растения"
+  },
+
+  "cancel": "Отмена",
+  "@cancel": {
+    "description": "Универсальная кнопка отмены действия в диалогах"
   }
 }

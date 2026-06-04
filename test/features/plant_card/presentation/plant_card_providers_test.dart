@@ -6,6 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
+import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/plant_card/data/plant_card_repository_provider.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_event_kind.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_history_entry.dart';
@@ -19,7 +20,12 @@ const _plantId = 42;
 
 ProviderContainer _containerWith(PlantCardRepository repo) {
   final container = ProviderContainer(
-    overrides: [plantCardRepositoryProvider.overrideWithValue(repo)],
+    overrides: [
+      plantCardRepositoryProvider.overrideWithValue(repo),
+      // homePlantsProvider изолируем: archivePlant инвалидирует его после успеха,
+      // но в unit-тестах провайдера нас интересует только собственный state.
+      homePlantsProvider.overrideWith((ref) async => const <Plant>[]),
+    ],
   );
   addTearDown(container.dispose);
   return container;
@@ -136,6 +142,86 @@ void main() {
       );
 
       expect(error, const ApiError.accessDenied());
+    });
+  });
+
+  group('ArchivePlant notifier', () {
+    test('should_start_in_AsyncData_idle_state', () async {
+      final container = _containerWith(repo);
+
+      // build() returns null (idle), so provider should be in data state.
+      await container.read(archivePlantProvider(_plantId).future);
+
+      final state = container.read(archivePlantProvider(_plantId));
+      expect(state, isA<AsyncData<void>>());
+    });
+
+    test('should_transition_to_AsyncData_null_on_success', () async {
+      when(() => repo.archivePlant(_plantId))
+          .thenAnswer((_) async => const Result.success(null));
+      // also stub getPlant: invalidation happens after success
+      when(() => repo.getPlant(_plantId)).thenAnswer(
+          (_) async => const Result.success(Plant(id: _plantId, name: 'x')));
+      final container = _containerWith(repo);
+
+      // wait for build() to settle
+      await container.read(archivePlantProvider(_plantId).future);
+
+      await container
+          .read(archivePlantProvider(_plantId).notifier)
+          .archive();
+
+      final state = container.read(archivePlantProvider(_plantId));
+      expect(state, isA<AsyncData<void>>());
+    });
+
+    test('should_transition_to_AsyncError_on_failure', () async {
+      when(() => repo.archivePlant(_plantId)).thenAnswer(
+          (_) async => const Result.failure(ApiError.network()));
+      final container = _containerWith(repo);
+
+      // wait for build() to settle
+      await container.read(archivePlantProvider(_plantId).future);
+
+      final states = <AsyncValue<void>>[];
+      final sub = container.listen(
+        archivePlantProvider(_plantId),
+        (_, next) => states.add(next),
+        fireImmediately: false,
+      );
+      addTearDown(sub.close);
+
+      await container
+          .read(archivePlantProvider(_plantId).notifier)
+          .archive();
+
+      expect(states.last, isA<AsyncError<void>>());
+      expect(states.last.error, const ApiError.network());
+    });
+
+    test('should_ignore_duplicate_archive_call_while_loading', () async {
+      // Slow future so the second call arrives while first is in-flight.
+      final completer = Completer<Result<void>>();
+      when(() => repo.archivePlant(_plantId))
+          .thenAnswer((_) => completer.future);
+      final container = _containerWith(repo);
+
+      await container.read(archivePlantProvider(_plantId).future);
+
+      // Start first call (non-awaited — still in flight).
+      final firstFuture = container
+          .read(archivePlantProvider(_plantId).notifier)
+          .archive();
+      // Second call should be a no-op.
+      await container
+          .read(archivePlantProvider(_plantId).notifier)
+          .archive();
+
+      completer.complete(const Result.success(null));
+      await firstFuture;
+
+      // deletePlant called exactly once despite two archive() invocations.
+      verify(() => repo.archivePlant(_plantId)).called(1);
     });
   });
 }
