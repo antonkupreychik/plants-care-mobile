@@ -147,7 +147,7 @@ class _HomeContent extends ConsumerWidget {
                 ),
               ),
 
-              // MY GARDEN — заголовок + счётчик.
+              // MY GARDEN — заголовок + счётчик + аффорданс «Все →».
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(22, 20, 22, 0),
                 sliver: SliverToBoxAdapter(
@@ -232,35 +232,78 @@ class _TodaySection extends StatelessWidget {
   }
 }
 
-/// Заголовок «Мой сад» + счётчик растений (счётчик мягко скрывается, пока
-/// растения грузятся/в ошибке).
-class _GardenHeader extends StatelessWidget {
+/// Заголовок «Мой сад» + счётчик растений + аффорданс «Все →».
+///
+/// Счётчик мягко скрывается, пока растения грузятся/в ошибке.
+/// Тап «Все →» сбрасывает фильтр локации ([selectedLocationProvider] → null).
+class _GardenHeader extends ConsumerWidget {
   const _GardenHeader({required this.plants});
 
   final AsyncValue<List<Plant>> plants;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
     final count = plants.value?.length;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          l10n.homeGardenTitle.toUpperCase(),
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.7,
-            color: c.inkSoft,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.homeGardenTitle.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.7,
+                  color: c.inkSoft,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                count == null
+                    ? l10n.homeGardenTitle
+                    : l10n.homePlantsCount(count),
+                style: AppTheme.serif(fontSize: 24, color: c.ink),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 2),
-        Text(
-          count == null ? l10n.homeGardenTitle : l10n.homePlantsCount(count),
-          style: AppTheme.serif(fontSize: 24, color: c.ink),
+        Semantics(
+          label: l10n.homeGardenSeeAll,
+          button: true,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () =>
+                ref.read(selectedLocationProvider.notifier).select(null),
+            child: Padding(
+              // Минимальная тап-зона 44×44 dp (WCAG / Apple HIG).
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.homeGardenSeeAll,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: c.inkSoft,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 18,
+                    color: c.inkSoft,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );

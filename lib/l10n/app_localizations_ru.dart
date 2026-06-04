@@ -271,6 +271,9 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get homeGardenSeeAll => 'Все';
+
+  @override
   String get homeLocationAll => 'Все';
 
   @override

@@ -301,6 +301,11 @@
     }
   },
 
+  "homeGardenSeeAll": "Все",
+  "@homeGardenSeeAll": {
+    "description": "Аффорданс «Все →» в заголовке секции «Мой сад» — сброс фильтра локации"
+  },
+
   "homeLocationAll": "Все",
   "@homeLocationAll": {
     "description": "Чип «все локации» в фильтре комнат"
