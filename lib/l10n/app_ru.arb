@@ -1085,6 +1085,136 @@
     "description": "Снэкбар-подтверждение после успешного создания растения"
   },
 
+  "addPlantSubmitGarden": "Добавить в сад",
+  "@addPlantSubmitGarden": {
+    "description": "CTA финального шага: создать растение и добавить в сад"
+  },
+
+  "addPlantRecognizeBadge": "ФОТО",
+  "@addPlantRecognizeBadge": {
+    "description": "Бейдж внутри поля поиска вида: распознать по фото (заглушка)"
+  },
+
+  "addPlantRecognizeHint": "Сфотографируй — определим по листу",
+  "@addPlantRecognizeHint": {
+    "description": "Подсказка-заглушка распознавания вида по фото на шаге выбора вида"
+  },
+
+  "addPlantRecognizeUnavailable": "Распознавание по фото скоро появится",
+  "@addPlantRecognizeUnavailable": {
+    "description": "Снэкбар: функция распознавания по фото ещё не готова"
+  },
+
+  "addPlantCategoryPopular": "Популярное",
+  "@addPlantCategoryPopular": {
+    "description": "Чип категории видов: популярные"
+  },
+
+  "addPlantCategoryBeginner": "Для новичка",
+  "@addPlantCategoryBeginner": {
+    "description": "Чип категории видов: для новичка"
+  },
+
+  "addPlantCategoryFlowering": "Цветущие",
+  "@addPlantCategoryFlowering": {
+    "description": "Чип категории видов: цветущие"
+  },
+
+  "addPlantCategoryLowWater": "Без полива",
+  "@addPlantCategoryLowWater": {
+    "description": "Чип категории видов: суккуленты и редкий полив"
+  },
+
+  "addPlantNewRoom": "Добавить своё помещение",
+  "@addPlantNewRoom": {
+    "description": "CTA на шаге имя+комната: создать новую комнату"
+  },
+
+  "addPlantPhotoTitle": "Сделай портрет",
+  "@addPlantPhotoTitle": {
+    "description": "Заголовок шага фото + сторона окна"
+  },
+
+  "addPlantPhotoOverline": "Последний штрих",
+  "@addPlantPhotoOverline": {
+    "description": "Надзаголовок шага фото + сторона окна"
+  },
+
+  "addPlantPhotoSubtitle": "Фото поможет узнать растение и отслеживать его рост.",
+  "@addPlantPhotoSubtitle": {
+    "description": "Подпись под заголовком шага фото + сторона окна"
+  },
+
+  "addPlantPhotoPlaceholder": "Пока используется иллюстрация",
+  "@addPlantPhotoPlaceholder": {
+    "description": "Подпись плейсхолдера фото: реальная загрузка ещё не готова"
+  },
+
+  "addPlantPhotoCamera": "Камера",
+  "@addPlantPhotoCamera": {
+    "description": "Кнопка-заглушка: снять фото камерой"
+  },
+
+  "addPlantPhotoGallery": "Из галереи",
+  "@addPlantPhotoGallery": {
+    "description": "Кнопка-заглушка: выбрать фото из галереи"
+  },
+
+  "addPlantPhotoUnavailable": "Загрузка фото скоро появится",
+  "@addPlantPhotoUnavailable": {
+    "description": "Снэкбар: загрузка фото ещё не готова"
+  },
+
+  "addPlantWindowLabel": "Куда смотрит окно",
+  "@addPlantWindowLabel": {
+    "description": "Заголовок секции выбора стороны окна"
+  },
+
+  "addPlantWindowOptional": "необязательно",
+  "@addPlantWindowOptional": {
+    "description": "Подпись: выбор стороны окна необязателен"
+  },
+
+  "addPlantWindowSouth": "Юг",
+  "@addPlantWindowSouth": {
+    "description": "Сторона окна: юг"
+  },
+
+  "addPlantWindowSouthHint": "много солнца",
+  "@addPlantWindowSouthHint": {
+    "description": "Подпись стороны окна: юг"
+  },
+
+  "addPlantWindowEast": "Восток",
+  "@addPlantWindowEast": {
+    "description": "Сторона окна: восток"
+  },
+
+  "addPlantWindowEastHint": "мягкое утро",
+  "@addPlantWindowEastHint": {
+    "description": "Подпись стороны окна: восток"
+  },
+
+  "addPlantWindowWest": "Запад",
+  "@addPlantWindowWest": {
+    "description": "Сторона окна: запад"
+  },
+
+  "addPlantWindowWestHint": "тёплый вечер",
+  "@addPlantWindowWestHint": {
+    "description": "Подпись стороны окна: запад"
+  },
+
+  "addPlantWindowNorth": "Север",
+  "@addPlantWindowNorth": {
+    "description": "Сторона окна: север"
+  },
+
+  "addPlantWindowNorthHint": "мало света",
+  "@addPlantWindowNorthHint": {
+    "description": "Подпись стороны окна: север"
+  },
+
   "careDifficultyEasy": "Лёгкий уход",
   "@careDifficultyEasy": {
     "description": "Уровень сложности ухода за видом: лёгкий"

@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../core/care/care_task_type.dart';
 import 'species_summary.dart';
+import 'window_side.dart';
 
 part 'new_plant_draft.freezed.dart';
 
@@ -36,6 +37,11 @@ abstract class NewPlantDraft with _$NewPlantDraft {
 
     /// Заметки пользователя (шаг 4).
     String? notes,
+
+    /// Сторона окна рядом с растением (шаг 04c). null → не выбрано.
+    /// UI-only: backend поля пока нет, в `POST /plants` не уходит (см.
+    /// [WindowSide]).
+    WindowSide? windowSide,
 
     /// Пользовательские интервалы, изменённые относительно рекомендаций вида
     /// (шаг 3). Ключ — тип ухода, значение — интервал в днях (>= 1).

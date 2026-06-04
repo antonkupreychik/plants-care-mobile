@@ -28,9 +28,9 @@ class RefreshInterceptor extends QueuedInterceptor {
     required AuthClient refreshClient,
     required Dio retryDio,
     this.onSessionExpired,
-  })  : _session = session,
-        _refreshClient = refreshClient,
-        _retryDio = retryDio;
+  })  : _session = session, // ignore: prefer_initializing_formals
+        _refreshClient = refreshClient, // ignore: prefer_initializing_formals
+        _retryDio = retryDio; // ignore: prefer_initializing_formals
 
   final JwtAuthSession _session;
   final AuthClient _refreshClient;

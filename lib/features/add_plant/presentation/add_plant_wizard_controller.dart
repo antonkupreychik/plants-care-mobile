@@ -17,6 +17,7 @@ import '../../edit_schedule/domain/plant_care_schedule.dart';
 import '../data/add_plant_repository_provider.dart';
 import '../domain/new_plant_draft.dart';
 import '../domain/species_summary.dart';
+import '../domain/window_side.dart';
 import 'add_plant_wizard_state.dart';
 
 part 'add_plant_wizard_controller.g.dart';
@@ -72,6 +73,18 @@ class AddPlantWizardController extends _$AddPlantWizardController {
     state = state.copyWith(
       draft: state.draft.copyWith(
         notes: (trimmed == null || trimmed.isEmpty) ? null : trimmed,
+      ),
+      status: const AddPlantSubmitStatus.idle(),
+    );
+  }
+
+  /// Выбрать сторону окна (шаг 04c). Повторный тап по выбранной снимает выбор
+  /// (toggle). UI-only: в `POST /plants` не уходит, хранится в черновике.
+  void setWindowSide(WindowSide? side) {
+    final current = state.draft.windowSide;
+    state = state.copyWith(
+      draft: state.draft.copyWith(
+        windowSide: current == side ? null : side,
       ),
       status: const AddPlantSubmitStatus.idle(),
     );

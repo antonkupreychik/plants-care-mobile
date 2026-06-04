@@ -791,6 +791,85 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addPlantSubmitted => 'Plant added';
 
   @override
+  String get addPlantSubmitGarden => 'Add to garden';
+
+  @override
+  String get addPlantRecognizeBadge => 'PHOTO';
+
+  @override
+  String get addPlantRecognizeHint => 'Take a photo — we\'ll identify it by leaf';
+
+  @override
+  String get addPlantRecognizeUnavailable => 'Photo recognition is coming soon';
+
+  @override
+  String get addPlantCategoryPopular => 'Popular';
+
+  @override
+  String get addPlantCategoryBeginner => 'For beginners';
+
+  @override
+  String get addPlantCategoryFlowering => 'Flowering';
+
+  @override
+  String get addPlantCategoryLowWater => 'Low water';
+
+  @override
+  String get addPlantNewRoom => 'Add your own room';
+
+  @override
+  String get addPlantPhotoTitle => 'Take a portrait';
+
+  @override
+  String get addPlantPhotoOverline => 'Final touch';
+
+  @override
+  String get addPlantPhotoSubtitle =>
+      'A photo helps recognize the plant and track its growth.';
+
+  @override
+  String get addPlantPhotoPlaceholder => 'Using an illustration for now';
+
+  @override
+  String get addPlantPhotoCamera => 'Camera';
+
+  @override
+  String get addPlantPhotoGallery => 'From gallery';
+
+  @override
+  String get addPlantPhotoUnavailable => 'Photo upload is coming soon';
+
+  @override
+  String get addPlantWindowLabel => 'Which way the window faces';
+
+  @override
+  String get addPlantWindowOptional => 'optional';
+
+  @override
+  String get addPlantWindowSouth => 'South';
+
+  @override
+  String get addPlantWindowSouthHint => 'lots of sun';
+
+  @override
+  String get addPlantWindowEast => 'East';
+
+  @override
+  String get addPlantWindowEastHint => 'soft morning';
+
+  @override
+  String get addPlantWindowWest => 'West';
+
+  @override
+  String get addPlantWindowWestHint => 'warm evening';
+
+  @override
+  String get addPlantWindowNorth => 'North';
+
+  @override
+  String get addPlantWindowNorthHint => 'low light';
+
+  @override
   String get careDifficultyEasy => 'Easy care';
 
   @override
