@@ -12,6 +12,10 @@ import '../plant_illustration.dart';
 ///
 /// Без группировки «утро/вечер» (это экран 03) и без вычислений интервалов —
 /// только счётчик и список. Срок берётся из уже посчитанного backend `dueAt`.
+///
+/// Если [completedCount] > 0 и [totalCount] > 0, отображаются:
+/// - круглый бейдж «N%» в правом верхнем углу карточки;
+/// - тонкая прогресс-полоса (4dp) под заголовком, над списком задач.
 class TodayCard extends StatelessWidget {
   const TodayCard({
     super.key,
@@ -19,6 +23,8 @@ class TodayCard extends StatelessWidget {
     required this.now,
     required this.onTaskTap,
     this.onSeeAll,
+    this.completedCount = 0,
+    this.totalCount = 0,
   });
 
   final List<CareTask> tasks;
@@ -32,12 +38,32 @@ class TodayCard extends StatelessWidget {
   /// заголовок неинтерактивен.
   final VoidCallback? onSeeAll;
 
+  /// Количество выполненных задач сегодня (`TodaySummary.done`).
+  /// `0` (по умолчанию) — прогресс-элементы скрыты.
+  final int completedCount;
+
+  /// Всего задач сегодня (`TodaySummary.total`).
+  /// `0` (по умолчанию) — прогресс-элементы скрыты.
+  final int totalCount;
+
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
 
+    final showProgress = totalCount > 0 && completedCount > 0;
+    final progressFraction =
+        totalCount > 0 ? completedCount / totalCount : 0.0;
+    final progressPercent =
+        totalCount > 0 ? ((completedCount / totalCount) * 100).round() : 0;
+
     return _CardShell(
+      badge: showProgress
+          ? _ProgressBadge(
+              percent: progressPercent,
+              semanticLabel: l10n.homeTodayProgressSemantic(progressPercent),
+            )
+          : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -47,6 +73,24 @@ class TodayCard extends StatelessWidget {
             onSeeAll: onSeeAll,
             seeAllLabel: l10n.homeTodaySeeAll,
           ),
+          if (showProgress) ...[
+            const SizedBox(height: 8),
+            Semantics(
+              label: l10n.homeTodayProgressBarSemantic(
+                completedCount,
+                totalCount,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(2),
+                child: LinearProgressIndicator(
+                  value: progressFraction,
+                  minHeight: 4,
+                  backgroundColor: c.line,
+                  valueColor: AlwaysStoppedAnimation<Color>(c.primary),
+                ),
+              ),
+            ),
+          ],
           if (tasks.isEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 6),
@@ -95,22 +139,85 @@ class TodayCardSkeleton extends StatelessWidget {
 }
 
 class _CardShell extends StatelessWidget {
-  const _CardShell({required this.child});
+  const _CardShell({required this.child, this.badge});
 
   final Widget child;
+
+  /// Необязательный бейдж в правом верхнем углу карточки.
+  final Widget? badge;
 
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
-      decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: c.line),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: c.line),
+          ),
+          child: child,
+        ),
+        if (badge != null)
+          Positioned(
+            top: -8,
+            right: 12,
+            child: badge!,
+          ),
+      ],
+    );
+  }
+}
+
+/// Круглый зелёный бейдж «N%» с иконкой-чекером.
+/// Показывается только если [percent] > 0.
+class _ProgressBadge extends StatelessWidget {
+  const _ProgressBadge({
+    required this.percent,
+    required this.semanticLabel,
+  });
+
+  final int percent;
+  final String semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      label: semanticLabel,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: c.primarySoft,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: c.primary.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.check_circle_rounded,
+              size: 12,
+              color: c.primary,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              l10n.homeTodayProgressBadge(percent),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: c.primary,
+                height: 1,
+              ),
+            ),
+          ],
+        ),
       ),
-      child: child,
     );
   }
 }

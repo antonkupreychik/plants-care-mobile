@@ -79,6 +79,31 @@
     "description": "Семантика/подсказка: открыть полный экран задач на сегодня"
   },
 
+  "homeTodayProgressBadge": "{percent}%",
+  "@homeTodayProgressBadge": {
+    "description": "Бейдж выполнения в правом верхнем углу карточки «Сегодня»: «N%»",
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+
+  "homeTodayProgressSemantic": "{percent}% выполнено",
+  "@homeTodayProgressSemantic": {
+    "description": "Semantics-метка бейджа прогресса карточки «Сегодня»",
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+
+  "homeTodayProgressBarSemantic": "Прогресс: {done} из {total} задач выполнено",
+  "@homeTodayProgressBarSemantic": {
+    "description": "Semantics-метка прогресс-бара карточки «Сегодня»",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
   "todayBack": "Назад",
   "@todayBack": {
     "description": "Семантика кнопки возврата в шапке экрана «Сегодня»"

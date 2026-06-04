@@ -91,4 +91,4 @@ final class TodayViewProvider
   }
 }
 
-String _$todayViewHash() => r'b5ba0bebf94717f1c4bd567a905731735a4fb30d';
+String _$todayViewHash() => r'1156e9b4290cdc03d56526b78382c9ebe6095ffc';

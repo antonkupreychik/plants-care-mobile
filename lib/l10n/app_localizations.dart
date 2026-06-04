@@ -184,6 +184,24 @@ abstract class AppLocalizations {
   /// **'Посмотреть все'**
   String get homeTodaySeeAll;
 
+  /// Бейдж выполнения в правом верхнем углу карточки «Сегодня»: «N%»
+  ///
+  /// In ru, this message translates to:
+  /// **'{percent}%'**
+  String homeTodayProgressBadge(int percent);
+
+  /// Semantics-метка бейджа прогресса карточки «Сегодня»
+  ///
+  /// In ru, this message translates to:
+  /// **'{percent}% выполнено'**
+  String homeTodayProgressSemantic(int percent);
+
+  /// Semantics-метка прогресс-бара карточки «Сегодня»
+  ///
+  /// In ru, this message translates to:
+  /// **'Прогресс: {done} из {total} задач выполнено'**
+  String homeTodayProgressBarSemantic(int done, int total);
+
   /// Семантика кнопки возврата в шапке экрана «Сегодня»
   ///
   /// In ru, this message translates to:
