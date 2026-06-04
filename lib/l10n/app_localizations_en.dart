@@ -337,6 +337,46 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get scheduleTitle => 'Care schedule';
+
+  @override
+  String get scheduleDayLoadHint => '—';
+
+  @override
+  String scheduleDayProgress(int done, int total) => '$done of $total done';
+
+  @override
+  String get schedulePhaseMorning => 'Morning';
+
+  @override
+  String get schedulePhaseEvening => 'Evening';
+
+  @override
+  String get schedulePhaseDone => 'Done';
+
+  @override
+  String get schedulePhaseMorningTime => '9:00';
+
+  @override
+  String get schedulePhaseEveningTime => '19:00';
+
+  @override
+  String get scheduleOverdueSubtitle => 'Overdue · since yesterday';
+
+  @override
+  String scheduleTaskSubtitle(String action, String species) =>
+      '$action · $species';
+
+  @override
+  String get scheduleDayEmpty => 'No tasks for this day 🌿';
+
+  @override
+  String get scheduleMarkDone => 'Mark as done';
+
+  @override
+  String get scheduleMarkError => 'Could not log care. Please try again.';
+
+  @override
   String plantCardAgeDays(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

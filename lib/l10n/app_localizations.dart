@@ -556,6 +556,84 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Свободно} one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}'**
   String scheduleDayTasksCount(int count);
 
+  /// Заголовок экрана 11 «График» (agenda)
+  ///
+  /// In ru, this message translates to:
+  /// **'График ухода'**
+  String get scheduleTitle;
+
+  /// Символ нулевой нагрузки в день-селекторе (0 задач)
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get scheduleDayLoadHint;
+
+  /// Подзаголовок выбранного дня: сколько задач отмечено из общего числа
+  ///
+  /// In ru, this message translates to:
+  /// **'{done} из {total} готово'**
+  String scheduleDayProgress(int done, int total);
+
+  /// Заголовок утренней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Утро'**
+  String get schedulePhaseMorning;
+
+  /// Заголовок вечерней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Вечер'**
+  String get schedulePhaseEvening;
+
+  /// Заголовок секции выполненных задач agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделано'**
+  String get schedulePhaseDone;
+
+  /// Условное время утренней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'9:00'**
+  String get schedulePhaseMorningTime;
+
+  /// Условное время вечерней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'19:00'**
+  String get schedulePhaseEveningTime;
+
+  /// Подпись просроченной задачи в строке agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Просрочено · со вчера'**
+  String get scheduleOverdueSubtitle;
+
+  /// Подпись строки задачи: действие и вид растения
+  ///
+  /// In ru, this message translates to:
+  /// **'{action} · {species}'**
+  String scheduleTaskSubtitle(String action, String species);
+
+  /// Заглушка дня без задач на экране 11 «График»
+  ///
+  /// In ru, this message translates to:
+  /// **'На этот день забот нет 🌿'**
+  String get scheduleDayEmpty;
+
+  /// Подпись кнопки-чека (semantics) для отметки ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить выполненным'**
+  String get scheduleMarkDone;
+
+  /// Баннер ошибки при неудачной оптимистичной отметке ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось отметить уход. Попробуйте ещё раз.'**
+  String get scheduleMarkError;
+
   /// Количество дней владения растением
   ///
   /// In ru, this message translates to:

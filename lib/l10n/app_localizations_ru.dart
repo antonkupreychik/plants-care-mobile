@@ -357,6 +357,50 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get scheduleTitle => 'График ухода';
+
+  @override
+  String get scheduleDayLoadHint => '—';
+
+  @override
+  String scheduleDayProgress(int done, int total) {
+    return '$done из $total готово';
+  }
+
+  @override
+  String get schedulePhaseMorning => 'Утро';
+
+  @override
+  String get schedulePhaseEvening => 'Вечер';
+
+  @override
+  String get schedulePhaseDone => 'Сделано';
+
+  @override
+  String get schedulePhaseMorningTime => '9:00';
+
+  @override
+  String get schedulePhaseEveningTime => '19:00';
+
+  @override
+  String get scheduleOverdueSubtitle => 'Просрочено · со вчера';
+
+  @override
+  String scheduleTaskSubtitle(String action, String species) {
+    return '$action · $species';
+  }
+
+  @override
+  String get scheduleDayEmpty => 'На этот день забот нет 🌿';
+
+  @override
+  String get scheduleMarkDone => 'Отметить выполненным';
+
+  @override
+  String get scheduleMarkError =>
+      'Не удалось отметить уход. Попробуйте ещё раз.';
+
+  @override
   String plantCardAgeDays(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
