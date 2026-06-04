@@ -9,6 +9,7 @@ import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/env/app_config.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
+import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
 import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_welcome_screen.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
@@ -35,6 +36,7 @@ ProviderContainer _container(AuthStatusNotifier status) {
       authStatusProvider.overrideWithValue(status),
       appConfigProvider.overrideWithValue(_config),
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
+      connectivityProvider.overrideWith((_) => Stream.value(true)),
       homeTasksProvider.overrideWith(
         (ref) async => TodayTasksResult(tasks: const [], completedCount: 0, totalCount: 0),
       ),

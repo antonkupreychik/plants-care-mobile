@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/error/api_error.dart';
+import '../../../core/network/connectivity_provider.dart';
 import 'home_providers.dart';
 
 part 'home_view_state.g.dart';
@@ -30,8 +31,24 @@ enum HomeViewState { coldLoading, offline, content }
 /// - [content] — всё остальное: есть данные (в т.ч. рефреш поверх кэша или
 ///   ошибка при наличии кэша), либо не-сетевая ошибка без данных — её покажет
 ///   посекционный ErrorState.
+///
+/// Побочный эффект: подписывается на [connectivityProvider] и при переходе
+/// offline → online автоматически инвалидирует все home-провайдеры (авто-рефетч,
+/// аналог `onlineManager.setEventListener` из React Query).
 @riverpod
 HomeViewState homeViewState(Ref ref) {
+  // Авто-рефетч при восстановлении сети: слушаем поток connectivity и при
+  // переходе false → true инвалидируем home-провайдеры.
+  ref.listen<AsyncValue<bool>>(connectivityProvider, (previous, next) {
+    final wasOnline = previous?.value ?? true; // optimistic default
+    final isNowOnline = next.value ?? false;
+    if (!wasOnline && isNowOnline) {
+      ref.invalidate(homePlantsProvider);
+      ref.invalidate(homeTasksProvider);
+      ref.invalidate(homeLocationsProvider);
+    }
+  });
+
   final plants = ref.watch(homePlantsProvider);
 
   if (plants.isLoading && !plants.hasValue) {

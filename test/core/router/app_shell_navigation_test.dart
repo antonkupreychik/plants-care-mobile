@@ -10,6 +10,7 @@ import 'package:plantcare_mobile/core/env/app_config.dart';
 import 'package:plantcare_mobile/core/auth/auth_providers.dart';
 import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
 import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/core/widgets/app_bottom_nav.dart';
 import 'package:plantcare_mobile/features/add_plant/domain/species_summary.dart';
@@ -101,6 +102,8 @@ ScheduleWeek _emptyWeek(DateTime monday) => ScheduleWeek(
       authStatusProvider.overrideWithValue(AuthStatusNotifier(true)),
       appConfigProvider.overrideWithValue(_config),
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
+      // Connectivity: stub онлайн, без реальных DNS-запросов.
+      connectivityProvider.overrideWith((_) => Stream.value(true)),
       // Home: три секции пустые → детерминированный empty-сад без сети.
       homeTasksProvider.overrideWith(
         (ref) async => TodayTasksResult(tasks: const [], completedCount: 0, totalCount: 0),

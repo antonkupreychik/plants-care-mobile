@@ -7,6 +7,7 @@ import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/env/app_config.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
+import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
 import 'package:plantcare_mobile/features/home/domain/today_tasks_result.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
@@ -39,6 +40,9 @@ void main() {
           appConfigProvider.overrideWithValue(config),
           clockProvider
               .overrideWithValue(_FixedClock(DateTime.utc(2026, 5, 27, 9))),
+          // Connectivity: stub онлайн, чтобы не было реальных DNS-запросов
+          // и не оставались pending timers после теста.
+          connectivityProvider.overrideWith((_) => Stream.value(true)),
           // Пустые данные, чтобы smoke-тест не ходил в сеть
           // (HttpClient в тестах вернул бы 400).
           homeTasksProvider.overrideWith(
