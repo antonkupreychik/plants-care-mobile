@@ -73,6 +73,38 @@ class LogCareEventController extends _$LogCareEventController {
     );
   }
 
+  /// Задать объём воды (мл) для WATER. Нормализуется до кратного 50,
+  /// зажимается в [0, 1000]. null — сбрасывает значение (ползунок в 0).
+  void setAmountMl(int? amountMl) {
+    _resetIdempotency();
+    final normalized = amountMl == null
+        ? null
+        : (amountMl.clamp(0, 1000) ~/ 50) * 50;
+    state = state.copyWith(
+      amountMl: normalized,
+      status: const CareEventSubmitStatus.idle(),
+    );
+  }
+
+  /// Переключить отметку «грунт был сухой» для WATER.
+  void setSoilWasDry({required bool value}) {
+    _resetIdempotency();
+    state = state.copyWith(
+      soilWasDry: value,
+      status: const CareEventSubmitStatus.idle(),
+    );
+  }
+
+  /// Обновить название удобрения для FERTILIZE (null/пусто → без названия).
+  void setFertilizerName(String? name) {
+    _resetIdempotency();
+    final trimmed = name?.trim();
+    state = state.copyWith(
+      fertilizerName: (trimmed == null || trimmed.isEmpty) ? null : trimmed,
+      status: const CareEventSubmitStatus.idle(),
+    );
+  }
+
   /// Отправить отметку (`POST /care-events`). Идемпотентно по clientId попытки.
   ///
   /// Возвращает `true` при успехе (UI может закрыть sheet). На успех —

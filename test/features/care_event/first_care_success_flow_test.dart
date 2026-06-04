@@ -104,7 +104,8 @@ Future<void> _openSheetAndSubmit(WidgetTester tester, GoRouter router) async {
   await tester.tap(find.text(l10n.plantCardLogCare));
   await tester.pumpAndSettle();
 
-  await tester.tap(find.text(l10n.careSheetSubmit));
+  // Дефолтный тип — WATER → кнопка показывает «Полито».
+  await tester.tap(find.text(l10n.careSheetWaterSubmit));
   await tester.pumpAndSettle();
 }
 

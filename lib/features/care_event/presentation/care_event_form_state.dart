@@ -6,7 +6,7 @@ import '../domain/care_event_draft.dart';
 
 part 'care_event_form_state.freezed.dart';
 
-/// UI-состояние формы отметки ухода (экран 06 sheet).
+/// UI-состояние формы отметки ухода (экраны 06/06a/06b sheet).
 ///
 /// Держит выбор пользователя ([type], [performedAtUtc], [note]) и статус
 /// отправки ([status]). Это presentation-state (роль ViewModel) —
@@ -15,6 +15,10 @@ part 'care_event_form_state.freezed.dart';
 /// Время — в UTC (FLUTTER.md «Время»). UI показывает в TZ пользователя и при
 /// backdating передаёт обратно UTC. Дефолтное «сейчас» подставляет контроллер
 /// из `clockProvider`, не виджет.
+///
+/// Поля, специфичные для типа ухода:
+/// - WATER: [amountMl] (слайдер 0–1000 мл, шаг 50) + [soilWasDry] (тоггл).
+/// - FERTILIZE: [fertilizerName] (название удобрения, в note).
 @freezed
 abstract class CareEventFormState with _$CareEventFormState {
   const factory CareEventFormState({
@@ -30,8 +34,17 @@ abstract class CareEventFormState with _$CareEventFormState {
     /// Статус отправки (idle/submitting/success/failure).
     @Default(CareEventSubmitStatus.idle()) CareEventSubmitStatus status,
 
-    /// Необязательная заметка.
+    /// Необязательная заметка (свободный текст пользователя).
     String? note,
+
+    /// Объём воды (мл) для WATER (0–1000, шаг 50). null = не задан.
+    int? amountMl,
+
+    /// Грунт был сухой — тоггл для WATER (экран 06).
+    @Default(false) bool soilWasDry,
+
+    /// Название удобрения для FERTILIZE (экран 06b); null = не задано.
+    String? fertilizerName,
   }) = _CareEventFormState;
 
   const CareEventFormState._();
@@ -81,5 +94,8 @@ extension CareEventFormStateMapper on CareEventFormState {
         performedAtUtc: performedAtUtc,
         note: note,
         clientId: clientId,
+        amountMl: amountMl,
+        soilWasDry: soilWasDry,
+        fertilizerName: fertilizerName,
       );
 }

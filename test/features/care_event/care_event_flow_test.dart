@@ -127,7 +127,8 @@ void main() {
     // sheet получил из task.type через маппер. Захватываем его в репо: это
     // доказывает сквозную проводку plantId + presetType (FERTILIZING →
     // fertilize), а не только факт открытия.
-    await tester.tap(find.text(l10n.careSheetSubmit));
+    // Тип FERTILIZE → кнопка показывает «Подкормлено» (type-specific label).
+    await tester.tap(find.text(l10n.careSheetFertilizeSubmit));
     await tester.pumpAndSettle();
 
     final draft =

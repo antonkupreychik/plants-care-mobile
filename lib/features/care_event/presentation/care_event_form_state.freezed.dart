@@ -18,8 +18,11 @@ mixin _$CareEventFormState {
  int get plantId;/// Выбранный тип ухода. `unknown` UI не предлагает (невалиден для отправки).
  CareEventKind get type;/// Момент выполнения в UTC. Дефолт — «сейчас», допускается прошлое.
  DateTime get performedAtUtc;/// Статус отправки (idle/submitting/success/failure).
- CareEventSubmitStatus get status;/// Необязательная заметка.
- String? get note;
+ CareEventSubmitStatus get status;/// Необязательная заметка (свободный текст пользователя).
+ String? get note;/// Объём воды (мл) для WATER (0–1000, шаг 50). null = не задан.
+ int? get amountMl;/// Грунт был сухой — тоггл для WATER (экран 06).
+ bool get soilWasDry;/// Название удобрения для FERTILIZE (экран 06b); null = не задано.
+ String? get fertilizerName;
 /// Create a copy of CareEventFormState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,16 +33,16 @@ $CareEventFormStateCopyWith<CareEventFormState> get copyWith => _$CareEventFormS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareEventFormState&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.type, type) || other.type == type)&&(identical(other.performedAtUtc, performedAtUtc) || other.performedAtUtc == performedAtUtc)&&(identical(other.status, status) || other.status == status)&&(identical(other.note, note) || other.note == note));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareEventFormState&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.type, type) || other.type == type)&&(identical(other.performedAtUtc, performedAtUtc) || other.performedAtUtc == performedAtUtc)&&(identical(other.status, status) || other.status == status)&&(identical(other.note, note) || other.note == note)&&(identical(other.amountMl, amountMl) || other.amountMl == amountMl)&&(identical(other.soilWasDry, soilWasDry) || other.soilWasDry == soilWasDry)&&(identical(other.fertilizerName, fertilizerName) || other.fertilizerName == fertilizerName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,plantId,type,performedAtUtc,status,note);
+int get hashCode => Object.hash(runtimeType,plantId,type,performedAtUtc,status,note,amountMl,soilWasDry,fertilizerName);
 
 @override
 String toString() {
-  return 'CareEventFormState(plantId: $plantId, type: $type, performedAtUtc: $performedAtUtc, status: $status, note: $note)';
+  return 'CareEventFormState(plantId: $plantId, type: $type, performedAtUtc: $performedAtUtc, status: $status, note: $note, amountMl: $amountMl, soilWasDry: $soilWasDry, fertilizerName: $fertilizerName)';
 }
 
 
@@ -50,7 +53,7 @@ abstract mixin class $CareEventFormStateCopyWith<$Res>  {
   factory $CareEventFormStateCopyWith(CareEventFormState value, $Res Function(CareEventFormState) _then) = _$CareEventFormStateCopyWithImpl;
 @useResult
 $Res call({
- int plantId, CareEventKind type, DateTime performedAtUtc, CareEventSubmitStatus status, String? note
+ int plantId, CareEventKind type, DateTime performedAtUtc, CareEventSubmitStatus status, String? note, int? amountMl, bool soilWasDry, String? fertilizerName
 });
 
 
@@ -67,13 +70,16 @@ class _$CareEventFormStateCopyWithImpl<$Res>
 
 /// Create a copy of CareEventFormState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? plantId = null,Object? type = null,Object? performedAtUtc = null,Object? status = null,Object? note = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? plantId = null,Object? type = null,Object? performedAtUtc = null,Object? status = null,Object? note = freezed,Object? amountMl = freezed,Object? soilWasDry = null,Object? fertilizerName = freezed,}) {
   return _then(_self.copyWith(
 plantId: null == plantId ? _self.plantId : plantId // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as CareEventKind,performedAtUtc: null == performedAtUtc ? _self.performedAtUtc : performedAtUtc // ignore: cast_nullable_to_non_nullable
 as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as CareEventSubmitStatus,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
+as String?,amountMl: freezed == amountMl ? _self.amountMl : amountMl // ignore: cast_nullable_to_non_nullable
+as int?,soilWasDry: null == soilWasDry ? _self.soilWasDry : soilWasDry // ignore: cast_nullable_to_non_nullable
+as bool,fertilizerName: freezed == fertilizerName ? _self.fertilizerName : fertilizerName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -168,10 +174,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  CareEventSubmitStatus status,  String? note)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  CareEventSubmitStatus status,  String? note,  int? amountMl,  bool soilWasDry,  String? fertilizerName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CareEventFormState() when $default != null:
-return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.status,_that.note);case _:
+return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.status,_that.note,_that.amountMl,_that.soilWasDry,_that.fertilizerName);case _:
   return orElse();
 
 }
@@ -189,10 +195,10 @@ return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.status,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  CareEventSubmitStatus status,  String? note)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  CareEventSubmitStatus status,  String? note,  int? amountMl,  bool soilWasDry,  String? fertilizerName)  $default,) {final _that = this;
 switch (_that) {
 case _CareEventFormState():
-return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.status,_that.note);case _:
+return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.status,_that.note,_that.amountMl,_that.soilWasDry,_that.fertilizerName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +215,10 @@ return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.status,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  CareEventSubmitStatus status,  String? note)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int plantId,  CareEventKind type,  DateTime performedAtUtc,  CareEventSubmitStatus status,  String? note,  int? amountMl,  bool soilWasDry,  String? fertilizerName)?  $default,) {final _that = this;
 switch (_that) {
 case _CareEventFormState() when $default != null:
-return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.status,_that.note);case _:
+return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.status,_that.note,_that.amountMl,_that.soilWasDry,_that.fertilizerName);case _:
   return null;
 
 }
@@ -224,7 +230,7 @@ return $default(_that.plantId,_that.type,_that.performedAtUtc,_that.status,_that
 
 
 class _CareEventFormState extends CareEventFormState {
-  const _CareEventFormState({required this.plantId, required this.type, required this.performedAtUtc, this.status = const CareEventSubmitStatus.idle(), this.note}): super._();
+  const _CareEventFormState({required this.plantId, required this.type, required this.performedAtUtc, this.status = const CareEventSubmitStatus.idle(), this.note, this.amountMl, this.soilWasDry = false, this.fertilizerName}): super._();
   
 
 /// Растение, для которого отмечается уход.
@@ -235,8 +241,14 @@ class _CareEventFormState extends CareEventFormState {
 @override final  DateTime performedAtUtc;
 /// Статус отправки (idle/submitting/success/failure).
 @override@JsonKey() final  CareEventSubmitStatus status;
-/// Необязательная заметка.
+/// Необязательная заметка (свободный текст пользователя).
 @override final  String? note;
+/// Объём воды (мл) для WATER (0–1000, шаг 50). null = не задан.
+@override final  int? amountMl;
+/// Грунт был сухой — тоггл для WATER (экран 06).
+@override@JsonKey() final  bool soilWasDry;
+/// Название удобрения для FERTILIZE (экран 06b); null = не задано.
+@override final  String? fertilizerName;
 
 /// Create a copy of CareEventFormState
 /// with the given fields replaced by the non-null parameter values.
@@ -248,16 +260,16 @@ _$CareEventFormStateCopyWith<_CareEventFormState> get copyWith => __$CareEventFo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareEventFormState&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.type, type) || other.type == type)&&(identical(other.performedAtUtc, performedAtUtc) || other.performedAtUtc == performedAtUtc)&&(identical(other.status, status) || other.status == status)&&(identical(other.note, note) || other.note == note));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareEventFormState&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.type, type) || other.type == type)&&(identical(other.performedAtUtc, performedAtUtc) || other.performedAtUtc == performedAtUtc)&&(identical(other.status, status) || other.status == status)&&(identical(other.note, note) || other.note == note)&&(identical(other.amountMl, amountMl) || other.amountMl == amountMl)&&(identical(other.soilWasDry, soilWasDry) || other.soilWasDry == soilWasDry)&&(identical(other.fertilizerName, fertilizerName) || other.fertilizerName == fertilizerName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,plantId,type,performedAtUtc,status,note);
+int get hashCode => Object.hash(runtimeType,plantId,type,performedAtUtc,status,note,amountMl,soilWasDry,fertilizerName);
 
 @override
 String toString() {
-  return 'CareEventFormState(plantId: $plantId, type: $type, performedAtUtc: $performedAtUtc, status: $status, note: $note)';
+  return 'CareEventFormState(plantId: $plantId, type: $type, performedAtUtc: $performedAtUtc, status: $status, note: $note, amountMl: $amountMl, soilWasDry: $soilWasDry, fertilizerName: $fertilizerName)';
 }
 
 
@@ -268,7 +280,7 @@ abstract mixin class _$CareEventFormStateCopyWith<$Res> implements $CareEventFor
   factory _$CareEventFormStateCopyWith(_CareEventFormState value, $Res Function(_CareEventFormState) _then) = __$CareEventFormStateCopyWithImpl;
 @override @useResult
 $Res call({
- int plantId, CareEventKind type, DateTime performedAtUtc, CareEventSubmitStatus status, String? note
+ int plantId, CareEventKind type, DateTime performedAtUtc, CareEventSubmitStatus status, String? note, int? amountMl, bool soilWasDry, String? fertilizerName
 });
 
 
@@ -285,13 +297,16 @@ class __$CareEventFormStateCopyWithImpl<$Res>
 
 /// Create a copy of CareEventFormState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? plantId = null,Object? type = null,Object? performedAtUtc = null,Object? status = null,Object? note = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? plantId = null,Object? type = null,Object? performedAtUtc = null,Object? status = null,Object? note = freezed,Object? amountMl = freezed,Object? soilWasDry = null,Object? fertilizerName = freezed,}) {
   return _then(_CareEventFormState(
 plantId: null == plantId ? _self.plantId : plantId // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as CareEventKind,performedAtUtc: null == performedAtUtc ? _self.performedAtUtc : performedAtUtc // ignore: cast_nullable_to_non_nullable
 as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as CareEventSubmitStatus,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
+as String?,amountMl: freezed == amountMl ? _self.amountMl : amountMl // ignore: cast_nullable_to_non_nullable
+as int?,soilWasDry: null == soilWasDry ? _self.soilWasDry : soilWasDry // ignore: cast_nullable_to_non_nullable
+as bool,fertilizerName: freezed == fertilizerName ? _self.fertilizerName : fertilizerName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
