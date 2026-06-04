@@ -2578,7 +2578,7 @@ abstract class AppLocalizations {
   /// **'Месячный отчёт'**
   String get profileReportTitle;
 
-  /// Кнопка «Поделиться» в шапке отчёта (экран 14), coming-soon
+  /// Кнопка «Поделиться» в шапке отчёта (экран 14)
   ///
   /// In ru, this message translates to:
   /// **'Поделиться'**
@@ -2686,11 +2686,35 @@ abstract class AppLocalizations {
   /// **'Нед. {number}'**
   String reportWeekLabel(String number);
 
-  /// Нижняя CTA-кнопка «Поделиться отчётом» (экран 14), coming-soon
+  /// Нижняя CTA-кнопка «Поделиться отчётом» (экран 14)
   ///
   /// In ru, this message translates to:
   /// **'Поделиться отчётом'**
   String get reportShareCta;
+
+  /// Первая строка текста для share sheet: заголовок с месяцем
+  ///
+  /// In ru, this message translates to:
+  /// **'🌿 Мой отчёт за {month}'**
+  String reportShareTextHeader(String month);
+
+  /// Строка share-текста: количество выполненных уходов
+  ///
+  /// In ru, this message translates to:
+  /// **'Обработано уходов: {count}'**
+  String reportShareTextCares(int count);
+
+  /// Строка share-текста: процент уходов вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'Вовремя: {pct}%'**
+  String reportShareTextOnTime(int pct);
+
+  /// Подпись приложения в конце share-текста
+  ///
+  /// In ru, this message translates to:
+  /// **'Plants Care App'**
+  String get reportShareTextAppCredit;
 
   /// Заголовок пустого состояния отчёта (нет заботы за месяц)
   ///

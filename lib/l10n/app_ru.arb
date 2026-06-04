@@ -2260,7 +2260,7 @@
 
   "reportShare": "Поделиться",
   "@reportShare": {
-    "description": "Кнопка «Поделиться» в шапке отчёта (экран 14), coming-soon"
+    "description": "Кнопка «Поделиться» в шапке отчёта (экран 14)"
   },
 
   "reportBack": "Назад",
@@ -2365,7 +2365,36 @@
 
   "reportShareCta": "Поделиться отчётом",
   "@reportShareCta": {
-    "description": "Нижняя CTA-кнопка «Поделиться отчётом» (экран 14), coming-soon"
+    "description": "Нижняя CTA-кнопка «Поделиться отчётом» (экран 14)"
+  },
+
+  "reportShareTextHeader": "🌿 Мой отчёт за {month}",
+  "@reportShareTextHeader": {
+    "description": "Первая строка текста для share sheet: заголовок с месяцем",
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+
+  "reportShareTextCares": "Обработано уходов: {count}",
+  "@reportShareTextCares": {
+    "description": "Строка share-текста: количество выполненных уходов",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "reportShareTextOnTime": "Вовремя: {pct}%",
+  "@reportShareTextOnTime": {
+    "description": "Строка share-текста: процент уходов вовремя",
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+
+  "reportShareTextAppCredit": "Plants Care App",
+  "@reportShareTextAppCredit": {
+    "description": "Подпись приложения в конце share-текста"
   },
 
   "reportEmptyTitle": "Пока пусто",
