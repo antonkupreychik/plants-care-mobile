@@ -439,6 +439,33 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get scheduleWeekTasksPrefix => 'На этой неделе ';
+
+  @override
+  String scheduleWeekTasksSuffix(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: ' заботы в саду',
+      many: ' забот в саду',
+      few: ' заботы в саду',
+      one: ' забота в саду',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get scheduleWeekRestTitle => 'На этой неделе сад отдыхает';
+
+  @override
+  String scheduleFreeDaysSubtitle(String days) {
+    return '$days — свободные дни 🌳';
+  }
+
+  @override
+  String get scheduleDayFree => 'Свободный день 🌿';
+
+  @override
   String scheduleDayTasksCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
