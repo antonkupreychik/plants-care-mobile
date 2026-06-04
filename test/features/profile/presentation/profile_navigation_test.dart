@@ -159,8 +159,20 @@ void main() {
     await tester.tap(find.text(l10n.navProfile));
     await tester.pumpAndSettle();
 
+    // Прокручиваем до кнопки «Выйти» — шапка, статистика и новые секции
+    // могут вытолкнуть её за пределы viewport в тестовом окне 800×600.
+    await tester.scrollUntilVisible(
+      find.text(l10n.profileSignOut).last,
+      100,
+      scrollable: find.descendant(
+        of: find.byType(ProfileScreen),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    await tester.pumpAndSettle();
+
     // Тап по «Выйти» открывает диалог подтверждения (репозиторий ещё не зван).
-    await tester.tap(find.text(l10n.profileSignOut));
+    await tester.tap(find.text(l10n.profileSignOut).last);
     await tester.pumpAndSettle();
     expect(find.text(l10n.profileSignOutConfirmTitle), findsOneWidget);
     verifyNever(authRepo.signOut);
@@ -192,7 +204,18 @@ void main() {
     await tester.tap(find.text(l10n.navProfile));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text(l10n.profileSignOut));
+    // Прокручиваем до кнопки «Выйти» перед тапом.
+    await tester.scrollUntilVisible(
+      find.text(l10n.profileSignOut).last,
+      100,
+      scrollable: find.descendant(
+        of: find.byType(ProfileScreen),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(l10n.profileSignOut).last);
     await tester.pumpAndSettle();
     await tester.tap(find.text(l10n.profileSignOutConfirmCancel));
     await tester.pumpAndSettle();

@@ -1115,6 +1115,32 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileSectionMore => 'Ещё';
 
   @override
+  String get profileAnonymous => 'Пользователь';
+
+  @override
+  String profileMemberSince(String date) {
+    return 'С нами с $date';
+  }
+
+  @override
+  String get profileStatPlants => 'Растения';
+
+  @override
+  String get profileStatCareEvents => 'Уходов';
+
+  @override
+  String get profileSectionReferences => 'Справочники';
+
+  @override
+  String get profileDiseasesTitle => 'Болезни и вредители';
+
+  @override
+  String get profileCatalogTitle => 'Каталог видов';
+
+  @override
+  String get profileSearchTitle => 'Поиск';
+
+  @override
   String get profileRoomsTitle => 'Дома и места';
 
   @override

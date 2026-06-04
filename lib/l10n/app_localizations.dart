@@ -1762,6 +1762,54 @@ abstract class AppLocalizations {
   /// **'Ещё'**
   String get profileSectionMore;
 
+  /// Имя в шапке профиля, когда у пользователя нет имени (анонимный)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пользователь'**
+  String get profileAnonymous;
+
+  /// Подпись в шапке профиля: дата регистрации (формат MMM yyyy)
+  ///
+  /// In ru, this message translates to:
+  /// **'С нами с {date}'**
+  String profileMemberSince(String date);
+
+  /// Подпись счётчика статистики: число растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения'**
+  String get profileStatPlants;
+
+  /// Подпись счётчика статистики: число уходов за всё время
+  ///
+  /// In ru, this message translates to:
+  /// **'Уходов'**
+  String get profileStatCareEvents;
+
+  /// Заголовок секции справочников на экране профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Справочники'**
+  String get profileSectionReferences;
+
+  /// Строка справочников: переход к каталогу болезней и вредителей
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни и вредители'**
+  String get profileDiseasesTitle;
+
+  /// Строка справочников: переход на таб каталога видов
+  ///
+  /// In ru, this message translates to:
+  /// **'Каталог видов'**
+  String get profileCatalogTitle;
+
+  /// Строка настроек: переход к экрану поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск'**
+  String get profileSearchTitle;
+
   /// Строка настроек: переход к управлению комнатами
   ///
   /// In ru, this message translates to:
