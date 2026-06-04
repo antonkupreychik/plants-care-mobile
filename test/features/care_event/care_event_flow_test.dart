@@ -15,6 +15,7 @@ import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
+import 'package:plantcare_mobile/features/home/domain/today_tasks_result.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';
 import 'package:plantcare_mobile/features/home/presentation/widgets/today_card.dart';
@@ -88,7 +89,9 @@ void main() {
         overrides: [
           clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
           careEventRepositoryProvider.overrideWithValue(repo),
-          homeTasksProvider.overrideWith((ref) async => [task]),
+          homeTasksProvider.overrideWith(
+            (ref) async => TodayTasksResult(tasks: [task], completedCount: 0, totalCount: 1),
+          ),
           homePlantsProvider.overrideWith(
             (ref) async => const <Plant>[Plant(id: _plantId, name: 'Фикус')],
           ),

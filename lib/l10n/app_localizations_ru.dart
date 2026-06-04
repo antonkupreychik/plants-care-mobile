@@ -66,6 +66,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeTodaySeeAll => 'Посмотреть все';
 
   @override
+  String homeTodayProgressBadge(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String homeTodayProgressSemantic(int percent) {
+    return '$percent% выполнено';
+  }
+
+  @override
+  String homeTodayProgressBarSemantic(int done, int total) {
+    return 'Прогресс: $done из $total задач выполнено';
+  }
+
+  @override
   String get todayBack => 'Назад';
 
   @override

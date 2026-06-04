@@ -6,6 +6,7 @@ import '../../../core/error/result.dart';
 import '../../../core/locations/garden_location.dart';
 import '../data/home_repository_provider.dart';
 import '../domain/plant.dart';
+import '../domain/today_tasks_result.dart';
 
 part 'home_providers.g.dart';
 
@@ -22,12 +23,26 @@ part 'home_providers.g.dart';
 /// (loading / error / data). В `AsyncError` лежит типизированный [ApiError]
 /// (см. [_unwrap]) — UI маппит его в текст через `AppLocalizations`.
 
-/// Задачи на сегодня (`GET /today`). Группировку «утро/вечер» делает UI
-/// по `CareTask.dueAt` (в TZ пользователя) — domain интервалы не считает.
+/// Задачи на сегодня со сводкой прогресса (`GET /today`).
+///
+/// Возвращает [TodayTasksResult] с полным списком задач (включая выполненные)
+/// и счётчиками завершения из `TodaySummary` для прогресс-бара в [TodayCard].
+/// Инвалидировать после `POST /care-events`.
 @riverpod
-Future<List<CareTask>> homeTasks(Ref ref) async {
+Future<TodayTasksResult> homeTasks(Ref ref) async {
   final result = await ref.watch(homeRepositoryProvider).getTodayTasks();
   return _unwrap(result);
+}
+
+/// Плоский список задач на сегодня — производный от [homeTasksProvider].
+///
+/// Используется в [todayViewProvider] для деривации экрана 03 «Сегодня».
+/// Не делает отдельного запроса к API — только извлекает поле из кешированного
+/// [homeTasksProvider].
+@riverpod
+Future<List<CareTask>> homeTasksList(Ref ref) async {
+  final result = await ref.watch(homeTasksProvider.future);
+  return result.tasks;
 }
 
 /// Растения пользователя (`GET /plants`).

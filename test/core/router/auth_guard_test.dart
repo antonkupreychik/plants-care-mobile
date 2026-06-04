@@ -5,7 +5,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:plantcare_mobile/app.dart';
 import 'package:plantcare_mobile/core/auth/auth_providers.dart';
 import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
-import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/env/app_config.dart';
@@ -13,6 +12,7 @@ import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_welcome_screen.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
+import 'package:plantcare_mobile/features/home/domain/today_tasks_result.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';
 
@@ -35,7 +35,9 @@ ProviderContainer _container(AuthStatusNotifier status) {
       authStatusProvider.overrideWithValue(status),
       appConfigProvider.overrideWithValue(_config),
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
-      homeTasksProvider.overrideWith((ref) async => const <CareTask>[]),
+      homeTasksProvider.overrideWith(
+        (ref) async => TodayTasksResult(tasks: const [], completedCount: 0, totalCount: 0),
+      ),
       homePlantsProvider.overrideWith((ref) async => const <Plant>[]),
       homeLocationsProvider
           .overrideWith((ref) async => const <GardenLocation>[]),
