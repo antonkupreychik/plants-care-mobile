@@ -41,12 +41,6 @@ class PlantCardScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final nowLocal = ref.watch(clockProvider).nowUtc().toLocal();
 
-    void comingSoon() {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
-    }
-
     final detail = ref.watch(plantDetailProvider(plantId));
     final streak = ref.watch(plantStreakProvider(plantId));
     final history = ref.watch(plantHistoryProvider(plantId));
@@ -62,7 +56,12 @@ class PlantCardScreen extends ConsumerWidget {
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
                   sliver: SliverToBoxAdapter(
-                    child: _TopBar(onMore: comingSoon),
+                    child: _TopBar(
+                      onMore: () => context.pushNamed(
+                        'editPlant',
+                        pathParameters: {'id': '$plantId'},
+                      ),
+                    ),
                   ),
                 ),
 

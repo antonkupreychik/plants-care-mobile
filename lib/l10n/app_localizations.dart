@@ -2476,10 +2476,10 @@ abstract class AppLocalizations {
   /// **'удобрена'**
   String get firstCareSuccessVerbFertilize;
 
-  /// Реплика-благодарность растения в speech-bubble экрана 33 (вариант полива из дизайна).
+  /// Реплика-благодарность растения в speech-bubble экрана 33 (голос растения — первый уход, issue #91).
   ///
   /// In ru, this message translates to:
-  /// **'«Спасибо! Сразу легче дышится 💧»'**
+  /// **'«Спасибо! Ты мой лучший садовник 🌿»'**
   String get firstCareSuccessBubble;
 
   /// Нейтральное имя растения на экране 33, если деталь не загрузилась (уход уже записан — не показываем как ошибку).
@@ -2488,10 +2488,10 @@ abstract class AppLocalizations {
   /// **'Растение'**
   String get firstCareSuccessFallbackPlantName;
 
-  /// Чип старта стрика на экране 33 (только при onTime == true).
+  /// Чип старта стрика на экране 33 (только при onTime == true). Формат из issue #91.
   ///
   /// In ru, this message translates to:
-  /// **'Стрик начат · день 1'**
+  /// **'День 1 🔥'**
   String get firstCareSuccessStreakDayOne;
 
   /// Строка ободрения внизу экрана 33 БЕЗ счётчика дней (интервал до следующего ухода недоступен, G19).
@@ -2524,10 +2524,10 @@ abstract class AppLocalizations {
   /// **', напомню сама'**
   String get firstCareSuccessNextSuffix;
 
-  /// CTA-кнопка экрана 33 → возврат в таб «Сад».
+  /// CTA-кнопка экрана 33 → возврат на карточку растения (issue #91).
   ///
   /// In ru, this message translates to:
-  /// **'Вернуться в сад'**
+  /// **'Отлично'**
   String get firstCareSuccessCta;
 
   /// Надзаголовок экрана 21 «Полная история ухода»
@@ -3501,6 +3501,54 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Дату и время форматируем по выбранному языку.'**
   String get languageScreenHint;
+
+  /// Заголовок экрана редактирования растения (шапка и кнопка «назад»)
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактировать'**
+  String get editPlantTitle;
+
+  /// Кнопка сохранения изменений на экране редактирования растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить'**
+  String get editPlantSave;
+
+  /// Метка поля ввода имени растения на экране редактирования
+  ///
+  /// In ru, this message translates to:
+  /// **'Название'**
+  String get editPlantNameLabel;
+
+  /// Метка необязательного поля заметок на экране редактирования
+  ///
+  /// In ru, this message translates to:
+  /// **'Заметки'**
+  String get editPlantNotesLabel;
+
+  /// Метка пикера комнаты (локации) на экране редактирования
+  ///
+  /// In ru, this message translates to:
+  /// **'Комната'**
+  String get editPlantLocationLabel;
+
+  /// Метка поля выбора вида растения на экране редактирования
+  ///
+  /// In ru, this message translates to:
+  /// **'Вид'**
+  String get editPlantSpeciesLabel;
+
+  /// Плейсхолдер для незаполненного поля вида на экране редактирования
+  ///
+  /// In ru, this message translates to:
+  /// **'Без вида'**
+  String get editPlantSpeciesNone;
+
+  /// Снэкбар-подтверждение после успешного сохранения изменений растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменения сохранены'**
+  String get editPlantSuccessSnackbar;
 }
 
 class _AppLocalizationsDelegate

@@ -26,6 +26,7 @@ import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
+import '../../features/edit_plant/presentation/edit_plant_screen.dart';
 import '../../features/plant_diagnosis/presentation/plant_diagnosis_screen.dart';
 import '../../features/shopping/presentation/shopping_screen.dart';
 import '../auth/auth_providers.dart';
@@ -236,6 +237,19 @@ GoRouter appRouter(Ref ref) {
                         final id =
                             int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
                         return PlantDiagnosisScreen(plantId: id);
+                      },
+                    ),
+                    // Экран «Редактировать растение» (issue #79). Полноэкранно
+                    // поверх shell (своя шапка с «назад»/«Сохранить», без таб-бара).
+                    // Вход: карточка растения 02 → кнопка «⋯» → onMore.
+                    GoRoute(
+                      path: 'edit',
+                      name: 'editPlant',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final id =
+                            int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                        return EditPlantScreen(plantId: id);
                       },
                     ),
                   ],
