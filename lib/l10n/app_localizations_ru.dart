@@ -1599,6 +1599,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get reportBack => 'Назад';
 
   @override
+  String get reportPrevMonth => 'Предыдущий месяц';
+
+  @override
+  String get reportNextMonth => 'Следующий месяц';
+
+  @override
   String reportOverline(String month) {
     return 'Отчёт · $month';
   }
