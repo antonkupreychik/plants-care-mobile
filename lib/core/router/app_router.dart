@@ -21,6 +21,7 @@ import '../../features/home/presentation/today_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/push_priming/presentation/push_permission_screen.dart';
 import '../../features/language/presentation/language_screen.dart';
 import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
@@ -107,6 +108,15 @@ GoRouter appRouter(Ref ref) {
         name: 'authWelcomeBack',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const AuthWelcomeBackScreen(),
+      ),
+      // Экран 27 «Онбординг — разрешение на пуши». Полноэкранно на root-
+      // навигаторе (без таб-бара), вне `/auth` — чтобы auth-redirect не уводил
+      // уже авторизованного юзера с прайминга. Вход: после «С возвращением» 09.
+      GoRoute(
+        path: '/onboarding/push',
+        name: 'pushPriming',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const PushPermissionScreen(),
       ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
