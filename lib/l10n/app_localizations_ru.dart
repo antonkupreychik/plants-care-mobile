@@ -1677,6 +1677,24 @@ class AppLocalizationsRu extends AppLocalizations {
   String get reportShareCta => 'Поделиться отчётом';
 
   @override
+  String reportShareTextHeader(String month) {
+    return '🌿 Мой отчёт за $month';
+  }
+
+  @override
+  String reportShareTextCares(int count) {
+    return 'Обработано уходов: $count';
+  }
+
+  @override
+  String reportShareTextOnTime(int pct) {
+    return 'Вовремя: $pct%';
+  }
+
+  @override
+  String get reportShareTextAppCredit => 'Plants Care App';
+
+  @override
   String get reportEmptyTitle => 'Пока пусто';
 
   @override
