@@ -523,7 +523,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String get catalogTitle => 'Каталог';
 
   @override
-  String get catalogHeading => 'Каталог растений';
+  String get catalogHeadingLead => 'Каталог ';
+
+  @override
+  String get catalogHeadingAccent => 'растений';
+
+  @override
+  String get catalogBadgePopular => 'HIT';
+
+  @override
+  String get catalogBadgeToxic => '⚠ ТОКСИЧНО · 🐈';
+
+  @override
+  String get catalogFilterAll => 'Все';
+
+  @override
+  String get catalogFilterBeginner => 'Для новичка';
+
+  @override
+  String get catalogFilterPetSafe => 'Безопасно для котов 🐈';
+
+  @override
+  String get catalogFilterFlowering => 'Цветущие';
 
   @override
   String get catalogSearchHint => 'Найти вид…';

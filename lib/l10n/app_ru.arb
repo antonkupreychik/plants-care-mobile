@@ -665,9 +665,44 @@
     "description": "Надзаголовок-капс в шапке экрана каталога видов"
   },
 
-  "catalogHeading": "Каталог растений",
-  "@catalogHeading": {
-    "description": "Серифный заголовок экрана каталога видов"
+  "catalogHeadingLead": "Каталог ",
+  "@catalogHeadingLead": {
+    "description": "Серифный заголовок каталога, обычная часть (перед акцентом)"
+  },
+
+  "catalogHeadingAccent": "растений",
+  "@catalogHeadingAccent": {
+    "description": "Серифный заголовок каталога, акцентная часть (primary, italic)"
+  },
+
+  "catalogBadgePopular": "HIT",
+  "@catalogBadgePopular": {
+    "description": "Бейдж популярного вида рядом с именем в списке каталога"
+  },
+
+  "catalogBadgeToxic": "⚠ ТОКСИЧНО · 🐈",
+  "@catalogBadgeToxic": {
+    "description": "Бейдж токсичности вида (для кошек) в мета-строке каталога"
+  },
+
+  "catalogFilterAll": "Все",
+  "@catalogFilterAll": {
+    "description": "Чип-фильтр каталога «Все виды» (активен по умолчанию)"
+  },
+
+  "catalogFilterBeginner": "Для новичка",
+  "@catalogFilterBeginner": {
+    "description": "Чип-фильтр каталога «Для новичка»"
+  },
+
+  "catalogFilterPetSafe": "Безопасно для котов 🐈",
+  "@catalogFilterPetSafe": {
+    "description": "Чип-фильтр каталога «Безопасно для котов»"
+  },
+
+  "catalogFilterFlowering": "Цветущие",
+  "@catalogFilterFlowering": {
+    "description": "Чип-фильтр каталога «Цветущие»"
   },
 
   "catalogSearchHint": "Найти вид…",

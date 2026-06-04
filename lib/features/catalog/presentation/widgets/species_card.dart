@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/tokens.dart';
 import '../../../../core/widgets/skeleton_box.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../home/presentation/plant_illustration.dart';
 import '../../domain/species.dart';
 import 'species_meta_row.dart';
@@ -54,11 +55,22 @@ class SpeciesCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      species.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTheme.serif(fontSize: 22, color: c.ink),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            species.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTheme.serif(fontSize: 22, color: c.ink),
+                          ),
+                        ),
+                        if (species.popular ?? false) ...[
+                          const SizedBox(width: 6),
+                          const _PopularBadge(),
+                        ],
+                      ],
                     ),
                     if (species.latinName != null) ...[
                       const SizedBox(height: 2),
@@ -77,6 +89,7 @@ class SpeciesCard extends StatelessWidget {
                     SpeciesMetaRow(
                       difficulty: species.careDifficulty,
                       light: species.lightPreference,
+                      toxic: species.toxic ?? false,
                     ),
                   ],
                 ),
@@ -85,6 +98,40 @@ class SpeciesCard extends StatelessWidget {
               Icon(Icons.chevron_right_rounded, size: 22, color: c.inkMute),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Бейдж «HIT» рядом с именем популярного вида (issue #80, п.2, дизайн
+/// `screens-v4`). Терракотовый текст на светло-терракотовой подложке;
+/// подложка зависит от темы (светлая — плотный песочный тон, тёмная —
+/// полупрозрачная терракота).
+class _PopularBadge extends StatelessWidget {
+  const _PopularBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark
+        ? c.terracotta.withValues(alpha: 0.15)
+        : const Color(0xFFF9E3D8);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        l10n.catalogBadgePopular,
+        style: TextStyle(
+          fontSize: 9,
+          fontWeight: FontWeight.w700,
+          color: c.terracotta,
         ),
       ),
     );

@@ -820,11 +820,53 @@ abstract class AppLocalizations {
   /// **'Каталог'**
   String get catalogTitle;
 
-  /// Серифный заголовок экрана каталога видов
+  /// Серифный заголовок каталога, обычная часть (перед акцентом)
   ///
   /// In ru, this message translates to:
-  /// **'Каталог растений'**
-  String get catalogHeading;
+  /// **'Каталог '**
+  String get catalogHeadingLead;
+
+  /// Серифный заголовок каталога, акцентная часть (primary, italic)
+  ///
+  /// In ru, this message translates to:
+  /// **'растений'**
+  String get catalogHeadingAccent;
+
+  /// Бейдж популярного вида рядом с именем в списке каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'HIT'**
+  String get catalogBadgePopular;
+
+  /// Бейдж токсичности вида (для кошек) в мета-строке каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'⚠ ТОКСИЧНО · 🐈'**
+  String get catalogBadgeToxic;
+
+  /// Чип-фильтр каталога «Все виды» (активен по умолчанию)
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get catalogFilterAll;
+
+  /// Чип-фильтр каталога «Для новичка»
+  ///
+  /// In ru, this message translates to:
+  /// **'Для новичка'**
+  String get catalogFilterBeginner;
+
+  /// Чип-фильтр каталога «Безопасно для котов»
+  ///
+  /// In ru, this message translates to:
+  /// **'Безопасно для котов 🐈'**
+  String get catalogFilterPetSafe;
+
+  /// Чип-фильтр каталога «Цветущие»
+  ///
+  /// In ru, this message translates to:
+  /// **'Цветущие'**
+  String get catalogFilterFlowering;
 
   /// Плейсхолдер поля поиска по каталогу видов
   ///

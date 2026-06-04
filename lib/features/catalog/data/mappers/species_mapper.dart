@@ -27,6 +27,14 @@ extension SpeciesSummaryDtoMapper on SpeciesSummaryDto {
         soilCheckDays: soilCheckDays,
         careDifficulty: _careDifficultyFromApi(careDifficulty),
         lightPreference: _lightPreferenceFromApi(lightPreference),
+        // Дизайн-бейдж «⚠ ТОКСИЧНО · 🐈» завязан на токсичность для кошек.
+        // `null` (данных нет) трактуем как «не токсично» (бейдж не показываем).
+        toxic: toxicToCats == true,
+        // `popular`: backend-контракт SpeciesSummaryDto такого поля НЕ отдаёт
+        // (issue #80, AC «HIT»). Не выдумываем признак на клиенте — поле
+        // остаётся null, бейдж «HIT» не рисуется, пока поле не появится на
+        // бэкенде и в OpenAPI-спеке. Код рендера бейджа готов и активируется
+        // автоматически, как только маппер начнёт получать значение.
       );
 }
 
