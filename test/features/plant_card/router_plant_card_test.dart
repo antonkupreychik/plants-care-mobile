@@ -7,6 +7,7 @@ import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
 import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
@@ -49,6 +50,7 @@ void main() {
         // Снимаем auth-гард, иначе redirect увёл бы старт на /auth/welcome.
         authStatusProvider.overrideWithValue(AuthStatusNotifier(true)),
         clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
+        connectivityProvider.overrideWith((_) => Stream.value(true)),
         plantCardRepositoryProvider.overrideWithValue(repo),
       ],
     );

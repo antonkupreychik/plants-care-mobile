@@ -24,6 +24,10 @@ part of 'home_view_state.dart';
 /// - [content] — всё остальное: есть данные (в т.ч. рефреш поверх кэша или
 ///   ошибка при наличии кэша), либо не-сетевая ошибка без данных — её покажет
 ///   посекционный ErrorState.
+///
+/// Побочный эффект: подписывается на [connectivityProvider] и при переходе
+/// offline → online автоматически инвалидирует все home-провайдеры (авто-рефетч,
+/// аналог `onlineManager.setEventListener` из React Query).
 
 @ProviderFor(homeViewState)
 final homeViewStateProvider = HomeViewStateProvider._();
@@ -44,6 +48,10 @@ final homeViewStateProvider = HomeViewStateProvider._();
 /// - [content] — всё остальное: есть данные (в т.ч. рефреш поверх кэша или
 ///   ошибка при наличии кэша), либо не-сетевая ошибка без данных — её покажет
 ///   посекционный ErrorState.
+///
+/// Побочный эффект: подписывается на [connectivityProvider] и при переходе
+/// offline → online автоматически инвалидирует все home-провайдеры (авто-рефетч,
+/// аналог `onlineManager.setEventListener` из React Query).
 
 final class HomeViewStateProvider
     extends $FunctionalProvider<HomeViewState, HomeViewState, HomeViewState>
@@ -64,6 +72,10 @@ final class HomeViewStateProvider
   /// - [content] — всё остальное: есть данные (в т.ч. рефреш поверх кэша или
   ///   ошибка при наличии кэша), либо не-сетевая ошибка без данных — её покажет
   ///   посекционный ErrorState.
+  ///
+  /// Побочный эффект: подписывается на [connectivityProvider] и при переходе
+  /// offline → online автоматически инвалидирует все home-провайдеры (авто-рефетч,
+  /// аналог `onlineManager.setEventListener` из React Query).
   HomeViewStateProvider._()
     : super(
         from: null,
@@ -97,4 +109,4 @@ final class HomeViewStateProvider
   }
 }
 
-String _$homeViewStateHash() => r'1587e03ccba57797537392da9e89d951a913bd1b';
+String _$homeViewStateHash() => r'9de969f2b867b47105d69d363f7da7ed3fefd7e4';

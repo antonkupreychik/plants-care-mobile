@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
+import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/features/care_event/data/care_event_repository_provider.dart';
@@ -88,6 +89,7 @@ void main() {
       ProviderScope(
         overrides: [
           clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
+          connectivityProvider.overrideWith((_) => Stream.value(true)),
           careEventRepositoryProvider.overrideWithValue(repo),
           homeTasksProvider.overrideWith(
             (ref) async => TodayTasksResult(tasks: [task], completedCount: 0, totalCount: 1),

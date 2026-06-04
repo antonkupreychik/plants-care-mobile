@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
+import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
 import 'package:plantcare_mobile/core/widgets/error_state.dart';
 import 'package:plantcare_mobile/core/widgets/offline_state.dart';
@@ -53,6 +54,8 @@ Widget _wrap({
   return ProviderScope(
     overrides: [
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
+      // Stub: online, без реальных DNS-запросов и pending timers.
+      connectivityProvider.overrideWith((_) => Stream.value(true)),
       homeTasksProvider.overrideWith(
         (ref) => _tasksToResult((tasks ?? () async => const <CareTask>[])()),
       ),

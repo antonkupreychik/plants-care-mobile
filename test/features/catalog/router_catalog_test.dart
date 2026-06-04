@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/auth/auth_providers.dart';
 import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
 import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
 import 'package:plantcare_mobile/features/catalog/data/catalog_repository_provider.dart';
@@ -26,6 +27,7 @@ class _MockRepo extends Mock implements CatalogRepository {}
 ProviderContainer _container(CatalogRepository repo) => ProviderContainer(
       overrides: [
         authStatusProvider.overrideWithValue(AuthStatusNotifier(true)),
+        connectivityProvider.overrideWith((_) => Stream.value(true)),
         catalogRepositoryProvider.overrideWithValue(repo),
       ],
     );

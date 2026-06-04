@@ -11,6 +11,7 @@ import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/core/auth/auth_providers.dart';
 import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
+import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
 import 'package:plantcare_mobile/core/widgets/app_bottom_nav.dart';
 import 'package:plantcare_mobile/features/auth/data/auth_repository_provider.dart';
 import 'package:plantcare_mobile/features/auth/domain/auth_repository.dart';
@@ -70,6 +71,7 @@ Widget _wrap(
       authStatusProvider.overrideWithValue(authStatus ?? AuthStatusNotifier(true)),
       appConfigProvider.overrideWithValue(_config),
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
+      connectivityProvider.overrideWith((_) => Stream.value(true)),
       homeTasksProvider.overrideWith(
         (ref) async => TodayTasksResult(tasks: const [], completedCount: 0, totalCount: 0),
       ),
