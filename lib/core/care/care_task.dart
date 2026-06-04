@@ -38,5 +38,18 @@ abstract class CareTask with _$CareTask {
 
     /// Имя вида растения (для иллюстрации/подписи в UI, G6). Nullable.
     String? speciesName,
+
+    /// Момент отметки «сделано» (UTC), если задача выполнена сегодня
+    /// (`TaskDto.doneAt`, mobile gap G11 / backend ADR-014). `null` — задача
+    /// ещё не выполнена (pending). В выдаче `/calendar` всегда `null`.
+    ///
+    /// Презентация экрана 03 «Сегодня» делит задачи на pending (секции
+    /// утро/вечер) и done (свёрнутая секция «Выполнено») именно по этому полю.
+    DateTime? doneAt,
   }) = _CareTask;
+
+  const CareTask._();
+
+  /// Задача отмечена выполненной (`doneAt != null`).
+  bool get isDone => doneAt != null;
 }

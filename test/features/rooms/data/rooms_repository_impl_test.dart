@@ -42,7 +42,6 @@ void main() {
     test('should_return_success_with_mapped_locations_when_client_returns_dtos',
         () async {
       when(() => locations.listLocations(
-            xUserId: any(named: 'xUserId'),
             extras: any(named: 'extras'),
           )).thenAnswer(
         (_) async => const [
@@ -63,14 +62,12 @@ void main() {
 
     test('should_send_user_authScope_in_extras', () async {
       when(() => locations.listLocations(
-            xUserId: any(named: 'xUserId'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => const []);
 
       await repo.getLocations();
 
       final captured = verify(() => locations.listLocations(
-            xUserId: any(named: 'xUserId'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
       expect(captured[kAuthScopeExtraKey], AuthScope.user);
@@ -78,7 +75,6 @@ void main() {
 
     test('should_return_failure_network_when_DioException_carries_it', () async {
       when(() => locations.listLocations(
-            xUserId: any(named: 'xUserId'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.network()));
 
@@ -90,7 +86,6 @@ void main() {
     test('should_return_failure_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => locations.listLocations(
-            xUserId: any(named: 'xUserId'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith('plain string'));
 
@@ -104,7 +99,6 @@ void main() {
     test('should_return_success_with_mapped_dto_and_pass_name_and_emoji',
         () async {
       when(() => locations.createLocation(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -120,7 +114,6 @@ void main() {
       expect(loc.emoji, '🛏️');
 
       final body = verify(() => locations.createLocation(
-            xUserId: any(named: 'xUserId'),
             body: captureAny(named: 'body'),
             extras: any(named: 'extras'),
           )).captured.single as LocationCreateRequest;
@@ -130,7 +123,6 @@ void main() {
 
     test('should_send_user_authScope_in_extras', () async {
       when(() => locations.createLocation(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer(
@@ -140,7 +132,6 @@ void main() {
       await repo.createLocation(name: 'x');
 
       final captured = verify(() => locations.createLocation(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
@@ -149,7 +140,6 @@ void main() {
 
     test('should_return_failure_badRequest_when_name_collides', () async {
       when(() => locations.createLocation(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.badRequest(message: 'duplicate')));
@@ -164,7 +154,6 @@ void main() {
   group('updateLocation', () {
     test('should_return_success_and_pass_only_given_fields', () async {
       when(() => locations.updateLocation(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
@@ -178,7 +167,6 @@ void main() {
       expect((result as Success).value.name, 'Кабинет');
 
       final captured = verify(() => locations.updateLocation(
-            xUserId: any(named: 'xUserId'),
             id: captureAny(named: 'id'),
             body: captureAny(named: 'body'),
             extras: any(named: 'extras'),
@@ -192,7 +180,6 @@ void main() {
 
     test('should_send_user_authScope_in_extras', () async {
       when(() => locations.updateLocation(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
@@ -203,7 +190,6 @@ void main() {
       await repo.updateLocation(id: 3, name: 'x');
 
       final captured = verify(() => locations.updateLocation(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             body: any(named: 'body'),
             extras: captureAny(named: 'extras'),
@@ -214,7 +200,6 @@ void main() {
     test('should_return_failure_notFound_when_DioException_carries_it',
         () async {
       when(() => locations.updateLocation(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
@@ -229,7 +214,6 @@ void main() {
   group('deleteLocation', () {
     test('should_return_success_when_client_completes', () async {
       when(() => locations.deleteLocation(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             targetLocationId: any(named: 'targetLocationId'),
             extras: any(named: 'extras'),
@@ -242,7 +226,6 @@ void main() {
 
     test('should_forward_targetLocationId_to_client', () async {
       when(() => locations.deleteLocation(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             targetLocationId: any(named: 'targetLocationId'),
             extras: any(named: 'extras'),
@@ -251,7 +234,6 @@ void main() {
       await repo.deleteLocation(id: 5, targetLocationId: 7);
 
       final captured = verify(() => locations.deleteLocation(
-            xUserId: any(named: 'xUserId'),
             id: captureAny(named: 'id'),
             targetLocationId: captureAny(named: 'targetLocationId'),
             extras: any(named: 'extras'),
@@ -262,7 +244,6 @@ void main() {
 
     test('should_send_user_authScope_in_extras', () async {
       when(() => locations.deleteLocation(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             targetLocationId: any(named: 'targetLocationId'),
             extras: any(named: 'extras'),
@@ -271,7 +252,6 @@ void main() {
       await repo.deleteLocation(id: 5);
 
       final captured = verify(() => locations.deleteLocation(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             targetLocationId: any(named: 'targetLocationId'),
             extras: captureAny(named: 'extras'),
@@ -285,7 +265,6 @@ void main() {
       // ошибку — репозиторий обязан вернуть именно её (UI на ней показывает
       // пикер переноса).
       when(() => locations.deleteLocation(
-            xUserId: any(named: 'xUserId'),
             id: any(named: 'id'),
             targetLocationId: any(named: 'targetLocationId'),
             extras: any(named: 'extras'),

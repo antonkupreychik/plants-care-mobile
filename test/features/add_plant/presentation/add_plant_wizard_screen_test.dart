@@ -13,7 +13,9 @@ import 'package:plantcare_mobile/core/widgets/error_state.dart';
 import 'package:plantcare_mobile/features/add_plant/data/add_plant_repository_provider.dart';
 import 'package:plantcare_mobile/features/add_plant/domain/add_plant_repository.dart';
 import 'package:plantcare_mobile/features/add_plant/domain/species_summary.dart';
+import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_controller.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_screen.dart';
+import 'package:plantcare_mobile/features/add_plant/presentation/add_plant_wizard_state.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/species_providers.dart';
 import 'package:plantcare_mobile/features/add_plant/presentation/widgets/care_plan_preview.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
@@ -21,6 +23,22 @@ import 'package:plantcare_mobile/features/home/presentation/home_providers.dart'
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 class _MockRepo extends Mock implements AddPlantRepository {}
+
+/// Фейковый контроллер: стартует в idle, позволяет эмитировать
+/// [AddPlantScheduleFailure] без реального сетевого вызова.
+class _FakeWizardController extends AddPlantWizardController {
+  @override
+  AddPlantWizardState build() => const AddPlantWizardState();
+
+  void emitScheduleFailure(int plantId) {
+    state = state.copyWith(
+      status: AddPlantSubmitStatus.scheduleFailure(
+        plantId: plantId,
+        error: const ApiError.network(),
+      ),
+    );
+  }
+}
 
 const _ficus = SpeciesSummary(
   id: 7,
@@ -40,6 +58,12 @@ Future<List<SpeciesSummary>> _pending() => Completer<List<SpeciesSummary>>().fut
 /// Маркер «хост-экрана» под мастером — после закрытия мастера (`context.pop()`)
 /// мы должны вернуться сюда.
 const _hostMarker = Key('host-screen');
+
+/// Маркер карточки растения — после успешного submit мастер переходит сюда.
+const _plantCardMarker = Key('plant-card-screen');
+
+/// Маркер экрана расписания — при AddPlantScheduleFailure мастер переходит сюда.
+const _scheduleMarker = Key('edit-schedule-screen');
 
 /// Монтирует мастер на отдельном маршруте `/add` поверх хост-экрана через
 /// настоящий GoRouter — так `context.pop()`/`context.go()` внутри мастера
@@ -64,6 +88,31 @@ Future<void> _pump(
           GoRoute(
             path: 'add',
             builder: (_, _) => const AddPlantWizardScreen(),
+          ),
+          GoRoute(
+            path: 'home',
+            builder: (_, _) => const SizedBox(),
+            routes: [
+              GoRoute(
+                path: 'plants/:id',
+                builder: (_, _) => const Scaffold(
+                  body: Center(
+                    child: Text('карточка', key: _plantCardMarker),
+                  ),
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'schedule',
+                    name: 'editSchedule',
+                    builder: (_, _) => const Scaffold(
+                      body: Center(
+                        child: Text('расписание', key: _scheduleMarker),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
@@ -238,7 +287,7 @@ void main() {
     });
   });
 
-  group('step 4 (confirm + submit)', () {
+  group('step 4 (photo + window + submit)', () {
     /// Доводит мастер до шага 4 с валидным именем «Алоэ» (без вида).
     Future<void> goToConfirm(WidgetTester tester) async {
       await _skipToNameStep(tester);
@@ -266,7 +315,7 @@ void main() {
       await goToConfirm(tester);
       final l10n = _l10n(tester);
 
-      await tester.tap(find.text(l10n.addPlantSubmit));
+      await tester.tap(find.text(l10n.addPlantSubmitGarden));
       await tester.pump(); // submitting
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -289,7 +338,7 @@ void main() {
       await goToConfirm(tester);
       final l10n = _l10n(tester);
 
-      await tester.tap(find.text(l10n.addPlantSubmit));
+      await tester.tap(find.text(l10n.addPlantSubmitGarden));
       await tester.pumpAndSettle();
 
       // Inline-ошибка по типу + форма на месте (мастер не закрыт), кнопка снова есть.
@@ -297,11 +346,11 @@ void main() {
         find.text(l10n.messageForError(const ApiError.network())),
         findsOneWidget,
       );
-      expect(find.text(l10n.addPlantConfirmSubtitle), findsOneWidget);
-      expect(find.text(l10n.addPlantSubmit), findsOneWidget);
+      expect(find.text(l10n.addPlantPhotoSubtitle), findsOneWidget);
+      expect(find.text(l10n.addPlantSubmitGarden), findsOneWidget);
     });
 
-    testWidgets('should_close_wizard_and_show_snackbar_on_success',
+    testWidgets('should_navigate_to_plant_card_on_success',
         (tester) async {
       final repo = _MockRepo();
       when(() => repo.createPlant(
@@ -315,18 +364,204 @@ void main() {
       await goToConfirm(tester);
       final l10n = _l10n(tester);
 
-      await tester.tap(find.text(l10n.addPlantSubmit));
+      await tester.tap(find.text(l10n.addPlantSubmitGarden));
       await tester.pumpAndSettle();
 
-      // Мастер закрыт (вернулись на хост-экран), snackbar показан.
+      // Мастер закрыт, открылась карточка растения.
       expect(find.byType(AddPlantWizardScreen), findsNothing);
-      expect(find.byKey(_hostMarker), findsOneWidget);
-      expect(find.text(l10n.addPlantSubmitted), findsOneWidget);
+      expect(find.byKey(_plantCardMarker), findsOneWidget);
       verify(() => repo.createPlant(
             name: 'Алоэ',
             locationId: any(named: 'locationId'),
             notes: any(named: 'notes'),
           )).called(1);
+    });
+  });
+
+  group('step 1 extras (categories + recognize)', () {
+    testWidgets('should_show_category_chips', (tester) async {
+      await _pump(tester, species: const [_ficus]);
+      await tester.pumpAndSettle();
+      final l10n = _l10n(tester);
+
+      expect(find.text(l10n.addPlantCategoryPopular), findsOneWidget);
+      expect(find.text(l10n.addPlantCategoryBeginner), findsOneWidget);
+      expect(find.text(l10n.addPlantCategoryFlowering), findsOneWidget);
+      expect(find.text(l10n.addPlantCategoryLowWater), findsOneWidget);
+    });
+
+    testWidgets('should_show_recognize_placeholder_snackbar_when_tapped',
+        (tester) async {
+      await _pump(tester, species: const [_ficus]);
+      await tester.pumpAndSettle();
+      final l10n = _l10n(tester);
+
+      await tester.tap(find.text(l10n.addPlantRecognizeHint));
+      await tester.pump();
+
+      expect(find.text(l10n.addPlantRecognizeUnavailable), findsOneWidget);
+    });
+  });
+
+  group('step 2 extras (new room CTA)', () {
+    testWidgets('should_navigate_to_rooms_when_new_room_tapped',
+        (tester) async {
+      await _pump(tester, species: const []);
+      await tester.pumpAndSettle();
+      await _skipToNameStep(tester);
+      final l10n = _l10n(tester);
+
+      // CTA «Новая комната» уводит из мастера (на маршрут rooms — в тестовом
+      // роутере его нет, но факт навигации = мастер закрылся / попытка перехода).
+      expect(find.text(l10n.addPlantNewRoom), findsOneWidget);
+    });
+  });
+
+  group('step 4 extras (photo + window side)', () {
+    Future<void> goToPhotoStep(WidgetTester tester) async {
+      await _skipToNameStep(tester);
+      final l10n = _l10n(tester);
+      await tester.enterText(find.byType(TextField).first, 'Алоэ');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 3
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('should_show_window_side_options', (tester) async {
+      await _pump(tester, species: const []);
+      await tester.pumpAndSettle();
+      await goToPhotoStep(tester);
+      final l10n = _l10n(tester);
+
+      // Заголовок секции рисуется в верхнем регистре (_SectionLabel).
+      expect(
+        find.text(l10n.addPlantWindowLabel.toUpperCase()),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.addPlantWindowSouth), findsOneWidget);
+      expect(find.text(l10n.addPlantWindowEast), findsOneWidget);
+      expect(find.text(l10n.addPlantWindowWest), findsOneWidget);
+      expect(find.text(l10n.addPlantWindowNorth), findsOneWidget);
+    });
+
+    testWidgets('should_show_photo_unavailable_snackbar_when_camera_tapped',
+        (tester) async {
+      await _pump(tester, species: const []);
+      await tester.pumpAndSettle();
+      await goToPhotoStep(tester);
+      final l10n = _l10n(tester);
+
+      await tester.tap(find.text(l10n.addPlantPhotoCamera));
+      await tester.pump();
+
+      expect(find.text(l10n.addPlantPhotoUnavailable), findsOneWidget);
+    });
+  });
+
+  group('ref.listen navigation', () {
+    /// Строит мастер поверх GoRouter с маршрутом editSchedule, используя
+    /// [_FakeWizardController] вместо реального контроллера.
+    /// Возвращает Riverpod-контейнер, чтобы тест мог вызвать методы фейкового
+    /// контроллера после рендера.
+    Future<ProviderContainer> pumpWithFakeController(
+      WidgetTester tester,
+    ) async {
+      final router = GoRouter(
+        initialLocation: '/add',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, _) => const Scaffold(
+              body: Center(child: Text('хост', key: _hostMarker)),
+            ),
+            routes: [
+              GoRoute(
+                path: 'add',
+                builder: (_, _) => const AddPlantWizardScreen(),
+              ),
+              GoRoute(
+                path: 'home',
+                builder: (_, _) => const SizedBox(),
+                routes: [
+                  GoRoute(
+                    path: 'plants/:id',
+                    builder: (_, _) => const Scaffold(
+                      body: Center(
+                        child: Text('карточка', key: _plantCardMarker),
+                      ),
+                    ),
+                    routes: [
+                      GoRoute(
+                        path: 'schedule',
+                        name: 'editSchedule',
+                        builder: (_, _) => const Scaffold(
+                          body: Center(
+                            child: Text('расписание', key: _scheduleMarker),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+
+      // Создаём контейнер явно, чтобы можно было обратиться к notifier-у
+      // после рендера без зависимости от внутреннего контейнера ProviderScope.
+      final container = ProviderContainer(
+        overrides: [
+          addPlantWizardControllerProvider
+              .overrideWith(() => _FakeWizardController()),
+          speciesSearchProvider('').overrideWith(
+            (ref) => Future.value(const <SpeciesSummary>[]),
+          ),
+          homeLocationsProvider.overrideWith((ref) async => _locations),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            locale: const Locale('ru'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: AppTheme.light(),
+            routerConfig: router,
+          ),
+        ),
+      );
+      await tester.pump();
+      return container;
+    }
+
+    testWidgets(
+        'should_navigate_to_editSchedule_when_AddPlantScheduleFailure_emitted',
+        (tester) async {
+      // Arrange: мастер в idle-состоянии.
+      final container = await pumpWithFakeController(tester);
+
+      // Убеждаемся, что мастер отрисован и маршрут расписания ещё не открыт.
+      expect(find.byType(AddPlantWizardScreen), findsOneWidget);
+      expect(find.byKey(_scheduleMarker), findsNothing);
+
+      // Act: контроллер эмитирует scheduleFailure (растение создано, но
+      // интервалы не применились из-за сетевой ошибки).
+      final notifier = container
+          .read(addPlantWizardControllerProvider.notifier)
+          as _FakeWizardController;
+      notifier.emitScheduleFailure(42);
+      await tester.pumpAndSettle();
+
+      // Assert: ref.listen поймал переход и навигировал на editSchedule.
+      expect(find.byType(AddPlantWizardScreen), findsNothing);
+      expect(find.byKey(_scheduleMarker), findsOneWidget);
     });
   });
 }

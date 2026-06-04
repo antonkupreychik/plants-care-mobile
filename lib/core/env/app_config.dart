@@ -5,20 +5,37 @@ enum Flavor { dev, prod }
 
 /// Конфигурация приложения из `--dart-define` (MADR-010).
 ///
-/// Dev-слот auth (MADR-008): [chatId] / [userId] существуют только в dev-сборке;
-/// в prod они null и сетевой слой пойдёт без PoC-заголовков (до появления JWT).
+/// Dev-токен (MADR-008): [accessToken] / [refreshToken] задаются только в
+/// dev-сборке как заранее выпущенная пара (`--dart-define=ACCESS_TOKEN=…`).
+/// `bootstrap()` засевает ими [TokenStore], если хранилище пусто — так dev
+/// поднимается без UI входа. В prod они null (вход — через экраны auth).
 class AppConfig {
   const AppConfig({
     required this.flavor,
     required this.apiUrl,
-    this.chatId,
-    this.userId,
+    this.accessToken,
+    this.refreshToken,
+    this.googleServerClientId,
+    this.googleIosClientId,
   });
 
   final Flavor flavor;
   final String apiUrl;
-  final String? chatId;
-  final String? userId;
+  final String? accessToken;
+  final String? refreshToken;
+
+  /// Web (server) OAuth client ID Google'а (`GOOGLE_SERVER_CLIENT_ID`).
+  /// Передаётся в `GoogleSignIn.initialize(serverClientId:)` — именно под него
+  /// Google выпустит `id_token`, который понимает backend (audience = этот id).
+  /// На Android (Credential Manager, google_sign_in 7.x) это единственный
+  /// нужный client ID. Публичный (не секрет), но env-specific. `null` — если не
+  /// задан в сборке.
+  final String? googleServerClientId;
+
+  /// iOS OAuth client ID Google'а (`GOOGLE_IOS_CLIENT_ID`). Передаётся в
+  /// `GoogleSignIn.initialize(clientId:)` на iOS; должен совпадать с `GIDClientID`
+  /// в `Info.plist`. Публичный, env-specific. `null` — если не задан.
+  final String? googleIosClientId;
 
   bool get isDev => flavor == Flavor.dev;
 
@@ -26,15 +43,23 @@ class AppConfig {
     'API_URL',
     defaultValue: 'https://plants-care-development.up.railway.app',
   );
-  static const String _chatId = String.fromEnvironment('CHAT_ID');
-  static const String _userId = String.fromEnvironment('USER_ID');
+  static const String _accessToken = String.fromEnvironment('ACCESS_TOKEN');
+  static const String _refreshToken = String.fromEnvironment('REFRESH_TOKEN');
+  static const String _googleServerClientId =
+      String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID');
+  static const String _googleIosClientId =
+      String.fromEnvironment('GOOGLE_IOS_CLIENT_ID');
 
   factory AppConfig.fromEnv(Flavor flavor) {
     return AppConfig(
       flavor: flavor,
       apiUrl: _apiUrl,
-      chatId: _chatId.isEmpty ? null : _chatId,
-      userId: _userId.isEmpty ? null : _userId,
+      accessToken: _accessToken.isEmpty ? null : _accessToken,
+      refreshToken: _refreshToken.isEmpty ? null : _refreshToken,
+      googleServerClientId:
+          _googleServerClientId.isEmpty ? null : _googleServerClientId,
+      googleIosClientId:
+          _googleIosClientId.isEmpty ? null : _googleIosClientId,
     );
   }
 }

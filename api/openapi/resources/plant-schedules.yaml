@@ -1,0 +1,191 @@
+# Расписания ухода за конкретным растением (экран 22 «Редактирование
+# расписания ухода»). Backend держит по растению набор расписаний (полив,
+# опрыскивание, удобрение, проверка почвы) с интервалом, единицей, объёмом
+# воды и флагом активности; `nextDueAt` — посчитанный backend момент следующей
+# задачи.
+#
+# Эндпоинт ЖИВОЙ на dev-бэке (проверено curl, гэп G19 закрыт), но отсутствовал
+# в курированной статической спеке — добавлен здесь вручную по реальной
+# рантайм-схеме api-docs. Источник правды до синхронизации с GitHub — этот файл.
+#
+# User-scoped: идентификация по `X-User-Id` (как у `/plants`), интерсептор
+# подставит заголовок из AuthSession. Расписания и `nextDueAt` считает backend —
+# клиент интервалы не пересчитывает (FLUTTER.md «Время»).
+#
+# `unit` объявлен как `type: string` (а не enum): кодген НЕ генерит Dart-enum,
+# строку (`DAY`) маппер data-слоя нормализует в domain (как `taskType` →
+# `CareTaskType`). При PUT строка `unit` отправляется обратно как есть.
+#
+# `nextDueAt` — РЕСПОНС-поле `date-time` (обычный маппинг в `DateTime` ок,
+# G12-ловушка касается только query-параметров формата `date`).
+
+paths:
+  Collection:
+    get:
+      tags: [Plant Schedules]
+      operationId: listPlantSchedules
+      summary: Расписания ухода растения
+      description: |
+        Возвращает список расписаний ухода для растения, принадлежащего
+        пользователю из заголовка `X-User-Id`. По одному расписанию на тип
+        ухода (`WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`).
+
+        Значения интервалов и `nextDueAt` посчитаны backend.
+      parameters:
+        - $ref: '../_common/parameters.yaml#/XUserId'
+        - $ref: '../_common/parameters.yaml#/PlantIdPath'
+      responses:
+        '200':
+          description: Список расписаний ухода растения.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/schemas/CareScheduleDto'
+              example:
+                - type: WATERING
+                  every: 7
+                  unit: DAY
+                  amountMl: null
+                  enabled: false
+                  nextDueAt: null
+                - type: MISTING
+                  every: 3
+                  unit: DAY
+                  amountMl: null
+                  enabled: false
+                  nextDueAt: null
+                - type: FERTILIZING
+                  every: 14
+                  unit: DAY
+                  amountMl: null
+                  enabled: false
+                  nextDueAt: null
+                - type: SOIL_CHECK
+                  every: 3
+                  unit: DAY
+                  amountMl: null
+                  enabled: false
+                  nextDueAt: null
+        '403':
+          $ref: '../_common/responses.yaml#/Forbidden'
+        '404':
+          $ref: '../_common/responses.yaml#/NotFound'
+
+  Item:
+    put:
+      tags: [Plant Schedules]
+      operationId: updatePlantSchedule
+      summary: Обновить расписание ухода по типу
+      description: |
+        Обновляет расписание ухода заданного типа ([type]) для растения
+        пользователя из `X-User-Id`. Возвращает обновлённое расписание с
+        пересчитанным backend `nextDueAt`.
+      parameters:
+        - $ref: '../_common/parameters.yaml#/XUserId'
+        - $ref: '../_common/parameters.yaml#/PlantIdPath'
+        - name: type
+          in: path
+          required: true
+          description: |
+            Тип ухода (`WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`).
+          schema:
+            type: string
+            example: WATERING
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/CareScheduleUpdateRequest'
+            example:
+              every: 7
+              unit: DAY
+              amountMl: 250
+              enabled: true
+      responses:
+        '200':
+          description: Расписание обновлено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/CareScheduleDto'
+        '400':
+          $ref: '../_common/responses.yaml#/BadRequest'
+        '403':
+          $ref: '../_common/responses.yaml#/Forbidden'
+        '404':
+          $ref: '../_common/responses.yaml#/NotFound'
+
+schemas:
+  CareScheduleDto:
+    type: object
+    description: |
+      Расписание ухода одного типа для растения. Интервалы и `nextDueAt`
+      посчитаны backend; клиент их не пересчитывает.
+    required: [type, every, unit, enabled]
+    properties:
+      type:
+        type: string
+        description: |
+          Тип ухода (`WATERING` / `MISTING` / `FERTILIZING` / `SOIL_CHECK`).
+          Строка нормализуется маппером в domain-enum.
+        example: WATERING
+      every:
+        type: integer
+        format: int32
+        description: Интервал повторения в единицах [unit].
+        example: 7
+      unit:
+        type: string
+        description: |
+          Единица интервала (например, `DAY`). Строка, не enum — маппер
+          нормализует в domain.
+        example: DAY
+      amountMl:
+        type: integer
+        format: int32
+        nullable: true
+        description: |
+          Объём воды в миллилитрах (для полива). `null` — не задан / не
+          применим к типу.
+        example: 250
+      enabled:
+        type: boolean
+        description: Активно ли расписание (генерирует ли задачи).
+        example: false
+      nextDueAt:
+        type: string
+        format: date-time
+        nullable: true
+        description: |
+          Момент следующей задачи (UTC), посчитан backend. `null` — расписание
+          неактивно / срок не определён.
+        example: 2026-06-05T09:00:00Z
+
+  CareScheduleUpdateRequest:
+    type: object
+    description: Тело `PUT /api/v1/plants/{id}/schedules/{type}`.
+    required: [every, unit, enabled]
+    properties:
+      every:
+        type: integer
+        format: int32
+        minimum: 1
+        description: Интервал повторения в единицах [unit]. Не меньше 1.
+        example: 7
+      unit:
+        type: string
+        description: Единица интервала (например, `DAY`).
+        example: DAY
+      amountMl:
+        type: integer
+        format: int32
+        nullable: true
+        description: Объём воды в миллилитрах (для полива). `null` — не задан.
+        example: 250
+      enabled:
+        type: boolean
+        description: Активно ли расписание.
+        example: true

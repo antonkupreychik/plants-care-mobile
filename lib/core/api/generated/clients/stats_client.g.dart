@@ -21,7 +21,6 @@ class _StatsClient implements StatsClient {
 
   @override
   Future<StreakResponse> getPlantStreak({
-    required int xChatId,
     required int plantId,
     Map<String, dynamic>? extras,
   }) async {
@@ -29,8 +28,7 @@ class _StatsClient implements StatsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{r'plantId': plantId};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-Chat-Id': xChatId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<StreakResponse>(
       Options(method: 'GET', headers: _headers, extra: _extra)

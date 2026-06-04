@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plantcare_mobile/app.dart';
+import 'package:plantcare_mobile/core/auth/auth_providers.dart';
+import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/env/app_config.dart';
@@ -26,13 +28,14 @@ void main() {
     const config = AppConfig(
       flavor: Flavor.dev,
       apiUrl: 'https://example.test',
-      chatId: '9000001',
-      userId: '1',
     );
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          // Снимаем auth-гард: без override redirect увёл бы старт на
+          // /auth/welcome (и jwtAuthSessionProvider бросил бы из bootstrap).
+          authStatusProvider.overrideWithValue(AuthStatusNotifier(true)),
           appConfigProvider.overrideWithValue(config),
           clockProvider
               .overrideWithValue(_FixedClock(DateTime.utc(2026, 5, 27, 9))),

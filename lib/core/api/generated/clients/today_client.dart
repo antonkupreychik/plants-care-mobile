@@ -20,12 +20,8 @@ abstract class TodayClient {
   ///
   /// Учитываются только активные расписания; завершённые или приостановленные.
   /// не попадают в выдачу.
-  ///
-  /// [xChatId] - Telegram `chat_id` авторизованного пользователя. Резолвится в `users.id`.
-  /// на стороне сервера через `UserApiResolver`.
   @GET('/api/v1/today')
   Future<TodayResponse> getToday({
-    @Header('X-Chat-Id') required int xChatId,
     @Extras() Map<String, dynamic>? extras,
   });
 }

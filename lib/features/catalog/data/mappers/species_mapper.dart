@@ -27,6 +27,14 @@ extension SpeciesSummaryDtoMapper on SpeciesSummaryDto {
         soilCheckDays: soilCheckDays,
         careDifficulty: _careDifficultyFromApi(careDifficulty),
         lightPreference: _lightPreferenceFromApi(lightPreference),
+        // Дизайн-бейдж «⚠ ТОКСИЧНО · 🐈» завязан на токсичность для кошек.
+        // `null` (данных нет) трактуем как «не токсично» (бейдж не показываем).
+        toxic: toxicToCats == true,
+        // `popular`: backend-контракт SpeciesSummaryDto такого поля НЕ отдаёт
+        // (issue #80, AC «HIT»). Не выдумываем признак на клиенте — поле
+        // остаётся null, бейдж «HIT» не рисуется, пока поле не появится на
+        // бэкенде и в OpenAPI-спеке. Код рендера бейджа готов и активируется
+        // автоматически, как только маппер начнёт получать значение.
       );
 }
 
@@ -51,8 +59,10 @@ extension SpeciesDetailDtoMapper on SpeciesDetailDto {
 
 extension SpeciesFactDtoMapper on SpeciesFactDto {
   SpeciesFact toDomain() => SpeciesFact(
-        category: _factCategoryFromApi(category),
-        title: title,
+        // Кодген отдаёт category как enum (раньше была строка); берём backend-
+        // значение через `.json` ('' для `$unknown` → helper даст fallback).
+        category: _factCategoryFromApi(category.json ?? ''),
+        title: title ?? '',
         body: body,
         source: source,
       );

@@ -21,7 +21,6 @@ class _PlantsClient implements PlantsClient {
 
   @override
   Future<PageResponsePlantDto> listPlants({
-    required int xUserId,
     int? offset = 0,
     int? limit = 20,
     int? locationId,
@@ -35,8 +34,7 @@ class _PlantsClient implements PlantsClient {
       r'locationId': locationId,
     };
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<PageResponsePlantDto>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -61,7 +59,6 @@ class _PlantsClient implements PlantsClient {
 
   @override
   Future<PlantDto> createPlant({
-    required int xUserId,
     required PlantCreateRequest body,
     Map<String, dynamic>? extras,
   }) async {
@@ -69,8 +66,7 @@ class _PlantsClient implements PlantsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _options = _setStreamType<PlantDto>(
@@ -96,7 +92,6 @@ class _PlantsClient implements PlantsClient {
 
   @override
   Future<PlantDto> getPlant({
-    required int xUserId,
     required int id,
     Map<String, dynamic>? extras,
   }) async {
@@ -104,8 +99,7 @@ class _PlantsClient implements PlantsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<PlantDto>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -130,7 +124,6 @@ class _PlantsClient implements PlantsClient {
 
   @override
   Future<PlantDto> updatePlant({
-    required int xUserId,
     required int id,
     required PlantUpdateRequest body,
     Map<String, dynamic>? extras,
@@ -139,8 +132,7 @@ class _PlantsClient implements PlantsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _options = _setStreamType<PlantDto>(
@@ -166,7 +158,6 @@ class _PlantsClient implements PlantsClient {
 
   @override
   Future<void> deletePlant({
-    required int xUserId,
     required int id,
     Map<String, dynamic>? extras,
   }) async {
@@ -174,8 +165,7 @@ class _PlantsClient implements PlantsClient {
     _extra.addAll(extras ?? <String, dynamic>{});
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'X-User-Id': xUserId};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<void>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
@@ -191,7 +181,7 @@ class _PlantsClient implements PlantsClient {
   }
 
   @override
-  Future<PlantHealthResponse> getPlantHealth({
+  Future<PlantHealthDto> getPlantHealth({
     required int id,
     Map<String, dynamic>? extras,
   }) async {
@@ -201,7 +191,7 @@ class _PlantsClient implements PlantsClient {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<PlantHealthResponse>(
+    final _options = _setStreamType<PlantHealthDto>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -212,9 +202,73 @@ class _PlantsClient implements PlantsClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, Object?>>(_options);
-    late PlantHealthResponse _value;
+    late PlantHealthDto _value;
     try {
-      _value = PlantHealthResponse.fromJson(_result.data!);
+      _value = PlantHealthDto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<PlantFamilyResponse> getPlantFamily({
+    required int id,
+    Map<String, dynamic>? extras,
+  }) async {
+    final _extra = <String, dynamic>{};
+    _extra.addAll(extras ?? <String, dynamic>{});
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<PlantFamilyResponse>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/v1/plants/${id}/family',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late PlantFamilyResponse _value;
+    try {
+      _value = PlantFamilyResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<PlantDiagnosisDto> getPlantDiagnosis({
+    required int id,
+    Map<String, dynamic>? extras,
+  }) async {
+    final _extra = <String, dynamic>{};
+    _extra.addAll(extras ?? <String, dynamic>{});
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<PlantDiagnosisDto>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/v1/plants/${id}/diagnosis',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late PlantDiagnosisDto _value;
+    try {
+      _value = PlantDiagnosisDto.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

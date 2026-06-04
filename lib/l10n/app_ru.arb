@@ -176,6 +176,93 @@
     "description": "Подсказка к пустому состоянию при активном фильтре"
   },
 
+  "todayProgress": "{done} из {total} выполнено",
+  "@todayProgress": {
+    "description": "Прогресс-карточка экрана «Сегодня»: сколько задач выполнено из общего числа",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "todayProgressRemaining": "{count, plural, =0{Все заботы закрыты} one{Осталась {count} забота} few{Осталось {count} заботы} many{Осталось {count} забот} other{Осталось {count} заботы}}",
+  "@todayProgressRemaining": {
+    "description": "Подпись прогресс-карточки: сколько забот ещё осталось",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todayProgressOverdue": "{count, plural, =0{нет просроченных} one{{count} просрочена} few{{count} просрочены} many{{count} просрочено} other{{count} просрочено}}",
+  "@todayProgressOverdue": {
+    "description": "Хвост подписи прогресс-карточки: сколько просрочено",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todayDoneTitle": "{count, plural, =0{Ничего не выполнено} one{{count} выполнено сегодня} few{{count} выполнено сегодня} many{{count} выполнено сегодня} other{{count} выполнено сегодня}}",
+  "@todayDoneTitle": {
+    "description": "Заголовок свёрнутой секции «Выполнено» на экране «Сегодня»",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todayDoneSubtitle": "{plant} · {action} в {time}",
+  "@todayDoneSubtitle": {
+    "description": "Свёрнутая секция «Выполнено»: что и когда сделано (например «Колючка · полит в 7:42»)",
+    "placeholders": {
+      "plant": { "type": "String" },
+      "action": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+
+  "todayDoneExpand": "Показать выполненные",
+  "@todayDoneExpand": {
+    "description": "Семантика/подсказка: раскрыть свёрнутую секцию «Выполнено»"
+  },
+
+  "todayDoneCollapse": "Скрыть выполненные",
+  "@todayDoneCollapse": {
+    "description": "Семантика/подсказка: свернуть секцию «Выполнено»"
+  },
+
+  "careDonePast": "{action} в {time}",
+  "@careDonePast": {
+    "description": "Подпись на карточке выполненной задачи: действие в прошедшем времени + время (например «Полито в 7:42»)",
+    "placeholders": {
+      "action": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+
+  "careActionDoneWatering": "Полито",
+  "@careActionDoneWatering": {
+    "description": "Действие полива в прошедшем времени (для секции «Выполнено»)"
+  },
+
+  "careActionDoneMisting": "Опрыскано",
+  "@careActionDoneMisting": {
+    "description": "Действие опрыскивания в прошедшем времени"
+  },
+
+  "careActionDoneFertilizing": "Удобрено",
+  "@careActionDoneFertilizing": {
+    "description": "Действие подкормки в прошедшем времени"
+  },
+
+  "careActionDoneSoilCheck": "Проверено",
+  "@careActionDoneSoilCheck": {
+    "description": "Проверка почвы в прошедшем времени"
+  },
+
+  "careActionDoneUnknown": "Сделано",
+  "@careActionDoneUnknown": {
+    "description": "Нейтральное «сделано» для нераспознанного типа ухода"
+  },
+
   "homeGardenTitle": "Мой сад",
   "@homeGardenTitle": {
     "description": "Заголовок секции с растениями пользователя"
@@ -347,6 +434,11 @@
     "description": "Текст ошибки 403"
   },
 
+  "errorUnauthorized": "Сессия истекла. Войдите снова",
+  "@errorUnauthorized": {
+    "description": "Текст ошибки 401 — токен недействителен, нужен повторный вход"
+  },
+
   "errorValidation": "Проверьте введённые данные",
   "@errorValidation": {
     "description": "Текст ошибки валидации"
@@ -417,6 +509,79 @@
     }
   },
 
+  "scheduleTitle": "График ухода",
+  "@scheduleTitle": {
+    "description": "Заголовок экрана 11 «График» (agenda)"
+  },
+
+  "scheduleDayLoadHint": "—",
+  "@scheduleDayLoadHint": {
+    "description": "Символ нулевой нагрузки в день-селекторе (0 задач)"
+  },
+
+  "scheduleDayProgress": "{done} из {total} готово",
+  "@scheduleDayProgress": {
+    "description": "Подзаголовок выбранного дня: сколько задач отмечено из общего числа",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "schedulePhaseMorning": "Утро",
+  "@schedulePhaseMorning": {
+    "description": "Заголовок утренней секции agenda"
+  },
+
+  "schedulePhaseEvening": "Вечер",
+  "@schedulePhaseEvening": {
+    "description": "Заголовок вечерней секции agenda"
+  },
+
+  "schedulePhaseDone": "Сделано",
+  "@schedulePhaseDone": {
+    "description": "Заголовок секции выполненных задач agenda"
+  },
+
+  "schedulePhaseMorningTime": "9:00",
+  "@schedulePhaseMorningTime": {
+    "description": "Условное время утренней секции agenda"
+  },
+
+  "schedulePhaseEveningTime": "19:00",
+  "@schedulePhaseEveningTime": {
+    "description": "Условное время вечерней секции agenda"
+  },
+
+  "scheduleOverdueSubtitle": "Просрочено · со вчера",
+  "@scheduleOverdueSubtitle": {
+    "description": "Подпись просроченной задачи в строке agenda"
+  },
+
+  "scheduleTaskSubtitle": "{action} · {species}",
+  "@scheduleTaskSubtitle": {
+    "description": "Подпись строки задачи: действие и вид растения",
+    "placeholders": {
+      "action": { "type": "String" },
+      "species": { "type": "String" }
+    }
+  },
+
+  "scheduleDayEmpty": "На этот день забот нет 🌿",
+  "@scheduleDayEmpty": {
+    "description": "Заглушка дня без задач на экране 11 «График»"
+  },
+
+  "scheduleMarkDone": "Отметить выполненным",
+  "@scheduleMarkDone": {
+    "description": "Подпись кнопки-чека (semantics) для отметки ухода"
+  },
+
+  "scheduleMarkError": "Не удалось отметить уход. Попробуйте ещё раз.",
+  "@scheduleMarkError": {
+    "description": "Баннер ошибки при неудачной оптимистичной отметке ухода"
+  },
+
   "plantCardAgeDays": "{count, plural, =0{сегодня} one{{count} день} few{{count} дня} many{{count} дней} other{{count} дня}}",
   "@plantCardAgeDays": {
     "description": "Количество дней владения растением",
@@ -466,6 +631,16 @@
   "plantCardJournalEmptyHint": "Отметьте первый уход — и здесь появится история",
   "@plantCardJournalEmptyHint": {
     "description": "Подпись к пустому состоянию истории ухода"
+  },
+
+  "plantCardJournalEmptyBubble": "Жду первого ухода…",
+  "@plantCardJournalEmptyBubble": {
+    "description": "Реплика растения в speech-bubble пустого дневника (экран 31), голос от первого лица"
+  },
+
+  "plantCardJournalWaterNow": "Полить сейчас",
+  "@plantCardJournalWaterNow": {
+    "description": "CTA-кнопка пустого дневника (экран 31): открывает sheet полива"
   },
 
   "plantCardJournalOnTime": "вовремя",
@@ -650,9 +825,44 @@
     "description": "Надзаголовок-капс в шапке экрана каталога видов"
   },
 
-  "catalogHeading": "Каталог растений",
-  "@catalogHeading": {
-    "description": "Серифный заголовок экрана каталога видов"
+  "catalogHeadingLead": "Каталог ",
+  "@catalogHeadingLead": {
+    "description": "Серифный заголовок каталога, обычная часть (перед акцентом)"
+  },
+
+  "catalogHeadingAccent": "растений",
+  "@catalogHeadingAccent": {
+    "description": "Серифный заголовок каталога, акцентная часть (primary, italic)"
+  },
+
+  "catalogBadgePopular": "HIT",
+  "@catalogBadgePopular": {
+    "description": "Бейдж популярного вида рядом с именем в списке каталога"
+  },
+
+  "catalogBadgeToxic": "⚠ ТОКСИЧНО · 🐈",
+  "@catalogBadgeToxic": {
+    "description": "Бейдж токсичности вида (для кошек) в мета-строке каталога"
+  },
+
+  "catalogFilterAll": "Все",
+  "@catalogFilterAll": {
+    "description": "Чип-фильтр каталога «Все виды» (активен по умолчанию)"
+  },
+
+  "catalogFilterBeginner": "Для новичка",
+  "@catalogFilterBeginner": {
+    "description": "Чип-фильтр каталога «Для новичка»"
+  },
+
+  "catalogFilterPetSafe": "Безопасно для котов 🐈",
+  "@catalogFilterPetSafe": {
+    "description": "Чип-фильтр каталога «Безопасно для котов»"
+  },
+
+  "catalogFilterFlowering": "Цветущие",
+  "@catalogFilterFlowering": {
+    "description": "Чип-фильтр каталога «Цветущие»"
   },
 
   "catalogSearchHint": "Найти вид…",
@@ -795,14 +1005,14 @@
     "description": "Заголовок шага превью плана ухода"
   },
 
-  "addPlantCarePlanSubtitle": "Рекомендации по виду. Изменить пока нельзя.",
+  "addPlantCarePlanSubtitle": "Рекомендации по виду. Измените интервалы, если нужно.",
   "@addPlantCarePlanSubtitle": {
-    "description": "Подпись под заголовком шага плана ухода (read-only)"
+    "description": "Подпись под заголовком шага плана ухода"
   },
 
-  "addPlantCarePlanReadOnly": "Только просмотр",
+  "addPlantCarePlanReadOnly": "После создания расписание можно настроить под себя",
   "@addPlantCarePlanReadOnly": {
-    "description": "Бейдж-пометка на шаге плана ухода: план редактировать нельзя"
+    "description": "Информационная подсказка на шаге плана ухода"
   },
 
   "addPlantCarePlanEvery": "{count, plural, one{каждый день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}",
@@ -1070,6 +1280,136 @@
     "description": "Снэкбар-подтверждение после успешного создания растения"
   },
 
+  "addPlantSubmitGarden": "Добавить в сад",
+  "@addPlantSubmitGarden": {
+    "description": "CTA финального шага: создать растение и добавить в сад"
+  },
+
+  "addPlantRecognizeBadge": "ФОТО",
+  "@addPlantRecognizeBadge": {
+    "description": "Бейдж внутри поля поиска вида: распознать по фото (заглушка)"
+  },
+
+  "addPlantRecognizeHint": "Сфотографируй — определим по листу",
+  "@addPlantRecognizeHint": {
+    "description": "Подсказка-заглушка распознавания вида по фото на шаге выбора вида"
+  },
+
+  "addPlantRecognizeUnavailable": "Распознавание по фото скоро появится",
+  "@addPlantRecognizeUnavailable": {
+    "description": "Снэкбар: функция распознавания по фото ещё не готова"
+  },
+
+  "addPlantCategoryPopular": "Популярное",
+  "@addPlantCategoryPopular": {
+    "description": "Чип категории видов: популярные"
+  },
+
+  "addPlantCategoryBeginner": "Для новичка",
+  "@addPlantCategoryBeginner": {
+    "description": "Чип категории видов: для новичка"
+  },
+
+  "addPlantCategoryFlowering": "Цветущие",
+  "@addPlantCategoryFlowering": {
+    "description": "Чип категории видов: цветущие"
+  },
+
+  "addPlantCategoryLowWater": "Без полива",
+  "@addPlantCategoryLowWater": {
+    "description": "Чип категории видов: суккуленты и редкий полив"
+  },
+
+  "addPlantNewRoom": "Добавить своё помещение",
+  "@addPlantNewRoom": {
+    "description": "CTA на шаге имя+комната: создать новую комнату"
+  },
+
+  "addPlantPhotoTitle": "Сделай портрет",
+  "@addPlantPhotoTitle": {
+    "description": "Заголовок шага фото + сторона окна"
+  },
+
+  "addPlantPhotoOverline": "Последний штрих",
+  "@addPlantPhotoOverline": {
+    "description": "Надзаголовок шага фото + сторона окна"
+  },
+
+  "addPlantPhotoSubtitle": "Фото поможет узнать растение и отслеживать его рост.",
+  "@addPlantPhotoSubtitle": {
+    "description": "Подпись под заголовком шага фото + сторона окна"
+  },
+
+  "addPlantPhotoPlaceholder": "Пока используется иллюстрация",
+  "@addPlantPhotoPlaceholder": {
+    "description": "Подпись плейсхолдера фото: реальная загрузка ещё не готова"
+  },
+
+  "addPlantPhotoCamera": "Камера",
+  "@addPlantPhotoCamera": {
+    "description": "Кнопка-заглушка: снять фото камерой"
+  },
+
+  "addPlantPhotoGallery": "Из галереи",
+  "@addPlantPhotoGallery": {
+    "description": "Кнопка-заглушка: выбрать фото из галереи"
+  },
+
+  "addPlantPhotoUnavailable": "Загрузка фото скоро появится",
+  "@addPlantPhotoUnavailable": {
+    "description": "Снэкбар: загрузка фото ещё не готова"
+  },
+
+  "addPlantWindowLabel": "Куда смотрит окно",
+  "@addPlantWindowLabel": {
+    "description": "Заголовок секции выбора стороны окна"
+  },
+
+  "addPlantWindowOptional": "необязательно",
+  "@addPlantWindowOptional": {
+    "description": "Подпись: выбор стороны окна необязателен"
+  },
+
+  "addPlantWindowSouth": "Юг",
+  "@addPlantWindowSouth": {
+    "description": "Сторона окна: юг"
+  },
+
+  "addPlantWindowSouthHint": "много солнца",
+  "@addPlantWindowSouthHint": {
+    "description": "Подпись стороны окна: юг"
+  },
+
+  "addPlantWindowEast": "Восток",
+  "@addPlantWindowEast": {
+    "description": "Сторона окна: восток"
+  },
+
+  "addPlantWindowEastHint": "мягкое утро",
+  "@addPlantWindowEastHint": {
+    "description": "Подпись стороны окна: восток"
+  },
+
+  "addPlantWindowWest": "Запад",
+  "@addPlantWindowWest": {
+    "description": "Сторона окна: запад"
+  },
+
+  "addPlantWindowWestHint": "тёплый вечер",
+  "@addPlantWindowWestHint": {
+    "description": "Подпись стороны окна: запад"
+  },
+
+  "addPlantWindowNorth": "Север",
+  "@addPlantWindowNorth": {
+    "description": "Сторона окна: север"
+  },
+
+  "addPlantWindowNorthHint": "мало света",
+  "@addPlantWindowNorthHint": {
+    "description": "Подпись стороны окна: север"
+  },
+
   "careDifficultyEasy": "Лёгкий уход",
   "@careDifficultyEasy": {
     "description": "Уровень сложности ухода за видом: лёгкий"
@@ -1103,6 +1443,31 @@
   "profileRoomsTitle": "Дома и места",
   "@profileRoomsTitle": {
     "description": "Строка настроек: переход к управлению комнатами"
+  },
+
+  "profileSignOut": "Выйти",
+  "@profileSignOut": {
+    "description": "Строка настроек: выход из аккаунта (деструктивное действие)"
+  },
+
+  "profileSignOutConfirmTitle": "Выйти из аккаунта?",
+  "@profileSignOutConfirmTitle": {
+    "description": "Заголовок диалога подтверждения выхода"
+  },
+
+  "profileSignOutConfirmMessage": "Вы вернётесь к экрану входа. Чтобы снова открыть свой сад, понадобится войти по почте.",
+  "@profileSignOutConfirmMessage": {
+    "description": "Текст диалога подтверждения выхода"
+  },
+
+  "profileSignOutConfirmCancel": "Отмена",
+  "@profileSignOutConfirmCancel": {
+    "description": "Кнопка отмены в диалоге выхода"
+  },
+
+  "profileSignOutConfirmAction": "Выйти",
+  "@profileSignOutConfirmAction": {
+    "description": "Кнопка подтверждения выхода в диалоге"
   },
 
   "roomsTitle": "Дома и места",
@@ -1327,6 +1692,16 @@
     "description": "Кнопка входа через Google (coming soon)"
   },
 
+  "authContinueApple": "Продолжить через Apple",
+  "@authContinueApple": {
+    "description": "Кнопка входа через Apple (только iOS)"
+  },
+
+  "authSocialError": "Не удалось войти. Попробуйте ещё раз.",
+  "@authSocialError": {
+    "description": "Текст ошибки социального входа (Google/Apple)"
+  },
+
   "authContinueTelegram": "Продолжить через Telegram",
   "@authContinueTelegram": {
     "description": "Кнопка входа через Telegram (переход к вводу кода)"
@@ -1452,6 +1827,66 @@
   "authGoHome": "Я просто посмотрю",
   "@authGoHome": {
     "description": "Вторичная ссылка экрана 09: уйти на главную без добавления растения"
+  },
+
+  "authEmailTitle": "Вход по почте",
+  "@authEmailTitle": {
+    "description": "Заголовок экрана ввода email для magic link"
+  },
+
+  "authEmailSubtitle": "Введите адрес — пришлём ссылку для входа. Пароль не нужен.",
+  "@authEmailSubtitle": {
+    "description": "Подзаголовок экрана ввода email: объяснение magic-link флоу"
+  },
+
+  "authEmailLabel": "Электронная почта",
+  "@authEmailLabel": {
+    "description": "Подпись поля ввода email"
+  },
+
+  "authEmailHint": "you@example.com",
+  "@authEmailHint": {
+    "description": "Плейсхолдер поля ввода email"
+  },
+
+  "authEmailInvalid": "Проверьте адрес почты",
+  "@authEmailInvalid": {
+    "description": "Сообщение о неверном формате email под полем ввода"
+  },
+
+  "authSendLink": "Получить ссылку",
+  "@authSendLink": {
+    "description": "Основная кнопка экрана ввода email: запросить magic link"
+  },
+
+  "authLinkSentTitle": "Проверьте почту",
+  "@authLinkSentTitle": {
+    "description": "Заголовок состояния после отправки magic link"
+  },
+
+  "authLinkSentSubtitle": "Мы отправили ссылку для входа. Откройте её на этом устройстве.",
+  "@authLinkSentSubtitle": {
+    "description": "Подзаголовок состояния после отправки magic link"
+  },
+
+  "authVerifying": "Проверяем ссылку…",
+  "@authVerifying": {
+    "description": "Текст экрана проверки magic-link токена во время обмена"
+  },
+
+  "authVerifyError": "Ссылка недействительна или устарела. Запросите новую.",
+  "@authVerifyError": {
+    "description": "Сообщение об ошибке проверки magic-link токена"
+  },
+
+  "authVerifyRetry": "Вернуться ко входу",
+  "@authVerifyRetry": {
+    "description": "Кнопка возврата на экран входа после ошибки проверки токена"
+  },
+
+  "authDevTokenLabel": "Dev: вставить токен",
+  "@authDevTokenLabel": {
+    "description": "Подпись dev-хука ручного ввода magic-link токена (только дебаг)"
   },
 
   "profileArchiveTitle": "Архив",
@@ -1598,5 +2033,963 @@
   "offlineMessage": "Не получается достучаться до сервера. Проверь интернет — твои растения никуда не денутся.",
   "@offlineMessage": {
     "description": "Подпись офлайн-состояния (экран 29)"
+  },
+
+  "firstCareSuccessEyebrow": "Готово",
+  "@firstCareSuccessEyebrow": {
+    "description": "Надзаголовок (eyebrow) экрана 33 «Успех первого ухода»"
+  },
+
+  "firstCareSuccessTitleWater": "{plant} напоена",
+  "@firstCareSuccessTitleWater": {
+    "description": "Hero-заголовок экрана 33 после первого полива. Род слова «напоена» зафиксирован формой дизайна (грамматический род произвольной клички недоступен на клиенте — косметическое ограничение).",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "firstCareSuccessTitleSpray": "{plant} опрыскана",
+  "@firstCareSuccessTitleSpray": {
+    "description": "Hero-заголовок экрана 33 после первого опрыскивания.",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "firstCareSuccessTitleFertilize": "{plant} удобрена",
+  "@firstCareSuccessTitleFertilize": {
+    "description": "Hero-заголовок экрана 33 после первого внесения удобрения.",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "firstCareSuccessTitleGeneric": "{plant} — уход отмечен",
+  "@firstCareSuccessTitleGeneric": {
+    "description": "Нейтральный hero-заголовок экрана 33 для нераспознанного типа ухода.",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "firstCareSuccessVerbWater": "напоена",
+  "@firstCareSuccessVerbWater": {
+    "description": "Акцентное слово-глагол hero-заголовка экрана 33 (полив) — выделяется курсивом и цветом primary."
+  },
+
+  "firstCareSuccessVerbSpray": "опрыскана",
+  "@firstCareSuccessVerbSpray": {
+    "description": "Акцентное слово-глагол hero-заголовка экрана 33 (опрыскивание)."
+  },
+
+  "firstCareSuccessVerbFertilize": "удобрена",
+  "@firstCareSuccessVerbFertilize": {
+    "description": "Акцентное слово-глагол hero-заголовка экрана 33 (удобрение)."
+  },
+
+  "firstCareSuccessBubble": "«Спасибо! Сразу легче дышится 💧»",
+  "@firstCareSuccessBubble": {
+    "description": "Реплика-благодарность растения в speech-bubble экрана 33 (вариант полива из дизайна)."
+  },
+
+  "firstCareSuccessFallbackPlantName": "Растение",
+  "@firstCareSuccessFallbackPlantName": {
+    "description": "Нейтральное имя растения на экране 33, если деталь не загрузилась (уход уже записан — не показываем как ошибку)."
+  },
+
+  "firstCareSuccessStreakDayOne": "Стрик начат · день 1",
+  "@firstCareSuccessStreakDayOne": {
+    "description": "Чип старта стрика на экране 33 (только при onTime == true)."
+  },
+
+  "firstCareSuccessNextHint": "Я напомню, когда придёт время следующего ухода.",
+  "@firstCareSuccessNextHint": {
+    "description": "Строка ободрения внизу экрана 33 БЕЗ счётчика дней (интервал до следующего ухода недоступен, G19)."
+  },
+
+  "firstCareSuccessNextPrefixWater": "Следующий полив — ",
+  "@firstCareSuccessNextPrefixWater": {
+    "description": "Префикс строки-счётчика экрана 33 для полива: перед болд-частью «через N дн.»."
+  },
+
+  "firstCareSuccessNextPrefixSpray": "Следующее опрыскивание — ",
+  "@firstCareSuccessNextPrefixSpray": {
+    "description": "Префикс строки-счётчика экрана 33 для опрыскивания: перед болд-частью «через N дн.»."
+  },
+
+  "firstCareSuccessNextPrefixFertilize": "Следующая подкормка — ",
+  "@firstCareSuccessNextPrefixFertilize": {
+    "description": "Префикс строки-счётчика экрана 33 для подкормки: перед болд-частью «через N дн.»."
+  },
+
+  "firstCareSuccessNextSuffix": ", напомню сама",
+  "@firstCareSuccessNextSuffix": {
+    "description": "Суффикс строки-счётчика экрана 33 после болд-части «через N дн.» (общий для всех типов ухода)."
+  },
+
+  "firstCareSuccessCta": "Вернуться в сад",
+  "@firstCareSuccessCta": {
+    "description": "CTA-кнопка экрана 33 → возврат в таб «Сад»."
+  },
+
+  "careHistoryOverline": "Дневник ухода",
+  "@careHistoryOverline": {
+    "description": "Надзаголовок экрана 21 «Полная история ухода»"
+  },
+
+  "careHistoryViewAll": "Всё",
+  "@careHistoryViewAll": {
+    "description": "Ссылка-вход на полную историю ухода с карточки растения (02 → «Дневник · Всё»)"
+  },
+
+  "careHistorySummaryTotalLabel": "забот\nвсего",
+  "@careHistorySummaryTotalLabel": {
+    "description": "Подпись плитки сводки: всего записей истории"
+  },
+
+  "careHistorySummaryTotalValue": "{count}",
+  "@careHistorySummaryTotalValue": {
+    "description": "Значение плитки сводки: всего записей",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "careHistorySummaryOnTimeLabel": "вовремя",
+  "@careHistorySummaryOnTimeLabel": {
+    "description": "Подпись плитки сводки: доля уходов вовремя"
+  },
+
+  "careHistorySummaryOnTimeValue": "{percent}%",
+  "@careHistorySummaryOnTimeValue": {
+    "description": "Значение плитки сводки: процент уходов вовремя",
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+
+  "careHistorySummaryStreakLabel": "дней\nстрик",
+  "@careHistorySummaryStreakLabel": {
+    "description": "Подпись плитки сводки: серия уходов вовремя"
+  },
+
+  "careHistorySummaryStreakValue": "{count}",
+  "@careHistorySummaryStreakValue": {
+    "description": "Значение плитки сводки: длина серии",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "careHistoryFilterAll": "Всё",
+  "@careHistoryFilterAll": {
+    "description": "Фильтр-чип «все типы ухода» на экране 21"
+  },
+
+  "careHistoryEntryDate": "{dow} {day} · {time}",
+  "@careHistoryEntryDate": {
+    "description": "Дата записи таймлайна: день недели, число, время (локальная TZ)",
+    "placeholders": {
+      "dow": { "type": "String" },
+      "day": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+
+  "careHistoryOnTime": "ВОВРЕМЯ",
+  "@careHistoryOnTime": {
+    "description": "Метка записи таймлайна: уход выполнен в срок"
+  },
+
+  "careHistoryLate": "С ОПОЗДАНИЕМ",
+  "@careHistoryLate": {
+    "description": "Метка записи таймлайна: уход выполнен с опозданием"
+  },
+
+  "careHistoryPlantCreated": "{name} появилась у тебя · {date}",
+  "@careHistoryPlantCreated": {
+    "description": "Маркер появления растения в конце таймлайна",
+    "placeholders": {
+      "name": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+
+  "careHistoryLoadMore": "Показать ещё",
+  "@careHistoryLoadMore": {
+    "description": "Кнопка дозагрузки следующей страницы истории"
+  },
+
+  "careHistoryLoadMoreError": "Не удалось дозагрузить историю",
+  "@careHistoryLoadMoreError": {
+    "description": "Ошибка дозагрузки страницы истории (показанный список сохранён)"
+  },
+
+  "careHistoryEmptyTitle": "История",
+  "@careHistoryEmptyTitle": {
+    "description": "Заголовок пустого дневника (экран 31), первая часть"
+  },
+
+  "careHistoryEmptyTitleAccent": "только начинается",
+  "@careHistoryEmptyTitleAccent": {
+    "description": "Заголовок пустого дневника (экран 31), акцентная часть"
+  },
+
+  "careHistoryEmptyBubble": "Я только переехал к тебе. Отметь первый уход — и начнём вести историю вместе.",
+  "@careHistoryEmptyBubble": {
+    "description": "Реплика растения в пустом дневнике (экран 31)"
+  },
+
+  "careHistoryEmptyAuthor": "— {name}",
+  "@careHistoryEmptyAuthor": {
+    "description": "Подпись автора реплики в пустом дневнике",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "careHistoryEmptyCta": "Отметить первый уход",
+  "@careHistoryEmptyCta": {
+    "description": "CTA пустого дневника (экран 31): открыть отметку ухода"
+  },
+
+  "profileReportTitle": "Месячный отчёт",
+  "@profileReportTitle": {
+    "description": "Строка настроек профиля → экран 14 «Месячный отчёт»"
+  },
+
+  "reportShare": "Поделиться",
+  "@reportShare": {
+    "description": "Кнопка «Поделиться» в шапке отчёта (экран 14), coming-soon"
+  },
+
+  "reportBack": "Назад",
+  "@reportBack": {
+    "description": "Кнопка «назад» на экране месячного отчёта (экран 14)"
+  },
+
+  "reportOverline": "Отчёт · {month}",
+  "@reportOverline": {
+    "description": "Надстрочник hero на экране отчёта: «Отчёт · май 2026»",
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+
+  "reportTitleGreat": "Месяц прошёл отлично",
+  "@reportTitleGreat": {
+    "description": "Hero-заголовок отчёта при высоком проценте вовремя"
+  },
+
+  "reportTitleGood": "Хороший месяц",
+  "@reportTitleGood": {
+    "description": "Hero-заголовок отчёта при среднем проценте вовремя"
+  },
+
+  "reportTitleNeutral": "Итоги месяца",
+  "@reportTitleNeutral": {
+    "description": "Нейтральный hero-заголовок отчёта (нет данных по проценту / низкий)"
+  },
+
+  "reportSubtitleStreak": "Стрик {streak, plural, one{{streak} день} few{{streak} дня} many{{streak} дней} other{{streak} дня}} заботы подряд. Так держать.",
+  "@reportSubtitleStreak": {
+    "description": "Подзаголовок hero про текущий стрик",
+    "placeholders": {
+      "streak": { "type": "int" }
+    }
+  },
+
+  "reportSubtitleNoStreak": "Понемногу складывается твоя история заботы.",
+  "@reportSubtitleNoStreak": {
+    "description": "Подзаголовок hero, когда стрик 0"
+  },
+
+  "reportStatStreak": "дней\nподряд",
+  "@reportStatStreak": {
+    "description": "Подпись большого числа: стрик"
+  },
+
+  "reportStatDone": "забот\nвыполнено",
+  "@reportStatDone": {
+    "description": "Подпись большого числа: выполнено забот"
+  },
+
+  "reportStatOnTime": "вовремя",
+  "@reportStatOnTime": {
+    "description": "Подпись большого числа: процент вовремя"
+  },
+
+  "reportStatOverdue": "пропусков",
+  "@reportStatOverdue": {
+    "description": "Подпись большого числа: пропусков (просрочено)"
+  },
+
+  "reportNoData": "—",
+  "@reportNoData": {
+    "description": "Плейсхолдер числа, когда данных нет (например процент вовремя null)"
+  },
+
+  "reportPercent": "{value}%",
+  "@reportPercent": {
+    "description": "Формат процента вовремя на экране отчёта",
+    "placeholders": {
+      "value": { "type": "int" }
+    }
+  },
+
+  "reportByTypeLabel": "По типам заботы",
+  "@reportByTypeLabel": {
+    "description": "Заголовок секции разбивки выполненного по типам ухода"
+  },
+
+  "reportTrendLabel": "По неделям",
+  "@reportTrendLabel": {
+    "description": "Заголовок секции недельного тренда"
+  },
+
+  "reportTrendWeekDone": "{done, plural, one{{done} забота} few{{done} заботы} many{{done} забот} other{{done} заботы}}",
+  "@reportTrendWeekDone": {
+    "description": "Подпись недели в тренде: сколько выполнено",
+    "placeholders": {
+      "done": { "type": "int" }
+    }
+  },
+
+  "reportWeekLabel": "Нед. {number}",
+  "@reportWeekLabel": {
+    "description": "Короткая подпись недели в тренде (номер ISO-недели)",
+    "placeholders": {
+      "number": { "type": "String" }
+    }
+  },
+
+  "reportShareCta": "Поделиться отчётом",
+  "@reportShareCta": {
+    "description": "Нижняя CTA-кнопка «Поделиться отчётом» (экран 14), coming-soon"
+  },
+
+  "reportEmptyTitle": "Пока пусто",
+  "@reportEmptyTitle": {
+    "description": "Заголовок пустого состояния отчёта (нет заботы за месяц)"
+  },
+
+  "reportEmptyBody": "За этот месяц ещё нет заботы. Отметь первый уход — и здесь появятся твои итоги.",
+  "@reportEmptyBody": {
+    "description": "Текст пустого состояния отчёта"
+  },
+
+  "editScheduleOverline": "Расписание · {plant}",
+  "@editScheduleOverline": {
+    "description": "Overline в шапке экрана 22 «Редактирование расписания»: имя растения",
+    "placeholders": {
+      "plant": { "type": "String" }
+    }
+  },
+
+  "editScheduleTitle": "Как часто заботиться?",
+  "@editScheduleTitle": {
+    "description": "Серифный заголовок экрана 22"
+  },
+
+  "editScheduleSubtitle": "Интервалы влияют на напоминания и стрик",
+  "@editScheduleSubtitle": {
+    "description": "Подпись под заголовком экрана 22"
+  },
+
+  "editScheduleDone": "Готово",
+  "@editScheduleDone": {
+    "description": "Кнопка сохранения изменений расписания (шапка экрана 22)"
+  },
+
+  "editScheduleBack": "Назад",
+  "@editScheduleBack": {
+    "description": "Кнопка «назад» в шапке экрана 22"
+  },
+
+  "editScheduleNextCare": "Следующий уход",
+  "@editScheduleNextCare": {
+    "description": "Префикс строки «Следующий уход · {когда}» на карточке типа ухода"
+  },
+
+  "editScheduleDisabled": "Выключено",
+  "@editScheduleDisabled": {
+    "description": "Подпись на карточке, когда расписание выключено"
+  },
+
+  "editScheduleEvery": "Каждые",
+  "@editScheduleEvery": {
+    "description": "Подпись степпера интервала «Каждые N дн.»"
+  },
+
+  "editScheduleWaterAmount": "Объём воды",
+  "@editScheduleWaterAmount": {
+    "description": "Подпись степпера объёма воды (только для полива)"
+  },
+
+  "editScheduleDaysUnit": "{count, plural, one{{count} дн.} few{{count} дн.} many{{count} дн.} other{{count} дн.}}",
+  "@editScheduleDaysUnit": {
+    "description": "Значение степпера интервала: N дн.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "editScheduleMlUnit": "{count} мл",
+  "@editScheduleMlUnit": {
+    "description": "Значение степпера объёма воды: N мл",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "editScheduleAmountUnset": "—",
+  "@editScheduleAmountUnset": {
+    "description": "Плейсхолдер объёма воды, когда значение не задано"
+  },
+
+  "editScheduleDueToday": "сегодня",
+  "@editScheduleDueToday": {
+    "description": "Относительный срок следующего ухода: сегодня"
+  },
+
+  "editScheduleDueTomorrow": "завтра",
+  "@editScheduleDueTomorrow": {
+    "description": "Относительный срок следующего ухода: завтра"
+  },
+
+  "editScheduleDueOverdue": "просрочено",
+  "@editScheduleDueOverdue": {
+    "description": "Относительный срок следующего ухода: просрочено (в прошлом)"
+  },
+
+  "editScheduleDueInDays": "{count, plural, one{через {count} дн.} few{через {count} дн.} many{через {count} дн.} other{через {count} дн.}}",
+  "@editScheduleDueInDays": {
+    "description": "Относительный срок следующего ухода: через N дн.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "editScheduleResetTitle": "Сбросить к рекомендованным",
+  "@editScheduleResetTitle": {
+    "description": "Заголовок карточки сброса интервалов к рекомендованным для вида"
+  },
+
+  "editScheduleResetSubtitle": "Интервалы из каталога для вашего вида",
+  "@editScheduleResetSubtitle": {
+    "description": "Подпись карточки сброса интервалов к рекомендованным"
+  },
+
+  "editScheduleNote": "«Летом я пью чаще — можешь поставить полив раз в 5 дней, а зимой вернуть на 9.»",
+  "@editScheduleNote": {
+    "description": "Декоративная цитата-заметка внизу экрана 22"
+  },
+
+  "editScheduleEmptyTitle": "Расписаний пока нет",
+  "@editScheduleEmptyTitle": {
+    "description": "Заголовок пустого состояния (backend не вернул ни одного расписания)"
+  },
+
+  "editScheduleEmptyBody": "Для этого растения ещё не настроены интервалы ухода.",
+  "@editScheduleEmptyBody": {
+    "description": "Текст пустого состояния экрана 22"
+  },
+
+  "editScheduleSaveError": "Не удалось сохранить расписание. Попробуй ещё раз.",
+  "@editScheduleSaveError": {
+    "description": "Снэкбар при ошибке сохранения, когда тип ошибки общий"
+  },
+
+  "notificationsTitle": "Уведомления",
+  "@notificationsTitle": {
+    "description": "Заголовок-overline экрана 24 «Лента уведомлений»"
+  },
+
+  "notificationsHeroCount": "{count, plural, =0{Пока тихо в твоём саду} one{{count} новое от твоего сада} few{{count} новых от твоего сада} many{{count} новых от твоего сада} other{{count} новых от твоего сада}}",
+  "@notificationsHeroCount": {
+    "description": "Серифный заголовок экрана 24: число непрочитанных уведомлений",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "notificationsMarkAllRead": "Прочитать",
+  "@notificationsMarkAllRead": {
+    "description": "Кнопка в шапке экрана 24 — пометить видимые непрочитанные прочитанными"
+  },
+
+  "notificationsGroupToday": "Сегодня",
+  "@notificationsGroupToday": {
+    "description": "Заголовок группы уведомлений за сегодня (экран 24)"
+  },
+
+  "notificationsGroupYesterday": "Вчера",
+  "@notificationsGroupYesterday": {
+    "description": "Заголовок группы уведомлений за вчера (экран 24)"
+  },
+
+  "notificationsTimeAt": "в {time}",
+  "@notificationsTimeAt": {
+    "description": "Метка времени уведомления (час:минута в локальной TZ)",
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+
+  "notificationsLoadMoreError": "Не удалось дозагрузить уведомления",
+  "@notificationsLoadMoreError": {
+    "description": "Текст ошибки дозагрузки страницы ленты (экран 24)"
+  },
+
+  "notificationsUnreadSemantic": "непрочитано",
+  "@notificationsUnreadSemantic": {
+    "description": "Семантическая метка для индикатора непрочитанного уведомления"
+  },
+
+  "notificationsTypeCare": "Уход",
+  "@notificationsTypeCare": {
+    "description": "Категорийная/семантическая метка типа уведомления «уход»"
+  },
+
+  "notificationsTypeAlert": "Тревога",
+  "@notificationsTypeAlert": {
+    "description": "Метка типа уведомления «тревога»"
+  },
+
+  "notificationsTypeAward": "Достижение",
+  "@notificationsTypeAward": {
+    "description": "Метка типа уведомления «награда/достижение»"
+  },
+
+  "notificationsTypeReport": "Отчёт",
+  "@notificationsTypeReport": {
+    "description": "Метка типа уведомления «отчёт»"
+  },
+
+  "notificationsTypeSystem": "Системное",
+  "@notificationsTypeSystem": {
+    "description": "Метка типа уведомления «системное»"
+  },
+
+  "notificationsEmptyTitleLead": "Пока ",
+  "@notificationsEmptyTitleLead": {
+    "description": "Лид серифного заголовка пустой ленты (экран 32) перед акцентным словом"
+  },
+
+  "notificationsEmptyTitleAccent": "тихо",
+  "@notificationsEmptyTitleAccent": {
+    "description": "Акцентная часть заголовка пустой ленты (экран 32)"
+  },
+
+  "notificationsEmptyMessage": "Все растения довольны — ни одной заботы не пропущено. Загляну сюда, когда кому-то понадобится внимание.",
+  "@notificationsEmptyMessage": {
+    "description": "Подзаголовок пустой ленты (экран 32)"
+  },
+
+  "notificationsEmptyChip": "Сад в порядке",
+  "@notificationsEmptyChip": {
+    "description": "Успокаивающий чип на пустой ленте (экран 32). Без числа растений — провайдера счётчика растений в порядке здесь нет"
+  },
+
+  "notificationsBadgeTooltip": "{count, plural, =0{Уведомления} one{Уведомления: {count} непрочитанное} few{Уведомления: {count} непрочитанных} many{Уведомления: {count} непрочитанных} other{Уведомления: {count} непрочитанных}}",
+  "@notificationsBadgeTooltip": {
+    "description": "Подсказка/семантика колокольчика на главной с числом непрочитанных",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "plantCardScheduleTitle": "Расписание ухода",
+  "@plantCardScheduleTitle": {
+    "description": "Заголовок секции-входа в редактирование расписания на карточке растения"
+  },
+
+  "plantCardScheduleEdit": "Изменить",
+  "@plantCardScheduleEdit": {
+    "description": "Ссылка-вход «Изменить» в редактирование расписания (карточка растения)"
+  },
+
+  "profileNotificationsTitle": "Уведомления и время",
+  "@profileNotificationsTitle": {
+    "description": "Строка профиля — вход на экран 23 «Тихие часы»"
+  },
+
+  "quietHoursBack": "Назад",
+  "@quietHoursBack": {
+    "description": "Кнопка «назад» экрана 23"
+  },
+
+  "quietHoursOverline": "Уведомления и время",
+  "@quietHoursOverline": {
+    "description": "Оверлайн шапки экрана 23"
+  },
+
+  "quietHoursTitleLead": "Тихие ",
+  "@quietHoursTitleLead": {
+    "description": "Серифный заголовок 23, обычная часть перед акцентом"
+  },
+
+  "quietHoursTitleAccent": "часы",
+  "@quietHoursTitleAccent": {
+    "description": "Серифный заголовок 23, акцентная курсивная часть"
+  },
+
+  "quietHoursSubtitle": "Ночью растения подождут до утра — не разбудят пушем.",
+  "@quietHoursSubtitle": {
+    "description": "Подзаголовок экрана 23"
+  },
+
+  "quietHoursRingCount": "{hours, plural, one{{hours} час тишины} few{{hours} часа тишины} many{{hours} часов тишины} other{{hours} часа тишины}}",
+  "@quietHoursRingCount": {
+    "description": "Подпись в центре кольца: сколько часов тишины",
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+
+  "quietHoursLegendOn": "Напоминания идут",
+  "@quietHoursLegendOn": {
+    "description": "Легенда кольца — период активных напоминаний"
+  },
+
+  "quietHoursLegendQuiet": "Тишина",
+  "@quietHoursLegendQuiet": {
+    "description": "Легенда кольца — период тишины"
+  },
+
+  "quietHoursStartLabel": "Засыпаю в",
+  "@quietHoursStartLabel": {
+    "description": "Карточка-кнопка начала тихих часов на экране 23"
+  },
+
+  "quietHoursEndLabel": "Просыпаюсь в",
+  "@quietHoursEndLabel": {
+    "description": "Карточка-кнопка конца тихих часов на экране 23"
+  },
+
+  "quietHoursParamsSection": "Параметры",
+  "@quietHoursParamsSection": {
+    "description": "Заголовок секции параметров на экране 23"
+  },
+
+  "quietHoursTimezoneTitle": "Таймзона",
+  "@quietHoursTimezoneTitle": {
+    "description": "Строка «Таймзона» в секции параметров (экран 23)"
+  },
+
+  "quietHoursTimezoneValue": "{city} · {gmt}",
+  "@quietHoursTimezoneValue": {
+    "description": "Значение таймзоны: город и GMT-метка",
+    "placeholders": {
+      "city": { "type": "String" },
+      "gmt": { "type": "String" }
+    }
+  },
+
+  "quietHoursDndTitle": "Не беспокоить ночью",
+  "@quietHoursDndTitle": {
+    "description": "Декоративная (неактивная) строка-тумблер на экране 23, не покрыта backend"
+  },
+
+  "quietHoursDndSubtitle": "Перенести просроченное на утро",
+  "@quietHoursDndSubtitle": {
+    "description": "Подпись декоративной строки «Не беспокоить ночью»"
+  },
+
+  "quietHoursDigestTitle": "Утренний дайджест",
+  "@quietHoursDigestTitle": {
+    "description": "Декоративная (неактивная) строка дайджеста на экране 23, не покрыта backend"
+  },
+
+  "quietHoursDigestSubtitle": "Все заботы дня одним сообщением",
+  "@quietHoursDigestSubtitle": {
+    "description": "Подпись декоративной строки «Утренний дайджест»"
+  },
+
+  "quietHoursDigestTime": "9:00",
+  "@quietHoursDigestTime": {
+    "description": "Декоративное фиксированное время утреннего дайджеста"
+  },
+
+  "quietHoursSoon": "Скоро",
+  "@quietHoursSoon": {
+    "description": "Бейдж «скоро» для контролов, ещё не покрытых backend (экран 23)"
+  },
+
+  "quietHoursQuote": "«Если меня надо полить в 3 ночи — напомню в 8 утра. Спи спокойно.»",
+  "@quietHoursQuote": {
+    "description": "Декоративная цитата внизу экрана 23"
+  },
+
+  "quietHoursSaveError": "Не удалось сохранить. Попробуй ещё раз.",
+  "@quietHoursSaveError": {
+    "description": "Снэкбар при ошибке сохранения тихих часов/таймзоны (общий тип)"
+  },
+
+  "timePickerStartOverline": "Тихие часы начинаются",
+  "@timePickerStartOverline": {
+    "description": "Оверлайн пикера 36 при выборе начала тихих часов"
+  },
+
+  "timePickerEndOverline": "Тихие часы заканчиваются",
+  "@timePickerEndOverline": {
+    "description": "Оверлайн пикера 36 при выборе конца тихих часов"
+  },
+
+  "timePickerStartTitle": "Засыпаю в",
+  "@timePickerStartTitle": {
+    "description": "Заголовок пикера 36 при выборе начала"
+  },
+
+  "timePickerEndTitle": "Просыпаюсь в",
+  "@timePickerEndTitle": {
+    "description": "Заголовок пикера 36 при выборе конца"
+  },
+
+  "timePickerDone": "Готово",
+  "@timePickerDone": {
+    "description": "Кнопка применения выбора времени (пикер 36)"
+  },
+
+  "timezoneBack": "Назад",
+  "@timezoneBack": {
+    "description": "Кнопка «назад» экрана 37"
+  },
+
+  "timezoneOverline": "Таймзона",
+  "@timezoneOverline": {
+    "description": "Оверлайн шапки экрана 37"
+  },
+
+  "timezoneTitleLead": "Когда у тебя ",
+  "@timezoneTitleLead": {
+    "description": "Серифный заголовок 37, обычная часть перед акцентом"
+  },
+
+  "timezoneTitleAccent": "утро",
+  "@timezoneTitleAccent": {
+    "description": "Серифный заголовок 37, акцентная курсивная часть"
+  },
+
+  "timezoneTitleTail": "?",
+  "@timezoneTitleTail": {
+    "description": "Серифный заголовок 37, хвост после акцента (знак вопроса)"
+  },
+
+  "timezoneSearchHint": "Город или регион…",
+  "@timezoneSearchHint": {
+    "description": "Плейсхолдер поля поиска на экране 37"
+  },
+
+  "timezoneSectionRussia": "Россия",
+  "@timezoneSectionRussia": {
+    "description": "Заголовок секции списка таймзон (экран 37)"
+  },
+
+  "timezoneEmpty": "Ничего не найдено",
+  "@timezoneEmpty": {
+    "description": "Пустой результат поиска по таймзонам (экран 37)"
+  },
+
+  "timezoneSelectedHint": "Выбрано",
+  "@timezoneSelectedHint": {
+    "description": "Semantics-метка галочки выбранной таймзоны (экран 37)"
+  },
+
+  "profileShoppingTitle": "Список покупок",
+  "@profileShoppingTitle": {
+    "description": "Строка профиля — вход на экран 19 «Список покупок»"
+  },
+
+  "shoppingTitle": "Список покупок",
+  "@shoppingTitle": {
+    "description": "Заголовок-overline экрана 19 «Список покупок»"
+  },
+
+  "shoppingHeroSummary": "{total, plural, =0{Список пуст} one{{total} позиция · {bought} куплено} few{{total} позиции · {bought} куплено} many{{total} позиций · {bought} куплено} other{{total} позиций · {bought} куплено}}",
+  "@shoppingHeroSummary": {
+    "description": "Серифный заголовок экрана 19: счётчик «N позиций · M куплено»",
+    "placeholders": {
+      "total": { "type": "int" },
+      "bought": { "type": "int" }
+    }
+  },
+
+  "shoppingAddItem": "Добавить позицию",
+  "@shoppingAddItem": {
+    "description": "Кнопка/строка добавления новой позиции в список покупок (экран 19)"
+  },
+
+  "shoppingAddSheetOverline": "Список покупок",
+  "@shoppingAddSheetOverline": {
+    "description": "Overline в шите добавления позиции (экран 19)"
+  },
+
+  "shoppingAddSheetTitle": "Новая позиция",
+  "@shoppingAddSheetTitle": {
+    "description": "Заголовок шита добавления позиции (экран 19)"
+  },
+
+  "shoppingAddSheetLabel": "Что купить",
+  "@shoppingAddSheetLabel": {
+    "description": "Метка поля ввода названия позиции (экран 19)"
+  },
+
+  "shoppingAddSheetHint": "Например, грунт для суккулентов",
+  "@shoppingAddSheetHint": {
+    "description": "Плейсхолдер поля ввода названия позиции (экран 19)"
+  },
+
+  "shoppingAddSheetSubmit": "Добавить",
+  "@shoppingAddSheetSubmit": {
+    "description": "Кнопка подтверждения добавления позиции (экран 19)"
+  },
+
+  "shoppingItemDelete": "Удалить позицию",
+  "@shoppingItemDelete": {
+    "description": "Semantics/тултип кнопки удаления позиции из списка покупок (экран 19)"
+  },
+
+  "shoppingItemToggle": "Отметить купленным",
+  "@shoppingItemToggle": {
+    "description": "Semantics-метка чекбокса «куплено» у позиции (экран 19)"
+  },
+
+  "shoppingItemDeleted": "Позиция удалена",
+  "@shoppingItemDeleted": {
+    "description": "Снэкбар после удаления позиции (экран 19)"
+  },
+
+  "shoppingEmptyTitleLead": "Список ",
+  "@shoppingEmptyTitleLead": {
+    "description": "Лид серифного заголовка пустого списка покупок (экран 19) перед акцентным словом"
+  },
+
+  "shoppingEmptyTitleAccent": "пуст",
+  "@shoppingEmptyTitleAccent": {
+    "description": "Акцентная часть заголовка пустого списка покупок (экран 19)"
+  },
+
+  "shoppingEmptyMessage": "Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.",
+  "@shoppingEmptyMessage": {
+    "description": "Подзаголовок пустого списка покупок (экран 19)"
+  },
+
+  "diagnosisRetry": "Повторить",
+  "@diagnosisRetry": {
+    "description": "Кнопка повтора загрузки диагноза (экран 15)"
+  },
+
+  "diagnosisBadgeWarning": "⚠ Что‑то не так",
+  "@diagnosisBadgeWarning": {
+    "description": "Бейдж-предупреждение в hero-секции когда есть проблемы (экран 15)"
+  },
+
+  "diagnosisHealthyTitle": "Всё в порядке",
+  "@diagnosisHealthyTitle": {
+    "description": "Заголовок пустого состояния «Всё в порядке» (экран 15)"
+  },
+
+  "diagnosisHealthyMessage": "Растение здорово — проблем не обнаружено",
+  "@diagnosisHealthyMessage": {
+    "description": "Подпись к пустому состоянию «Всё в порядке» (экран 15)"
+  },
+
+  "diagnosisTitleIssues": "Проблемы",
+  "@diagnosisTitleIssues": {
+    "description": "Заголовок секции проблем на экране «Диагноз растения» (15)"
+  },
+
+  "diagnosisSeverityHigh": "Критично",
+  "@diagnosisSeverityHigh": {
+    "description": "Бейдж серьёзности проблемы: критично (экран 15)"
+  },
+
+  "diagnosisSeverityMedium": "Умеренно",
+  "@diagnosisSeverityMedium": {
+    "description": "Бейдж серьёзности проблемы: умеренно (экран 15)"
+  },
+
+  "diagnosisSeverityLow": "Незначительно",
+  "@diagnosisSeverityLow": {
+    "description": "Бейдж серьёзности проблемы: незначительно (экран 15)"
+  },
+
+  "diagnosisSeverityUnknown": "—",
+  "@diagnosisSeverityUnknown": {
+    "description": "Бейдж серьёзности проблемы: неизвестно / forward-compat (экран 15)"
+  },
+
+  "diagnosisTitleRecommendations": "Рекомендации",
+  "@diagnosisTitleRecommendations": {
+    "description": "Заголовок секции рекомендаций на экране «Диагноз растения» (15)"
+  },
+
+  "diagnosisErrorMessage": "Не удалось загрузить диагноз",
+  "@diagnosisErrorMessage": {
+    "description": "Сообщение об ошибке загрузки диагноза (экран 15)"
+  },
+
+  "catalogSearchEmptyTitle": "Не нашли «{query}»",
+  "@catalogSearchEmptyTitle": {
+    "description": "Серифный заголовок экрана 30 «Пустой поиск каталога» с запросом пользователя",
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+
+  "catalogSearchEmptyMessage": "Возможно, опечатка. Попробуй иначе или загляни в популярное.",
+  "@catalogSearchEmptyMessage": {
+    "description": "Подпись под заголовком экрана 30 «Пустой поиск каталога»"
+  },
+
+  "catalogSuggestionsTitle": "Может, ты искал(а)",
+  "@catalogSuggestionsTitle": {
+    "description": "Надпись над чипами популярных видов на экране 30"
+  },
+
+  "catalogNotInCatalogTitle": "Нет в каталоге?",
+  "@catalogNotInCatalogTitle": {
+    "description": "Серифный заголовок CTA-карточки «Нет в каталоге» на экране 30"
+  },
+
+  "catalogNotInCatalogHint": "Заведи растение вручную — расписание настроишь сам(а).",
+  "@catalogNotInCatalogHint": {
+    "description": "Подпись CTA-карточки «Нет в каталоге» на экране 30"
+  },
+
+  "catalogNotInCatalogAdd": "Добавить",
+  "@catalogNotInCatalogAdd": {
+    "description": "Кнопка CTA-карточки «Нет в каталоге» на экране 30: добавить растение вручную"
+  },
+
+  "languageScreenTitle": "Язык / Language",
+  "@languageScreenTitle": {
+    "description": "Заголовок пункта меню «Язык» в профиле (экран 13)"
+  },
+
+  "languageBack": "Назад",
+  "@languageBack": {
+    "description": "Tooltip кнопки «назад» на экране 38 «Язык приложения»"
+  },
+
+  "languageScreenTitleLead": "Язык ",
+  "@languageScreenTitleLead": {
+    "description": "Первая (незакрашенная) часть заголовка экрана 38 — «Язык »"
+  },
+
+  "languageScreenTitleAccent": "приложения",
+  "@languageScreenTitleAccent": {
+    "description": "Вторая (primary italic) часть заголовка экрана 38 — «приложения»"
+  },
+
+  "languageScreenSubtitle": "Реплики растений тоже переведём — характер сохранится",
+  "@languageScreenSubtitle": {
+    "description": "Подзаголовок под заголовком на экране 38"
+  },
+
+  "languageScreenHint": "Дату и время форматируем по выбранному языку.",
+  "@languageScreenHint": {
+    "description": "Подсказка внизу экрана 38 о форматировании даты/времени"
   }
 }

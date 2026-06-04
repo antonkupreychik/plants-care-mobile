@@ -23,6 +23,10 @@ dependencies:
   # Навигация (MADR-005).
   go_router: ^17.2.3
 
+  # Deep links для magic-link входа (MADR-008): захват custom-схемы
+  # plantcare://auth/verify?token=… и роутинг на /auth/verify.
+  app_links: ^6.4.0
+
   # Сеть (MADR-006).
   dio: ^5.9.2
   dio_smart_retry: ^7.0.1
@@ -48,9 +52,13 @@ dependencies:
 
   # SVG-иллюстрации из дизайна (MADR-001).
   flutter_svg: ^2.3.0
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^8.1.0
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
 
@@ -74,6 +82,11 @@ dev_dependencies:
   freezed: ^3.2.5
   json_serializable: ^6.14.0
 
+  # Генерация launcher-иконок из assets/branding/app_icon.png.
+  # В CI/локально с Flutter: dart run flutter_launcher_icons
+  # Без Flutter (источник правды по геометрии): python3 tool/generate_app_icon.py
+  flutter_launcher_icons: ^0.14.1
+
   # custom_lint / riverpod_lint (MADR-004) отложены: на 2026-05 их релизы
   # тянут analyzer ^7/^8 и конфликтуют с riverpod_generator 4.0.3 +
   # json_serializable 6.14.0 (analyzer ^9/^12). Вернуть, когда выйдет
@@ -85,3 +98,10 @@ flutter:
 
   assets:
     - assets/illustrations/
+
+# Launcher-иконка (см. dev_dependencies). Источник — assets/branding/app_icon.png.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/branding/app_icon.png"

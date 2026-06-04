@@ -28,8 +28,25 @@ export PATH="$HOME/development/flutter/bin:$PATH"
 ```
 
 Точки входа: `lib/main_dev.dart` / `lib/main_prod.dart` (MADR-010). Конфиг —
-через `--dart-define` (API_URL / CHAT_ID / USER_ID). Android productFlavors
-(`--flavor`) пока не настроены — сборка идёт через `-t` + `--dart-define`.
+через `--dart-define` (API_URL / ACCESS_TOKEN / REFRESH_TOKEN). Android
+productFlavors (`--flavor`) пока не настроены — сборка идёт через `-t` +
+`--dart-define`.
+
+**Auth — JWT bearer (MADR-008).** PoC-заголовки `CHAT_ID`/`USER_ID` сняты:
+теперь dev-сборка засевает `TokenStore` заранее выпущенной парой токенов из
+`--dart-define=ACCESS_TOKEN=…/REFRESH_TOKEN=…` (получить с dev-backend через
+`/auth/**`). Без пары приложение поднимется, но пользовательские запросы
+получат `401`. Локальный `run-dev.sh` нужно обновить: вместо `CHAT_ID`/`USER_ID`
+прокидывать `ACCESS_TOKEN`/`REFRESH_TOKEN`.
+
+**Вход через UI (срез 2, MADR-008).** Без dev-токена приложение стартует на экране входа
+(router-guard). Метод — email magic-link: ввод email → письмо → возврат по deep link
+`plantcare://auth/verify?token=…` (custom scheme; Android intent-filter + iOS
+`CFBundleURLTypes` уже настроены). Точный формат ссылки задаёт backend — при расхождении
+поправить схему/хост (см. `docs/BACKEND-GAPS.md`). **Проверка без реального письма:** на
+экране `/auth/verify` в dev-флейворе есть поле ручного ввода токена — вставить opaque-токен
+(или открыть `plantcare://auth/verify?token=…` на устройстве) и прогнать обмен. E2E с
+письмом — только на реальном устройстве.
 
 ## ⚠️ Сетевой обходной путь: Maven Central недоступен
 

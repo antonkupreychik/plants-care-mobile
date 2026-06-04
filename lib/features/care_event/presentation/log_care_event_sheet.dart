@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/clock/clock_provider.dart';
@@ -11,6 +12,7 @@ import '../../plant_card/domain/care_event_kind.dart';
 import '../../plant_card/presentation/care_event_kind_l10n.dart';
 import 'care_event_form_state.dart';
 import 'care_event_kind_action_l10n.dart';
+import 'care_event_providers.dart';
 import 'log_care_event_controller.dart';
 
 /// Открывает sheet отметки ухода (экран 06) для [plantId].
@@ -62,13 +64,22 @@ class _LogCareEventSheet extends ConsumerWidget {
     final controller = ref.read(provider.notifier);
 
     // Закрытие sheet ровно один раз на переход в success (а не в build —
-    // используем listen, чтобы не дёргать Navigator при ребилдах).
+    // используем listen, чтобы не дёргать Navigator при ребилдах). Если это был
+    // ПЕРВЫЙ уход растения — после закрытия sheet открываем экран 33 «Успех
+    // первого ухода» (push поверх shell). Иначе — обычный снэкбар.
     ref.listen(provider.select((s) => s.status), (prev, next) {
-      if (next is SubmitSuccess) {
+      if (next case SubmitSuccess(:final wasFirstCare, :final kind, :final onTime)) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(l10n.careSheetSubmitted)));
+        if (wasFirstCare) {
+          if (!context.mounted) return;
+          context.push(
+            '/home/care-success/$plantId?kind=${kind.name}&onTime=$onTime',
+          );
+        } else {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(content: Text(l10n.careSheetSubmitted)));
+        }
       }
     });
 
@@ -91,6 +102,14 @@ class _LogCareEventSheet extends ConsumerWidget {
             _TypeSelector(
               selected: form.type,
               onSelected: controller.setType,
+              availableKinds: ref
+                  .watch(enabledCareKindsProvider(plantId))
+                  .value ??
+                  const [
+                    CareEventKind.water,
+                    CareEventKind.spray,
+                    CareEventKind.fertilize,
+                  ],
             ),
             const SizedBox(height: 20),
 
@@ -202,24 +221,23 @@ class _FieldLabel extends StatelessWidget {
   }
 }
 
-/// Выбор типа ухода: сегменты-чипы WATER / SPRAY / FERTILIZE.
+/// Выбор типа ухода: сегменты-чипы по включённым расписаниям растения.
 class _TypeSelector extends StatelessWidget {
-  const _TypeSelector({required this.selected, required this.onSelected});
+  const _TypeSelector({
+    required this.selected,
+    required this.onSelected,
+    required this.availableKinds,
+  });
 
   final CareEventKind selected;
   final ValueChanged<CareEventKind> onSelected;
-
-  static const _kinds = <CareEventKind>[
-    CareEventKind.water,
-    CareEventKind.spray,
-    CareEventKind.fertilize,
-  ];
+  final List<CareEventKind> availableKinds;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (final kind in _kinds) ...[
+        for (final kind in availableKinds) ...[
           Expanded(
             child: _TypeChip(
               kind: kind,
@@ -227,7 +245,7 @@ class _TypeSelector extends StatelessWidget {
               onTap: () => onSelected(kind),
             ),
           ),
-          if (kind != _kinds.last) const SizedBox(width: 8),
+          if (kind != availableKinds.last) const SizedBox(width: 8),
         ],
       ],
     );

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:plantcare_mobile/core/auth/auth_providers.dart';
+import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
@@ -18,22 +20,17 @@ import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 class _MockRepo extends Mock implements CatalogRepository {}
 
-Widget _app(CatalogRepository repo) => ProviderScope(
-      overrides: [catalogRepositoryProvider.overrideWithValue(repo)],
-      child: MaterialApp.router(
-        locale: const Locale('ru'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        theme: AppTheme.light(),
-        routerConfig: appRouter,
-      ),
+/// Контейнер с замоканным каталогом и снятым auth-гардом
+/// (`authStatusProvider` = authenticated, иначе redirect → /auth/welcome).
+/// Через него тест читает `appRouterProvider` для прямой навигации.
+ProviderContainer _container(CatalogRepository repo) => ProviderContainer(
+      overrides: [
+        authStatusProvider.overrideWithValue(AuthStatusNotifier(true)),
+        catalogRepositoryProvider.overrideWithValue(repo),
+      ],
     );
 
 void main() {
-  setUp(() {
-    appRouter.go('/home');
-  });
-
   testWidgets(
       'should_navigate_to_species_detail_with_tapped_id_when_card_tapped',
       (tester) async {
@@ -64,10 +61,25 @@ void main() {
       );
     });
 
-    await tester.pumpWidget(_app(repo));
+    final container = _container(repo);
+    addTearDown(container.dispose);
+    final router = container.read(appRouterProvider);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          locale: const Locale('ru'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.light(),
+          routerConfig: router,
+        ),
+      ),
+    );
 
     // Стартуем на каталоге.
-    appRouter.go('/catalog');
+    router.go('/catalog');
     await tester.pumpAndSettle();
     expect(find.byType(CatalogScreen), findsOneWidget);
     expect(find.byType(SpeciesCard), findsNWidgets(2));

@@ -26,6 +26,8 @@ class PcColors extends ThemeExtension<PcColors> {
     required this.chipBg,
     required this.fab,
     required this.fabInk,
+    required this.amberFg,
+    required this.amberBg,
   });
 
   final Color bg;
@@ -46,6 +48,8 @@ class PcColors extends ThemeExtension<PcColors> {
   final Color chipBg;
   final Color fab;
   final Color fabInk;
+  final Color amberFg;
+  final Color amberBg;
 
   static const light = PcColors(
     bg: Color(0xFFF1ECE0),
@@ -66,6 +70,8 @@ class PcColors extends ThemeExtension<PcColors> {
     chipBg: Color(0xFFE7E0CE),
     fab: Color(0xFF1F2A1E),
     fabInk: Color(0xFFFBF7EC),
+    amberFg: Color(0xFFB45309),
+    amberBg: Color(0xFFFEF3C7),
   );
 
   static const dark = PcColors(
@@ -87,6 +93,8 @@ class PcColors extends ThemeExtension<PcColors> {
     chipBg: Color(0xFF2A3128),
     fab: Color(0xFFEFE7D4),
     fabInk: Color(0xFF141A14),
+    amberFg: Color(0xFFD97706),
+    amberBg: Color(0xFF3D2C0A),
   );
 
   @override
@@ -109,6 +117,8 @@ class PcColors extends ThemeExtension<PcColors> {
     Color? chipBg,
     Color? fab,
     Color? fabInk,
+    Color? amberFg,
+    Color? amberBg,
   }) {
     return PcColors(
       bg: bg ?? this.bg,
@@ -129,6 +139,8 @@ class PcColors extends ThemeExtension<PcColors> {
       chipBg: chipBg ?? this.chipBg,
       fab: fab ?? this.fab,
       fabInk: fabInk ?? this.fabInk,
+      amberFg: amberFg ?? this.amberFg,
+      amberBg: amberBg ?? this.amberBg,
     );
   }
 
@@ -154,6 +166,8 @@ class PcColors extends ThemeExtension<PcColors> {
       chipBg: Color.lerp(chipBg, other.chipBg, t)!,
       fab: Color.lerp(fab, other.fab, t)!,
       fabInk: Color.lerp(fabInk, other.fabInk, t)!,
+      amberFg: Color.lerp(amberFg, other.amberFg, t)!,
+      amberBg: Color.lerp(amberBg, other.amberBg, t)!,
     );
   }
 }

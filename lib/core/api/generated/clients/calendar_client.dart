@@ -5,6 +5,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../models/calendar_progress_response.dart';
 import '../models/calendar_response.dart';
 
 part 'calendar_client.g.dart';
@@ -23,16 +24,33 @@ abstract class CalendarClient {
   ///
   /// Максимальная длина диапазона — 60 дней; больше → 400.
   ///
-  /// [xChatId] - Telegram `chat_id` авторизованного пользователя. Резолвится в `users.id`.
-  /// на стороне сервера через `UserApiResolver`.
-  ///
-  ///
   /// [from] - Начало диапазона (включительно).
   ///
   /// [to] - Конец диапазона (включительно). Разница `to - from` ≤ 60 дней.
   @GET('/api/v1/calendar')
   Future<CalendarResponse> getCalendar({
-    @Header('X-Chat-Id') required int xChatId,
+    @Query('from') required DateTime from,
+    @Query('to') required DateTime to,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Прогресс выполнения задач ухода по дням.
+  ///
+  /// Возвращает по каждому дню диапазона `[from, to]` (включительно) пару.
+  /// чисел: сколько задач **запланировано** (проекция активных расписаний).
+  /// и сколько **выполнено** (`care_history` с `cancelled_by IS NULL`).
+  ///
+  /// Оба числа считаются в **таймзоне пользователя** (`users.timezone`).
+  /// Дни без планов и без выполнений в ответе **не появляются**. Ключи —.
+  /// строки-даты `YYYY-MM-DD`, упорядоченные по возрастанию.
+  ///
+  /// Максимальная длина диапазона — 60 дней; больше → 400.
+  ///
+  /// [from] - Начало диапазона (включительно).
+  ///
+  /// [to] - Конец диапазона (включительно). Разница `to - from` ≤ 60 дней.
+  @GET('/api/v1/calendar/progress')
+  Future<CalendarProgressResponse> getCalendarProgress({
     @Query('from') required DateTime from,
     @Query('to') required DateTime to,
     @Extras() Map<String, dynamic>? extras,

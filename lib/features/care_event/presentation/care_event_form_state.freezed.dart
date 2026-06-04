@@ -422,12 +422,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  submitting,TResult Function()?  success,TResult Function( ApiError error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  submitting,TResult Function( bool wasFirstCare,  CareEventKind kind,  bool onTime)?  success,TResult Function( ApiError error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Idle() when idle != null:
 return idle();case Submitting() when submitting != null:
 return submitting();case SubmitSuccess() when success != null:
-return success();case SubmitFailure() when failure != null:
+return success(_that.wasFirstCare,_that.kind,_that.onTime);case SubmitFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -446,12 +446,12 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  submitting,required TResult Function()  success,required TResult Function( ApiError error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  submitting,required TResult Function( bool wasFirstCare,  CareEventKind kind,  bool onTime)  success,required TResult Function( ApiError error)  failure,}) {final _that = this;
 switch (_that) {
 case Idle():
 return idle();case Submitting():
 return submitting();case SubmitSuccess():
-return success();case SubmitFailure():
+return success(_that.wasFirstCare,_that.kind,_that.onTime);case SubmitFailure():
 return failure(_that.error);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -466,12 +466,12 @@ return failure(_that.error);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  submitting,TResult? Function()?  success,TResult? Function( ApiError error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  submitting,TResult? Function( bool wasFirstCare,  CareEventKind kind,  bool onTime)?  success,TResult? Function( ApiError error)?  failure,}) {final _that = this;
 switch (_that) {
 case Idle() when idle != null:
 return idle();case Submitting() when submitting != null:
 return submitting();case SubmitSuccess() when success != null:
-return success();case SubmitFailure() when failure != null:
+return success(_that.wasFirstCare,_that.kind,_that.onTime);case SubmitFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -548,33 +548,71 @@ String toString() {
 
 
 class SubmitSuccess implements CareEventSubmitStatus {
-  const SubmitSuccess();
+  const SubmitSuccess({this.wasFirstCare = false, this.kind = CareEventKind.water, this.onTime = true});
   
 
+@JsonKey() final  bool wasFirstCare;
+@JsonKey() final  CareEventKind kind;
+@JsonKey() final  bool onTime;
 
-
+/// Create a copy of CareEventSubmitStatus
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubmitSuccessCopyWith<SubmitSuccess> get copyWith => _$SubmitSuccessCopyWithImpl<SubmitSuccess>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitSuccess);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitSuccess&&(identical(other.wasFirstCare, wasFirstCare) || other.wasFirstCare == wasFirstCare)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.onTime, onTime) || other.onTime == onTime));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,wasFirstCare,kind,onTime);
 
 @override
 String toString() {
-  return 'CareEventSubmitStatus.success()';
+  return 'CareEventSubmitStatus.success(wasFirstCare: $wasFirstCare, kind: $kind, onTime: $onTime)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $SubmitSuccessCopyWith<$Res> implements $CareEventSubmitStatusCopyWith<$Res> {
+  factory $SubmitSuccessCopyWith(SubmitSuccess value, $Res Function(SubmitSuccess) _then) = _$SubmitSuccessCopyWithImpl;
+@useResult
+$Res call({
+ bool wasFirstCare, CareEventKind kind, bool onTime
+});
 
 
+
+
+}
+/// @nodoc
+class _$SubmitSuccessCopyWithImpl<$Res>
+    implements $SubmitSuccessCopyWith<$Res> {
+  _$SubmitSuccessCopyWithImpl(this._self, this._then);
+
+  final SubmitSuccess _self;
+  final $Res Function(SubmitSuccess) _then;
+
+/// Create a copy of CareEventSubmitStatus
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? wasFirstCare = null,Object? kind = null,Object? onTime = null,}) {
+  return _then(SubmitSuccess(
+wasFirstCare: null == wasFirstCare ? _self.wasFirstCare : wasFirstCare // ignore: cast_nullable_to_non_nullable
+as bool,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as CareEventKind,onTime: null == onTime ? _self.onTime : onTime // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

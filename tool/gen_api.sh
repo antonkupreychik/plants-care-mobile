@@ -10,16 +10,26 @@
 # вход: он не документирует заголовки X-User-Id/X-Chat-Id и query-параметры
 # (PoC резолвит их мимо OpenAPI-аннотаций) и отдаёт пустую схему для /calendar.
 #
-# Обновить статическую спеку из GitHub: ./tool/gen_api.sh --fetch
+# Обновить статическую спеку из GitHub:
+#   ./tool/gen_api.sh --fetch                 # из ветки main (по умолчанию)
+#   ./tool/gen_api.sh --fetch --branch develop # из произвольной ветки
+# Ветку также можно задать через PC_BRANCH. Бэкенд ведёт разработку в develop и
+# мёржит в main пачками, поэтому свежие эндпоинты часто доступны только в develop.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export PATH="$HOME/development/flutter/bin:$PATH"
 
-if [[ "${1:-}" == "--fetch" ]]; then
-  echo "==> fetch OpenAPI files from plants-care@main"
-  BASE="https://raw.githubusercontent.com/antonkupreychik/plants-care/main"
+BRANCH="${PC_BRANCH:-main}"
+args=("$@")
+for ((i=0; i<${#args[@]}; i++)); do
+  if [[ "${args[$i]}" == "--branch" ]]; then BRANCH="${args[$((i+1))]:-}"; fi
+done
+
+if [[ " ${args[*]:-} " == *" --fetch "* ]]; then
+  echo "==> fetch OpenAPI files from plants-care@${BRANCH}"
+  BASE="https://raw.githubusercontent.com/antonkupreychik/plants-care/${BRANCH}"
   PREFIX="src/main/resources/openapi"
-  curl -sS --max-time 30 "https://api.github.com/repos/antonkupreychik/plants-care/git/trees/main?recursive=1" -o /tmp/pc_tree.json
+  curl -sS --max-time 30 "https://api.github.com/repos/antonkupreychik/plants-care/git/trees/${BRANCH}?recursive=1" -o /tmp/pc_tree.json
   python3 - "$PREFIX" <<'PY' > /tmp/pc_paths.txt
 import json,sys
 t=json.load(open('/tmp/pc_tree.json')); pre=sys.argv[1]

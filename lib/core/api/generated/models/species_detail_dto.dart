@@ -22,6 +22,9 @@ class SpeciesDetailDto {
     this.soilCheckDays,
     this.careDifficulty,
     this.lightPreference,
+    this.toxicToCats,
+    this.toxicToDogs,
+    this.toxicToHumans,
     this.description,
     this.facts,
   });
@@ -38,12 +41,20 @@ class SpeciesDetailDto {
   final String? careDifficulty;
   final String? lightPreference;
 
+  /// Токсично для кошек. null — данных нет.
+  final bool? toxicToCats;
+
+  /// Токсично для собак. null — данных нет.
+  final bool? toxicToDogs;
+
+  /// Токсично для человека. null — данных нет.
+  final bool? toxicToHumans;
+
   /// Длинное текстовое описание вида.
   final String? description;
 
-  /// Справочные факты о виде (уход, происхождение, токсичность и т.п.).
-  /// В списке (`SpeciesSummaryDto`) НЕ приходят — только в детали.
-  /// Может отсутствовать или быть пустым массивом.
+  /// Энциклопедические факты о виде (ADR-011, issue #129), отсортированы.
+  /// по категории, затем по `displayOrder`. Пустой массив, если фактов нет.
   ///
   final List<SpeciesFactDto>? facts;
 

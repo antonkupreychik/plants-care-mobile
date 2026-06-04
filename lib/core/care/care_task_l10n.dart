@@ -21,6 +21,16 @@ extension CareTaskTypeL10n on CareTaskType {
         CareTaskType.unknown => l10n.careActionUnknown,
       };
 
+  /// Действие в прошедшем времени — для свёрнутой секции «Выполнено» экрана 03
+  /// («Полито», «Опрыскано», …).
+  String doneLabel(AppLocalizations l10n) => switch (this) {
+        CareTaskType.watering => l10n.careActionDoneWatering,
+        CareTaskType.misting => l10n.careActionDoneMisting,
+        CareTaskType.fertilizing => l10n.careActionDoneFertilizing,
+        CareTaskType.soilCheck => l10n.careActionDoneSoilCheck,
+        CareTaskType.unknown => l10n.careActionDoneUnknown,
+      };
+
   IconData get icon => switch (this) {
         CareTaskType.watering => Icons.water_drop_outlined,
         CareTaskType.misting => Icons.shower_outlined,

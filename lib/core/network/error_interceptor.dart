@@ -49,6 +49,9 @@ class ErrorInterceptor extends Interceptor {
           return ApiError.badRequest(message: message);
         case 'LOCATION_NOT_EMPTY':
           return const ApiError.locationNotEmpty();
+        case 'UNAUTHORIZED':
+        case 'TOKEN_REVOKED':
+          return const ApiError.unauthorized();
         case 'ACCESS_DENIED':
           return const ApiError.accessDenied();
         case 'NOT_FOUND':
@@ -64,6 +67,7 @@ class ErrorInterceptor extends Interceptor {
 
     // Fallback по HTTP-статусу, если тело не распознано.
     return switch (response?.statusCode) {
+      401 => const ApiError.unauthorized(),
       403 => const ApiError.accessDenied(),
       404 => const ApiError.notFound(),
       409 => const ApiError.conflict(),

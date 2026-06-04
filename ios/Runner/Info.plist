@@ -66,5 +66,41 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- Google Sign-In (google_sign_in 7.x): iOS OAuth client ID.
+	     TODO(social-auth): заменить на реальный iOS client ID из Google Cloud
+	     Console (формат <id>.apps.googleusercontent.com). См. docs/SOCIAL-AUTH-SETUP.md.
+	     Должен совпадать с --dart-define=GOOGLE_IOS_CLIENT_ID. -->
+	<key>GIDClientID</key>
+	<string>TODO_REPLACE_IOS_CLIENT_ID.apps.googleusercontent.com</string>
+	<!-- URL-схемы:
+	     1) plantcare — deep link для magic-link входа (MADR-008):
+	        plantcare://auth/verify?token=… ; захват URI — через app_links.
+	     2) reversed iOS client ID — обязателен для Google Sign-In callback.
+	        TODO(social-auth): заменить на reversed-форму GIDClientID, т.е.
+	        com.googleusercontent.apps.<id> (без .apps.googleusercontent.com).
+	        НЕ удалять схему plantcare. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.plantcare.auth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>plantcare</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.plantcare.google</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.TODO_REPLACE</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

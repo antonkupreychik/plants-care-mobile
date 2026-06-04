@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/api/generated/clients/weather_client.dart';
-import 'package:plantcare_mobile/core/api/generated/models/weather_snapshot_response.dart';
-import 'package:plantcare_mobile/core/api/generated/models/weather_snapshot_response_recommendation.dart';
+import 'package:plantcare_mobile/core/api/generated/models/weather_snapshot_dto.dart';
+import 'package:plantcare_mobile/core/api/generated/models/weather_snapshot_dto_recommendation.dart';
 import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
@@ -42,10 +42,10 @@ void main() {
       when(() => weather.getWeatherSnapshot(
             extras: any(named: 'extras'),
           )).thenAnswer(
-        (_) async => WeatherSnapshotResponse(
+        (_) async => WeatherSnapshotDto(
           available: true,
           humidityPercent: 88,
-          recommendation: WeatherSnapshotResponseRecommendation.deferOk,
+          recommendation: WeatherSnapshotDtoRecommendation.deferOk,
           fetchedAt: fetchedAt,
           fromCache: true,
         ),
@@ -67,7 +67,7 @@ void main() {
       when(() => weather.getWeatherSnapshot(
             extras: any(named: 'extras'),
           )).thenAnswer(
-        (_) async => const WeatherSnapshotResponse(available: false),
+        (_) async => const WeatherSnapshotDto(available: false),
       );
 
       final result = await repo.getSnapshot();
@@ -85,7 +85,7 @@ void main() {
       when(() => weather.getWeatherSnapshot(
             extras: any(named: 'extras'),
           )).thenAnswer(
-        (_) async => const WeatherSnapshotResponse(available: false),
+        (_) async => const WeatherSnapshotDto(available: false),
       );
 
       await repo.getSnapshot();

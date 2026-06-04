@@ -286,6 +286,84 @@ abstract class AppLocalizations {
   /// **'Попробуйте другой фильтр'**
   String get todayEmptyFilterHint;
 
+  /// Прогресс-карточка экрана «Сегодня»: сколько задач выполнено из общего числа
+  ///
+  /// In ru, this message translates to:
+  /// **'{done} из {total} выполнено'**
+  String todayProgress(int done, int total);
+
+  /// Подпись прогресс-карточки: сколько забот ещё осталось
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Все заботы закрыты} one{Осталась {count} забота} few{Осталось {count} заботы} many{Осталось {count} забот} other{Осталось {count} заботы}}'**
+  String todayProgressRemaining(int count);
+
+  /// Хвост подписи прогресс-карточки: сколько просрочено
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{нет просроченных} one{{count} просрочена} few{{count} просрочены} many{{count} просрочено} other{{count} просрочено}}'**
+  String todayProgressOverdue(int count);
+
+  /// Заголовок свёрнутой секции «Выполнено» на экране «Сегодня»
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Ничего не выполнено} one{{count} выполнено сегодня} few{{count} выполнено сегодня} many{{count} выполнено сегодня} other{{count} выполнено сегодня}}'**
+  String todayDoneTitle(int count);
+
+  /// Свёрнутая секция «Выполнено»: что и когда сделано (например «Колючка · полит в 7:42»)
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} · {action} в {time}'**
+  String todayDoneSubtitle(String plant, String action, String time);
+
+  /// Семантика/подсказка: раскрыть свёрнутую секцию «Выполнено»
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать выполненные'**
+  String get todayDoneExpand;
+
+  /// Семантика/подсказка: свернуть секцию «Выполнено»
+  ///
+  /// In ru, this message translates to:
+  /// **'Скрыть выполненные'**
+  String get todayDoneCollapse;
+
+  /// Подпись на карточке выполненной задачи: действие в прошедшем времени + время (например «Полито в 7:42»)
+  ///
+  /// In ru, this message translates to:
+  /// **'{action} в {time}'**
+  String careDonePast(String action, String time);
+
+  /// Действие полива в прошедшем времени (для секции «Выполнено»)
+  ///
+  /// In ru, this message translates to:
+  /// **'Полито'**
+  String get careActionDoneWatering;
+
+  /// Действие опрыскивания в прошедшем времени
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскано'**
+  String get careActionDoneMisting;
+
+  /// Действие подкормки в прошедшем времени
+  ///
+  /// In ru, this message translates to:
+  /// **'Удобрено'**
+  String get careActionDoneFertilizing;
+
+  /// Проверка почвы в прошедшем времени
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверено'**
+  String get careActionDoneSoilCheck;
+
+  /// Нейтральное «сделано» для нераспознанного типа ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделано'**
+  String get careActionDoneUnknown;
+
   /// Заголовок секции с растениями пользователя
   ///
   /// In ru, this message translates to:
@@ -484,6 +562,12 @@ abstract class AppLocalizations {
   /// **'Нет доступа к этим данным'**
   String get errorAccessDenied;
 
+  /// Текст ошибки 401 — токен недействителен, нужен повторный вход
+  ///
+  /// In ru, this message translates to:
+  /// **'Сессия истекла. Войдите снова'**
+  String get errorUnauthorized;
+
   /// Текст ошибки валидации
   ///
   /// In ru, this message translates to:
@@ -550,6 +634,84 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Свободно} one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}'**
   String scheduleDayTasksCount(int count);
 
+  /// Заголовок экрана 11 «График» (agenda)
+  ///
+  /// In ru, this message translates to:
+  /// **'График ухода'**
+  String get scheduleTitle;
+
+  /// Символ нулевой нагрузки в день-селекторе (0 задач)
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get scheduleDayLoadHint;
+
+  /// Подзаголовок выбранного дня: сколько задач отмечено из общего числа
+  ///
+  /// In ru, this message translates to:
+  /// **'{done} из {total} готово'**
+  String scheduleDayProgress(int done, int total);
+
+  /// Заголовок утренней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Утро'**
+  String get schedulePhaseMorning;
+
+  /// Заголовок вечерней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Вечер'**
+  String get schedulePhaseEvening;
+
+  /// Заголовок секции выполненных задач agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделано'**
+  String get schedulePhaseDone;
+
+  /// Условное время утренней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'9:00'**
+  String get schedulePhaseMorningTime;
+
+  /// Условное время вечерней секции agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'19:00'**
+  String get schedulePhaseEveningTime;
+
+  /// Подпись просроченной задачи в строке agenda
+  ///
+  /// In ru, this message translates to:
+  /// **'Просрочено · со вчера'**
+  String get scheduleOverdueSubtitle;
+
+  /// Подпись строки задачи: действие и вид растения
+  ///
+  /// In ru, this message translates to:
+  /// **'{action} · {species}'**
+  String scheduleTaskSubtitle(String action, String species);
+
+  /// Заглушка дня без задач на экране 11 «График»
+  ///
+  /// In ru, this message translates to:
+  /// **'На этот день забот нет 🌿'**
+  String get scheduleDayEmpty;
+
+  /// Подпись кнопки-чека (semantics) для отметки ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить выполненным'**
+  String get scheduleMarkDone;
+
+  /// Баннер ошибки при неудачной оптимистичной отметке ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось отметить уход. Попробуйте ещё раз.'**
+  String get scheduleMarkError;
+
   /// Количество дней владения растением
   ///
   /// In ru, this message translates to:
@@ -603,6 +765,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Отметьте первый уход — и здесь появится история'**
   String get plantCardJournalEmptyHint;
+
+  /// Реплика растения в speech-bubble пустого дневника (экран 31), голос от первого лица
+  ///
+  /// In ru, this message translates to:
+  /// **'Жду первого ухода…'**
+  String get plantCardJournalEmptyBubble;
+
+  /// CTA-кнопка пустого дневника (экран 31): открывает sheet полива
+  ///
+  /// In ru, this message translates to:
+  /// **'Полить сейчас'**
+  String get plantCardJournalWaterNow;
 
   /// Бейдж записи истории: уход выполнен в срок
   ///
@@ -802,11 +976,53 @@ abstract class AppLocalizations {
   /// **'Каталог'**
   String get catalogTitle;
 
-  /// Серифный заголовок экрана каталога видов
+  /// Серифный заголовок каталога, обычная часть (перед акцентом)
   ///
   /// In ru, this message translates to:
-  /// **'Каталог растений'**
-  String get catalogHeading;
+  /// **'Каталог '**
+  String get catalogHeadingLead;
+
+  /// Серифный заголовок каталога, акцентная часть (primary, italic)
+  ///
+  /// In ru, this message translates to:
+  /// **'растений'**
+  String get catalogHeadingAccent;
+
+  /// Бейдж популярного вида рядом с именем в списке каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'HIT'**
+  String get catalogBadgePopular;
+
+  /// Бейдж токсичности вида (для кошек) в мета-строке каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'⚠ ТОКСИЧНО · 🐈'**
+  String get catalogBadgeToxic;
+
+  /// Чип-фильтр каталога «Все виды» (активен по умолчанию)
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get catalogFilterAll;
+
+  /// Чип-фильтр каталога «Для новичка»
+  ///
+  /// In ru, this message translates to:
+  /// **'Для новичка'**
+  String get catalogFilterBeginner;
+
+  /// Чип-фильтр каталога «Безопасно для котов»
+  ///
+  /// In ru, this message translates to:
+  /// **'Безопасно для котов 🐈'**
+  String get catalogFilterPetSafe;
+
+  /// Чип-фильтр каталога «Цветущие»
+  ///
+  /// In ru, this message translates to:
+  /// **'Цветущие'**
+  String get catalogFilterFlowering;
 
   /// Плейсхолдер поля поиска по каталогу видов
   ///
@@ -964,16 +1180,16 @@ abstract class AppLocalizations {
   /// **'План ухода'**
   String get addPlantCarePlanTitle;
 
-  /// Подпись под заголовком шага плана ухода (read-only)
+  /// Подпись под заголовком шага плана ухода
   ///
   /// In ru, this message translates to:
-  /// **'Рекомендации по виду. Изменить пока нельзя.'**
+  /// **'Рекомендации по виду. Измените интервалы, если нужно.'**
   String get addPlantCarePlanSubtitle;
 
-  /// Бейдж-пометка на шаге плана ухода: план редактировать нельзя
+  /// Информационная подсказка на шаге плана ухода
   ///
   /// In ru, this message translates to:
-  /// **'Только просмотр'**
+  /// **'После создания расписание можно настроить под себя'**
   String get addPlantCarePlanReadOnly;
 
   /// Интервал пункта плана ухода: каждые N дней
@@ -1276,6 +1492,162 @@ abstract class AppLocalizations {
   /// **'Растение добавлено'**
   String get addPlantSubmitted;
 
+  /// CTA финального шага: создать растение и добавить в сад
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить в сад'**
+  String get addPlantSubmitGarden;
+
+  /// Бейдж внутри поля поиска вида: распознать по фото (заглушка)
+  ///
+  /// In ru, this message translates to:
+  /// **'ФОТО'**
+  String get addPlantRecognizeBadge;
+
+  /// Подсказка-заглушка распознавания вида по фото на шаге выбора вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Сфотографируй — определим по листу'**
+  String get addPlantRecognizeHint;
+
+  /// Снэкбар: функция распознавания по фото ещё не готова
+  ///
+  /// In ru, this message translates to:
+  /// **'Распознавание по фото скоро появится'**
+  String get addPlantRecognizeUnavailable;
+
+  /// Чип категории видов: популярные
+  ///
+  /// In ru, this message translates to:
+  /// **'Популярное'**
+  String get addPlantCategoryPopular;
+
+  /// Чип категории видов: для новичка
+  ///
+  /// In ru, this message translates to:
+  /// **'Для новичка'**
+  String get addPlantCategoryBeginner;
+
+  /// Чип категории видов: цветущие
+  ///
+  /// In ru, this message translates to:
+  /// **'Цветущие'**
+  String get addPlantCategoryFlowering;
+
+  /// Чип категории видов: суккуленты и редкий полив
+  ///
+  /// In ru, this message translates to:
+  /// **'Без полива'**
+  String get addPlantCategoryLowWater;
+
+  /// CTA на шаге имя+комната: создать новую комнату
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить своё помещение'**
+  String get addPlantNewRoom;
+
+  /// Заголовок шага фото + сторона окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделай портрет'**
+  String get addPlantPhotoTitle;
+
+  /// Надзаголовок шага фото + сторона окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Последний штрих'**
+  String get addPlantPhotoOverline;
+
+  /// Подпись под заголовком шага фото + сторона окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Фото поможет узнать растение и отслеживать его рост.'**
+  String get addPlantPhotoSubtitle;
+
+  /// Подпись плейсхолдера фото: реальная загрузка ещё не готова
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока используется иллюстрация'**
+  String get addPlantPhotoPlaceholder;
+
+  /// Кнопка-заглушка: снять фото камерой
+  ///
+  /// In ru, this message translates to:
+  /// **'Камера'**
+  String get addPlantPhotoCamera;
+
+  /// Кнопка-заглушка: выбрать фото из галереи
+  ///
+  /// In ru, this message translates to:
+  /// **'Из галереи'**
+  String get addPlantPhotoGallery;
+
+  /// Снэкбар: загрузка фото ещё не готова
+  ///
+  /// In ru, this message translates to:
+  /// **'Загрузка фото скоро появится'**
+  String get addPlantPhotoUnavailable;
+
+  /// Заголовок секции выбора стороны окна
+  ///
+  /// In ru, this message translates to:
+  /// **'Куда смотрит окно'**
+  String get addPlantWindowLabel;
+
+  /// Подпись: выбор стороны окна необязателен
+  ///
+  /// In ru, this message translates to:
+  /// **'необязательно'**
+  String get addPlantWindowOptional;
+
+  /// Сторона окна: юг
+  ///
+  /// In ru, this message translates to:
+  /// **'Юг'**
+  String get addPlantWindowSouth;
+
+  /// Подпись стороны окна: юг
+  ///
+  /// In ru, this message translates to:
+  /// **'много солнца'**
+  String get addPlantWindowSouthHint;
+
+  /// Сторона окна: восток
+  ///
+  /// In ru, this message translates to:
+  /// **'Восток'**
+  String get addPlantWindowEast;
+
+  /// Подпись стороны окна: восток
+  ///
+  /// In ru, this message translates to:
+  /// **'мягкое утро'**
+  String get addPlantWindowEastHint;
+
+  /// Сторона окна: запад
+  ///
+  /// In ru, this message translates to:
+  /// **'Запад'**
+  String get addPlantWindowWest;
+
+  /// Подпись стороны окна: запад
+  ///
+  /// In ru, this message translates to:
+  /// **'тёплый вечер'**
+  String get addPlantWindowWestHint;
+
+  /// Сторона окна: север
+  ///
+  /// In ru, this message translates to:
+  /// **'Север'**
+  String get addPlantWindowNorth;
+
+  /// Подпись стороны окна: север
+  ///
+  /// In ru, this message translates to:
+  /// **'мало света'**
+  String get addPlantWindowNorthHint;
+
   /// Уровень сложности ухода за видом: лёгкий
   ///
   /// In ru, this message translates to:
@@ -1317,6 +1689,36 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Дома и места'**
   String get profileRoomsTitle;
+
+  /// Строка настроек: выход из аккаунта (деструктивное действие)
+  ///
+  /// In ru, this message translates to:
+  /// **'Выйти'**
+  String get profileSignOut;
+
+  /// Заголовок диалога подтверждения выхода
+  ///
+  /// In ru, this message translates to:
+  /// **'Выйти из аккаунта?'**
+  String get profileSignOutConfirmTitle;
+
+  /// Текст диалога подтверждения выхода
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы вернётесь к экрану входа. Чтобы снова открыть свой сад, понадобится войти по почте.'**
+  String get profileSignOutConfirmMessage;
+
+  /// Кнопка отмены в диалоге выхода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get profileSignOutConfirmCancel;
+
+  /// Кнопка подтверждения выхода в диалоге
+  ///
+  /// In ru, this message translates to:
+  /// **'Выйти'**
+  String get profileSignOutConfirmAction;
 
   /// Серифный заголовок экрана управления комнатами
   ///
@@ -1570,6 +1972,18 @@ abstract class AppLocalizations {
   /// **'Продолжить через Google'**
   String get authContinueGoogle;
 
+  /// Кнопка входа через Apple (только iOS)
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить через Apple'**
+  String get authContinueApple;
+
+  /// Текст ошибки социального входа (Google/Apple)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось войти. Попробуйте ещё раз.'**
+  String get authSocialError;
+
   /// Кнопка входа через Telegram (переход к вводу кода)
   ///
   /// In ru, this message translates to:
@@ -1707,6 +2121,78 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Я просто посмотрю'**
   String get authGoHome;
+
+  /// Заголовок экрана ввода email для magic link
+  ///
+  /// In ru, this message translates to:
+  /// **'Вход по почте'**
+  String get authEmailTitle;
+
+  /// Подзаголовок экрана ввода email: объяснение magic-link флоу
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите адрес — пришлём ссылку для входа. Пароль не нужен.'**
+  String get authEmailSubtitle;
+
+  /// Подпись поля ввода email
+  ///
+  /// In ru, this message translates to:
+  /// **'Электронная почта'**
+  String get authEmailLabel;
+
+  /// Плейсхолдер поля ввода email
+  ///
+  /// In ru, this message translates to:
+  /// **'you@example.com'**
+  String get authEmailHint;
+
+  /// Сообщение о неверном формате email под полем ввода
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверьте адрес почты'**
+  String get authEmailInvalid;
+
+  /// Основная кнопка экрана ввода email: запросить magic link
+  ///
+  /// In ru, this message translates to:
+  /// **'Получить ссылку'**
+  String get authSendLink;
+
+  /// Заголовок состояния после отправки magic link
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверьте почту'**
+  String get authLinkSentTitle;
+
+  /// Подзаголовок состояния после отправки magic link
+  ///
+  /// In ru, this message translates to:
+  /// **'Мы отправили ссылку для входа. Откройте её на этом устройстве.'**
+  String get authLinkSentSubtitle;
+
+  /// Текст экрана проверки magic-link токена во время обмена
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверяем ссылку…'**
+  String get authVerifying;
+
+  /// Сообщение об ошибке проверки magic-link токена
+  ///
+  /// In ru, this message translates to:
+  /// **'Ссылка недействительна или устарела. Запросите новую.'**
+  String get authVerifyError;
+
+  /// Кнопка возврата на экран входа после ошибки проверки токена
+  ///
+  /// In ru, this message translates to:
+  /// **'Вернуться ко входу'**
+  String get authVerifyRetry;
+
+  /// Подпись dev-хука ручного ввода magic-link токена (только дебаг)
+  ///
+  /// In ru, this message translates to:
+  /// **'Dev: вставить токен'**
+  String get authDevTokenLabel;
 
   /// Заголовок строки настроек, ведущей на экран «Архив» (17)
   ///
@@ -1863,6 +2349,1056 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Не получается достучаться до сервера. Проверь интернет — твои растения никуда не денутся.'**
   String get offlineMessage;
+
+  /// Надзаголовок (eyebrow) экрана 33 «Успех первого ухода»
+  ///
+  /// In ru, this message translates to:
+  /// **'Готово'**
+  String get firstCareSuccessEyebrow;
+
+  /// Hero-заголовок экрана 33 после первого полива. Род слова «напоена» зафиксирован формой дизайна (грамматический род произвольной клички недоступен на клиенте — косметическое ограничение).
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} напоена'**
+  String firstCareSuccessTitleWater(String plant);
+
+  /// Hero-заголовок экрана 33 после первого опрыскивания.
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} опрыскана'**
+  String firstCareSuccessTitleSpray(String plant);
+
+  /// Hero-заголовок экрана 33 после первого внесения удобрения.
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} удобрена'**
+  String firstCareSuccessTitleFertilize(String plant);
+
+  /// Нейтральный hero-заголовок экрана 33 для нераспознанного типа ухода.
+  ///
+  /// In ru, this message translates to:
+  /// **'{plant} — уход отмечен'**
+  String firstCareSuccessTitleGeneric(String plant);
+
+  /// Акцентное слово-глагол hero-заголовка экрана 33 (полив) — выделяется курсивом и цветом primary.
+  ///
+  /// In ru, this message translates to:
+  /// **'напоена'**
+  String get firstCareSuccessVerbWater;
+
+  /// Акцентное слово-глагол hero-заголовка экрана 33 (опрыскивание).
+  ///
+  /// In ru, this message translates to:
+  /// **'опрыскана'**
+  String get firstCareSuccessVerbSpray;
+
+  /// Акцентное слово-глагол hero-заголовка экрана 33 (удобрение).
+  ///
+  /// In ru, this message translates to:
+  /// **'удобрена'**
+  String get firstCareSuccessVerbFertilize;
+
+  /// Реплика-благодарность растения в speech-bubble экрана 33 (вариант полива из дизайна).
+  ///
+  /// In ru, this message translates to:
+  /// **'«Спасибо! Сразу легче дышится 💧»'**
+  String get firstCareSuccessBubble;
+
+  /// Нейтральное имя растения на экране 33, если деталь не загрузилась (уход уже записан — не показываем как ошибку).
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение'**
+  String get firstCareSuccessFallbackPlantName;
+
+  /// Чип старта стрика на экране 33 (только при onTime == true).
+  ///
+  /// In ru, this message translates to:
+  /// **'Стрик начат · день 1'**
+  String get firstCareSuccessStreakDayOne;
+
+  /// Строка ободрения внизу экрана 33 БЕЗ счётчика дней (интервал до следующего ухода недоступен, G19).
+  ///
+  /// In ru, this message translates to:
+  /// **'Я напомню, когда придёт время следующего ухода.'**
+  String get firstCareSuccessNextHint;
+
+  /// Префикс строки-счётчика экрана 33 для полива: перед болд-частью «через N дн.».
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующий полив — '**
+  String get firstCareSuccessNextPrefixWater;
+
+  /// Префикс строки-счётчика экрана 33 для опрыскивания: перед болд-частью «через N дн.».
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующее опрыскивание — '**
+  String get firstCareSuccessNextPrefixSpray;
+
+  /// Префикс строки-счётчика экрана 33 для подкормки: перед болд-частью «через N дн.».
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующая подкормка — '**
+  String get firstCareSuccessNextPrefixFertilize;
+
+  /// Суффикс строки-счётчика экрана 33 после болд-части «через N дн.» (общий для всех типов ухода).
+  ///
+  /// In ru, this message translates to:
+  /// **', напомню сама'**
+  String get firstCareSuccessNextSuffix;
+
+  /// CTA-кнопка экрана 33 → возврат в таб «Сад».
+  ///
+  /// In ru, this message translates to:
+  /// **'Вернуться в сад'**
+  String get firstCareSuccessCta;
+
+  /// Надзаголовок экрана 21 «Полная история ухода»
+  ///
+  /// In ru, this message translates to:
+  /// **'Дневник ухода'**
+  String get careHistoryOverline;
+
+  /// Ссылка-вход на полную историю ухода с карточки растения (02 → «Дневник · Всё»)
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё'**
+  String get careHistoryViewAll;
+
+  /// Подпись плитки сводки: всего записей истории
+  ///
+  /// In ru, this message translates to:
+  /// **'забот\nвсего'**
+  String get careHistorySummaryTotalLabel;
+
+  /// Значение плитки сводки: всего записей
+  ///
+  /// In ru, this message translates to:
+  /// **'{count}'**
+  String careHistorySummaryTotalValue(int count);
+
+  /// Подпись плитки сводки: доля уходов вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'вовремя'**
+  String get careHistorySummaryOnTimeLabel;
+
+  /// Значение плитки сводки: процент уходов вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'{percent}%'**
+  String careHistorySummaryOnTimeValue(int percent);
+
+  /// Подпись плитки сводки: серия уходов вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'дней\nстрик'**
+  String get careHistorySummaryStreakLabel;
+
+  /// Значение плитки сводки: длина серии
+  ///
+  /// In ru, this message translates to:
+  /// **'{count}'**
+  String careHistorySummaryStreakValue(int count);
+
+  /// Фильтр-чип «все типы ухода» на экране 21
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё'**
+  String get careHistoryFilterAll;
+
+  /// Дата записи таймлайна: день недели, число, время (локальная TZ)
+  ///
+  /// In ru, this message translates to:
+  /// **'{dow} {day} · {time}'**
+  String careHistoryEntryDate(String dow, String day, String time);
+
+  /// Метка записи таймлайна: уход выполнен в срок
+  ///
+  /// In ru, this message translates to:
+  /// **'ВОВРЕМЯ'**
+  String get careHistoryOnTime;
+
+  /// Метка записи таймлайна: уход выполнен с опозданием
+  ///
+  /// In ru, this message translates to:
+  /// **'С ОПОЗДАНИЕМ'**
+  String get careHistoryLate;
+
+  /// Маркер появления растения в конце таймлайна
+  ///
+  /// In ru, this message translates to:
+  /// **'{name} появилась у тебя · {date}'**
+  String careHistoryPlantCreated(String name, String date);
+
+  /// Кнопка дозагрузки следующей страницы истории
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать ещё'**
+  String get careHistoryLoadMore;
+
+  /// Ошибка дозагрузки страницы истории (показанный список сохранён)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось дозагрузить историю'**
+  String get careHistoryLoadMoreError;
+
+  /// Заголовок пустого дневника (экран 31), первая часть
+  ///
+  /// In ru, this message translates to:
+  /// **'История'**
+  String get careHistoryEmptyTitle;
+
+  /// Заголовок пустого дневника (экран 31), акцентная часть
+  ///
+  /// In ru, this message translates to:
+  /// **'только начинается'**
+  String get careHistoryEmptyTitleAccent;
+
+  /// Реплика растения в пустом дневнике (экран 31)
+  ///
+  /// In ru, this message translates to:
+  /// **'Я только переехал к тебе. Отметь первый уход — и начнём вести историю вместе.'**
+  String get careHistoryEmptyBubble;
+
+  /// Подпись автора реплики в пустом дневнике
+  ///
+  /// In ru, this message translates to:
+  /// **'— {name}'**
+  String careHistoryEmptyAuthor(String name);
+
+  /// CTA пустого дневника (экран 31): открыть отметку ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить первый уход'**
+  String get careHistoryEmptyCta;
+
+  /// Строка настроек профиля → экран 14 «Месячный отчёт»
+  ///
+  /// In ru, this message translates to:
+  /// **'Месячный отчёт'**
+  String get profileReportTitle;
+
+  /// Кнопка «Поделиться» в шапке отчёта (экран 14), coming-soon
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться'**
+  String get reportShare;
+
+  /// Кнопка «назад» на экране месячного отчёта (экран 14)
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get reportBack;
+
+  /// Надстрочник hero на экране отчёта: «Отчёт · май 2026»
+  ///
+  /// In ru, this message translates to:
+  /// **'Отчёт · {month}'**
+  String reportOverline(String month);
+
+  /// Hero-заголовок отчёта при высоком проценте вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'Месяц прошёл отлично'**
+  String get reportTitleGreat;
+
+  /// Hero-заголовок отчёта при среднем проценте вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'Хороший месяц'**
+  String get reportTitleGood;
+
+  /// Нейтральный hero-заголовок отчёта (нет данных по проценту / низкий)
+  ///
+  /// In ru, this message translates to:
+  /// **'Итоги месяца'**
+  String get reportTitleNeutral;
+
+  /// Подзаголовок hero про текущий стрик
+  ///
+  /// In ru, this message translates to:
+  /// **'Стрик {streak, plural, one{{streak} день} few{{streak} дня} many{{streak} дней} other{{streak} дня}} заботы подряд. Так держать.'**
+  String reportSubtitleStreak(int streak);
+
+  /// Подзаголовок hero, когда стрик 0
+  ///
+  /// In ru, this message translates to:
+  /// **'Понемногу складывается твоя история заботы.'**
+  String get reportSubtitleNoStreak;
+
+  /// Подпись большого числа: стрик
+  ///
+  /// In ru, this message translates to:
+  /// **'дней\nподряд'**
+  String get reportStatStreak;
+
+  /// Подпись большого числа: выполнено забот
+  ///
+  /// In ru, this message translates to:
+  /// **'забот\nвыполнено'**
+  String get reportStatDone;
+
+  /// Подпись большого числа: процент вовремя
+  ///
+  /// In ru, this message translates to:
+  /// **'вовремя'**
+  String get reportStatOnTime;
+
+  /// Подпись большого числа: пропусков (просрочено)
+  ///
+  /// In ru, this message translates to:
+  /// **'пропусков'**
+  String get reportStatOverdue;
+
+  /// Плейсхолдер числа, когда данных нет (например процент вовремя null)
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get reportNoData;
+
+  /// Формат процента вовремя на экране отчёта
+  ///
+  /// In ru, this message translates to:
+  /// **'{value}%'**
+  String reportPercent(int value);
+
+  /// Заголовок секции разбивки выполненного по типам ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'По типам заботы'**
+  String get reportByTypeLabel;
+
+  /// Заголовок секции недельного тренда
+  ///
+  /// In ru, this message translates to:
+  /// **'По неделям'**
+  String get reportTrendLabel;
+
+  /// Подпись недели в тренде: сколько выполнено
+  ///
+  /// In ru, this message translates to:
+  /// **'{done, plural, one{{done} забота} few{{done} заботы} many{{done} забот} other{{done} заботы}}'**
+  String reportTrendWeekDone(int done);
+
+  /// Короткая подпись недели в тренде (номер ISO-недели)
+  ///
+  /// In ru, this message translates to:
+  /// **'Нед. {number}'**
+  String reportWeekLabel(String number);
+
+  /// Нижняя CTA-кнопка «Поделиться отчётом» (экран 14), coming-soon
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться отчётом'**
+  String get reportShareCta;
+
+  /// Заголовок пустого состояния отчёта (нет заботы за месяц)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока пусто'**
+  String get reportEmptyTitle;
+
+  /// Текст пустого состояния отчёта
+  ///
+  /// In ru, this message translates to:
+  /// **'За этот месяц ещё нет заботы. Отметь первый уход — и здесь появятся твои итоги.'**
+  String get reportEmptyBody;
+
+  /// Overline в шапке экрана 22 «Редактирование расписания»: имя растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Расписание · {plant}'**
+  String editScheduleOverline(String plant);
+
+  /// Серифный заголовок экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'Как часто заботиться?'**
+  String get editScheduleTitle;
+
+  /// Подпись под заголовком экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'Интервалы влияют на напоминания и стрик'**
+  String get editScheduleSubtitle;
+
+  /// Кнопка сохранения изменений расписания (шапка экрана 22)
+  ///
+  /// In ru, this message translates to:
+  /// **'Готово'**
+  String get editScheduleDone;
+
+  /// Кнопка «назад» в шапке экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get editScheduleBack;
+
+  /// Префикс строки «Следующий уход · {когда}» на карточке типа ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующий уход'**
+  String get editScheduleNextCare;
+
+  /// Подпись на карточке, когда расписание выключено
+  ///
+  /// In ru, this message translates to:
+  /// **'Выключено'**
+  String get editScheduleDisabled;
+
+  /// Подпись степпера интервала «Каждые N дн.»
+  ///
+  /// In ru, this message translates to:
+  /// **'Каждые'**
+  String get editScheduleEvery;
+
+  /// Подпись степпера объёма воды (только для полива)
+  ///
+  /// In ru, this message translates to:
+  /// **'Объём воды'**
+  String get editScheduleWaterAmount;
+
+  /// Значение степпера интервала: N дн.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{{count} дн.} few{{count} дн.} many{{count} дн.} other{{count} дн.}}'**
+  String editScheduleDaysUnit(int count);
+
+  /// Значение степпера объёма воды: N мл
+  ///
+  /// In ru, this message translates to:
+  /// **'{count} мл'**
+  String editScheduleMlUnit(int count);
+
+  /// Плейсхолдер объёма воды, когда значение не задано
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get editScheduleAmountUnset;
+
+  /// Относительный срок следующего ухода: сегодня
+  ///
+  /// In ru, this message translates to:
+  /// **'сегодня'**
+  String get editScheduleDueToday;
+
+  /// Относительный срок следующего ухода: завтра
+  ///
+  /// In ru, this message translates to:
+  /// **'завтра'**
+  String get editScheduleDueTomorrow;
+
+  /// Относительный срок следующего ухода: просрочено (в прошлом)
+  ///
+  /// In ru, this message translates to:
+  /// **'просрочено'**
+  String get editScheduleDueOverdue;
+
+  /// Относительный срок следующего ухода: через N дн.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{через {count} дн.} few{через {count} дн.} many{через {count} дн.} other{через {count} дн.}}'**
+  String editScheduleDueInDays(int count);
+
+  /// Заголовок карточки сброса интервалов к рекомендованным для вида
+  ///
+  /// In ru, this message translates to:
+  /// **'Сбросить к рекомендованным'**
+  String get editScheduleResetTitle;
+
+  /// Подпись карточки сброса интервалов к рекомендованным
+  ///
+  /// In ru, this message translates to:
+  /// **'Интервалы из каталога для вашего вида'**
+  String get editScheduleResetSubtitle;
+
+  /// Декоративная цитата-заметка внизу экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'«Летом я пью чаще — можешь поставить полив раз в 5 дней, а зимой вернуть на 9.»'**
+  String get editScheduleNote;
+
+  /// Заголовок пустого состояния (backend не вернул ни одного расписания)
+  ///
+  /// In ru, this message translates to:
+  /// **'Расписаний пока нет'**
+  String get editScheduleEmptyTitle;
+
+  /// Текст пустого состояния экрана 22
+  ///
+  /// In ru, this message translates to:
+  /// **'Для этого растения ещё не настроены интервалы ухода.'**
+  String get editScheduleEmptyBody;
+
+  /// Снэкбар при ошибке сохранения, когда тип ошибки общий
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось сохранить расписание. Попробуй ещё раз.'**
+  String get editScheduleSaveError;
+
+  /// Заголовок-overline экрана 24 «Лента уведомлений»
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления'**
+  String get notificationsTitle;
+
+  /// Серифный заголовок экрана 24: число непрочитанных уведомлений
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Пока тихо в твоём саду} one{{count} новое от твоего сада} few{{count} новых от твоего сада} many{{count} новых от твоего сада} other{{count} новых от твоего сада}}'**
+  String notificationsHeroCount(int count);
+
+  /// Кнопка в шапке экрана 24 — пометить видимые непрочитанные прочитанными
+  ///
+  /// In ru, this message translates to:
+  /// **'Прочитать'**
+  String get notificationsMarkAllRead;
+
+  /// Заголовок группы уведомлений за сегодня (экран 24)
+  ///
+  /// In ru, this message translates to:
+  /// **'Сегодня'**
+  String get notificationsGroupToday;
+
+  /// Заголовок группы уведомлений за вчера (экран 24)
+  ///
+  /// In ru, this message translates to:
+  /// **'Вчера'**
+  String get notificationsGroupYesterday;
+
+  /// Метка времени уведомления (час:минута в локальной TZ)
+  ///
+  /// In ru, this message translates to:
+  /// **'в {time}'**
+  String notificationsTimeAt(String time);
+
+  /// Текст ошибки дозагрузки страницы ленты (экран 24)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось дозагрузить уведомления'**
+  String get notificationsLoadMoreError;
+
+  /// Семантическая метка для индикатора непрочитанного уведомления
+  ///
+  /// In ru, this message translates to:
+  /// **'непрочитано'**
+  String get notificationsUnreadSemantic;
+
+  /// Категорийная/семантическая метка типа уведомления «уход»
+  ///
+  /// In ru, this message translates to:
+  /// **'Уход'**
+  String get notificationsTypeCare;
+
+  /// Метка типа уведомления «тревога»
+  ///
+  /// In ru, this message translates to:
+  /// **'Тревога'**
+  String get notificationsTypeAlert;
+
+  /// Метка типа уведомления «награда/достижение»
+  ///
+  /// In ru, this message translates to:
+  /// **'Достижение'**
+  String get notificationsTypeAward;
+
+  /// Метка типа уведомления «отчёт»
+  ///
+  /// In ru, this message translates to:
+  /// **'Отчёт'**
+  String get notificationsTypeReport;
+
+  /// Метка типа уведомления «системное»
+  ///
+  /// In ru, this message translates to:
+  /// **'Системное'**
+  String get notificationsTypeSystem;
+
+  /// Лид серифного заголовка пустой ленты (экран 32) перед акцентным словом
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока '**
+  String get notificationsEmptyTitleLead;
+
+  /// Акцентная часть заголовка пустой ленты (экран 32)
+  ///
+  /// In ru, this message translates to:
+  /// **'тихо'**
+  String get notificationsEmptyTitleAccent;
+
+  /// Подзаголовок пустой ленты (экран 32)
+  ///
+  /// In ru, this message translates to:
+  /// **'Все растения довольны — ни одной заботы не пропущено. Загляну сюда, когда кому-то понадобится внимание.'**
+  String get notificationsEmptyMessage;
+
+  /// Успокаивающий чип на пустой ленте (экран 32). Без числа растений — провайдера счётчика растений в порядке здесь нет
+  ///
+  /// In ru, this message translates to:
+  /// **'Сад в порядке'**
+  String get notificationsEmptyChip;
+
+  /// Подсказка/семантика колокольчика на главной с числом непрочитанных
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Уведомления} one{Уведомления: {count} непрочитанное} few{Уведомления: {count} непрочитанных} many{Уведомления: {count} непрочитанных} other{Уведомления: {count} непрочитанных}}'**
+  String notificationsBadgeTooltip(int count);
+
+  /// Заголовок секции-входа в редактирование расписания на карточке растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Расписание ухода'**
+  String get plantCardScheduleTitle;
+
+  /// Ссылка-вход «Изменить» в редактирование расписания (карточка растения)
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить'**
+  String get plantCardScheduleEdit;
+
+  /// Строка профиля — вход на экран 23 «Тихие часы»
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления и время'**
+  String get profileNotificationsTitle;
+
+  /// Кнопка «назад» экрана 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get quietHoursBack;
+
+  /// Оверлайн шапки экрана 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления и время'**
+  String get quietHoursOverline;
+
+  /// Серифный заголовок 23, обычная часть перед акцентом
+  ///
+  /// In ru, this message translates to:
+  /// **'Тихие '**
+  String get quietHoursTitleLead;
+
+  /// Серифный заголовок 23, акцентная курсивная часть
+  ///
+  /// In ru, this message translates to:
+  /// **'часы'**
+  String get quietHoursTitleAccent;
+
+  /// Подзаголовок экрана 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Ночью растения подождут до утра — не разбудят пушем.'**
+  String get quietHoursSubtitle;
+
+  /// Подпись в центре кольца: сколько часов тишины
+  ///
+  /// In ru, this message translates to:
+  /// **'{hours, plural, one{{hours} час тишины} few{{hours} часа тишины} many{{hours} часов тишины} other{{hours} часа тишины}}'**
+  String quietHoursRingCount(int hours);
+
+  /// Легенда кольца — период активных напоминаний
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания идут'**
+  String get quietHoursLegendOn;
+
+  /// Легенда кольца — период тишины
+  ///
+  /// In ru, this message translates to:
+  /// **'Тишина'**
+  String get quietHoursLegendQuiet;
+
+  /// Карточка-кнопка начала тихих часов на экране 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Засыпаю в'**
+  String get quietHoursStartLabel;
+
+  /// Карточка-кнопка конца тихих часов на экране 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Просыпаюсь в'**
+  String get quietHoursEndLabel;
+
+  /// Заголовок секции параметров на экране 23
+  ///
+  /// In ru, this message translates to:
+  /// **'Параметры'**
+  String get quietHoursParamsSection;
+
+  /// Строка «Таймзона» в секции параметров (экран 23)
+  ///
+  /// In ru, this message translates to:
+  /// **'Таймзона'**
+  String get quietHoursTimezoneTitle;
+
+  /// Значение таймзоны: город и GMT-метка
+  ///
+  /// In ru, this message translates to:
+  /// **'{city} · {gmt}'**
+  String quietHoursTimezoneValue(String city, String gmt);
+
+  /// Декоративная (неактивная) строка-тумблер на экране 23, не покрыта backend
+  ///
+  /// In ru, this message translates to:
+  /// **'Не беспокоить ночью'**
+  String get quietHoursDndTitle;
+
+  /// Подпись декоративной строки «Не беспокоить ночью»
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенести просроченное на утро'**
+  String get quietHoursDndSubtitle;
+
+  /// Декоративная (неактивная) строка дайджеста на экране 23, не покрыта backend
+  ///
+  /// In ru, this message translates to:
+  /// **'Утренний дайджест'**
+  String get quietHoursDigestTitle;
+
+  /// Подпись декоративной строки «Утренний дайджест»
+  ///
+  /// In ru, this message translates to:
+  /// **'Все заботы дня одним сообщением'**
+  String get quietHoursDigestSubtitle;
+
+  /// Декоративное фиксированное время утреннего дайджеста
+  ///
+  /// In ru, this message translates to:
+  /// **'9:00'**
+  String get quietHoursDigestTime;
+
+  /// Бейдж «скоро» для контролов, ещё не покрытых backend (экран 23)
+  ///
+  /// In ru, this message translates to:
+  /// **'Скоро'**
+  String get quietHoursSoon;
+
+  /// Декоративная цитата внизу экрана 23
+  ///
+  /// In ru, this message translates to:
+  /// **'«Если меня надо полить в 3 ночи — напомню в 8 утра. Спи спокойно.»'**
+  String get quietHoursQuote;
+
+  /// Снэкбар при ошибке сохранения тихих часов/таймзоны (общий тип)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось сохранить. Попробуй ещё раз.'**
+  String get quietHoursSaveError;
+
+  /// Оверлайн пикера 36 при выборе начала тихих часов
+  ///
+  /// In ru, this message translates to:
+  /// **'Тихие часы начинаются'**
+  String get timePickerStartOverline;
+
+  /// Оверлайн пикера 36 при выборе конца тихих часов
+  ///
+  /// In ru, this message translates to:
+  /// **'Тихие часы заканчиваются'**
+  String get timePickerEndOverline;
+
+  /// Заголовок пикера 36 при выборе начала
+  ///
+  /// In ru, this message translates to:
+  /// **'Засыпаю в'**
+  String get timePickerStartTitle;
+
+  /// Заголовок пикера 36 при выборе конца
+  ///
+  /// In ru, this message translates to:
+  /// **'Просыпаюсь в'**
+  String get timePickerEndTitle;
+
+  /// Кнопка применения выбора времени (пикер 36)
+  ///
+  /// In ru, this message translates to:
+  /// **'Готово'**
+  String get timePickerDone;
+
+  /// Кнопка «назад» экрана 37
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get timezoneBack;
+
+  /// Оверлайн шапки экрана 37
+  ///
+  /// In ru, this message translates to:
+  /// **'Таймзона'**
+  String get timezoneOverline;
+
+  /// Серифный заголовок 37, обычная часть перед акцентом
+  ///
+  /// In ru, this message translates to:
+  /// **'Когда у тебя '**
+  String get timezoneTitleLead;
+
+  /// Серифный заголовок 37, акцентная курсивная часть
+  ///
+  /// In ru, this message translates to:
+  /// **'утро'**
+  String get timezoneTitleAccent;
+
+  /// Серифный заголовок 37, хвост после акцента (знак вопроса)
+  ///
+  /// In ru, this message translates to:
+  /// **'?'**
+  String get timezoneTitleTail;
+
+  /// Плейсхолдер поля поиска на экране 37
+  ///
+  /// In ru, this message translates to:
+  /// **'Город или регион…'**
+  String get timezoneSearchHint;
+
+  /// Заголовок секции списка таймзон (экран 37)
+  ///
+  /// In ru, this message translates to:
+  /// **'Россия'**
+  String get timezoneSectionRussia;
+
+  /// Пустой результат поиска по таймзонам (экран 37)
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не найдено'**
+  String get timezoneEmpty;
+
+  /// Semantics-метка галочки выбранной таймзоны (экран 37)
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрано'**
+  String get timezoneSelectedHint;
+
+  /// Строка профиля — вход на экран 19 «Список покупок»
+  ///
+  /// In ru, this message translates to:
+  /// **'Список покупок'**
+  String get profileShoppingTitle;
+
+  /// Заголовок-overline экрана 19 «Список покупок»
+  ///
+  /// In ru, this message translates to:
+  /// **'Список покупок'**
+  String get shoppingTitle;
+
+  /// Серифный заголовок экрана 19: счётчик «N позиций · M куплено»
+  ///
+  /// In ru, this message translates to:
+  /// **'{total, plural, =0{Список пуст} one{{total} позиция · {bought} куплено} few{{total} позиции · {bought} куплено} many{{total} позиций · {bought} куплено} other{{total} позиций · {bought} куплено}}'**
+  String shoppingHeroSummary(int total, int bought);
+
+  /// Кнопка/строка добавления новой позиции в список покупок (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить позицию'**
+  String get shoppingAddItem;
+
+  /// Overline в шите добавления позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Список покупок'**
+  String get shoppingAddSheetOverline;
+
+  /// Заголовок шита добавления позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Новая позиция'**
+  String get shoppingAddSheetTitle;
+
+  /// Метка поля ввода названия позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Что купить'**
+  String get shoppingAddSheetLabel;
+
+  /// Плейсхолдер поля ввода названия позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Например, грунт для суккулентов'**
+  String get shoppingAddSheetHint;
+
+  /// Кнопка подтверждения добавления позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить'**
+  String get shoppingAddSheetSubmit;
+
+  /// Semantics/тултип кнопки удаления позиции из списка покупок (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить позицию'**
+  String get shoppingItemDelete;
+
+  /// Semantics-метка чекбокса «куплено» у позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Отметить купленным'**
+  String get shoppingItemToggle;
+
+  /// Снэкбар после удаления позиции (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Позиция удалена'**
+  String get shoppingItemDeleted;
+
+  /// Лид серифного заголовка пустого списка покупок (экран 19) перед акцентным словом
+  ///
+  /// In ru, this message translates to:
+  /// **'Список '**
+  String get shoppingEmptyTitleLead;
+
+  /// Акцентная часть заголовка пустого списка покупок (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'пуст'**
+  String get shoppingEmptyTitleAccent;
+
+  /// Подзаголовок пустого списка покупок (экран 19)
+  ///
+  /// In ru, this message translates to:
+  /// **'Здесь будут вещи для твоих растений — грунт, горшки, удобрения. Добавь первую позицию.'**
+  String get shoppingEmptyMessage;
+
+  /// Кнопка повтора загрузки диагноза (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторить'**
+  String get diagnosisRetry;
+
+  /// Бейдж-предупреждение в hero-секции когда есть проблемы (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'⚠ Что‑то не так'**
+  String get diagnosisBadgeWarning;
+
+  /// Заголовок пустого состояния «Всё в порядке» (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё в порядке'**
+  String get diagnosisHealthyTitle;
+
+  /// Подпись к пустому состоянию «Всё в порядке» (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение здорово — проблем не обнаружено'**
+  String get diagnosisHealthyMessage;
+
+  /// Заголовок секции проблем на экране «Диагноз растения» (15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Проблемы'**
+  String get diagnosisTitleIssues;
+
+  /// Бейдж серьёзности проблемы: критично (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Критично'**
+  String get diagnosisSeverityHigh;
+
+  /// Бейдж серьёзности проблемы: умеренно (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Умеренно'**
+  String get diagnosisSeverityMedium;
+
+  /// Бейдж серьёзности проблемы: незначительно (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Незначительно'**
+  String get diagnosisSeverityLow;
+
+  /// Бейдж серьёзности проблемы: неизвестно / forward-compat (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get diagnosisSeverityUnknown;
+
+  /// Заголовок секции рекомендаций на экране «Диагноз растения» (15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Рекомендации'**
+  String get diagnosisTitleRecommendations;
+
+  /// Сообщение об ошибке загрузки диагноза (экран 15)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить диагноз'**
+  String get diagnosisErrorMessage;
+
+  /// Серифный заголовок экрана 30 «Пустой поиск каталога» с запросом пользователя
+  ///
+  /// In ru, this message translates to:
+  /// **'Не нашли «{query}»'**
+  String catalogSearchEmptyTitle(String query);
+
+  /// Подпись под заголовком экрана 30 «Пустой поиск каталога»
+  ///
+  /// In ru, this message translates to:
+  /// **'Возможно, опечатка. Попробуй иначе или загляни в популярное.'**
+  String get catalogSearchEmptyMessage;
+
+  /// Надпись над чипами популярных видов на экране 30
+  ///
+  /// In ru, this message translates to:
+  /// **'Может, ты искал(а)'**
+  String get catalogSuggestionsTitle;
+
+  /// Серифный заголовок CTA-карточки «Нет в каталоге» на экране 30
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет в каталоге?'**
+  String get catalogNotInCatalogTitle;
+
+  /// Подпись CTA-карточки «Нет в каталоге» на экране 30
+  ///
+  /// In ru, this message translates to:
+  /// **'Заведи растение вручную — расписание настроишь сам(а).'**
+  String get catalogNotInCatalogHint;
+
+  /// Кнопка CTA-карточки «Нет в каталоге» на экране 30: добавить растение вручную
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить'**
+  String get catalogNotInCatalogAdd;
+
+  /// Заголовок пункта меню «Язык» в профиле (экран 13)
+  ///
+  /// In ru, this message translates to:
+  /// **'Язык / Language'**
+  String get languageScreenTitle;
+
+  /// Tooltip кнопки «назад» на экране 38 «Язык приложения»
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get languageBack;
+
+  /// Первая (незакрашенная) часть заголовка экрана 38 — «Язык »
+  ///
+  /// In ru, this message translates to:
+  /// **'Язык '**
+  String get languageScreenTitleLead;
+
+  /// Вторая (primary italic) часть заголовка экрана 38 — «приложения»
+  ///
+  /// In ru, this message translates to:
+  /// **'приложения'**
+  String get languageScreenTitleAccent;
+
+  /// Подзаголовок под заголовком на экране 38
+  ///
+  /// In ru, this message translates to:
+  /// **'Реплики растений тоже переведём — характер сохранится'**
+  String get languageScreenSubtitle;
+
+  /// Подсказка внизу экрана 38 о форматировании даты/времени
+  ///
+  /// In ru, this message translates to:
+  /// **'Дату и время форматируем по выбранному языку.'**
+  String get languageScreenHint;
 }
 
 class _AppLocalizationsDelegate

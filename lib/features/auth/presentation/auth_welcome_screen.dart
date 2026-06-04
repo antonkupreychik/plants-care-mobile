@@ -1,25 +1,36 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/error/api_error_l10n.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/presentation/plant_illustration.dart';
+import 'auth_social_controller.dart';
+import 'auth_social_state.dart';
+import 'widgets/auth_brand_bar.dart';
 import 'widgets/auth_social_button.dart';
 
-/// Экран 07 «Welcome / Войти» — ВИЗУАЛЬНАЯ ЗАГЛУШКА входа (превью-флоу).
+/// Экран 07 «Welcome / Войти».
 ///
-/// Реального auth/сети/токена тут нет (см. задача auth-stubs). Кнопки:
-/// «Google» / «гость» → coming-soon (SnackBar), «Telegram» → продолжение
-/// превью-флоу на экран ввода кода (`/auth/code`). Кнопка «назад» уводит из
-/// флоу обратно (в профиль), откуда экран и открыли.
-class AuthWelcomeScreen extends StatelessWidget {
+/// Социальный вход (Google — обе платформы, Apple — только iOS) проводится
+/// через `authSocialControllerProvider`: по нажатию — `google()` / `apple()`,
+/// по успеху навигацию делает router-guard (сессия поднята), отмена ошибку не
+/// ставит. Email-кнопка ведёт на `/auth/email`, «гость» — coming-soon.
+class AuthWelcomeScreen extends ConsumerWidget {
   const AuthWelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
+
+    final state = ref.watch(authSocialControllerProvider);
+    final controller = ref.read(authSocialControllerProvider.notifier);
+    final isBusy = state.isBusy;
 
     void comingSoon() {
       ScaffoldMessenger.of(context)
@@ -33,7 +44,7 @@ class AuthWelcomeScreen extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const _BrandBar(),
+            const AuthBrandBar(fallbackRoute: '/home'),
             const _WelcomeIllustration(),
             Padding(
               padding: const EdgeInsets.fromLTRB(28, 12, 28, 24),
@@ -67,14 +78,28 @@ class AuthWelcomeScreen extends StatelessWidget {
                   AuthSocialButton(
                     label: l10n.authContinueGoogle,
                     icon: Icons.account_circle_outlined,
-                    onTap: comingSoon,
+                    loading: state.inProgress == SocialProvider.google,
+                    onTap: isBusy ? null : controller.google,
                   ),
+                  if (Platform.isIOS) ...[
+                    const SizedBox(height: 10),
+                    AuthSocialButton(
+                      label: l10n.authContinueApple,
+                      icon: Icons.apple,
+                      loading: state.inProgress == SocialProvider.apple,
+                      onTap: isBusy ? null : controller.apple,
+                    ),
+                  ],
+                  if (state.error != null) ...[
+                    const SizedBox(height: 10),
+                    _SocialErrorText(text: l10n.messageForError(state.error)),
+                  ],
                   const SizedBox(height: 10),
                   AuthSocialButton(
-                    label: l10n.authContinueTelegram,
-                    icon: Icons.send_rounded,
+                    label: l10n.authEmailTitle,
+                    icon: Icons.mail_outline_rounded,
                     accent: true,
-                    onTap: () => context.push('/auth/code'),
+                    onTap: () => context.push('/auth/email'),
                   ),
                   const SizedBox(height: 6),
                   const _OrDivider(),
@@ -103,51 +128,18 @@ class AuthWelcomeScreen extends StatelessWidget {
   }
 }
 
-/// Верхняя плашка бренда: логотип + название + метка языка + кнопка «назад».
-class _BrandBar extends StatelessWidget {
-  const _BrandBar();
+/// Текст ошибки социального входа под кнопками.
+class _SocialErrorText extends StatelessWidget {
+  const _SocialErrorText({required this.text});
+
+  final String text;
 
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 12, 28, 0),
-      child: Row(
-        children: [
-          _BackButton(label: l10n.authBack),
-          const SizedBox(width: 8),
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: c.primary,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(Icons.eco_rounded, size: 20, color: c.surface),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            l10n.authBrand,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.17,
-              color: c.ink,
-            ),
-          ),
-          const Spacer(),
-          Text(
-            l10n.authLocale,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: c.inkSoft,
-            ),
-          ),
-        ],
-      ),
+    return Text(
+      text,
+      style: TextStyle(fontSize: 12, color: c.terracotta),
     );
   }
 }
@@ -237,35 +229,6 @@ class _GuestButton extends StatelessWidget {
                 color: c.ink,
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Кнопка возврата в шапке (выход из превью-флоу обратно в профиль).
-class _BackButton extends StatelessWidget {
-  const _BackButton({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = Theme.of(context).extension<PcColors>()!;
-    return Semantics(
-      button: true,
-      label: label,
-      child: Material(
-        color: Colors.transparent,
-        shape: const CircleBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () => context.canPop() ? context.pop() : context.go('/home'),
-          child: SizedBox(
-            width: 48,
-            height: 48,
-            child: Icon(Icons.arrow_back_rounded, size: 20, color: c.ink),
           ),
         ),
       ),

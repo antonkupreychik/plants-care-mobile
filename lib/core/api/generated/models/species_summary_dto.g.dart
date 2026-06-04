@@ -17,6 +17,9 @@ SpeciesSummaryDto _$SpeciesSummaryDtoFromJson(Map<String, dynamic> json) =>
       soilCheckDays: (json['soilCheckDays'] as num?)?.toInt(),
       careDifficulty: json['careDifficulty'] as String?,
       lightPreference: json['lightPreference'] as String?,
+      toxicToCats: json['toxicToCats'] as bool?,
+      toxicToDogs: json['toxicToDogs'] as bool?,
+      toxicToHumans: json['toxicToHumans'] as bool?,
     );
 
 Map<String, dynamic> _$SpeciesSummaryDtoToJson(SpeciesSummaryDto instance) =>
@@ -30,4 +33,7 @@ Map<String, dynamic> _$SpeciesSummaryDtoToJson(SpeciesSummaryDto instance) =>
       'soilCheckDays': instance.soilCheckDays,
       'careDifficulty': instance.careDifficulty,
       'lightPreference': instance.lightPreference,
+      'toxicToCats': instance.toxicToCats,
+      'toxicToDogs': instance.toxicToDogs,
+      'toxicToHumans': instance.toxicToHumans,
     };

@@ -39,7 +39,6 @@ void main() {
 
   void stubSuccess([CalendarResponse? response]) {
     when(() => calendar.getCalendar(
-          xChatId: any(named: 'xChatId'),
           from: any(named: 'from'),
           to: any(named: 'to'),
           extras: any(named: 'extras'),
@@ -73,7 +72,6 @@ void main() {
       await repo.getWeek(weekStart: weekStart);
 
       final captured = verify(() => calendar.getCalendar(
-            xChatId: any(named: 'xChatId'),
             from: captureAny(named: 'from'),
             to: captureAny(named: 'to'),
             extras: any(named: 'extras'),
@@ -96,7 +94,6 @@ void main() {
       await repo.getWeek(weekStart: weekStart);
 
       final extras = verify(() => calendar.getCalendar(
-            xChatId: any(named: 'xChatId'),
             from: any(named: 'from'),
             to: any(named: 'to'),
             extras: captureAny(named: 'extras'),
@@ -114,7 +111,6 @@ void main() {
   group('getWeek failure', () {
     test('should_return_failure_with_ApiError_from_DioException', () async {
       when(() => calendar.getCalendar(
-            xChatId: any(named: 'xChatId'),
             from: any(named: 'from'),
             to: any(named: 'to'),
             extras: any(named: 'extras'),
@@ -128,7 +124,6 @@ void main() {
 
     test('should_not_rethrow_DioException_to_caller', () async {
       when(() => calendar.getCalendar(
-            xChatId: any(named: 'xChatId'),
             from: any(named: 'from'),
             to: any(named: 'to'),
             extras: any(named: 'extras'),
@@ -143,7 +138,6 @@ void main() {
     test('should_fallback_to_unknown_when_DioException_error_not_ApiError',
         () async {
       when(() => calendar.getCalendar(
-            xChatId: any(named: 'xChatId'),
             from: any(named: 'from'),
             to: any(named: 'to'),
             extras: any(named: 'extras'),

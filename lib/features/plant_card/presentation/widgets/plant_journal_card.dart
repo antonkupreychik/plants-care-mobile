@@ -12,11 +12,22 @@ import '../care_event_kind_l10n.dart';
 ///
 /// Записи приходят отсортированными backend — порядок не меняем. Время
 /// `performedAt` приходит в UTC, показываем в локальной TZ (`.toLocal()`).
-/// Пустой список → дружелюбная подпись (не голая карточка).
+///
+/// Пустой список → экран 31 «Пустой дневник»: speech-bubble от растения
+/// («Жду первого ухода…») + CTA «Полить сейчас». [onWaterNow] вызывается при
+/// тапе на CTA — открывает sheet (экран 06) с предвыбором [CareEventKind.water].
+/// Если [onWaterNow] равен `null` — CTA не отображается (безопасный дефолт).
 class PlantJournalCard extends StatelessWidget {
-  const PlantJournalCard({super.key, required this.entries});
+  const PlantJournalCard({
+    super.key,
+    required this.entries,
+    this.onWaterNow,
+  });
 
   final List<CareHistoryEntry> entries;
+
+  /// Колбэк CTA «Полить сейчас» (экран 31). Если `null` — кнопка скрыта.
+  final VoidCallback? onWaterNow;
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +37,24 @@ class PlantJournalCard extends StatelessWidget {
     if (entries.isEmpty) {
       return _JournalShell(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          padding: const EdgeInsets.fromLTRB(0, 20, 0, 16),
           child: Column(
             children: [
-              Icon(Icons.history_rounded, size: 28, color: c.inkMute),
-              const SizedBox(height: 10),
-              Text(
-                l10n.plantCardJournalEmpty,
-                textAlign: TextAlign.center,
-                style: AppTheme.serif(fontSize: 20, color: c.ink),
-              ),
-              const SizedBox(height: 4),
+              // Speech bubble: голос растения от первого лица (экран 31).
+              _SpeechBubble(text: l10n.plantCardJournalEmptyBubble),
+              const SizedBox(height: 16),
               Text(
                 l10n.plantCardJournalEmptyHint,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 13, color: c.inkSoft, height: 1.4),
               ),
+              if (onWaterNow != null) ...[
+                const SizedBox(height: 20),
+                _WaterNowButton(
+                  label: l10n.plantCardJournalWaterNow,
+                  onPressed: onWaterNow!,
+                ),
+              ],
             ],
           ),
         ),
@@ -238,6 +251,115 @@ class _JournalRowSkeleton extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Speech-bubble от растения (экран 31 «Пустой дневник»).
+///
+/// Голос от первого лица, серифный акцент (Instrument Serif italic) — как в
+/// экране 33 «Успех первого ухода» (дизайн-конвенция voice line).
+/// Хвост bubble нарисован через [CustomPainter] снизу по центру.
+class _SpeechBubble extends StatelessWidget {
+  const _SpeechBubble({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          decoration: BoxDecoration(
+            color: c.primarySoft,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: AppTheme.serif(
+              fontSize: 22,
+              fontStyle: FontStyle.italic,
+              color: c.ink,
+            ),
+          ),
+        ),
+        // Хвост bubble — указатель вниз.
+        CustomPaint(
+          size: const Size(20, 10),
+          painter: _BubbleTailPainter(color: c.primarySoft),
+        ),
+      ],
+    );
+  }
+}
+
+/// Рисует треугольный хвост speech-bubble вниз по центру.
+class _BubbleTailPainter extends CustomPainter {
+  const _BubbleTailPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    final path = Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width / 2, size.height)
+      ..close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(_BubbleTailPainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+/// CTA «Полить сейчас» для пустого дневника (экран 31).
+class _WaterNowButton extends StatelessWidget {
+  const _WaterNowButton({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Semantics(
+      button: true,
+      label: label,
+      child: Material(
+        color: c.primary,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.water_drop_outlined, size: 18, color: c.fabInk),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: c.fabInk,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

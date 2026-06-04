@@ -105,7 +105,7 @@ final class LogCareEventControllerProvider
 }
 
 String _$logCareEventControllerHash() =>
-    r'c70ef7c3a032fd3697ea0a37d52bda2b72616414';
+    r'8e5f52f9928b1a8fc343b48292cd50ed034de0e2';
 
 /// Контроллер формы отметки ухода (экран 06 sheet) — мутация, не чтение.
 ///

@@ -12,7 +12,12 @@ TodayResponse _$TodayResponseFromJson(Map<String, dynamic> json) =>
           .map((e) => TaskDto.fromJson(e as Map<String, dynamic>))
           .toList(),
       count: (json['count'] as num).toInt(),
+      summary: TodaySummary.fromJson(json['summary'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$TodayResponseToJson(TodayResponse instance) =>
-    <String, dynamic>{'tasks': instance.tasks, 'count': instance.count};
+    <String, dynamic>{
+      'tasks': instance.tasks,
+      'count': instance.count,
+      'summary': instance.summary,
+    };

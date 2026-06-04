@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
+import 'package:plantcare_mobile/features/auth/data/auth_repository_provider.dart';
+import 'package:plantcare_mobile/features/auth/domain/auth_repository.dart';
+import 'package:plantcare_mobile/features/auth/domain/social_auth_outcome.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_code_screen.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_welcome_back_screen.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_welcome_screen.dart';
@@ -13,13 +18,23 @@ import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 /// Монтирует [child] на корневом маршруте через настоящий GoRouter — экраны
 /// используют `context.push` / `context.go`, которым нужен Router-контекст.
-/// Заглушки-маршруты `/auth/code`, `/auth/welcome-back`, `/home`, `/home/add`
-/// дают навигации куда уходить, не падая.
-Future<void> _pump(WidgetTester tester, Widget child) async {
+/// Заглушки-маршруты `/auth/email`, `/auth/code`, `/auth/welcome-back`,
+/// `/home`, `/home/add` дают навигации куда уходить, не падая.
+class _MockAuthRepo extends Mock implements AuthRepository {}
+
+Future<void> _pump(
+  WidgetTester tester,
+  Widget child, {
+  List<Override> overrides = const [],
+}) async {
   final router = GoRouter(
     initialLocation: '/',
     routes: [
       GoRoute(path: '/', builder: (_, _) => child),
+      GoRoute(
+        path: '/auth/email',
+        builder: (_, _) => const Scaffold(body: Text('email-route')),
+      ),
       GoRoute(
         path: '/auth/code',
         builder: (_, _) => const Scaffold(body: Text('code-route')),
@@ -41,6 +56,7 @@ Future<void> _pump(WidgetTester tester, Widget child) async {
 
   await tester.pumpWidget(
     ProviderScope(
+      overrides: overrides,
       child: MaterialApp.router(
         locale: const Locale('ru'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -58,25 +74,59 @@ AppLocalizations _l10n(WidgetTester tester, Type screen) =>
 
 void main() {
   group('AuthWelcomeScreen (07)', () {
-    testWidgets('should_render_all_three_entry_buttons', (tester) async {
+    testWidgets('should_render_google_email_and_guest_entry_buttons',
+        (tester) async {
       await _pump(tester, const AuthWelcomeScreen());
       final l10n = _l10n(tester, AuthWelcomeScreen);
+      // Google (соц-вход), email-вход (реальный CTA, accent) и гость.
       expect(find.widgetWithText(AuthSocialButton, l10n.authContinueGoogle),
           findsOneWidget);
-      expect(find.widgetWithText(AuthSocialButton, l10n.authContinueTelegram),
+      expect(find.widgetWithText(AuthSocialButton, l10n.authEmailTitle),
           findsOneWidget);
       expect(find.text(l10n.authContinueGuest), findsOneWidget);
     });
 
-    testWidgets('should_show_coming_soon_snackbar_when_google_tapped',
+    testWidgets('should_trigger_google_sign_in_when_google_tapped',
         (tester) async {
-      await _pump(tester, const AuthWelcomeScreen());
+      final authRepo = _MockAuthRepo();
+      when(authRepo.signInWithGoogle)
+          .thenAnswer((_) async => const SocialAuthCancelled());
+
+      await _pump(
+        tester,
+        const AuthWelcomeScreen(),
+        overrides: [authRepositoryProvider.overrideWithValue(authRepo)],
+      );
       final l10n = _l10n(tester, AuthWelcomeScreen);
       await tester.tap(
           find.widgetWithText(AuthSocialButton, l10n.authContinueGoogle));
       await tester.pump();
-      expect(find.byType(SnackBar), findsOneWidget);
-      expect(find.text(l10n.comingSoon), findsOneWidget);
+
+      // Google-кнопка запускает реальный соц-вход (не coming-soon).
+      verify(authRepo.signInWithGoogle).called(1);
+    });
+
+    testWidgets('should_navigate_to_auth_email_when_email_cta_tapped',
+        (tester) async {
+      // Главный CTA входа теперь ведёт на email magic-link (`/auth/email`),
+      // а не на Telegram-превью `/auth/code`.
+      // Высокий вьюпорт, чтобы email-CTA гарантированно была в кадре и
+      // кликабельна (welcome — длинный ListView с иллюстрацией сверху).
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await _pump(tester, const AuthWelcomeScreen());
+      final l10n = _l10n(tester, AuthWelcomeScreen);
+
+      final emailCta =
+          find.widgetWithText(AuthSocialButton, l10n.authEmailTitle);
+      await tester.ensureVisible(emailCta);
+      await tester.tap(emailCta);
+      await tester.pumpAndSettle();
+
+      expect(find.text('email-route'), findsOneWidget);
     });
   });
 

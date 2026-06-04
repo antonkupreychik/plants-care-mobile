@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TodayTaskItem {
 
- CareTask get task;/// `dueAt.toLocal() < nowLocal` на момент деривации.
+ CareTask get task;/// `dueAt.toLocal() < nowLocal` на момент деривации (для невыполненных).
  bool get overdue;
 /// Create a copy of TodayTaskItem
 /// with the given fields replaced by the non-null parameter values.
@@ -221,7 +221,7 @@ class _TodayTaskItem implements TodayTaskItem {
   
 
 @override final  CareTask task;
-/// `dueAt.toLocal() < nowLocal` на момент деривации.
+/// `dueAt.toLocal() < nowLocal` на момент деривации (для невыполненных).
 @override final  bool overdue;
 
 /// Create a copy of TodayTaskItem
@@ -564,12 +564,19 @@ as List<TodayTaskItem>,
 mixin _$TodayView {
 
 /// Активный фильтр, под который построены [groups].
- TodayFilter get filter;/// Секции (утро/вечер) под текущим фильтром. Пустые фазы опущены.
- List<TodayGroup> get groups;/// Всего задач в исходном списке (пилюля «Всё»).
- int get totalCount;/// Кол-во задач `watering` (пилюля «Полив»).
- int get wateringCount;/// Кол-во задач `misting` (пилюля «Опрыскивание»).
- int get mistingCount;/// Кол-во задач `fertilizing` (пилюля «Подкормка»).
- int get fertilizingCount;/// Кол-во просроченных любого типа (пилюля «Просрочено» + summary).
+ TodayFilter get filter;/// Секции (утро/вечер) НЕвыполненных задач под текущим фильтром.
+/// Пустые фазы опущены.
+ List<TodayGroup> get groups;/// Выполненные сегодня задачи (свёрнутая секция «Выполнено»),
+/// отсортированы по `doneAt` убыванию (последняя — сверху).
+/// Фильтр-пилюли на эту секцию НЕ влияют (она показывает все done).
+ List<TodayTaskItem> get doneItems;/// Всего задач в исходном списке, включая выполненные (пилюля «Всё» + N в
+/// прогресс-карточке «X из N»).
+ int get totalCount;/// Сколько задач выполнено сегодня (`isDone`) — числитель прогресса.
+ int get doneCount;/// Кол-во задач `watering` (пилюля «Полив»), по полному списку.
+ int get wateringCount;/// Кол-во задач `misting` (пилюля «Опрыскивание»), по полному списку.
+ int get mistingCount;/// Кол-во задач `fertilizing` (пилюля «Подкормка»), по полному списку.
+ int get fertilizingCount;/// Кол-во просроченных НЕвыполненных задач любого типа
+/// (пилюля «Просрочено» + summary). Выполненные не считаются просроченными.
  int get overdueCount;
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
@@ -581,16 +588,16 @@ $TodayViewCopyWith<TodayView> get copyWith => _$TodayViewCopyWithImpl<TodayView>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.filter, filter) || other.filter == filter)&&const DeepCollectionEquality().equals(other.groups, groups)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&(identical(other.wateringCount, wateringCount) || other.wateringCount == wateringCount)&&(identical(other.mistingCount, mistingCount) || other.mistingCount == mistingCount)&&(identical(other.fertilizingCount, fertilizingCount) || other.fertilizingCount == fertilizingCount)&&(identical(other.overdueCount, overdueCount) || other.overdueCount == overdueCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.filter, filter) || other.filter == filter)&&const DeepCollectionEquality().equals(other.groups, groups)&&const DeepCollectionEquality().equals(other.doneItems, doneItems)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&(identical(other.doneCount, doneCount) || other.doneCount == doneCount)&&(identical(other.wateringCount, wateringCount) || other.wateringCount == wateringCount)&&(identical(other.mistingCount, mistingCount) || other.mistingCount == mistingCount)&&(identical(other.fertilizingCount, fertilizingCount) || other.fertilizingCount == fertilizingCount)&&(identical(other.overdueCount, overdueCount) || other.overdueCount == overdueCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,filter,const DeepCollectionEquality().hash(groups),totalCount,wateringCount,mistingCount,fertilizingCount,overdueCount);
+int get hashCode => Object.hash(runtimeType,filter,const DeepCollectionEquality().hash(groups),const DeepCollectionEquality().hash(doneItems),totalCount,doneCount,wateringCount,mistingCount,fertilizingCount,overdueCount);
 
 @override
 String toString() {
-  return 'TodayView(filter: $filter, groups: $groups, totalCount: $totalCount, wateringCount: $wateringCount, mistingCount: $mistingCount, fertilizingCount: $fertilizingCount, overdueCount: $overdueCount)';
+  return 'TodayView(filter: $filter, groups: $groups, doneItems: $doneItems, totalCount: $totalCount, doneCount: $doneCount, wateringCount: $wateringCount, mistingCount: $mistingCount, fertilizingCount: $fertilizingCount, overdueCount: $overdueCount)';
 }
 
 
@@ -601,7 +608,7 @@ abstract mixin class $TodayViewCopyWith<$Res>  {
   factory $TodayViewCopyWith(TodayView value, $Res Function(TodayView) _then) = _$TodayViewCopyWithImpl;
 @useResult
 $Res call({
- TodayFilter filter, List<TodayGroup> groups, int totalCount, int wateringCount, int mistingCount, int fertilizingCount, int overdueCount
+ TodayFilter filter, List<TodayGroup> groups, List<TodayTaskItem> doneItems, int totalCount, int doneCount, int wateringCount, int mistingCount, int fertilizingCount, int overdueCount
 });
 
 
@@ -618,11 +625,13 @@ class _$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? filter = null,Object? groups = null,Object? totalCount = null,Object? wateringCount = null,Object? mistingCount = null,Object? fertilizingCount = null,Object? overdueCount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? filter = null,Object? groups = null,Object? doneItems = null,Object? totalCount = null,Object? doneCount = null,Object? wateringCount = null,Object? mistingCount = null,Object? fertilizingCount = null,Object? overdueCount = null,}) {
   return _then(_self.copyWith(
 filter: null == filter ? _self.filter : filter // ignore: cast_nullable_to_non_nullable
 as TodayFilter,groups: null == groups ? _self.groups : groups // ignore: cast_nullable_to_non_nullable
-as List<TodayGroup>,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
+as List<TodayGroup>,doneItems: null == doneItems ? _self.doneItems : doneItems // ignore: cast_nullable_to_non_nullable
+as List<TodayTaskItem>,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
+as int,doneCount: null == doneCount ? _self.doneCount : doneCount // ignore: cast_nullable_to_non_nullable
 as int,wateringCount: null == wateringCount ? _self.wateringCount : wateringCount // ignore: cast_nullable_to_non_nullable
 as int,mistingCount: null == mistingCount ? _self.mistingCount : mistingCount // ignore: cast_nullable_to_non_nullable
 as int,fertilizingCount: null == fertilizingCount ? _self.fertilizingCount : fertilizingCount // ignore: cast_nullable_to_non_nullable
@@ -712,10 +721,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TodayFilter filter,  List<TodayGroup> groups,  int totalCount,  int wateringCount,  int mistingCount,  int fertilizingCount,  int overdueCount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TodayFilter filter,  List<TodayGroup> groups,  List<TodayTaskItem> doneItems,  int totalCount,  int doneCount,  int wateringCount,  int mistingCount,  int fertilizingCount,  int overdueCount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.filter,_that.groups,_that.totalCount,_that.wateringCount,_that.mistingCount,_that.fertilizingCount,_that.overdueCount);case _:
+return $default(_that.filter,_that.groups,_that.doneItems,_that.totalCount,_that.doneCount,_that.wateringCount,_that.mistingCount,_that.fertilizingCount,_that.overdueCount);case _:
   return orElse();
 
 }
@@ -733,10 +742,10 @@ return $default(_that.filter,_that.groups,_that.totalCount,_that.wateringCount,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TodayFilter filter,  List<TodayGroup> groups,  int totalCount,  int wateringCount,  int mistingCount,  int fertilizingCount,  int overdueCount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TodayFilter filter,  List<TodayGroup> groups,  List<TodayTaskItem> doneItems,  int totalCount,  int doneCount,  int wateringCount,  int mistingCount,  int fertilizingCount,  int overdueCount)  $default,) {final _that = this;
 switch (_that) {
 case _TodayView():
-return $default(_that.filter,_that.groups,_that.totalCount,_that.wateringCount,_that.mistingCount,_that.fertilizingCount,_that.overdueCount);case _:
+return $default(_that.filter,_that.groups,_that.doneItems,_that.totalCount,_that.doneCount,_that.wateringCount,_that.mistingCount,_that.fertilizingCount,_that.overdueCount);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -753,10 +762,10 @@ return $default(_that.filter,_that.groups,_that.totalCount,_that.wateringCount,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TodayFilter filter,  List<TodayGroup> groups,  int totalCount,  int wateringCount,  int mistingCount,  int fertilizingCount,  int overdueCount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TodayFilter filter,  List<TodayGroup> groups,  List<TodayTaskItem> doneItems,  int totalCount,  int doneCount,  int wateringCount,  int mistingCount,  int fertilizingCount,  int overdueCount)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.filter,_that.groups,_that.totalCount,_that.wateringCount,_that.mistingCount,_that.fertilizingCount,_that.overdueCount);case _:
+return $default(_that.filter,_that.groups,_that.doneItems,_that.totalCount,_that.doneCount,_that.wateringCount,_that.mistingCount,_that.fertilizingCount,_that.overdueCount);case _:
   return null;
 
 }
@@ -768,29 +777,48 @@ return $default(_that.filter,_that.groups,_that.totalCount,_that.wateringCount,_
 
 
 class _TodayView extends TodayView {
-  const _TodayView({required this.filter, required final  List<TodayGroup> groups, required this.totalCount, required this.wateringCount, required this.mistingCount, required this.fertilizingCount, required this.overdueCount}): _groups = groups,super._();
+  const _TodayView({required this.filter, required final  List<TodayGroup> groups, required final  List<TodayTaskItem> doneItems, required this.totalCount, required this.doneCount, required this.wateringCount, required this.mistingCount, required this.fertilizingCount, required this.overdueCount}): _groups = groups,_doneItems = doneItems,super._();
   
 
 /// Активный фильтр, под который построены [groups].
 @override final  TodayFilter filter;
-/// Секции (утро/вечер) под текущим фильтром. Пустые фазы опущены.
+/// Секции (утро/вечер) НЕвыполненных задач под текущим фильтром.
+/// Пустые фазы опущены.
  final  List<TodayGroup> _groups;
-/// Секции (утро/вечер) под текущим фильтром. Пустые фазы опущены.
+/// Секции (утро/вечер) НЕвыполненных задач под текущим фильтром.
+/// Пустые фазы опущены.
 @override List<TodayGroup> get groups {
   if (_groups is EqualUnmodifiableListView) return _groups;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_groups);
 }
 
-/// Всего задач в исходном списке (пилюля «Всё»).
+/// Выполненные сегодня задачи (свёрнутая секция «Выполнено»),
+/// отсортированы по `doneAt` убыванию (последняя — сверху).
+/// Фильтр-пилюли на эту секцию НЕ влияют (она показывает все done).
+ final  List<TodayTaskItem> _doneItems;
+/// Выполненные сегодня задачи (свёрнутая секция «Выполнено»),
+/// отсортированы по `doneAt` убыванию (последняя — сверху).
+/// Фильтр-пилюли на эту секцию НЕ влияют (она показывает все done).
+@override List<TodayTaskItem> get doneItems {
+  if (_doneItems is EqualUnmodifiableListView) return _doneItems;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_doneItems);
+}
+
+/// Всего задач в исходном списке, включая выполненные (пилюля «Всё» + N в
+/// прогресс-карточке «X из N»).
 @override final  int totalCount;
-/// Кол-во задач `watering` (пилюля «Полив»).
+/// Сколько задач выполнено сегодня (`isDone`) — числитель прогресса.
+@override final  int doneCount;
+/// Кол-во задач `watering` (пилюля «Полив»), по полному списку.
 @override final  int wateringCount;
-/// Кол-во задач `misting` (пилюля «Опрыскивание»).
+/// Кол-во задач `misting` (пилюля «Опрыскивание»), по полному списку.
 @override final  int mistingCount;
-/// Кол-во задач `fertilizing` (пилюля «Подкормка»).
+/// Кол-во задач `fertilizing` (пилюля «Подкормка»), по полному списку.
 @override final  int fertilizingCount;
-/// Кол-во просроченных любого типа (пилюля «Просрочено» + summary).
+/// Кол-во просроченных НЕвыполненных задач любого типа
+/// (пилюля «Просрочено» + summary). Выполненные не считаются просроченными.
 @override final  int overdueCount;
 
 /// Create a copy of TodayView
@@ -803,16 +831,16 @@ _$TodayViewCopyWith<_TodayView> get copyWith => __$TodayViewCopyWithImpl<_TodayV
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.filter, filter) || other.filter == filter)&&const DeepCollectionEquality().equals(other._groups, _groups)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&(identical(other.wateringCount, wateringCount) || other.wateringCount == wateringCount)&&(identical(other.mistingCount, mistingCount) || other.mistingCount == mistingCount)&&(identical(other.fertilizingCount, fertilizingCount) || other.fertilizingCount == fertilizingCount)&&(identical(other.overdueCount, overdueCount) || other.overdueCount == overdueCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.filter, filter) || other.filter == filter)&&const DeepCollectionEquality().equals(other._groups, _groups)&&const DeepCollectionEquality().equals(other._doneItems, _doneItems)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&(identical(other.doneCount, doneCount) || other.doneCount == doneCount)&&(identical(other.wateringCount, wateringCount) || other.wateringCount == wateringCount)&&(identical(other.mistingCount, mistingCount) || other.mistingCount == mistingCount)&&(identical(other.fertilizingCount, fertilizingCount) || other.fertilizingCount == fertilizingCount)&&(identical(other.overdueCount, overdueCount) || other.overdueCount == overdueCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,filter,const DeepCollectionEquality().hash(_groups),totalCount,wateringCount,mistingCount,fertilizingCount,overdueCount);
+int get hashCode => Object.hash(runtimeType,filter,const DeepCollectionEquality().hash(_groups),const DeepCollectionEquality().hash(_doneItems),totalCount,doneCount,wateringCount,mistingCount,fertilizingCount,overdueCount);
 
 @override
 String toString() {
-  return 'TodayView(filter: $filter, groups: $groups, totalCount: $totalCount, wateringCount: $wateringCount, mistingCount: $mistingCount, fertilizingCount: $fertilizingCount, overdueCount: $overdueCount)';
+  return 'TodayView(filter: $filter, groups: $groups, doneItems: $doneItems, totalCount: $totalCount, doneCount: $doneCount, wateringCount: $wateringCount, mistingCount: $mistingCount, fertilizingCount: $fertilizingCount, overdueCount: $overdueCount)';
 }
 
 
@@ -823,7 +851,7 @@ abstract mixin class _$TodayViewCopyWith<$Res> implements $TodayViewCopyWith<$Re
   factory _$TodayViewCopyWith(_TodayView value, $Res Function(_TodayView) _then) = __$TodayViewCopyWithImpl;
 @override @useResult
 $Res call({
- TodayFilter filter, List<TodayGroup> groups, int totalCount, int wateringCount, int mistingCount, int fertilizingCount, int overdueCount
+ TodayFilter filter, List<TodayGroup> groups, List<TodayTaskItem> doneItems, int totalCount, int doneCount, int wateringCount, int mistingCount, int fertilizingCount, int overdueCount
 });
 
 
@@ -840,11 +868,13 @@ class __$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? filter = null,Object? groups = null,Object? totalCount = null,Object? wateringCount = null,Object? mistingCount = null,Object? fertilizingCount = null,Object? overdueCount = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? filter = null,Object? groups = null,Object? doneItems = null,Object? totalCount = null,Object? doneCount = null,Object? wateringCount = null,Object? mistingCount = null,Object? fertilizingCount = null,Object? overdueCount = null,}) {
   return _then(_TodayView(
 filter: null == filter ? _self.filter : filter // ignore: cast_nullable_to_non_nullable
 as TodayFilter,groups: null == groups ? _self._groups : groups // ignore: cast_nullable_to_non_nullable
-as List<TodayGroup>,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
+as List<TodayGroup>,doneItems: null == doneItems ? _self._doneItems : doneItems // ignore: cast_nullable_to_non_nullable
+as List<TodayTaskItem>,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
+as int,doneCount: null == doneCount ? _self.doneCount : doneCount // ignore: cast_nullable_to_non_nullable
 as int,wateringCount: null == wateringCount ? _self.wateringCount : wateringCount // ignore: cast_nullable_to_non_nullable
 as int,mistingCount: null == mistingCount ? _self.mistingCount : mistingCount // ignore: cast_nullable_to_non_nullable
 as int,fertilizingCount: null == fertilizingCount ? _self.fertilizingCount : fertilizingCount // ignore: cast_nullable_to_non_nullable

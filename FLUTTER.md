@@ -28,7 +28,7 @@
 | **Сеть**              | `dio` 5.9.2 + `dio_smart_retry` 7.0.1; две «головы» заголовков, ApiError (MADR-006) |
 | **API-клиент**        | **Кодген dart-dio из OpenAPI** (`swagger_parser`, bundle `$ref`) — MADR-007 |
 | **Модели/DTO**        | DTO — **сгенерированные** из OpenAPI; маппинг DTO ↔ domain пишется руками (`freezed` 3.2.5 для domain-моделей) |
-| **Auth**              | Dev-слот (X-Chat-Id/X-User-Id через --dart-define) → JWT позже (MADR-008) |
+| **Auth**              | JWT bearer + email magic-link, router-guard; dev-токен через --dart-define (MADR-008) |
 | **Хранилище/offline** | `drift` 2.33.0 на `sqlite3` 3.x (native assets; БЕЗ `sqlite3_flutter_libs` — EOL) — MADR-009 |
 | **Secure storage**    | `flutter_secure_storage` 10.3.0                               |
 | **SVG / шрифты**      | `flutter_svg` 2.3.0 · `google_fonts` 8.1.0 (или bundled .ttf) |

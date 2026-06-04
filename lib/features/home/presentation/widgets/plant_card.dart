@@ -75,8 +75,11 @@ class PlantCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              AspectRatio(
-                aspectRatio: 1,
+              // Плашка иллюстрации забирает остаток высоты ячейки (сетка с
+              // фиксированным childAspectRatio: 0.72). Жёсткий AspectRatio(1)
+              // переполнял Column на ~6px в варианте «вид + локация» — Expanded
+              // адаптируется под любой набор текстовых строк.
+              Expanded(
                 child: Container(
                   decoration: BoxDecoration(
                     color: tintWarm ? c.surfaceWarm : c.primarySoft,
@@ -134,7 +137,7 @@ class PlantCardSkeleton extends StatelessWidget {
           SizedBox(height: 6),
           SkeletonBox(width: 90, height: 20),
           SizedBox(height: 10),
-          AspectRatio(aspectRatio: 1, child: SkeletonBox(radius: 18)),
+          Expanded(child: SkeletonBox(height: double.infinity, radius: 18)),
         ],
       ),
     );

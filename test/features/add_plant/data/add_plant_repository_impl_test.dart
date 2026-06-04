@@ -171,31 +171,26 @@ void main() {
   });
 
   group('createPlant', () {
-    test('should_send_user_scope_with_placeholder_userId_not_hardcoded_identity',
-        () async {
+    test('should_send_user_scope_not_hardcoded_identity', () async {
       when(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _plant(77));
 
       await repo.createPlant(name: 'Фикус', locationId: 3, notes: 'на окне');
 
-      final captured = verify(() => plants.createPlant(
-            xUserId: captureAny(named: 'xUserId'),
+      final extras = verify(() => plants.createPlant(
             body: any(named: 'body'),
             extras: captureAny(named: 'extras'),
-          )).captured;
-      // Auth-слот: scope user (X-User-Id ставит интерсептор). Identity НЕ
-      // хардкодится в data — placeholder перезаписывается AuthInterceptor.
-      // Проверяем именно placeholder (0), а не конкретный USER_ID.
-      expect(captured[0], 0);
-      expect((captured[1] as Map)[kAuthScopeExtraKey], AuthScope.user);
+          )).captured.single as Map<String, dynamic>;
+      // Auth-слот: scope user (Authorization-bearer ставит AuthInterceptor).
+      // Identity НЕ хардкодится в data — токен подставляет интерсептор по
+      // scope. Тест ловит молчаливую регрессию scope при подключении auth.
+      expect(extras[kAuthScopeExtraKey], AuthScope.user);
     });
 
     test('should_build_request_body_with_all_fields', () async {
       when(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _plant(77));
@@ -203,7 +198,6 @@ void main() {
       await repo.createPlant(name: 'Фикус', locationId: 3, notes: 'на окне');
 
       final body = verify(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: captureAny(named: 'body'),
             extras: any(named: 'extras'),
           )).captured.single as PlantCreateRequest;
@@ -214,7 +208,6 @@ void main() {
 
     test('should_put_speciesId_into_request_body_when_provided', () async {
       when(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _plant(77));
@@ -222,7 +215,6 @@ void main() {
       await repo.createPlant(name: 'Фикус', speciesId: 42);
 
       final body = verify(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: captureAny(named: 'body'),
             extras: any(named: 'extras'),
           )).captured.single as PlantCreateRequest;
@@ -232,7 +224,6 @@ void main() {
 
     test('should_send_null_speciesId_when_not_provided', () async {
       when(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _plant(77));
@@ -240,7 +231,6 @@ void main() {
       await repo.createPlant(name: 'Фикус');
 
       final body = verify(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: captureAny(named: 'body'),
             extras: any(named: 'extras'),
           )).captured.single as PlantCreateRequest;
@@ -250,7 +240,6 @@ void main() {
 
     test('should_build_request_body_with_null_location_and_notes', () async {
       when(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _plant(77));
@@ -258,7 +247,6 @@ void main() {
       await repo.createPlant(name: 'Фикус');
 
       final body = verify(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: captureAny(named: 'body'),
             extras: any(named: 'extras'),
           )).captured.single as PlantCreateRequest;
@@ -269,7 +257,6 @@ void main() {
 
     test('should_return_success_with_plant_id_from_PlantDto', () async {
       when(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async => _plant(123));
@@ -281,7 +268,6 @@ void main() {
 
     test('should_return_failure_with_ApiError_without_rethrow', () async {
       when(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.conflict()));
@@ -293,7 +279,6 @@ void main() {
 
     test('should_return_failure_unknown_when_error_not_ApiError', () async {
       when(() => plants.createPlant(
-            xUserId: any(named: 'xUserId'),
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith('boom'));

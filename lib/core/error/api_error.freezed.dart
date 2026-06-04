@@ -55,13 +55,14 @@ extension ApiErrorPatterns on ApiError {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ValidationError value)?  validation,TResult Function( BadRequestError value)?  badRequest,TResult Function( LocationNotEmptyError value)?  locationNotEmpty,TResult Function( AccessDeniedError value)?  accessDenied,TResult Function( NotFoundError value)?  notFound,TResult Function( ConflictError value)?  conflict,TResult Function( NetworkError value)?  network,TResult Function( UnknownError value)?  unknown,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ValidationError value)?  validation,TResult Function( BadRequestError value)?  badRequest,TResult Function( LocationNotEmptyError value)?  locationNotEmpty,TResult Function( UnauthorizedError value)?  unauthorized,TResult Function( AccessDeniedError value)?  accessDenied,TResult Function( NotFoundError value)?  notFound,TResult Function( ConflictError value)?  conflict,TResult Function( NetworkError value)?  network,TResult Function( UnknownError value)?  unknown,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ValidationError() when validation != null:
 return validation(_that);case BadRequestError() when badRequest != null:
 return badRequest(_that);case LocationNotEmptyError() when locationNotEmpty != null:
-return locationNotEmpty(_that);case AccessDeniedError() when accessDenied != null:
+return locationNotEmpty(_that);case UnauthorizedError() when unauthorized != null:
+return unauthorized(_that);case AccessDeniedError() when accessDenied != null:
 return accessDenied(_that);case NotFoundError() when notFound != null:
 return notFound(_that);case ConflictError() when conflict != null:
 return conflict(_that);case NetworkError() when network != null:
@@ -84,13 +85,14 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ValidationError value)  validation,required TResult Function( BadRequestError value)  badRequest,required TResult Function( LocationNotEmptyError value)  locationNotEmpty,required TResult Function( AccessDeniedError value)  accessDenied,required TResult Function( NotFoundError value)  notFound,required TResult Function( ConflictError value)  conflict,required TResult Function( NetworkError value)  network,required TResult Function( UnknownError value)  unknown,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ValidationError value)  validation,required TResult Function( BadRequestError value)  badRequest,required TResult Function( LocationNotEmptyError value)  locationNotEmpty,required TResult Function( UnauthorizedError value)  unauthorized,required TResult Function( AccessDeniedError value)  accessDenied,required TResult Function( NotFoundError value)  notFound,required TResult Function( ConflictError value)  conflict,required TResult Function( NetworkError value)  network,required TResult Function( UnknownError value)  unknown,}){
 final _that = this;
 switch (_that) {
 case ValidationError():
 return validation(_that);case BadRequestError():
 return badRequest(_that);case LocationNotEmptyError():
-return locationNotEmpty(_that);case AccessDeniedError():
+return locationNotEmpty(_that);case UnauthorizedError():
+return unauthorized(_that);case AccessDeniedError():
 return accessDenied(_that);case NotFoundError():
 return notFound(_that);case ConflictError():
 return conflict(_that);case NetworkError():
@@ -109,13 +111,14 @@ return unknown(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ValidationError value)?  validation,TResult? Function( BadRequestError value)?  badRequest,TResult? Function( LocationNotEmptyError value)?  locationNotEmpty,TResult? Function( AccessDeniedError value)?  accessDenied,TResult? Function( NotFoundError value)?  notFound,TResult? Function( ConflictError value)?  conflict,TResult? Function( NetworkError value)?  network,TResult? Function( UnknownError value)?  unknown,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ValidationError value)?  validation,TResult? Function( BadRequestError value)?  badRequest,TResult? Function( LocationNotEmptyError value)?  locationNotEmpty,TResult? Function( UnauthorizedError value)?  unauthorized,TResult? Function( AccessDeniedError value)?  accessDenied,TResult? Function( NotFoundError value)?  notFound,TResult? Function( ConflictError value)?  conflict,TResult? Function( NetworkError value)?  network,TResult? Function( UnknownError value)?  unknown,}){
 final _that = this;
 switch (_that) {
 case ValidationError() when validation != null:
 return validation(_that);case BadRequestError() when badRequest != null:
 return badRequest(_that);case LocationNotEmptyError() when locationNotEmpty != null:
-return locationNotEmpty(_that);case AccessDeniedError() when accessDenied != null:
+return locationNotEmpty(_that);case UnauthorizedError() when unauthorized != null:
+return unauthorized(_that);case AccessDeniedError() when accessDenied != null:
 return accessDenied(_that);case NotFoundError() when notFound != null:
 return notFound(_that);case ConflictError() when conflict != null:
 return conflict(_that);case NetworkError() when network != null:
@@ -137,12 +140,13 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<FieldError> details)?  validation,TResult Function( String? message)?  badRequest,TResult Function()?  locationNotEmpty,TResult Function()?  accessDenied,TResult Function()?  notFound,TResult Function()?  conflict,TResult Function()?  network,TResult Function( String? message)?  unknown,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<FieldError> details)?  validation,TResult Function( String? message)?  badRequest,TResult Function()?  locationNotEmpty,TResult Function()?  unauthorized,TResult Function()?  accessDenied,TResult Function()?  notFound,TResult Function()?  conflict,TResult Function()?  network,TResult Function( String? message)?  unknown,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ValidationError() when validation != null:
 return validation(_that.details);case BadRequestError() when badRequest != null:
 return badRequest(_that.message);case LocationNotEmptyError() when locationNotEmpty != null:
-return locationNotEmpty();case AccessDeniedError() when accessDenied != null:
+return locationNotEmpty();case UnauthorizedError() when unauthorized != null:
+return unauthorized();case AccessDeniedError() when accessDenied != null:
 return accessDenied();case NotFoundError() when notFound != null:
 return notFound();case ConflictError() when conflict != null:
 return conflict();case NetworkError() when network != null:
@@ -165,12 +169,13 @@ return unknown(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<FieldError> details)  validation,required TResult Function( String? message)  badRequest,required TResult Function()  locationNotEmpty,required TResult Function()  accessDenied,required TResult Function()  notFound,required TResult Function()  conflict,required TResult Function()  network,required TResult Function( String? message)  unknown,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<FieldError> details)  validation,required TResult Function( String? message)  badRequest,required TResult Function()  locationNotEmpty,required TResult Function()  unauthorized,required TResult Function()  accessDenied,required TResult Function()  notFound,required TResult Function()  conflict,required TResult Function()  network,required TResult Function( String? message)  unknown,}) {final _that = this;
 switch (_that) {
 case ValidationError():
 return validation(_that.details);case BadRequestError():
 return badRequest(_that.message);case LocationNotEmptyError():
-return locationNotEmpty();case AccessDeniedError():
+return locationNotEmpty();case UnauthorizedError():
+return unauthorized();case AccessDeniedError():
 return accessDenied();case NotFoundError():
 return notFound();case ConflictError():
 return conflict();case NetworkError():
@@ -189,12 +194,13 @@ return unknown(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<FieldError> details)?  validation,TResult? Function( String? message)?  badRequest,TResult? Function()?  locationNotEmpty,TResult? Function()?  accessDenied,TResult? Function()?  notFound,TResult? Function()?  conflict,TResult? Function()?  network,TResult? Function( String? message)?  unknown,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<FieldError> details)?  validation,TResult? Function( String? message)?  badRequest,TResult? Function()?  locationNotEmpty,TResult? Function()?  unauthorized,TResult? Function()?  accessDenied,TResult? Function()?  notFound,TResult? Function()?  conflict,TResult? Function()?  network,TResult? Function( String? message)?  unknown,}) {final _that = this;
 switch (_that) {
 case ValidationError() when validation != null:
 return validation(_that.details);case BadRequestError() when badRequest != null:
 return badRequest(_that.message);case LocationNotEmptyError() when locationNotEmpty != null:
-return locationNotEmpty();case AccessDeniedError() when accessDenied != null:
+return locationNotEmpty();case UnauthorizedError() when unauthorized != null:
+return unauthorized();case AccessDeniedError() when accessDenied != null:
 return accessDenied();case NotFoundError() when notFound != null:
 return notFound();case ConflictError() when conflict != null:
 return conflict();case NetworkError() when network != null:
@@ -369,6 +375,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'ApiError.locationNotEmpty()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class UnauthorizedError extends ApiError {
+  const UnauthorizedError(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnauthorizedError);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ApiError.unauthorized()';
 }
 
 

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PlantCare — Микровзаимодействия</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    em { font-style: italic; }
+
+    /* ── 1 · Care button morph (loop 4.2s) ───────────────── */
+    .m-carebtn-bg { animation: cbBg 4200ms cubic-bezier(.34,1.56,.64,1) infinite; }
+    .m-carebtn-label { animation: cbLabel 4200ms ease infinite; }
+    .m-carebtn-check { opacity: 0; transform: scale(.4); animation: cbCheck 4200ms cubic-bezier(.34,1.56,.64,1) infinite; }
+    .m-carebtn-ripple { opacity: 0; transform: scale(1); animation: cbRipple 4200ms ease-out infinite; }
+    @keyframes cbBg {
+      0%,18% { transform: scale(1); background-color: var(--ink); }
+      24% { transform: scale(.94); }
+      34% { transform: scale(1.04); background-color: var(--primary); }
+      44%,86% { transform: scale(1); background-color: var(--primary); }
+      100% { transform: scale(1); background-color: var(--ink); }
+    }
+    @keyframes cbLabel { 0%,20% { opacity: 1; } 28%,86% { opacity: 0; } 96%,100% { opacity: 1; } }
+    @keyframes cbCheck { 0%,26% { opacity: 0; transform: scale(.4); } 38%,86% { opacity: 1; transform: scale(1); } 92%,100% { opacity: 0; transform: scale(.4); } }
+    @keyframes cbRipple { 0%,20% { opacity: 0; transform: scale(1); } 24% { opacity: .7; } 44% { opacity: 0; transform: scale(1.5); } 100% { opacity: 0; transform: scale(1.5); } }
+
+    /* ── 2 · Success check (loop) ─────────────────────────── */
+    .m-success-circle { transform: scale(0); animation: scCircle 4200ms cubic-bezier(.34,1.56,.64,1) infinite; }
+    .m-success-check path { animation: scCheck 4200ms ease infinite; }
+    @keyframes scCircle { 0% { transform: scale(0); } 16% { transform: scale(1.12); } 24%,86% { transform: scale(1); } 96%,100% { transform: scale(0); } }
+    @keyframes scCheck { 0%,18% { stroke-dashoffset: 60; } 36%,100% { stroke-dashoffset: 0; } }
+    .m-leaf { opacity: 0; }
+    .m-leaf-0 { animation: lf0 4200ms ease-out infinite; }
+    .m-leaf-1 { animation: lf1 4200ms ease-out infinite; }
+    .m-leaf-2 { animation: lf2 4200ms ease-out infinite; }
+    .m-leaf-3 { animation: lf3 4200ms ease-out infinite; }
+    .m-leaf-4 { animation: lf4 4200ms ease-out infinite; }
+    @keyframes lf0 { 0%,20% { opacity: 0; transform: translate(0,0) scale(.5) rotate(0); } 30% { opacity: 1; } 50%,100% { opacity: 0; transform: translate(-52px,-40px) scale(1) rotate(-40deg); } }
+    @keyframes lf1 { 0%,20% { opacity: 0; transform: translate(0,0) scale(.5); } 30% { opacity: 1; } 50%,100% { opacity: 0; transform: translate(46px,-46px) scale(1) rotate(50deg); } }
+    @keyframes lf2 { 0%,20% { opacity: 0; transform: translate(0,0) scale(.5); } 30% { opacity: 1; } 50%,100% { opacity: 0; transform: translate(-44px,34px) scale(1) rotate(30deg); } }
+    @keyframes lf3 { 0%,20% { opacity: 0; transform: translate(0,0) scale(.5); } 30% { opacity: 1; } 50%,100% { opacity: 0; transform: translate(50px,30px) scale(1) rotate(-50deg); } }
+    @keyframes lf4 { 0%,20% { opacity: 0; transform: translate(0,0) scale(.5); } 30% { opacity: 1; } 50%,100% { opacity: 0; transform: translate(2px,-58px) scale(1) rotate(10deg); } }
+
+    /* ── 3 · Water react ──────────────────────────────────── */
+    .m-plant { animation: wrPlant 4200ms cubic-bezier(.34,1.56,.64,1) infinite; }
+    @keyframes wrPlant { 0%,30% { transform: scale(.96) rotate(-1deg); filter: saturate(.8) brightness(.97); } 48% { transform: scale(1.04) rotate(1deg); } 60%,86% { transform: scale(1) rotate(0); filter: saturate(1.1) brightness(1.03); } 100% { transform: scale(.96) rotate(-1deg); filter: saturate(.8) brightness(.97); } }
+    .m-drop { opacity: 0; }
+    .m-drop-0 { left: 46px; animation: drop0 4200ms ease-in infinite; }
+    .m-drop-1 { left: 70px; animation: drop1 4200ms ease-in infinite; }
+    .m-drop-2 { left: 92px; animation: drop2 4200ms ease-in infinite; }
+    @keyframes drop0 { 0% { opacity: 0; transform: translateY(0); } 6% { opacity: 1; } 22% { opacity: 1; transform: translateY(78px); } 26%,100% { opacity: 0; transform: translateY(86px); } }
+    @keyframes drop1 { 0%,6% { opacity: 0; transform: translateY(0); } 12% { opacity: 1; } 28% { opacity: 1; transform: translateY(86px); } 32%,100% { opacity: 0; transform: translateY(94px); } }
+    @keyframes drop2 { 0%,10% { opacity: 0; transform: translateY(0); } 16% { opacity: 1; } 32% { opacity: 1; transform: translateY(80px); } 36%,100% { opacity: 0; transform: translateY(88px); } }
+    .m-sparkle { opacity: 0; animation: wrSpark 4200ms ease infinite; }
+    @keyframes wrSpark { 0%,44% { opacity: 0; transform: scale(.4); } 54% { opacity: 1; transform: scale(1.1); } 64%,86% { opacity: .9; transform: scale(1); } 96%,100% { opacity: 0; transform: scale(.4); } }
+
+    /* ── 4 · Streak roll ──────────────────────────────────── */
+    .m-streak-roll { animation: stRoll 4200ms cubic-bezier(.34,1.56,.64,1) infinite; }
+    @keyframes stRoll { 0%,30% { transform: translateY(0); } 48%,90% { transform: translateY(-56px); } 100% { transform: translateY(0); } }
+    .m-streak-emoji { animation: stEmoji 4200ms cubic-bezier(.34,1.56,.64,1) infinite; display: inline-block; }
+    @keyframes stEmoji { 0%,40% { transform: scale(1) rotate(0); } 50% { transform: scale(1.3) rotate(-8deg); } 62%,90% { transform: scale(1) rotate(0); } }
+
+    /* ── 5 · Pull to refresh ──────────────────────────────── */
+    .m-sheet { animation: prSheet 4200ms cubic-bezier(.4,0,.2,1) infinite; }
+    @keyframes prSheet { 0% { transform: translateY(0); } 30%,50% { transform: translateY(56px); } 70%,100% { transform: translateY(0); } }
+    .m-sprout { transform: scale(0); transform-origin: bottom center; }
+    .m-sprout { animation: prSproutG 4200ms ease infinite; }
+    @keyframes prSproutG { 0% { transform: scale(0) rotate(0); } 30% { transform: scale(.5); } 50% { transform: scale(1) rotate(0); } 58% { transform: scale(1) rotate(360deg); } 70%,100% { transform: scale(1) rotate(360deg); opacity: 1; } }
+    .m-sprout-leafL { transform-origin: 20px 24px; animation: prLeafL 4200ms ease infinite; }
+    .m-sprout-leafR { transform-origin: 20px 26px; animation: prLeafR 4200ms ease infinite; }
+    @keyframes prLeafL { 0%,30% { transform: scale(0); } 48% { transform: scale(1); } 100% { transform: scale(1); } }
+    @keyframes prLeafR { 0%,36% { transform: scale(0); } 52% { transform: scale(1); } 100% { transform: scale(1); } }
+
+    /* ── 6 · Toast ────────────────────────────────────────── */
+    .m-toast { transform: translateY(90px); opacity: 0; animation: tsToast 4200ms cubic-bezier(.34,1.56,.64,1) infinite; }
+    @keyframes tsToast { 0% { transform: translateY(90px); opacity: 0; } 12% { transform: translateY(0); opacity: 1; } 74% { transform: translateY(0); opacity: 1; } 86%,100% { transform: translateY(90px); opacity: 0; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" src="screens.jsx"></script>
+  <script type="text/babel" src="motion-demos.jsx"></script>
+  <script type="text/babel">
+    const { useState } = React;
+
+    function App() {
+      const [theme, setTheme] = useState('light');
+      const t = window.PC_THEMES[theme];
+
+      // прокинуть токены в CSS-переменные для keyframes
+      React.useEffect(() => {
+        const r = document.documentElement.style;
+        r.setProperty('--ink', t.ink);
+        r.setProperty('--primary', t.primary);
+        document.body.style.background = t.bg;
+      }, [theme]);
+
+      const cards = [
+        { C: window.DemoCareButton, title: 'Отметка ухода', desc: 'Кнопка реагирует на тап, пускает рябь и плавно морфится в галочку — без перехода на новый экран.', dur: '420ms', ease: 'spring(.34,1.56)', trigger: 'tap «Полить»', haptic: 'medium' },
+        { C: window.DemoSuccessCheck, title: 'Галочка успеха', desc: 'Круг впрыгивает с лёгким overshoot, чек прорисовывается штрихом, листики разлетаются конфетти.', dur: '600ms', ease: 'spring(.34,1.56)', trigger: 'care-event saved', haptic: 'success' },
+        { C: window.DemoWaterReact, title: 'Реакция растения', desc: 'Капли падают, растение приподнимается и «расцветает» — насыщенность и яркость растут.', dur: '900ms', ease: 'spring + ease-in', trigger: 'после полива', haptic: '—' },
+        { C: window.DemoStreak, title: 'Инкремент стрика', desc: 'Число перекатывается 46→47 с подскоком, росток пружинит — маленькое празднование.', dur: '500ms', ease: 'spring(.34,1.56)', trigger: 'стрик +1', haptic: 'light' },
+        { C: window.DemoPullRefresh, title: 'Pull-to-refresh', desc: 'Вместо спиннера — росток прорастает по мере оттягивания и крутится при загрузке.', dur: 'follows drag', ease: 'ease-out', trigger: 'оттягивание', haptic: 'light @ trigger' },
+        { C: window.DemoToast, title: 'Тост', desc: 'Выезжает снизу с overshoot, держится ~4с с кнопкой «Отменить», мягко уезжает.', dur: '300ms in', ease: 'spring(.34,1.56)', trigger: 'действие выполнено', haptic: '—' },
+      ];
+
+      return (
+        <div style={{ minHeight: '100vh', background: t.bg, color: t.ink, padding: '40px 32px 60px' }}>
+          <div style={{ maxWidth: 1080, margin: '0 auto' }}>
+            {/* header */}
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 20, marginBottom: 8, flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: t.primary }}>PlantCare · Motion</div>
+                <h1 style={{ fontFamily: '"Instrument Serif", serif', fontWeight: 400, fontSize: 46, lineHeight: 1.05, margin: '8px 0 0', letterSpacing: '-0.01em' }}>
+                  Как приложение <em style={{ color: t.primary, fontStyle: 'italic' }}>дышит</em>
+                </h1>
+                <div style={{ fontSize: 15, color: t.inkSoft, marginTop: 10, maxWidth: 560, lineHeight: 1.5, textWrap: 'pretty' }}>
+                  Шесть микровзаимодействий, задающих тёплый характер продукта. Демо зациклены; точные длительности, кривые и haptics — в <b style={{ color: t.ink }}>MOTION.md</b>.
+                </div>
+              </div>
+              <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} style={{
+                padding: '10px 16px', borderRadius: 999, background: t.surface, border: `1px solid ${t.line}`,
+                color: t.ink, fontSize: 13, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer', flexShrink: 0,
+              }}>{theme === 'light' ? '🌙 Тёмная' : '☀️ Светлая'}</button>
+            </div>
+
+            {/* grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 18, marginTop: 28 }}>
+              {cards.map((c, i) => (
+                <window.MotionCard key={i} t={t} title={c.title} desc={c.desc} dur={c.dur} ease={c.ease} trigger={c.trigger}>
+                  <c.C t={t} />
+                </window.MotionCard>
+              ))}
+            </div>
+
+            {/* principles */}
+            <div style={{ marginTop: 40, padding: '24px 26px', background: t.surface, borderRadius: 24, border: `1px solid ${t.line}` }}>
+              <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 24, marginBottom: 14 }}>Принципы движения</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 18 }}>
+                {[
+                  ['Живое, не механическое', 'Spring c лёгким overshoot вместо линейных переходов. Растения «реагируют», а не просто меняют состояние.'],
+                  ['Быстро и ненавязчиво', 'Микровзаимодействия 300–600мс. Достаточно, чтобы заметить, не настолько, чтобы ждать.'],
+                  ['Haptics как часть', 'Тактильный отклик на успех и важные действия — ощущение заботы продолжается в пальцах.'],
+                  ['Уважение к настройкам', 'prefers-reduced-motion отключает анимации; функциональность не страдает.'],
+                ].map(([h, d], i) => (
+                  <div key={i}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: t.primary }}>{h}</div>
+                    <div style={{ fontSize: 13, color: t.inkSoft, marginTop: 4, lineHeight: 1.5 }}>{d}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

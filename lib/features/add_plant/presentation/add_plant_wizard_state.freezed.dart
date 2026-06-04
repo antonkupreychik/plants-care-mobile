@@ -351,14 +351,16 @@ extension AddPlantSubmitStatusPatterns on AddPlantSubmitStatus {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AddPlantIdle value)?  idle,TResult Function( AddPlantSubmitting value)?  submitting,TResult Function( AddPlantSuccess value)?  success,TResult Function( AddPlantFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AddPlantIdle value)?  idle,TResult Function( AddPlantSubmitting value)?  submitting,TResult Function( AddPlantSavingSchedules value)?  savingSchedules,TResult Function( AddPlantSuccess value)?  success,TResult Function( AddPlantFailure value)?  failure,TResult Function( AddPlantScheduleFailure value)?  scheduleFailure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AddPlantIdle() when idle != null:
 return idle(_that);case AddPlantSubmitting() when submitting != null:
-return submitting(_that);case AddPlantSuccess() when success != null:
+return submitting(_that);case AddPlantSavingSchedules() when savingSchedules != null:
+return savingSchedules(_that);case AddPlantSuccess() when success != null:
 return success(_that);case AddPlantFailure() when failure != null:
-return failure(_that);case _:
+return failure(_that);case AddPlantScheduleFailure() when scheduleFailure != null:
+return scheduleFailure(_that);case _:
   return orElse();
 
 }
@@ -376,14 +378,16 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AddPlantIdle value)  idle,required TResult Function( AddPlantSubmitting value)  submitting,required TResult Function( AddPlantSuccess value)  success,required TResult Function( AddPlantFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AddPlantIdle value)  idle,required TResult Function( AddPlantSubmitting value)  submitting,required TResult Function( AddPlantSavingSchedules value)  savingSchedules,required TResult Function( AddPlantSuccess value)  success,required TResult Function( AddPlantFailure value)  failure,required TResult Function( AddPlantScheduleFailure value)  scheduleFailure,}){
 final _that = this;
 switch (_that) {
 case AddPlantIdle():
 return idle(_that);case AddPlantSubmitting():
-return submitting(_that);case AddPlantSuccess():
+return submitting(_that);case AddPlantSavingSchedules():
+return savingSchedules(_that);case AddPlantSuccess():
 return success(_that);case AddPlantFailure():
-return failure(_that);}
+return failure(_that);case AddPlantScheduleFailure():
+return scheduleFailure(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -397,14 +401,16 @@ return failure(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AddPlantIdle value)?  idle,TResult? Function( AddPlantSubmitting value)?  submitting,TResult? Function( AddPlantSuccess value)?  success,TResult? Function( AddPlantFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AddPlantIdle value)?  idle,TResult? Function( AddPlantSubmitting value)?  submitting,TResult? Function( AddPlantSavingSchedules value)?  savingSchedules,TResult? Function( AddPlantSuccess value)?  success,TResult? Function( AddPlantFailure value)?  failure,TResult? Function( AddPlantScheduleFailure value)?  scheduleFailure,}){
 final _that = this;
 switch (_that) {
 case AddPlantIdle() when idle != null:
 return idle(_that);case AddPlantSubmitting() when submitting != null:
-return submitting(_that);case AddPlantSuccess() when success != null:
+return submitting(_that);case AddPlantSavingSchedules() when savingSchedules != null:
+return savingSchedules(_that);case AddPlantSuccess() when success != null:
 return success(_that);case AddPlantFailure() when failure != null:
-return failure(_that);case _:
+return failure(_that);case AddPlantScheduleFailure() when scheduleFailure != null:
+return scheduleFailure(_that);case _:
   return null;
 
 }
@@ -421,13 +427,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  submitting,TResult Function( int plantId)?  success,TResult Function( ApiError error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  submitting,TResult Function()?  savingSchedules,TResult Function( int plantId)?  success,TResult Function( ApiError error)?  failure,TResult Function( int plantId,  ApiError error)?  scheduleFailure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AddPlantIdle() when idle != null:
 return idle();case AddPlantSubmitting() when submitting != null:
-return submitting();case AddPlantSuccess() when success != null:
+return submitting();case AddPlantSavingSchedules() when savingSchedules != null:
+return savingSchedules();case AddPlantSuccess() when success != null:
 return success(_that.plantId);case AddPlantFailure() when failure != null:
-return failure(_that.error);case _:
+return failure(_that.error);case AddPlantScheduleFailure() when scheduleFailure != null:
+return scheduleFailure(_that.plantId,_that.error);case _:
   return orElse();
 
 }
@@ -445,13 +453,15 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  submitting,required TResult Function( int plantId)  success,required TResult Function( ApiError error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  submitting,required TResult Function()  savingSchedules,required TResult Function( int plantId)  success,required TResult Function( ApiError error)  failure,required TResult Function( int plantId,  ApiError error)  scheduleFailure,}) {final _that = this;
 switch (_that) {
 case AddPlantIdle():
 return idle();case AddPlantSubmitting():
-return submitting();case AddPlantSuccess():
+return submitting();case AddPlantSavingSchedules():
+return savingSchedules();case AddPlantSuccess():
 return success(_that.plantId);case AddPlantFailure():
-return failure(_that.error);}
+return failure(_that.error);case AddPlantScheduleFailure():
+return scheduleFailure(_that.plantId,_that.error);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -465,13 +475,15 @@ return failure(_that.error);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  submitting,TResult? Function( int plantId)?  success,TResult? Function( ApiError error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  submitting,TResult? Function()?  savingSchedules,TResult? Function( int plantId)?  success,TResult? Function( ApiError error)?  failure,TResult? Function( int plantId,  ApiError error)?  scheduleFailure,}) {final _that = this;
 switch (_that) {
 case AddPlantIdle() when idle != null:
 return idle();case AddPlantSubmitting() when submitting != null:
-return submitting();case AddPlantSuccess() when success != null:
+return submitting();case AddPlantSavingSchedules() when savingSchedules != null:
+return savingSchedules();case AddPlantSuccess() when success != null:
 return success(_that.plantId);case AddPlantFailure() when failure != null:
-return failure(_that.error);case _:
+return failure(_that.error);case AddPlantScheduleFailure() when scheduleFailure != null:
+return scheduleFailure(_that.plantId,_that.error);case _:
   return null;
 
 }
@@ -535,6 +547,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'AddPlantSubmitStatus.submitting()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class AddPlantSavingSchedules implements AddPlantSubmitStatus {
+  const AddPlantSavingSchedules();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddPlantSavingSchedules);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AddPlantSubmitStatus.savingSchedules()';
 }
 
 
@@ -668,6 +712,83 @@ class _$AddPlantFailureCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
   return _then(AddPlantFailure(
 null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as ApiError,
+  ));
+}
+
+/// Create a copy of AddPlantSubmitStatus
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ApiErrorCopyWith<$Res> get error {
+  
+  return $ApiErrorCopyWith<$Res>(_self.error, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class AddPlantScheduleFailure implements AddPlantSubmitStatus {
+  const AddPlantScheduleFailure({required this.plantId, required this.error});
+  
+
+ final  int plantId;
+ final  ApiError error;
+
+/// Create a copy of AddPlantSubmitStatus
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AddPlantScheduleFailureCopyWith<AddPlantScheduleFailure> get copyWith => _$AddPlantScheduleFailureCopyWithImpl<AddPlantScheduleFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddPlantScheduleFailure&&(identical(other.plantId, plantId) || other.plantId == plantId)&&(identical(other.error, error) || other.error == error));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,plantId,error);
+
+@override
+String toString() {
+  return 'AddPlantSubmitStatus.scheduleFailure(plantId: $plantId, error: $error)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AddPlantScheduleFailureCopyWith<$Res> implements $AddPlantSubmitStatusCopyWith<$Res> {
+  factory $AddPlantScheduleFailureCopyWith(AddPlantScheduleFailure value, $Res Function(AddPlantScheduleFailure) _then) = _$AddPlantScheduleFailureCopyWithImpl;
+@useResult
+$Res call({
+ int plantId, ApiError error
+});
+
+
+$ApiErrorCopyWith<$Res> get error;
+
+}
+/// @nodoc
+class _$AddPlantScheduleFailureCopyWithImpl<$Res>
+    implements $AddPlantScheduleFailureCopyWith<$Res> {
+  _$AddPlantScheduleFailureCopyWithImpl(this._self, this._then);
+
+  final AddPlantScheduleFailure _self;
+  final $Res Function(AddPlantScheduleFailure) _then;
+
+/// Create a copy of AddPlantSubmitStatus
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? plantId = null,Object? error = null,}) {
+  return _then(AddPlantScheduleFailure(
+plantId: null == plantId ? _self.plantId : plantId // ignore: cast_nullable_to_non_nullable
+as int,error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as ApiError,
   ));
 }

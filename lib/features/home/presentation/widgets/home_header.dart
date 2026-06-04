@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/tokens.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../notifications/presentation/notifications_providers.dart';
 
 /// Шапка главного: логотип-лист + название слева, иконки поиск/уведомления
 /// справа, ниже — дата и серифное приветствие (без имени пользователя —
 /// провайдера профиля пока нет, см. отчёт).
+///
+/// Колокольчик уведомлений несёт badge с числом непрочитанных
+/// ([unreadCountProvider]); скрыт при `0`. Тап → экран 24 ([onNotifications]).
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key, required this.now, required this.onComingSoon});
+  const HomeHeader({
+    super.key,
+    required this.now,
+    required this.onComingSoon,
+    required this.onNotifications,
+  });
 
   final DateTime now;
   final VoidCallback onComingSoon;
+
+  /// Переход на экран 24 «Лента уведомлений» (тап по колокольчику).
+  final VoidCallback onNotifications;
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +64,7 @@ class HomeHeader extends StatelessWidget {
               onPressed: onComingSoon,
             ),
             const SizedBox(width: 6),
-            _HeaderIconButton(
-              icon: Icons.notifications_none_rounded,
-              tooltip: l10n.homeNotificationsTooltip,
-              onPressed: onComingSoon,
-            ),
+            _NotificationsButton(onPressed: onNotifications),
           ],
         ),
         const SizedBox(height: 18),
@@ -78,6 +87,93 @@ class HomeHeader extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Колокольчик уведомлений с badge числа непрочитанных
+/// ([unreadCountProvider]). Badge скрыт при `0`; число «9+» при переполнении.
+class _NotificationsButton extends ConsumerWidget {
+  const _NotificationsButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    final unread = ref.watch(unreadCountProvider);
+    final tooltip = l10n.notificationsBadgeTooltip(unread);
+
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: c.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(color: c.line),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onPressed,
+          child: SizedBox(
+            width: 44,
+            height: 44,
+            child: Semantics(
+              button: true,
+              label: tooltip,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  Icon(
+                    Icons.notifications_none_rounded,
+                    size: 20,
+                    color: c.ink,
+                  ),
+                  if (unread > 0)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: _Badge(count: unread),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Badge extends StatelessWidget {
+  const _Badge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final text = count > 9 ? '9+' : '$count';
+    return Container(
+      constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
+        color: c.terracotta,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: c.surface, width: 1.5),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 9.5,
+          height: 1,
+          fontWeight: FontWeight.w700,
+          color: c.fabInk,
+        ),
+      ),
     );
   }
 }

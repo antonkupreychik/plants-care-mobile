@@ -1,14 +1,23 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/care/care_task_type.dart';
 import '../../../core/error/result.dart';
 // Кросс-фичевая инвалидация после успешного POST: созданное растение должно
 // появиться в саду. Импорт presentation-провайдера home — то же осознанное
 // исключение из «фича не импортит presentation другой фичи», что и в
 // log_care_event_controller (зависим от объявления провайдера, не от виджетов).
 import '../../home/presentation/home_providers.dart';
+// Кросс-фичевая зависимость на data/domain edit_schedule: выделять отдельный
+// репозиторий/use-case нецелесообразно — операция одна (PUT schedule) и уже
+// реализована в edit_schedule. Аналогичный precedent — home_providers.dart выше.
+// Зависимость только на интерфейс-провайдер и доменные модели, не на виджеты.
+import '../../edit_schedule/data/edit_schedule_repository_provider.dart';
+import '../../edit_schedule/domain/care_schedule_unit.dart';
+import '../../edit_schedule/domain/plant_care_schedule.dart';
 import '../data/add_plant_repository_provider.dart';
 import '../domain/new_plant_draft.dart';
 import '../domain/species_summary.dart';
+import '../domain/window_side.dart';
 import 'add_plant_wizard_state.dart';
 
 part 'add_plant_wizard_controller.g.dart';
@@ -35,6 +44,8 @@ class AddPlantWizardController extends _$AddPlantWizardController {
       draft: draft.copyWith(
         species: species,
         name: shouldPrefillName ? species.name : draft.name,
+        // Сброс оверрайдов при смене вида: рекомендации у нового вида другие.
+        intervalOverrides: const {},
       ),
       status: const AddPlantSubmitStatus.idle(),
     );
@@ -67,41 +78,121 @@ class AddPlantWizardController extends _$AddPlantWizardController {
     );
   }
 
-  /// Создать растение (`POST /plants`). Single-call gate через [canSubmit]
-  /// (валидное имя + не идёт отправка) — повторный тап во время in-flight
-  /// игнорируется. Возвращает id созданной записи при успехе, иначе null.
+  /// Выбрать сторону окна (шаг 04c). Повторный тап по выбранной снимает выбор
+  /// (toggle). UI-only: в `POST /plants` не уходит, хранится в черновике.
+  void setWindowSide(WindowSide? side) {
+    final current = state.draft.windowSide;
+    state = state.copyWith(
+      draft: state.draft.copyWith(
+        windowSide: current == side ? null : side,
+      ),
+      status: const AddPlantSubmitStatus.idle(),
+    );
+  }
+
+  /// Изменить интервал ухода [type] на [every] дней (шаг 3).
   ///
-  /// На успех инвалидирует `homePlantsProvider` (растение появляется в саду) и
-  /// кладёт `success(id)` в статус. На ошибку — типизированный [ApiError] в
-  /// статус (UI рисует по типу). Отправляем `name + locationId + notes +
-  /// speciesId` (последний — id выбранного вида или null). Backend связывает
-  /// растение с видом; расписания ухода при этом НЕ создаются (gap G14).
+  /// Если [every] совпадает с рекомендацией вида — запись из оверрайдов
+  /// удаляется (нет смысла делать лишний PUT). Клампится до >= 1.
+  void setIntervalOverride(CareTaskType type, int every) {
+    final clamped = every < 1 ? 1 : every;
+    final carePlan = state.draft.species?.carePlan ?? const [];
+    int? defaultEvery;
+    for (final item in carePlan) {
+      if (item.type == type) {
+        defaultEvery = item.everyDays;
+        break;
+      }
+    }
+
+    final overrides = Map<CareTaskType, int>.of(state.draft.intervalOverrides);
+    if (defaultEvery != null && clamped == defaultEvery) {
+      overrides.remove(type);
+    } else {
+      overrides[type] = clamped;
+    }
+
+    state = state.copyWith(
+      draft: state.draft.copyWith(intervalOverrides: overrides),
+      status: const AddPlantSubmitStatus.idle(),
+    );
+  }
+
+  /// Создать растение (`POST /plants`), затем применить изменённые интервалы
+  /// (`PUT /plants/{id}/schedules/{type}` — только грязные типы).
+  ///
+  /// Single-call gate через [canSubmit] (валидное имя + нет активной отправки).
+  /// Возвращает id созданной записи при успехе, иначе null.
+  ///
+  /// Фазы:
+  /// 1. `submitting` → POST → при ошибке → `failure`, выходим.
+  /// 2. `savingSchedules` → PUT по каждому оверрайду последовательно →
+  ///    при первой ошибке → `scheduleFailure(plantId, error)`.
+  /// 3. Полный успех → `success(plantId)`.
+  ///
+  /// `scheduleFailure` означает: растение создано, но интервалы не применились.
+  /// UI навигирует на editSchedule в обоих случаях.
   Future<int?> submit() async {
     if (!state.canSubmit) return null;
 
     final draft = state.draft;
     state = state.copyWith(status: const AddPlantSubmitStatus.submitting());
 
-    final result = await ref.read(addPlantRepositoryProvider).createPlant(
+    final createResult = await ref.read(addPlantRepositoryProvider).createPlant(
           name: draft.trimmedName,
           locationId: draft.locationId,
           notes: draft.notes,
           speciesId: draft.species?.id,
         );
 
-    // autoDispose: если мастер закрыли во время in-flight POST — notifier
-    // диспоузнут, дальше трогать ref/state нельзя (StateError). Запись уже
-    // создаётся; просто выходим.
     if (!ref.mounted) return null;
 
-    switch (result) {
+    final int plantId;
+    switch (createResult) {
       case Success(:final value):
         ref.invalidate(homePlantsProvider);
-        state = state.copyWith(status: AddPlantSubmitStatus.success(value));
-        return value;
+        plantId = value;
       case Failure(:final error):
         state = state.copyWith(status: AddPlantSubmitStatus.failure(error));
         return null;
     }
+
+    final overrides = draft.intervalOverrides;
+    if (overrides.isEmpty) {
+      state = state.copyWith(status: AddPlantSubmitStatus.success(plantId));
+      return plantId;
+    }
+
+    state = state.copyWith(
+      status: const AddPlantSubmitStatus.savingSchedules(),
+    );
+
+    final scheduleRepo = ref.read(editScheduleRepositoryProvider);
+    for (final entry in overrides.entries) {
+      final schedule = PlantCareSchedule(
+        type: entry.key,
+        rawType: entry.key.apiString,
+        every: entry.value,
+        unit: CareScheduleUnit.day,
+        rawUnit: 'DAY',
+        enabled: true,
+      );
+      final putResult = await scheduleRepo.updateSchedule(plantId, schedule);
+
+      if (!ref.mounted) return null;
+
+      if (putResult case Failure(:final error)) {
+        state = state.copyWith(
+          status: AddPlantSubmitStatus.scheduleFailure(
+            plantId: plantId,
+            error: error,
+          ),
+        );
+        return null;
+      }
+    }
+
+    state = state.copyWith(status: AddPlantSubmitStatus.success(plantId));
+    return plantId;
   }
 }

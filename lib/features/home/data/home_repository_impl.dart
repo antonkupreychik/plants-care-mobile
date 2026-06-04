@@ -16,9 +16,9 @@ import 'mappers/plant_mapper.dart';
 /// Реализация [HomeRepository] поверх сгенерированного API-клиента (MADR-007).
 ///
 /// На каждый запрос проставляет [AuthScope] через `authScopeExtra` — заголовок
-/// (`X-Chat-Id` / `X-User-Id`) подставит `AuthInterceptor` из текущей
+/// (`Authorization: Bearer`) подставит `AuthInterceptor` из текущей
 /// `AuthSession` (MADR-006/008). Поэтому идентичность здесь НЕ хардкодится:
-/// см. [_headerOverriddenByInterceptor].
+/// см. `AuthInterceptor`.
 ///
 /// Ошибки dio ловит `ErrorInterceptor` и кладёт [ApiError] в `DioException.error`;
 /// здесь это разворачивается в `Result.failure` (MADR-011), наружу не бросаем.
@@ -27,19 +27,10 @@ class HomeRepositoryImpl implements HomeRepository {
 
   final PlantsCareApi _api;
 
-  /// Значение для required-параметра `@Header` сгенерированного клиента.
-  ///
-  /// Генератор требует `int` для `X-Chat-Id` / `X-User-Id`, но реальный
-  /// заголовок ставит `AuthInterceptor` из `AuthSession` и ПЕРЕЗАПИСЫВАЕТ это
-  /// значение (`headers.addAll`). Идентичность живёт в одном месте (auth-слот),
-  /// data-слой её не знает и не хардкодит — это лишь заглушка обязательного поля.
-  static const int _headerOverriddenByInterceptor = 0;
-
   @override
   Future<Result<List<CareTask>>> getTodayTasks() async {
     try {
       final response = await _api.today.getToday(
-        xChatId: _headerOverriddenByInterceptor,
         extras: authScopeExtra(AuthScope.chat),
       );
       return Result.success(
@@ -54,7 +45,6 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<Result<List<Plant>>> getPlants({int limit = 50}) async {
     try {
       final response = await _api.plants.listPlants(
-        xUserId: _headerOverriddenByInterceptor,
         limit: limit,
         extras: authScopeExtra(AuthScope.user),
       );
@@ -70,7 +60,6 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<Result<List<GardenLocation>>> getLocations() async {
     try {
       final response = await _api.locations.listLocations(
-        xUserId: _headerOverriddenByInterceptor,
         extras: authScopeExtra(AuthScope.user),
       );
       return Result.success(

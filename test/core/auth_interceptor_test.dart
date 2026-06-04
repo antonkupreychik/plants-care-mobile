@@ -9,8 +9,7 @@ import 'package:plantcare_mobile/core/network/request_extra.dart';
 class _StubSession implements AuthSession {
   @override
   Map<String, String> headersFor(AuthScope scope) => switch (scope) {
-        AuthScope.user => {'X-User-Id': '1'},
-        AuthScope.chat => {'X-Chat-Id': '42'},
+        AuthScope.user || AuthScope.chat => const {'Authorization': 'Bearer t'},
         AuthScope.none => const {},
       };
 
@@ -42,17 +41,16 @@ void main() {
     return captured as RequestOptions;
   }
 
-  test('chat scope → заголовок X-Chat-Id проставлен', () {
-    expect(runWith(AuthScope.chat).headers['X-Chat-Id'], '42');
+  test('chat scope → заголовок Authorization: Bearer проставлен', () {
+    expect(runWith(AuthScope.chat).headers['Authorization'], 'Bearer t');
   });
 
-  test('user scope → заголовок X-User-Id проставлен', () {
-    expect(runWith(AuthScope.user).headers['X-User-Id'], '1');
+  test('user scope → заголовок Authorization: Bearer проставлен', () {
+    expect(runWith(AuthScope.user).headers['Authorization'], 'Bearer t');
   });
 
-  test('без scope в extra → дефолт none, заголовков нет', () {
+  test('без scope в extra → дефолт none, заголовка авторизации нет', () {
     final headers = runWith(null).headers;
-    expect(headers.containsKey('X-Chat-Id'), isFalse);
-    expect(headers.containsKey('X-User-Id'), isFalse);
+    expect(headers.containsKey('Authorization'), isFalse);
   });
 }

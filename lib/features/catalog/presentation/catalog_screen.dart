@@ -10,7 +10,9 @@ import '../../../l10n/app_localizations.dart';
 import 'catalog_providers.dart';
 import 'species_list_state.dart';
 import 'widgets/catalog_empty.dart';
+import 'widgets/catalog_filter_chips.dart';
 import 'widgets/catalog_load_more_footer.dart';
+import 'widgets/catalog_search_empty.dart';
 import 'widgets/catalog_search_field.dart';
 import 'widgets/species_card.dart';
 
@@ -92,6 +94,13 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
               ),
             ),
 
+            SliverPadding(
+              padding: const EdgeInsets.only(top: 12),
+              sliver: SliverToBoxAdapter(
+                child: CatalogFilterChips(total: listState.value?.total),
+              ),
+            ),
+
             _CatalogBody(
               listState: listState,
               query: query,
@@ -99,6 +108,9 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
               onRetryInitial: () => ref.invalidate(speciesListProvider),
               onRetryLoadMore: () =>
                   ref.read(speciesListProvider.notifier).retryLoadMore(),
+              onAddPlant: () => context.go('/home/add'),
+              onSuggestionTap: (name) =>
+                  ref.read(speciesQueryProvider.notifier).setQuery(name),
             ),
 
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
@@ -109,7 +121,9 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   }
 }
 
-/// Шапка: overline «Каталог», серифный заголовок и счётчик видов (когда есть).
+/// Шапка каталога: серифный заголовок «Каталог *растений*» (акцент primary
+/// italic) и счётчик видов под ним. Без back button и overline — каталог это
+/// корневой таб нижней навигации (issue #80, п.5–6, дизайн `screens-v4`).
 class _CatalogHeader extends StatelessWidget {
   const _CatalogHeader({required this.listState});
 
@@ -124,68 +138,32 @@ class _CatalogHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            _BackButton(),
-            const SizedBox(width: 4),
-            Text(
-              l10n.catalogTitle.toUpperCase(),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.7,
-                color: c.inkSoft,
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: l10n.catalogHeadingLead,
+                style: AppTheme.serif(fontSize: 38, color: c.ink),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Text(
-          l10n.catalogHeading,
-          style: AppTheme.serif(fontSize: 32, color: c.ink),
+              TextSpan(
+                text: l10n.catalogHeadingAccent,
+                style: AppTheme.serif(
+                  fontSize: 38,
+                  color: c.primary,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+          ),
         ),
         if (total != null) ...[
-          const SizedBox(height: 2),
+          const SizedBox(height: 4),
           Text(
             l10n.catalogCount(total),
             style: TextStyle(fontSize: 13, color: c.inkSoft),
           ),
         ],
       ],
-    );
-  }
-}
-
-class _BackButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final c = Theme.of(context).extension<PcColors>()!;
-    final l10n = AppLocalizations.of(context);
-    return Tooltip(
-      message: l10n.plantCardBack,
-      child: Material(
-        color: Colors.transparent,
-        shape: const CircleBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/home');
-            }
-          },
-          child: SizedBox(
-            width: 44,
-            height: 44,
-            child: Semantics(
-              button: true,
-              label: l10n.plantCardBack,
-              child: Icon(Icons.arrow_back_rounded, size: 22, color: c.ink),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -199,6 +177,8 @@ class _CatalogBody extends StatelessWidget {
     required this.onTapSpecies,
     required this.onRetryInitial,
     required this.onRetryLoadMore,
+    required this.onAddPlant,
+    required this.onSuggestionTap,
   });
 
   final AsyncValue<SpeciesListState> listState;
@@ -206,6 +186,8 @@ class _CatalogBody extends StatelessWidget {
   final void Function(int id) onTapSpecies;
   final VoidCallback onRetryInitial;
   final VoidCallback onRetryLoadMore;
+  final VoidCallback onAddPlant;
+  final ValueChanged<String> onSuggestionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -232,16 +214,19 @@ class _CatalogBody extends StatelessWidget {
       ),
       data: (state) {
         if (state.items.isEmpty) {
-          final isSearch = query.isNotEmpty;
           return SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
             sliver: SliverToBoxAdapter(
-              child: CatalogEmpty(
-                title: isSearch ? l10n.catalogSearchEmpty : l10n.catalogEmpty,
-                hint: isSearch
-                    ? l10n.catalogSearchEmptyHint(query)
-                    : l10n.catalogEmptyHint,
-              ),
+              child: query.isNotEmpty
+                  ? CatalogSearchEmpty(
+                      query: query,
+                      onSuggestionTap: onSuggestionTap,
+                      onAddPlant: onAddPlant,
+                    )
+                  : CatalogEmpty(
+                      title: l10n.catalogEmpty,
+                      hint: l10n.catalogEmptyHint,
+                    ),
             ),
           );
         }

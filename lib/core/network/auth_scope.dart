@@ -1,13 +1,14 @@
-/// Выбор «головы» PoC-заголовка backend (MADR-006). До появления JWT
-/// идентификация идёт двумя заголовками в зависимости от эндпоинта
-/// (api-contract §3):
+/// Нужна ли запросу аутентификация (MADR-006/008). После перехода на JWT
+/// (MADR-008) backend резолвит пользователя из `sub` access-токена, поэтому
+/// [user] и [chat] больше не различаются — оба означают «слать
+/// `Authorization: Bearer`». Историческое деление сохранено, чтобы не трогать
+/// разметку запросов в репозиториях:
 ///
-/// - [user] → `X-User-Id`: `/plants`, `/locations`
-/// - [chat] → `X-Chat-Id`: `/today`, `/calendar`, `/care-events`,
-///   `/plants/{id}/history`, `/stats/streak`
-/// - [none] → публичные `/species`, `/care-types`, `/health`
+/// - [user] / [chat] → bearer: все пользовательские эндпоинты
+///   (`/plants`, `/today`, `/calendar`, `/care-events`, `/me`, …)
+/// - [none] → публичные `/species`, `/care-types`, `/health`, `/auth/**`
 ///
 /// Data source указывает scope на каждый запрос (см. `withAuthScope`),
-/// интерсептор подставляет нужный заголовок. Дефолт — [none] (безопасно:
-/// не утечёт чужой заголовок).
+/// [JwtAuthSession] подставляет заголовок. Дефолт — [none] (безопасно: без
+/// токена на публичные ручки).
 enum AuthScope { user, chat, none }
