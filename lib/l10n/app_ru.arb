@@ -1596,6 +1596,52 @@
     "description": "Заголовок секции дополнительных настроек на экране профиля"
   },
 
+  "profileAnonymous": "Пользователь",
+  "@profileAnonymous": {
+    "description": "Имя в шапке профиля, когда у пользователя нет имени (анонимный)"
+  },
+
+  "profileMemberSince": "С нами с {date}",
+  "@profileMemberSince": {
+    "description": "Подпись в шапке профиля: дата регистрации (формат MMM yyyy)",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "май 2025"
+      }
+    }
+  },
+
+  "profileStatPlants": "Растения",
+  "@profileStatPlants": {
+    "description": "Подпись счётчика статистики: число растений"
+  },
+
+  "profileStatCareEvents": "Уходов",
+  "@profileStatCareEvents": {
+    "description": "Подпись счётчика статистики: число уходов за всё время"
+  },
+
+  "profileSectionReferences": "Справочники",
+  "@profileSectionReferences": {
+    "description": "Заголовок секции справочников на экране профиля"
+  },
+
+  "profileDiseasesTitle": "Болезни и вредители",
+  "@profileDiseasesTitle": {
+    "description": "Строка справочников: переход к каталогу болезней и вредителей"
+  },
+
+  "profileCatalogTitle": "Каталог видов",
+  "@profileCatalogTitle": {
+    "description": "Строка справочников: переход на таб каталога видов"
+  },
+
+  "profileSearchTitle": "Поиск",
+  "@profileSearchTitle": {
+    "description": "Строка настроек: переход к экрану поиска"
+  },
+
   "profileRoomsTitle": "Дома и места",
   "@profileRoomsTitle": {
     "description": "Строка настроек: переход к управлению комнатами"
