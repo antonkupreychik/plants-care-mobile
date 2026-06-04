@@ -2668,6 +2668,18 @@ abstract class AppLocalizations {
   /// **'Назад'**
   String get reportBack;
 
+  /// Семантическая метка кнопки «<» переключения на предыдущий месяц в отчёте
+  ///
+  /// In ru, this message translates to:
+  /// **'Предыдущий месяц'**
+  String get reportPrevMonth;
+
+  /// Семантическая метка кнопки «>» переключения на следующий месяц в отчёте
+  ///
+  /// In ru, this message translates to:
+  /// **'Следующий месяц'**
+  String get reportNextMonth;
+
   /// Надстрочник hero на экране отчёта: «Отчёт · май 2026»
   ///
   /// In ru, this message translates to:

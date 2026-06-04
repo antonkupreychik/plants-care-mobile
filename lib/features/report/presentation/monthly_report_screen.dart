@@ -17,12 +17,13 @@ import 'widgets/report_empty.dart';
 import 'widgets/report_header.dart';
 import 'widgets/report_hero.dart';
 import 'widgets/report_loading.dart';
+import 'widgets/report_month_picker.dart';
 import 'widgets/report_share_cta.dart';
 import 'widgets/report_weekly_trend.dart';
 
 /// Экран 14 «Месячный отчёт» (push `/profile/report`, поверх shell).
 ///
-/// Потребляет [monthlyReportProvider]`(`[currentReportMonthProvider]`)` —
+/// Потребляет [monthlyReportProvider]`(`[selectedReportMonthProvider]`)` —
 /// `AsyncValue<MonthlyReport>`. Реализованы все 4 состояния:
 /// - loading → [ReportLoading] (шапка-заглушка + skeleton под раскладку);
 /// - error → шапка + [ErrorState] с retry
@@ -31,6 +32,9 @@ import 'widgets/report_weekly_trend.dart';
 /// - empty (`report.isEmpty`) → шапка + [ReportEmpty];
 /// - data → шапка + hero + большие числа + разбивка по типам + недельный тренд +
 ///   нижняя CTA.
+///
+/// Шапка содержит [ReportMonthPicker] для переключения месяцев назад/вперёд.
+/// Переключение перезапрашивает данные через [monthlyReportProvider] family.
 ///
 /// Per-plant блоки «Звёзды месяца»/«Личный рекорд» и дельты дизайна v4 опущены —
 /// backend этих данных не отдаёт. «Поделиться» (шапка и нижняя CTA) открывает
@@ -42,8 +46,14 @@ class MonthlyReportScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
-    final month = ref.watch(currentReportMonthProvider);
+    final month = ref.watch(selectedReportMonthProvider);
+    final notifier = ref.read(selectedReportMonthProvider.notifier);
     final async = ref.watch(monthlyReportProvider(month));
+
+    // Вычисляем состояние кнопок переключения.
+    // canGoPrev/canGoNext — производные от state, который уже watch'ится через month.
+    final canGoPrev = notifier.canGoPrev;
+    final canGoNext = notifier.canGoNext;
 
     /// Строит текст для share sheet на основе данных отчёта.
     String buildShareText(MonthlyReport report) {
@@ -79,6 +89,22 @@ class MonthlyReportScreen extends ConsumerWidget {
       Share.share(text);
     }
 
+    /// Шапка экрана: кнопка «Поделиться» ([onShare]) + переключатель месяцев.
+    Widget buildHeader({required VoidCallback onShare}) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ReportHeader(onShare: onShare),
+            const SizedBox(height: 8),
+            ReportMonthPicker(
+              month: month,
+              canGoPrev: canGoPrev,
+              canGoNext: canGoNext,
+              onPrevMonth: notifier.prevMonth,
+              onNextMonth: notifier.nextMonth,
+            ),
+          ],
+        );
+
     return Scaffold(
       backgroundColor: c.bg,
       body: SafeArea(
@@ -88,7 +114,7 @@ class MonthlyReportScreen extends ConsumerWidget {
           error: (error, _) => ListView(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
             children: [
-              ReportHeader(onShare: () {}),
+              buildHeader(onShare: () {}),
               const SizedBox(height: 24),
               ErrorState(
                 message: l10n.messageForError(error),
@@ -103,7 +129,7 @@ class MonthlyReportScreen extends ConsumerWidget {
               return ListView(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
                 children: [
-                  ReportHeader(onShare: () => shareReport(report)),
+                  buildHeader(onShare: () => shareReport(report)),
                   const SizedBox(height: 24),
                   const ReportEmpty(),
                 ],
@@ -112,7 +138,7 @@ class MonthlyReportScreen extends ConsumerWidget {
             return ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 36),
               children: [
-                ReportHeader(onShare: () => shareReport(report)),
+                buildHeader(onShare: () => shareReport(report)),
                 const SizedBox(height: 14),
                 ReportHero(report: report),
                 const SizedBox(height: 16),
