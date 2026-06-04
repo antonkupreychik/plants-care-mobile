@@ -37,6 +37,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeSearchTooltip => 'Поиск';
 
   @override
+  String get searchScreenHint => 'Искать растения, виды, болезни…';
+
+  @override
+  String get searchMinCharsHint => 'Введите минимум 2 символа';
+
+  @override
+  String get searchEmptyResult => 'Ничего не найдено';
+
+  @override
+  String get searchSectionPlants => 'Мои растения';
+
+  @override
+  String get searchSectionSpecies => 'Виды';
+
+  @override
+  String get searchSectionDiseases => 'Болезни и вредители';
+
+  @override
+  String get searchShowAll => 'Показать все';
+
+  @override
+  String get searchBack => 'Назад';
+
+  @override
   String get homeNotificationsTooltip => 'Уведомления';
 
   @override
