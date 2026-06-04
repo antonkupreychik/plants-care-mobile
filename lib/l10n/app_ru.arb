@@ -176,6 +176,93 @@
     "description": "Подсказка к пустому состоянию при активном фильтре"
   },
 
+  "todayProgress": "{done} из {total} выполнено",
+  "@todayProgress": {
+    "description": "Прогресс-карточка экрана «Сегодня»: сколько задач выполнено из общего числа",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "todayProgressRemaining": "{count, plural, =0{Все заботы закрыты} one{Осталась {count} забота} few{Осталось {count} заботы} many{Осталось {count} забот} other{Осталось {count} заботы}}",
+  "@todayProgressRemaining": {
+    "description": "Подпись прогресс-карточки: сколько забот ещё осталось",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todayProgressOverdue": "{count, plural, =0{нет просроченных} one{{count} просрочена} few{{count} просрочены} many{{count} просрочено} other{{count} просрочено}}",
+  "@todayProgressOverdue": {
+    "description": "Хвост подписи прогресс-карточки: сколько просрочено",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todayDoneTitle": "{count, plural, =0{Ничего не выполнено} one{{count} выполнено сегодня} few{{count} выполнено сегодня} many{{count} выполнено сегодня} other{{count} выполнено сегодня}}",
+  "@todayDoneTitle": {
+    "description": "Заголовок свёрнутой секции «Выполнено» на экране «Сегодня»",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "todayDoneSubtitle": "{plant} · {action} в {time}",
+  "@todayDoneSubtitle": {
+    "description": "Свёрнутая секция «Выполнено»: что и когда сделано (например «Колючка · полит в 7:42»)",
+    "placeholders": {
+      "plant": { "type": "String" },
+      "action": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+
+  "todayDoneExpand": "Показать выполненные",
+  "@todayDoneExpand": {
+    "description": "Семантика/подсказка: раскрыть свёрнутую секцию «Выполнено»"
+  },
+
+  "todayDoneCollapse": "Скрыть выполненные",
+  "@todayDoneCollapse": {
+    "description": "Семантика/подсказка: свернуть секцию «Выполнено»"
+  },
+
+  "careDonePast": "{action} в {time}",
+  "@careDonePast": {
+    "description": "Подпись на карточке выполненной задачи: действие в прошедшем времени + время (например «Полито в 7:42»)",
+    "placeholders": {
+      "action": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+
+  "careActionDoneWatering": "Полито",
+  "@careActionDoneWatering": {
+    "description": "Действие полива в прошедшем времени (для секции «Выполнено»)"
+  },
+
+  "careActionDoneMisting": "Опрыскано",
+  "@careActionDoneMisting": {
+    "description": "Действие опрыскивания в прошедшем времени"
+  },
+
+  "careActionDoneFertilizing": "Удобрено",
+  "@careActionDoneFertilizing": {
+    "description": "Действие подкормки в прошедшем времени"
+  },
+
+  "careActionDoneSoilCheck": "Проверено",
+  "@careActionDoneSoilCheck": {
+    "description": "Проверка почвы в прошедшем времени"
+  },
+
+  "careActionDoneUnknown": "Сделано",
+  "@careActionDoneUnknown": {
+    "description": "Нейтральное «сделано» для нераспознанного типа ухода"
+  },
+
   "homeGardenTitle": "Мой сад",
   "@homeGardenTitle": {
     "description": "Заголовок секции с растениями пользователя"

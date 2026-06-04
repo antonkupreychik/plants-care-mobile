@@ -161,6 +161,84 @@ class AppLocalizationsRu extends AppLocalizations {
   String get todayEmptyFilterHint => 'Попробуйте другой фильтр';
 
   @override
+  String todayProgress(int done, int total) {
+    return '$done из $total выполнено';
+  }
+
+  @override
+  String todayProgressRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Осталось $count заботы',
+      many: 'Осталось $count забот',
+      few: 'Осталось $count заботы',
+      one: 'Осталась $count забота',
+      zero: 'Все заботы закрыты',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String todayProgressOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count просрочено',
+      many: '$count просрочено',
+      few: '$count просрочены',
+      one: '$count просрочена',
+      zero: 'нет просроченных',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String todayDoneTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count выполнено сегодня',
+      many: '$count выполнено сегодня',
+      few: '$count выполнено сегодня',
+      one: '$count выполнено сегодня',
+      zero: 'Ничего не выполнено',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String todayDoneSubtitle(String plant, String action, String time) {
+    return '$plant · $action в $time';
+  }
+
+  @override
+  String get todayDoneExpand => 'Показать выполненные';
+
+  @override
+  String get todayDoneCollapse => 'Скрыть выполненные';
+
+  @override
+  String careDonePast(String action, String time) {
+    return '$action в $time';
+  }
+
+  @override
+  String get careActionDoneWatering => 'Полито';
+
+  @override
+  String get careActionDoneMisting => 'Опрыскано';
+
+  @override
+  String get careActionDoneFertilizing => 'Удобрено';
+
+  @override
+  String get careActionDoneSoilCheck => 'Проверено';
+
+  @override
+  String get careActionDoneUnknown => 'Сделано';
+
+  @override
   String get homeGardenTitle => 'Мой сад';
 
   @override

@@ -17,5 +17,6 @@ extension TaskDtoMapper on TaskDto {
         locationName: locationName,
         speciesId: speciesId,
         speciesName: speciesName,
+        doneAt: doneAt,
       );
 }
