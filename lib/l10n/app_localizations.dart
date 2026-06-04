@@ -376,6 +376,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Нет растений} one{{count} растение} few{{count} растения} many{{count} растений} other{{count} растения}}'**
   String homePlantsCount(int count);
 
+  /// Аффорданс «Все →» в заголовке секции «Мой сад» — сброс фильтра локации
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get homeGardenSeeAll;
+
   /// Чип «все локации» в фильтре комнат
   ///
   /// In ru, this message translates to:
