@@ -20,6 +20,7 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/today_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
+import '../../features/plant_events/presentation/plant_events_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/language/presentation/language_screen.dart';
 import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
@@ -206,6 +207,19 @@ GoRouter appRouter(Ref ref) {
                         final id =
                             int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
                         return CareHistoryScreen(plantId: id);
+                      },
+                    ),
+                    // «Журнал событий» (issue #63) — полноэкранно поверх shell
+                    // (своя кнопка «назад», без таб-бара), как история ухода.
+                    // Вход: карточка 02 → «Журнал событий · Все события».
+                    GoRoute(
+                      path: 'events',
+                      name: 'plantEvents',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final id =
+                            int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                        return PlantEventsScreen(plantId: id);
                       },
                     ),
                     // Экран 22 «Редактирование расписания ухода».

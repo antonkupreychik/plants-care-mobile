@@ -3567,6 +3567,108 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Изменения сохранены'**
   String get editPlantSuccessSnackbar;
+
+  /// Тип события журнала растения: пересадка (TRANSPLANT)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пересадка'**
+  String get plantEventTypeTransplant;
+
+  /// Тип события журнала растения: замена грунта (SOIL_CHANGE)
+  ///
+  /// In ru, this message translates to:
+  /// **'Замена грунта'**
+  String get plantEventTypeSoilChange;
+
+  /// Тип события журнала растения: обрезка (PRUNING)
+  ///
+  /// In ru, this message translates to:
+  /// **'Обрезка'**
+  String get plantEventTypePruning;
+
+  /// Тип события журнала растения: обработка от вредителей (PEST_TREATMENT)
+  ///
+  /// In ru, this message translates to:
+  /// **'Обработка от вредителей'**
+  String get plantEventTypePestTreatment;
+
+  /// Заголовок экрана журнала событий растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал событий'**
+  String get plantEventsScreenTitle;
+
+  /// Кнопка открытия sheet добавления события (журнал событий)
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить событие'**
+  String get addPlantEventButton;
+
+  /// Ссылка-вход на полный журнал событий с карточки растения (02)
+  ///
+  /// In ru, this message translates to:
+  /// **'Все события'**
+  String get plantEventsViewAll;
+
+  /// Заголовок секции журнала событий в карточке растения (02)
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал событий'**
+  String get plantEventsSectionTitle;
+
+  /// Заголовок пустого состояния журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Событий пока нет'**
+  String get plantEventsEmptyTitle;
+
+  /// Подпись пустого состояния журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмечайте пересадки, обрезку и другие важные моменты — так проще вспомнить историю растения.'**
+  String get plantEventsEmptyHint;
+
+  /// CTA в пустом состоянии журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить первое событие'**
+  String get plantEventsEmptyCta;
+
+  /// Заголовок sheet добавления события растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Что произошло?'**
+  String get addPlantEventSheetTitle;
+
+  /// Overline (надзаголовок) sheet добавления события растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал событий'**
+  String get addPlantEventSheetOverline;
+
+  /// Снэкбар-подтверждение после записи события растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие записано'**
+  String get plantEventAddedSnackbar;
+
+  /// Тост при дедупе (409) записи события растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие уже записано'**
+  String get plantEventDuplicateSnackbar;
+
+  /// Кнопка подзагрузки следующей страницы журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать ещё'**
+  String get plantEventsLoadMore;
+
+  /// Строка ошибки подзагрузки страницы журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить ещё'**
+  String get plantEventsLoadMoreError;
 }
 
 class _AppLocalizationsDelegate

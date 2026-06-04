@@ -2214,4 +2214,56 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get editPlantSuccessSnackbar => 'Изменения сохранены';
+
+  @override
+  String get plantEventTypeTransplant => 'Пересадка';
+
+  @override
+  String get plantEventTypeSoilChange => 'Замена грунта';
+
+  @override
+  String get plantEventTypePruning => 'Обрезка';
+
+  @override
+  String get plantEventTypePestTreatment => 'Обработка от вредителей';
+
+  @override
+  String get plantEventsScreenTitle => 'Журнал событий';
+
+  @override
+  String get addPlantEventButton => 'Добавить событие';
+
+  @override
+  String get plantEventsViewAll => 'Все события';
+
+  @override
+  String get plantEventsSectionTitle => 'Журнал событий';
+
+  @override
+  String get plantEventsEmptyTitle => 'Событий пока нет';
+
+  @override
+  String get plantEventsEmptyHint =>
+      'Отмечайте пересадки, обрезку и другие важные моменты — так проще вспомнить историю растения.';
+
+  @override
+  String get plantEventsEmptyCta => 'Добавить первое событие';
+
+  @override
+  String get addPlantEventSheetTitle => 'Что произошло?';
+
+  @override
+  String get addPlantEventSheetOverline => 'Журнал событий';
+
+  @override
+  String get plantEventAddedSnackbar => 'Событие записано';
+
+  @override
+  String get plantEventDuplicateSnackbar => 'Событие уже записано';
+
+  @override
+  String get plantEventsLoadMore => 'Показать ещё';
+
+  @override
+  String get plantEventsLoadMoreError => 'Не удалось загрузить ещё';
 }
