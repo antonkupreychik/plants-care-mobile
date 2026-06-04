@@ -21,14 +21,16 @@ class HomeHeader extends StatelessWidget {
   const HomeHeader({
     super.key,
     required this.now,
-    required this.onComingSoon,
+    required this.onSearch,
     required this.onNotifications,
     required this.onProfile,
     this.isEmptyGarden = false,
   });
 
   final DateTime now;
-  final VoidCallback onComingSoon;
+
+  /// Открыть экран унифицированного поиска (issue #69, роут `/search`).
+  final VoidCallback onSearch;
 
   /// Переход на экран 24 «Лента уведомлений» (тап по колокольчику).
   final VoidCallback onNotifications;
@@ -81,7 +83,7 @@ class HomeHeader extends StatelessWidget {
               _HeaderIconButton(
                 icon: Icons.search_rounded,
                 tooltip: l10n.homeSearchTooltip,
-                onPressed: onComingSoon,
+                onPressed: onSearch,
               ),
               const SizedBox(width: 6),
               _NotificationsButton(onPressed: onNotifications),

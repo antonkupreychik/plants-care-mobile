@@ -148,6 +148,54 @@ abstract class AppLocalizations {
   /// **'Поиск'**
   String get homeSearchTooltip;
 
+  /// Плейсхолдер поля унифицированного поиска (экран Search)
+  ///
+  /// In ru, this message translates to:
+  /// **'Искать растения, виды, болезни…'**
+  String get searchScreenHint;
+
+  /// Подсказка пустого состояния, пока введено меньше 2 символов
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите минимум 2 символа'**
+  String get searchMinCharsHint;
+
+  /// Все секции поиска пусты при достаточной длине запроса
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не найдено'**
+  String get searchEmptyResult;
+
+  /// Заголовок секции результатов-растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Мои растения'**
+  String get searchSectionPlants;
+
+  /// Заголовок секции результатов-видов
+  ///
+  /// In ru, this message translates to:
+  /// **'Виды'**
+  String get searchSectionSpecies;
+
+  /// Заголовок секции результатов-болезней
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни и вредители'**
+  String get searchSectionDiseases;
+
+  /// Кнопка перехода к полному списку раздела поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать все'**
+  String get searchShowAll;
+
+  /// Подпись кнопки возврата с экрана поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get searchBack;
+
   /// Подсказка для иконки уведомлений в шапке
   ///
   /// In ru, this message translates to:

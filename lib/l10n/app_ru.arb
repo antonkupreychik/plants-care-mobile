@@ -46,6 +46,46 @@
     "description": "Подсказка для иконки поиска в шапке"
   },
 
+  "searchScreenHint": "Искать растения, виды, болезни…",
+  "@searchScreenHint": {
+    "description": "Плейсхолдер поля унифицированного поиска (экран Search)"
+  },
+
+  "searchMinCharsHint": "Введите минимум 2 символа",
+  "@searchMinCharsHint": {
+    "description": "Подсказка пустого состояния, пока введено меньше 2 символов"
+  },
+
+  "searchEmptyResult": "Ничего не найдено",
+  "@searchEmptyResult": {
+    "description": "Все секции поиска пусты при достаточной длине запроса"
+  },
+
+  "searchSectionPlants": "Мои растения",
+  "@searchSectionPlants": {
+    "description": "Заголовок секции результатов-растений"
+  },
+
+  "searchSectionSpecies": "Виды",
+  "@searchSectionSpecies": {
+    "description": "Заголовок секции результатов-видов"
+  },
+
+  "searchSectionDiseases": "Болезни и вредители",
+  "@searchSectionDiseases": {
+    "description": "Заголовок секции результатов-болезней"
+  },
+
+  "searchShowAll": "Показать все",
+  "@searchShowAll": {
+    "description": "Кнопка перехода к полному списку раздела поиска"
+  },
+
+  "searchBack": "Назад",
+  "@searchBack": {
+    "description": "Подпись кнопки возврата с экрана поиска"
+  },
+
   "homeNotificationsTooltip": "Уведомления",
   "@homeNotificationsTooltip": {
     "description": "Подсказка для иконки уведомлений в шапке"
