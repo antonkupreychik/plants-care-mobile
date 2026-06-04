@@ -154,6 +154,12 @@ abstract class AppLocalizations {
   /// **'Уведомления'**
   String get homeNotificationsTooltip;
 
+  /// Подсказка для иконки профиля в упрощённой шапке (пустой сад)
+  ///
+  /// In ru, this message translates to:
+  /// **'Профиль'**
+  String get homeProfileTooltip;
+
   /// Надзаголовок карточки задач на сегодня
   ///
   /// In ru, this message translates to:

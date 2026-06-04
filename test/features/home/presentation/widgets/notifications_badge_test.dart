@@ -20,6 +20,7 @@ Widget _wrap(int unread, {VoidCallback? onNotifications}) => ProviderScope(
             now: DateTime(2026, 6, 1),
             onComingSoon: () {},
             onNotifications: onNotifications ?? () {},
+            onProfile: () {},
           ),
         ),
       ),

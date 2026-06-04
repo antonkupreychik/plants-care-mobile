@@ -40,6 +40,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeNotificationsTooltip => 'Уведомления';
 
   @override
+  String get homeProfileTooltip => 'Профиль';
+
+  @override
   String get homeTodayTitle => 'Сегодня';
 
   @override
