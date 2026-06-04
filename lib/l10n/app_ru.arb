@@ -576,6 +576,37 @@
     }
   },
 
+  "scheduleWeekTasksPrefix": "На этой неделе ",
+  "@scheduleWeekTasksPrefix": {
+    "description": "Префикс hero-заголовка «График» перед выделенным числом задач (count > 0)"
+  },
+
+  "scheduleWeekTasksSuffix": "{count, plural, one{ забота в саду} few{ заботы в саду} many{ забот в саду} other{ заботы в саду}}",
+  "@scheduleWeekTasksSuffix": {
+    "description": "Суффикс hero-заголовка «График» после выделенного числа задач (count > 0)",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "scheduleWeekRestTitle": "На этой неделе сад отдыхает",
+  "@scheduleWeekRestTitle": {
+    "description": "Hero-заголовок «График» когда задач на неделе нет (count = 0)"
+  },
+
+  "scheduleFreeDaysSubtitle": "{days} — свободные дни 🌳",
+  "@scheduleFreeDaysSubtitle": {
+    "description": "Subtitle под hero-заголовком «График»: перечисление дней без задач",
+    "placeholders": {
+      "days": { "type": "String" }
+    }
+  },
+
+  "scheduleDayFree": "Свободный день 🌿",
+  "@scheduleDayFree": {
+    "description": "Заглушка дня без задач на экране «График» (serif italic 15px)"
+  },
+
   "scheduleDayTasksCount": "{count, plural, =0{Свободно} one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}",
   "@scheduleDayTasksCount": {
     "description": "Счётчик задач дня в строке недели (0 — свободный день)",

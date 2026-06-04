@@ -706,6 +706,36 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{На этой неделе сад отдыхает} one{На этой неделе {count} забота в саду} few{На этой неделе {count} заботы в саду} many{На этой неделе {count} забот в саду} other{На этой неделе {count} заботы в саду}}'**
   String scheduleWeekTasksCount(int count);
 
+  /// Префикс hero-заголовка «График» перед выделенным числом задач (count > 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'На этой неделе '**
+  String get scheduleWeekTasksPrefix;
+
+  /// Суффикс hero-заголовка «График» после выделенного числа задач (count > 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{ забота в саду} few{ заботы в саду} many{ забот в саду} other{ заботы в саду}}'**
+  String scheduleWeekTasksSuffix(int count);
+
+  /// Hero-заголовок «График» когда задач на неделе нет (count = 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'На этой неделе сад отдыхает'**
+  String get scheduleWeekRestTitle;
+
+  /// Subtitle под hero-заголовком «График»: перечисление дней без задач
+  ///
+  /// In ru, this message translates to:
+  /// **'{days} — свободные дни 🌳'**
+  String scheduleFreeDaysSubtitle(String days);
+
+  /// Заглушка дня без задач на экране «График» (serif italic 15px)
+  ///
+  /// In ru, this message translates to:
+  /// **'Свободный день 🌿'**
+  String get scheduleDayFree;
+
   /// Счётчик задач дня в строке недели (0 — свободный день)
   ///
   /// In ru, this message translates to:
