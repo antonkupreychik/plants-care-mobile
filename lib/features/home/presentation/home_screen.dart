@@ -98,9 +98,15 @@ class _HomeContent extends ConsumerWidget {
     // Открыть ленту уведомлений (экран 24) поверх shell.
     void openNotifications() => context.push('/home/notifications');
 
+    // Перейти на экран профиля (кнопка в упрощённой шапке пустого сада).
+    void openProfile() => context.go('/profile');
+
     final todayResult = ref.watch(homeTasksProvider);
     final plants = ref.watch(homePlantsProvider);
     final locations = ref.watch(homeLocationsProvider);
+
+    // Сад пустой = нет данных о растениях или список пуст.
+    final isEmptyGarden = plants.value?.isEmpty == true;
 
     return SafeArea(
       bottom: false,
@@ -115,6 +121,8 @@ class _HomeContent extends ConsumerWidget {
                     now: nowLocal,
                     onComingSoon: comingSoon,
                     onNotifications: openNotifications,
+                    onProfile: openProfile,
+                    isEmptyGarden: isEmptyGarden,
                   ),
                 ),
               ),

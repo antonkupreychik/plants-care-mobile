@@ -11,6 +11,10 @@ import '../../../notifications/presentation/notifications_providers.dart';
 /// справа, ниже — дата и серифное приветствие (без имени пользователя —
 /// провайдера профиля пока нет, см. отчёт).
 ///
+/// Когда [isEmptyGarden] == true (новый пользователь без растений) рисуется
+/// **упрощённая шапка**: только логотип + иконка профиля. Поиск и колокольчик
+/// отсутствуют — пустому саду они незачем (экран 10).
+///
 /// Колокольчик уведомлений несёт badge с числом непрочитанных
 /// ([unreadCountProvider]); скрыт при `0`. Тап → экран 24 ([onNotifications]).
 class HomeHeader extends StatelessWidget {
@@ -19,6 +23,8 @@ class HomeHeader extends StatelessWidget {
     required this.now,
     required this.onComingSoon,
     required this.onNotifications,
+    required this.onProfile,
+    this.isEmptyGarden = false,
   });
 
   final DateTime now;
@@ -26,6 +32,13 @@ class HomeHeader extends StatelessWidget {
 
   /// Переход на экран 24 «Лента уведомлений» (тап по колокольчику).
   final VoidCallback onNotifications;
+
+  /// Переход на экран профиля (тап по иконке профиля в упрощённой шапке).
+  final VoidCallback onProfile;
+
+  /// Если `true` — шапка упрощённая: только логотип + иконка профиля
+  /// (без поиска и колокольчика). Соответствует экрану 10 «Пустой сад».
+  final bool isEmptyGarden;
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +71,21 @@ class HomeHeader extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            _HeaderIconButton(
-              icon: Icons.search_rounded,
-              tooltip: l10n.homeSearchTooltip,
-              onPressed: onComingSoon,
-            ),
-            const SizedBox(width: 6),
-            _NotificationsButton(onPressed: onNotifications),
+            if (isEmptyGarden)
+              _HeaderIconButton(
+                icon: Icons.person_outline_rounded,
+                tooltip: l10n.homeProfileTooltip,
+                onPressed: onProfile,
+              )
+            else ...[
+              _HeaderIconButton(
+                icon: Icons.search_rounded,
+                tooltip: l10n.homeSearchTooltip,
+                onPressed: onComingSoon,
+              ),
+              const SizedBox(width: 6),
+              _NotificationsButton(onPressed: onNotifications),
+            ],
           ],
         ),
         const SizedBox(height: 18),

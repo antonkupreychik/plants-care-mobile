@@ -51,6 +51,11 @@
     "description": "Подсказка для иконки уведомлений в шапке"
   },
 
+  "homeProfileTooltip": "Профиль",
+  "@homeProfileTooltip": {
+    "description": "Подсказка для иконки профиля в упрощённой шапке (пустой сад)"
+  },
+
   "homeTodayTitle": "Сегодня",
   "@homeTodayTitle": {
     "description": "Надзаголовок карточки задач на сегодня"
