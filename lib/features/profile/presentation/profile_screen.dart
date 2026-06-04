@@ -122,6 +122,14 @@ class ProfileScreen extends ConsumerWidget {
                     divider: true,
                     onTap: () => context.push('/profile/language'),
                   ),
+                  // Справочник «Болезни и вредители» (issue #68) → push поверх
+                  // shell.
+                  SettingsRow(
+                    title: l10n.diseaseCatalogTitle,
+                    icon: Icons.bug_report_outlined,
+                    divider: true,
+                    onTap: () => context.push('/profile/diseases'),
+                  ),
                   // Выход из аккаунта (MADR-008): сбрасывает токены/сессию,
                   // router-guard уводит на экран входа. Деструктивная строка.
                   SettingsRow(

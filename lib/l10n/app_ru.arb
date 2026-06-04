@@ -3155,5 +3155,40 @@
   "editPlantSuccessSnackbar": "Изменения сохранены",
   "@editPlantSuccessSnackbar": {
     "description": "Снэкбар-подтверждение после успешного сохранения изменений растения"
+  },
+
+  "diseaseCatalogTitle": "Болезни и вредители",
+  "@diseaseCatalogTitle": {
+    "description": "Заголовок экрана справочника болезней и вредителей (issue #68)"
+  },
+
+  "diseaseCatalogSearchHint": "Поиск по названию или симптому",
+  "@diseaseCatalogSearchHint": {
+    "description": "Подсказка поля поиска в справочнике болезней"
+  },
+
+  "diseaseCatalogSearchClear": "Очистить поиск",
+  "@diseaseCatalogSearchClear": {
+    "description": "Метка кнопки очистки поля поиска в справочнике болезней"
+  },
+
+  "diseaseCatalogEmpty": "Болезни не найдены",
+  "@diseaseCatalogEmpty": {
+    "description": "Пустое состояние списка справочника болезней (нет результатов)"
+  },
+
+  "diseaseDetailSymptomsTitle": "Симптомы",
+  "@diseaseDetailSymptomsTitle": {
+    "description": "Заголовок секции «Симптомы» на карточке болезни"
+  },
+
+  "diseaseDetailTreatmentTitle": "Лечение",
+  "@diseaseDetailTreatmentTitle": {
+    "description": "Заголовок секции «Лечение» на карточке болезни"
+  },
+
+  "diseaseDetailPreventionTitle": "Профилактика",
+  "@diseaseDetailPreventionTitle": {
+    "description": "Заголовок секции «Профилактика» на карточке болезни"
   }
 }

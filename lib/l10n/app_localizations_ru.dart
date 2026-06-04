@@ -2214,4 +2214,25 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get editPlantSuccessSnackbar => 'Изменения сохранены';
+
+  @override
+  String get diseaseCatalogTitle => 'Болезни и вредители';
+
+  @override
+  String get diseaseCatalogSearchHint => 'Поиск по названию или симптому';
+
+  @override
+  String get diseaseCatalogSearchClear => 'Очистить поиск';
+
+  @override
+  String get diseaseCatalogEmpty => 'Болезни не найдены';
+
+  @override
+  String get diseaseDetailSymptomsTitle => 'Симптомы';
+
+  @override
+  String get diseaseDetailTreatmentTitle => 'Лечение';
+
+  @override
+  String get diseaseDetailPreventionTitle => 'Профилактика';
 }
