@@ -2991,5 +2991,45 @@
   "languageScreenHint": "Дату и время форматируем по выбранному языку.",
   "@languageScreenHint": {
     "description": "Подсказка внизу экрана 38 о форматировании даты/времени"
+  },
+
+  "editPlantTitle": "Редактировать",
+  "@editPlantTitle": {
+    "description": "Заголовок экрана редактирования растения (шапка и кнопка «назад»)"
+  },
+
+  "editPlantSave": "Сохранить",
+  "@editPlantSave": {
+    "description": "Кнопка сохранения изменений на экране редактирования растения"
+  },
+
+  "editPlantNameLabel": "Название",
+  "@editPlantNameLabel": {
+    "description": "Метка поля ввода имени растения на экране редактирования"
+  },
+
+  "editPlantNotesLabel": "Заметки",
+  "@editPlantNotesLabel": {
+    "description": "Метка необязательного поля заметок на экране редактирования"
+  },
+
+  "editPlantLocationLabel": "Комната",
+  "@editPlantLocationLabel": {
+    "description": "Метка пикера комнаты (локации) на экране редактирования"
+  },
+
+  "editPlantSpeciesLabel": "Вид",
+  "@editPlantSpeciesLabel": {
+    "description": "Метка поля выбора вида растения на экране редактирования"
+  },
+
+  "editPlantSpeciesNone": "Без вида",
+  "@editPlantSpeciesNone": {
+    "description": "Плейсхолдер для незаполненного поля вида на экране редактирования"
+  },
+
+  "editPlantSuccessSnackbar": "Изменения сохранены",
+  "@editPlantSuccessSnackbar": {
+    "description": "Снэкбар-подтверждение после успешного сохранения изменений растения"
   }
 }

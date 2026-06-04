@@ -2116,4 +2116,28 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get languageScreenHint =>
       'Дату и время форматируем по выбранному языку.';
+
+  @override
+  String get editPlantTitle => 'Редактировать';
+
+  @override
+  String get editPlantSave => 'Сохранить';
+
+  @override
+  String get editPlantNameLabel => 'Название';
+
+  @override
+  String get editPlantNotesLabel => 'Заметки';
+
+  @override
+  String get editPlantLocationLabel => 'Комната';
+
+  @override
+  String get editPlantSpeciesLabel => 'Вид';
+
+  @override
+  String get editPlantSpeciesNone => 'Без вида';
+
+  @override
+  String get editPlantSuccessSnackbar => 'Изменения сохранены';
 }
