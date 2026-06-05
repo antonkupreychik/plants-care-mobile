@@ -90,6 +90,22 @@ class AddPlantWizardController extends _$AddPlantWizardController {
     );
   }
 
+  /// Задать дату приобретения (шаг 5). null → пропустить шаг.
+  void setAcquiredAt(DateTime? acquiredAt) {
+    state = state.copyWith(
+      draft: state.draft.copyWith(acquiredAt: acquiredAt),
+      status: const AddPlantSubmitStatus.idle(),
+    );
+  }
+
+  /// Задать признак нового растения (шаг 6). null → пропустить шаг.
+  void setIsNew(bool? isNew) {
+    state = state.copyWith(
+      draft: state.draft.copyWith(isNew: isNew),
+      status: const AddPlantSubmitStatus.idle(),
+    );
+  }
+
   /// Изменить интервал ухода [type] на [every] дней (шаг 3).
   ///
   /// Если [every] совпадает с рекомендацией вида — запись из оверрайдов
@@ -143,6 +159,8 @@ class AddPlantWizardController extends _$AddPlantWizardController {
           locationId: draft.locationId,
           notes: draft.notes,
           speciesId: draft.species?.id,
+          acquiredAt: draft.acquiredAt,
+          isNew: draft.isNew,
         );
 
     if (!ref.mounted) return null;

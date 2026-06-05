@@ -43,4 +43,56 @@ void main() {
       expect(draft.isNameValid, isFalse);
     });
   });
+
+  group('NewPlantDraft.acquiredAt', () {
+    test('should_be_null_by_default', () {
+      const draft = NewPlantDraft(name: 'Фикус');
+
+      expect(draft.acquiredAt, isNull);
+    });
+
+    test('should_store_acquired_date_when_set', () {
+      final date = DateTime(2026, 5, 20);
+      final draft = NewPlantDraft(name: 'Фикус', acquiredAt: date);
+
+      expect(draft.acquiredAt, date);
+    });
+
+    test('should_update_via_copyWith_and_not_mutate_original', () {
+      const draft = NewPlantDraft(name: 'Фикус');
+      final newDate = DateTime(2026, 1, 15);
+      final updated = draft.copyWith(acquiredAt: newDate);
+
+      expect(updated.acquiredAt, newDate);
+      expect(draft.acquiredAt, isNull); // оригинал не изменён
+    });
+  });
+
+  group('NewPlantDraft.isNew', () {
+    test('should_be_null_by_default', () {
+      const draft = NewPlantDraft(name: 'Фикус');
+
+      expect(draft.isNew, isNull);
+    });
+
+    test('should_store_true_when_plant_is_new', () {
+      const draft = NewPlantDraft(name: 'Фикус', isNew: true);
+
+      expect(draft.isNew, isTrue);
+    });
+
+    test('should_store_false_when_plant_is_adapted', () {
+      const draft = NewPlantDraft(name: 'Фикус', isNew: false);
+
+      expect(draft.isNew, isFalse);
+    });
+
+    test('should_update_via_copyWith_and_not_mutate_original', () {
+      const draft = NewPlantDraft(name: 'Фикус');
+      final updated = draft.copyWith(isNew: true);
+
+      expect(updated.isNew, isTrue);
+      expect(draft.isNew, isNull); // оригинал не изменён
+    });
+  });
 }

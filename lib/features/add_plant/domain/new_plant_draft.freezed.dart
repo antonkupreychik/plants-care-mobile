@@ -26,7 +26,11 @@ mixin _$NewPlantDraft {
  WindowSide? get windowSide;/// Пользовательские интервалы, изменённые относительно рекомендаций вида
 /// (шаг 3). Ключ — тип ухода, значение — интервал в днях (>= 1).
 /// Пустая карта → пользователь ничего не менял, лишних PUT не делаем.
- Map<CareTaskType, int> get intervalOverrides;
+ Map<CareTaskType, int> get intervalOverrides;/// Дата приобретения растения (шаг 5). null → пользователь пропустил шаг,
+/// поле не отправляется в `POST /plants`.
+ DateTime? get acquiredAt;/// Признак нового растения (шаг 6). null → пользователь не ответил,
+/// поле не отправляется. true → backend включает акклиматизацию (21 день).
+ bool? get isNew;
 /// Create a copy of NewPlantDraft
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -37,16 +41,16 @@ $NewPlantDraftCopyWith<NewPlantDraft> get copyWith => _$NewPlantDraftCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewPlantDraft&&(identical(other.species, species) || other.species == species)&&(identical(other.name, name) || other.name == name)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.windowSide, windowSide) || other.windowSide == windowSide)&&const DeepCollectionEquality().equals(other.intervalOverrides, intervalOverrides));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewPlantDraft&&(identical(other.species, species) || other.species == species)&&(identical(other.name, name) || other.name == name)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.windowSide, windowSide) || other.windowSide == windowSide)&&const DeepCollectionEquality().equals(other.intervalOverrides, intervalOverrides)&&(identical(other.acquiredAt, acquiredAt) || other.acquiredAt == acquiredAt)&&(identical(other.isNew, isNew) || other.isNew == isNew));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,species,name,locationId,notes,windowSide,const DeepCollectionEquality().hash(intervalOverrides));
+int get hashCode => Object.hash(runtimeType,species,name,locationId,notes,windowSide,const DeepCollectionEquality().hash(intervalOverrides),acquiredAt,isNew);
 
 @override
 String toString() {
-  return 'NewPlantDraft(species: $species, name: $name, locationId: $locationId, notes: $notes, windowSide: $windowSide, intervalOverrides: $intervalOverrides)';
+  return 'NewPlantDraft(species: $species, name: $name, locationId: $locationId, notes: $notes, windowSide: $windowSide, intervalOverrides: $intervalOverrides, acquiredAt: $acquiredAt, isNew: $isNew)';
 }
 
 
@@ -57,7 +61,7 @@ abstract mixin class $NewPlantDraftCopyWith<$Res>  {
   factory $NewPlantDraftCopyWith(NewPlantDraft value, $Res Function(NewPlantDraft) _then) = _$NewPlantDraftCopyWithImpl;
 @useResult
 $Res call({
- SpeciesSummary? species, String name, int? locationId, String? notes, WindowSide? windowSide, Map<CareTaskType, int> intervalOverrides
+ SpeciesSummary? species, String name, int? locationId, String? notes, WindowSide? windowSide, Map<CareTaskType, int> intervalOverrides, DateTime? acquiredAt, bool? isNew
 });
 
 
@@ -74,7 +78,7 @@ class _$NewPlantDraftCopyWithImpl<$Res>
 
 /// Create a copy of NewPlantDraft
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? species = freezed,Object? name = null,Object? locationId = freezed,Object? notes = freezed,Object? windowSide = freezed,Object? intervalOverrides = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? species = freezed,Object? name = null,Object? locationId = freezed,Object? notes = freezed,Object? windowSide = freezed,Object? intervalOverrides = null,Object? acquiredAt = freezed,Object? isNew = freezed,}) {
   return _then(_self.copyWith(
 species: freezed == species ? _self.species : species // ignore: cast_nullable_to_non_nullable
 as SpeciesSummary?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -82,7 +86,9 @@ as String,locationId: freezed == locationId ? _self.locationId : locationId // i
 as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,windowSide: freezed == windowSide ? _self.windowSide : windowSide // ignore: cast_nullable_to_non_nullable
 as WindowSide?,intervalOverrides: null == intervalOverrides ? _self.intervalOverrides : intervalOverrides // ignore: cast_nullable_to_non_nullable
-as Map<CareTaskType, int>,
+as Map<CareTaskType, int>,acquiredAt: freezed == acquiredAt ? _self.acquiredAt : acquiredAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,isNew: freezed == isNew ? _self.isNew : isNew // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 /// Create a copy of NewPlantDraft
@@ -179,10 +185,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SpeciesSummary? species,  String name,  int? locationId,  String? notes,  WindowSide? windowSide,  Map<CareTaskType, int> intervalOverrides)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SpeciesSummary? species,  String name,  int? locationId,  String? notes,  WindowSide? windowSide,  Map<CareTaskType, int> intervalOverrides,  DateTime? acquiredAt,  bool? isNew)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NewPlantDraft() when $default != null:
-return $default(_that.species,_that.name,_that.locationId,_that.notes,_that.windowSide,_that.intervalOverrides);case _:
+return $default(_that.species,_that.name,_that.locationId,_that.notes,_that.windowSide,_that.intervalOverrides,_that.acquiredAt,_that.isNew);case _:
   return orElse();
 
 }
@@ -200,10 +206,10 @@ return $default(_that.species,_that.name,_that.locationId,_that.notes,_that.wind
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SpeciesSummary? species,  String name,  int? locationId,  String? notes,  WindowSide? windowSide,  Map<CareTaskType, int> intervalOverrides)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SpeciesSummary? species,  String name,  int? locationId,  String? notes,  WindowSide? windowSide,  Map<CareTaskType, int> intervalOverrides,  DateTime? acquiredAt,  bool? isNew)  $default,) {final _that = this;
 switch (_that) {
 case _NewPlantDraft():
-return $default(_that.species,_that.name,_that.locationId,_that.notes,_that.windowSide,_that.intervalOverrides);case _:
+return $default(_that.species,_that.name,_that.locationId,_that.notes,_that.windowSide,_that.intervalOverrides,_that.acquiredAt,_that.isNew);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -220,10 +226,10 @@ return $default(_that.species,_that.name,_that.locationId,_that.notes,_that.wind
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SpeciesSummary? species,  String name,  int? locationId,  String? notes,  WindowSide? windowSide,  Map<CareTaskType, int> intervalOverrides)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SpeciesSummary? species,  String name,  int? locationId,  String? notes,  WindowSide? windowSide,  Map<CareTaskType, int> intervalOverrides,  DateTime? acquiredAt,  bool? isNew)?  $default,) {final _that = this;
 switch (_that) {
 case _NewPlantDraft() when $default != null:
-return $default(_that.species,_that.name,_that.locationId,_that.notes,_that.windowSide,_that.intervalOverrides);case _:
+return $default(_that.species,_that.name,_that.locationId,_that.notes,_that.windowSide,_that.intervalOverrides,_that.acquiredAt,_that.isNew);case _:
   return null;
 
 }
@@ -235,7 +241,7 @@ return $default(_that.species,_that.name,_that.locationId,_that.notes,_that.wind
 
 
 class _NewPlantDraft extends NewPlantDraft {
-  const _NewPlantDraft({this.species, this.name = '', this.locationId, this.notes, this.windowSide, final  Map<CareTaskType, int> intervalOverrides = const {}}): _intervalOverrides = intervalOverrides,super._();
+  const _NewPlantDraft({this.species, this.name = '', this.locationId, this.notes, this.windowSide, final  Map<CareTaskType, int> intervalOverrides = const {}, this.acquiredAt, this.isNew}): _intervalOverrides = intervalOverrides,super._();
   
 
 /// Выбранный на шаге 1 вид. Его id уходит в `POST /plants` как `speciesId`
@@ -265,6 +271,12 @@ class _NewPlantDraft extends NewPlantDraft {
   return EqualUnmodifiableMapView(_intervalOverrides);
 }
 
+/// Дата приобретения растения (шаг 5). null → пользователь пропустил шаг,
+/// поле не отправляется в `POST /plants`.
+@override final  DateTime? acquiredAt;
+/// Признак нового растения (шаг 6). null → пользователь не ответил,
+/// поле не отправляется. true → backend включает акклиматизацию (21 день).
+@override final  bool? isNew;
 
 /// Create a copy of NewPlantDraft
 /// with the given fields replaced by the non-null parameter values.
@@ -276,16 +288,16 @@ _$NewPlantDraftCopyWith<_NewPlantDraft> get copyWith => __$NewPlantDraftCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewPlantDraft&&(identical(other.species, species) || other.species == species)&&(identical(other.name, name) || other.name == name)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.windowSide, windowSide) || other.windowSide == windowSide)&&const DeepCollectionEquality().equals(other._intervalOverrides, _intervalOverrides));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewPlantDraft&&(identical(other.species, species) || other.species == species)&&(identical(other.name, name) || other.name == name)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.windowSide, windowSide) || other.windowSide == windowSide)&&const DeepCollectionEquality().equals(other._intervalOverrides, _intervalOverrides)&&(identical(other.acquiredAt, acquiredAt) || other.acquiredAt == acquiredAt)&&(identical(other.isNew, isNew) || other.isNew == isNew));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,species,name,locationId,notes,windowSide,const DeepCollectionEquality().hash(_intervalOverrides));
+int get hashCode => Object.hash(runtimeType,species,name,locationId,notes,windowSide,const DeepCollectionEquality().hash(_intervalOverrides),acquiredAt,isNew);
 
 @override
 String toString() {
-  return 'NewPlantDraft(species: $species, name: $name, locationId: $locationId, notes: $notes, windowSide: $windowSide, intervalOverrides: $intervalOverrides)';
+  return 'NewPlantDraft(species: $species, name: $name, locationId: $locationId, notes: $notes, windowSide: $windowSide, intervalOverrides: $intervalOverrides, acquiredAt: $acquiredAt, isNew: $isNew)';
 }
 
 
@@ -296,7 +308,7 @@ abstract mixin class _$NewPlantDraftCopyWith<$Res> implements $NewPlantDraftCopy
   factory _$NewPlantDraftCopyWith(_NewPlantDraft value, $Res Function(_NewPlantDraft) _then) = __$NewPlantDraftCopyWithImpl;
 @override @useResult
 $Res call({
- SpeciesSummary? species, String name, int? locationId, String? notes, WindowSide? windowSide, Map<CareTaskType, int> intervalOverrides
+ SpeciesSummary? species, String name, int? locationId, String? notes, WindowSide? windowSide, Map<CareTaskType, int> intervalOverrides, DateTime? acquiredAt, bool? isNew
 });
 
 
@@ -313,7 +325,7 @@ class __$NewPlantDraftCopyWithImpl<$Res>
 
 /// Create a copy of NewPlantDraft
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? species = freezed,Object? name = null,Object? locationId = freezed,Object? notes = freezed,Object? windowSide = freezed,Object? intervalOverrides = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? species = freezed,Object? name = null,Object? locationId = freezed,Object? notes = freezed,Object? windowSide = freezed,Object? intervalOverrides = null,Object? acquiredAt = freezed,Object? isNew = freezed,}) {
   return _then(_NewPlantDraft(
 species: freezed == species ? _self.species : species // ignore: cast_nullable_to_non_nullable
 as SpeciesSummary?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -321,7 +333,9 @@ as String,locationId: freezed == locationId ? _self.locationId : locationId // i
 as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,windowSide: freezed == windowSide ? _self.windowSide : windowSide // ignore: cast_nullable_to_non_nullable
 as WindowSide?,intervalOverrides: null == intervalOverrides ? _self._intervalOverrides : intervalOverrides // ignore: cast_nullable_to_non_nullable
-as Map<CareTaskType, int>,
+as Map<CareTaskType, int>,acquiredAt: freezed == acquiredAt ? _self.acquiredAt : acquiredAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,isNew: freezed == isNew ? _self.isNew : isNew // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 

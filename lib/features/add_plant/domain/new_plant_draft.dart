@@ -12,8 +12,9 @@ part 'new_plant_draft.freezed.dart';
 /// контроллере). Шаг мастера (текущая страница) держит UI/PageController — здесь
 /// только введённые пользователем данные.
 ///
-/// Что персистится при создании: [name], [locationId], [notes] и id выбранного
-/// [species] (`POST /plants` принимает `{name, notes?, locationId?, speciesId?}`).
+/// Что персистится при создании: [name], [locationId], [notes], id выбранного
+/// [species], [acquiredAt] и [isNew].
+/// `POST /plants` принимает `{name, notes?, locationId?, speciesId?, acquiredAt?, isNew?}`.
 /// При заданном `speciesId` backend связывает растение с видом; расписания ухода
 /// при этом НЕ создаются (gap G14). [species] используется для префилла имени,
 /// показа плана ухода и стартовых значений степперов интервалов.
@@ -47,6 +48,14 @@ abstract class NewPlantDraft with _$NewPlantDraft {
     /// (шаг 3). Ключ — тип ухода, значение — интервал в днях (>= 1).
     /// Пустая карта → пользователь ничего не менял, лишних PUT не делаем.
     @Default({}) Map<CareTaskType, int> intervalOverrides,
+
+    /// Дата приобретения растения (шаг 5). null → пользователь пропустил шаг,
+    /// поле не отправляется в `POST /plants`.
+    DateTime? acquiredAt,
+
+    /// Признак нового растения (шаг 6). null → пользователь не ответил,
+    /// поле не отправляется. true → backend включает акклиматизацию (21 день).
+    bool? isNew,
   }) = _NewPlantDraft;
 
   const NewPlantDraft._();
