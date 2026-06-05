@@ -148,6 +148,54 @@ abstract class AppLocalizations {
   /// **'Поиск'**
   String get homeSearchTooltip;
 
+  /// Плейсхолдер поля унифицированного поиска (экран Search)
+  ///
+  /// In ru, this message translates to:
+  /// **'Искать растения, виды, болезни…'**
+  String get searchScreenHint;
+
+  /// Подсказка пустого состояния, пока введено меньше 2 символов
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите минимум 2 символа'**
+  String get searchMinCharsHint;
+
+  /// Все секции поиска пусты при достаточной длине запроса
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не найдено'**
+  String get searchEmptyResult;
+
+  /// Заголовок секции результатов-растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Мои растения'**
+  String get searchSectionPlants;
+
+  /// Заголовок секции результатов-видов
+  ///
+  /// In ru, this message translates to:
+  /// **'Виды'**
+  String get searchSectionSpecies;
+
+  /// Заголовок секции результатов-болезней
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни и вредители'**
+  String get searchSectionDiseases;
+
+  /// Кнопка перехода к полному списку раздела поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать все'**
+  String get searchShowAll;
+
+  /// Подпись кнопки возврата с экрана поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get searchBack;
+
   /// Подсказка для иконки уведомлений в шапке
   ///
   /// In ru, this message translates to:
@@ -658,6 +706,36 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{На этой неделе сад отдыхает} one{На этой неделе {count} забота в саду} few{На этой неделе {count} заботы в саду} many{На этой неделе {count} забот в саду} other{На этой неделе {count} заботы в саду}}'**
   String scheduleWeekTasksCount(int count);
 
+  /// Префикс hero-заголовка «График» перед выделенным числом задач (count > 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'На этой неделе '**
+  String get scheduleWeekTasksPrefix;
+
+  /// Суффикс hero-заголовка «График» после выделенного числа задач (count > 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{ забота в саду} few{ заботы в саду} many{ забот в саду} other{ заботы в саду}}'**
+  String scheduleWeekTasksSuffix(int count);
+
+  /// Hero-заголовок «График» когда задач на неделе нет (count = 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'На этой неделе сад отдыхает'**
+  String get scheduleWeekRestTitle;
+
+  /// Subtitle под hero-заголовком «График»: перечисление дней без задач
+  ///
+  /// In ru, this message translates to:
+  /// **'{days} — свободные дни 🌳'**
+  String scheduleFreeDaysSubtitle(String days);
+
+  /// Заглушка дня без задач на экране «График» (serif italic 15px)
+  ///
+  /// In ru, this message translates to:
+  /// **'Свободный день 🌿'**
+  String get scheduleDayFree;
+
   /// Счётчик задач дня в строке недели (0 — свободный день)
   ///
   /// In ru, this message translates to:
@@ -813,6 +891,24 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'вовремя'**
   String get plantCardJournalOnTime;
+
+  /// Кнопка дозагрузки следующих 5 записей дневника на карточке растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать ещё'**
+  String get plantCardJournalLoadMore;
+
+  /// Кнопка перехода в полный дневник (экран 21), когда все записи дозагружены и их больше 5
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть полный дневник'**
+  String get plantCardJournalOpenFull;
+
+  /// Компактная плашка ошибки дозагрузки дневника на карточке растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось дозагрузить'**
+  String get plantCardJournalLoadMoreError;
 
   /// Основная кнопка действия на карточке растения
   ///
@@ -1768,6 +1864,54 @@ abstract class AppLocalizations {
   /// **'Ещё'**
   String get profileSectionMore;
 
+  /// Имя в шапке профиля, когда у пользователя нет имени (анонимный)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пользователь'**
+  String get profileAnonymous;
+
+  /// Подпись в шапке профиля: дата регистрации (формат MMM yyyy)
+  ///
+  /// In ru, this message translates to:
+  /// **'С нами с {date}'**
+  String profileMemberSince(String date);
+
+  /// Подпись счётчика статистики: число растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения'**
+  String get profileStatPlants;
+
+  /// Подпись счётчика статистики: число уходов за всё время
+  ///
+  /// In ru, this message translates to:
+  /// **'Уходов'**
+  String get profileStatCareEvents;
+
+  /// Заголовок секции справочников на экране профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Справочники'**
+  String get profileSectionReferences;
+
+  /// Строка справочников: переход к каталогу болезней и вредителей
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни и вредители'**
+  String get profileDiseasesTitle;
+
+  /// Строка справочников: переход на таб каталога видов
+  ///
+  /// In ru, this message translates to:
+  /// **'Каталог видов'**
+  String get profileCatalogTitle;
+
+  /// Строка настроек: переход к экрану поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск'**
+  String get profileSearchTitle;
+
   /// Строка настроек: переход к управлению комнатами
   ///
   /// In ru, this message translates to:
@@ -2205,6 +2349,54 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Я просто посмотрю'**
   String get authGoHome;
+
+  /// Экран 27: ссылка вверху справа — отложить запрос разрешения на пуши
+  ///
+  /// In ru, this message translates to:
+  /// **'Позже'**
+  String get pushPrimingSkip;
+
+  /// Экран 27: первая часть hero-заголовка (обычное начертание)
+  ///
+  /// In ru, this message translates to:
+  /// **'Я напомню '**
+  String get pushPrimingTitleLead;
+
+  /// Экран 27: акцентное слово hero-заголовка (серифный курсив)
+  ///
+  /// In ru, this message translates to:
+  /// **'вовремя'**
+  String get pushPrimingTitleAccent;
+
+  /// Экран 27: подзаголовок-объяснение ценности уведомлений
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения будут писать тебе сами — когда захотят пить, и только в удобные часы. Без спама.'**
+  String get pushPrimingSubtitle;
+
+  /// Экран 27: заголовок образца пуш-уведомления (имя растения + время)
+  ///
+  /// In ru, this message translates to:
+  /// **'Моника · сейчас'**
+  String get pushPrimingPreviewTitle;
+
+  /// Экран 27: текст образца пуш-уведомления (voice line растения)
+  ///
+  /// In ru, this message translates to:
+  /// **'«Полей меня, пожалуйста!»'**
+  String get pushPrimingPreviewBody;
+
+  /// Экран 27: основная кнопка — согласиться на пуши
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешить уведомления'**
+  String get pushPrimingAllow;
+
+  /// Экран 27: подпись под кнопкой о возможности изменить разрешение позже
+  ///
+  /// In ru, this message translates to:
+  /// **'Можно изменить в любой момент в настройках'**
+  String get pushPrimingFootnote;
 
   /// Заголовок экрана ввода email для magic link
   ///
@@ -3741,6 +3933,192 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Точные интервалы по сезонам считаются для каждого растения индивидуально на основе его расписания ухода.'**
   String get seasonalNote;
+
+  /// Тип события журнала растения: пересадка (TRANSPLANT)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пересадка'**
+  String get plantEventTypeTransplant;
+
+  /// Тип события журнала растения: замена грунта (SOIL_CHANGE)
+  ///
+  /// In ru, this message translates to:
+  /// **'Замена грунта'**
+  String get plantEventTypeSoilChange;
+
+  /// Тип события журнала растения: обрезка (PRUNING)
+  ///
+  /// In ru, this message translates to:
+  /// **'Обрезка'**
+  String get plantEventTypePruning;
+
+  /// Тип события журнала растения: обработка от вредителей (PEST_TREATMENT)
+  ///
+  /// In ru, this message translates to:
+  /// **'Обработка от вредителей'**
+  String get plantEventTypePestTreatment;
+
+  /// Заголовок экрана журнала событий растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал событий'**
+  String get plantEventsScreenTitle;
+
+  /// Кнопка открытия sheet добавления события (журнал событий)
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить событие'**
+  String get addPlantEventButton;
+
+  /// Ссылка-вход на полный журнал событий с карточки растения (02)
+  ///
+  /// In ru, this message translates to:
+  /// **'Все события'**
+  String get plantEventsViewAll;
+
+  /// Заголовок секции журнала событий в карточке растения (02)
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал событий'**
+  String get plantEventsSectionTitle;
+
+  /// Заголовок пустого состояния журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Событий пока нет'**
+  String get plantEventsEmptyTitle;
+
+  /// Подпись пустого состояния журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмечайте пересадки, обрезку и другие важные моменты — так проще вспомнить историю растения.'**
+  String get plantEventsEmptyHint;
+
+  /// CTA в пустом состоянии журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить первое событие'**
+  String get plantEventsEmptyCta;
+
+  /// Заголовок sheet добавления события растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Что произошло?'**
+  String get addPlantEventSheetTitle;
+
+  /// Overline (надзаголовок) sheet добавления события растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал событий'**
+  String get addPlantEventSheetOverline;
+
+  /// Снэкбар-подтверждение после записи события растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие записано'**
+  String get plantEventAddedSnackbar;
+
+  /// Тост при дедупе (409) записи события растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие уже записано'**
+  String get plantEventDuplicateSnackbar;
+
+  /// Кнопка подзагрузки следующей страницы журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать ещё'**
+  String get plantEventsLoadMore;
+
+  /// Строка ошибки подзагрузки страницы журнала событий
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить ещё'**
+  String get plantEventsLoadMoreError;
+
+  /// Заголовок экрана справочника болезней и вредителей (issue #68)
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни и вредители'**
+  String get diseaseCatalogTitle;
+
+  /// Подсказка поля поиска в справочнике болезней
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск по названию или симптому'**
+  String get diseaseCatalogSearchHint;
+
+  /// Метка кнопки очистки поля поиска в справочнике болезней
+  ///
+  /// In ru, this message translates to:
+  /// **'Очистить поиск'**
+  String get diseaseCatalogSearchClear;
+
+  /// Пустое состояние списка справочника болезней (нет результатов)
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни не найдены'**
+  String get diseaseCatalogEmpty;
+
+  /// Заголовок секции «Симптомы» на карточке болезни
+  ///
+  /// In ru, this message translates to:
+  /// **'Симптомы'**
+  String get diseaseDetailSymptomsTitle;
+
+  /// Заголовок секции «Лечение» на карточке болезни
+  ///
+  /// In ru, this message translates to:
+  /// **'Лечение'**
+  String get diseaseDetailTreatmentTitle;
+
+  /// Заголовок секции «Профилактика» на карточке болезни
+  ///
+  /// In ru, this message translates to:
+  /// **'Профилактика'**
+  String get diseaseDetailPreventionTitle;
+
+  /// Пункт меню «ещё» на карточке растения — открыть редактирование
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактировать'**
+  String get plantCardMenuEdit;
+
+  /// Пункт меню «ещё» на карточке растения — отправить растение в архив
+  ///
+  /// In ru, this message translates to:
+  /// **'В архив'**
+  String get archivePlantMenuLabel;
+
+  /// Заголовок диалога подтверждения архивации растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить в архив?'**
+  String get archivePlantConfirmTitle;
+
+  /// Текст диалога подтверждения архивации растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение переместится в архив. Вернуть его в список можно будет из экрана «Архив».'**
+  String get archivePlantConfirmBody;
+
+  /// Кнопка подтверждения архивации в диалоге
+  ///
+  /// In ru, this message translates to:
+  /// **'Архивировать'**
+  String get archivePlantConfirmAction;
+
+  /// Снэкбар-подтверждение успешной архивации растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение перемещено в архив'**
+  String get archivePlantSuccess;
+
+  /// Универсальная кнопка отмены действия в диалогах
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

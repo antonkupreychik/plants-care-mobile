@@ -9,7 +9,7 @@ import 'package:plantcare_mobile/l10n/app_localizations.dart';
 Widget _wrap({
   bool isEmptyGarden = false,
   VoidCallback? onProfile,
-  VoidCallback? onComingSoon,
+  VoidCallback? onSearch,
   VoidCallback? onNotifications,
 }) =>
     ProviderScope(
@@ -22,7 +22,7 @@ Widget _wrap({
         home: Scaffold(
           body: HomeHeader(
             now: DateTime(2026, 6, 1),
-            onComingSoon: onComingSoon ?? () {},
+            onSearch: onSearch ?? () {},
             onNotifications: onNotifications ?? () {},
             onProfile: onProfile ?? () {},
             isEmptyGarden: isEmptyGarden,

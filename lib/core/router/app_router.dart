@@ -14,19 +14,24 @@ import '../../features/care_event/presentation/first_care_success_screen.dart';
 import '../../features/care_history/presentation/care_history_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/species_detail_screen.dart';
+import '../../features/disease_catalog/presentation/disease_catalog_screen.dart';
+import '../../features/disease_catalog/presentation/disease_detail_screen.dart';
 import '../../features/edit_schedule/presentation/edit_schedule_screen.dart';
 import '../../features/plant_card/domain/care_event_kind.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/today_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
+import '../../features/plant_events/presentation/plant_events_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/push_priming/presentation/push_permission_screen.dart';
 import '../../features/language/presentation/language_screen.dart';
 import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
 import '../../features/seasonal/presentation/seasonal_screen.dart';
+import '../../features/search/presentation/unified_search_screen.dart';
 import '../../features/edit_plant/presentation/edit_plant_screen.dart';
 import '../../features/plant_diagnosis/presentation/plant_diagnosis_screen.dart';
 import '../../features/shopping/presentation/shopping_screen.dart';
@@ -108,6 +113,24 @@ GoRouter appRouter(Ref ref) {
         name: 'authWelcomeBack',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const AuthWelcomeBackScreen(),
+      ),
+      // Экран 27 «Онбординг — разрешение на пуши». Полноэкранно на root-
+      // навигаторе (без таб-бара), вне `/auth` — чтобы auth-redirect не уводил
+      // уже авторизованного юзера с прайминга. Вход: после «С возвращением» 09.
+      GoRoute(
+        path: '/onboarding/push',
+        name: 'pushPriming',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const PushPermissionScreen(),
+      ),
+      // Экран унифицированного поиска (issue #69) — полноэкранно поверх shell
+      // (на root-навигаторе, без таб-бара), как мастер добавления/карточка.
+      // Вход: иконка поиска в шапке главной (01).
+      GoRoute(
+        path: '/search',
+        name: 'search',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const UnifiedSearchScreen(),
       ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
@@ -207,6 +230,19 @@ GoRouter appRouter(Ref ref) {
                         final id =
                             int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
                         return CareHistoryScreen(plantId: id);
+                      },
+                    ),
+                    // «Журнал событий» (issue #63) — полноэкранно поверх shell
+                    // (своя кнопка «назад», без таб-бара), как история ухода.
+                    // Вход: карточка 02 → «Журнал событий · Все события».
+                    GoRoute(
+                      path: 'events',
+                      name: 'plantEvents',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final id =
+                            int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                        return PlantEventsScreen(plantId: id);
                       },
                     ),
                     // Экран 22 «Редактирование расписания ухода».
@@ -365,6 +401,29 @@ GoRouter appRouter(Ref ref) {
                   name: 'language',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const LanguageScreen(),
+                ),
+                // Справочник «Болезни и вредители» (issue #68) — список+поиск
+                // полноэкранно поверх shell (своя кнопка «назад», без таб-бара),
+                // как language/shopping. Деталь — вложенный `:id`.
+                GoRoute(
+                  path: 'diseases',
+                  name: 'diseaseCatalog',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const DiseaseCatalogScreen(),
+                  routes: [
+                    GoRoute(
+                      path: ':id',
+                      name: 'diseaseDetail',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        // `id` валидируется парсингом: некорректный путь → 0
+                        // (деталь покажет ошибку notFound через провайдер).
+                        final id =
+                            int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                        return DiseaseDetailScreen(id: id);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
