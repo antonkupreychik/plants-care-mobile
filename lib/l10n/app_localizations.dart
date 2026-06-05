@@ -3694,6 +3694,48 @@ abstract class AppLocalizations {
   /// **'Изменения сохранены'**
   String get editPlantSuccessSnackbar;
 
+  /// Заголовок экрана справочника болезней и вредителей (issue #68)
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни и вредители'**
+  String get diseaseCatalogTitle;
+
+  /// Подсказка поля поиска в справочнике болезней
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск по названию или симптому'**
+  String get diseaseCatalogSearchHint;
+
+  /// Метка кнопки очистки поля поиска в справочнике болезней
+  ///
+  /// In ru, this message translates to:
+  /// **'Очистить поиск'**
+  String get diseaseCatalogSearchClear;
+
+  /// Пустое состояние списка справочника болезней (нет результатов)
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни не найдены'**
+  String get diseaseCatalogEmpty;
+
+  /// Заголовок секции «Симптомы» на карточке болезни
+  ///
+  /// In ru, this message translates to:
+  /// **'Симптомы'**
+  String get diseaseDetailSymptomsTitle;
+
+  /// Заголовок секции «Лечение» на карточке болезни
+  ///
+  /// In ru, this message translates to:
+  /// **'Лечение'**
+  String get diseaseDetailTreatmentTitle;
+
+  /// Заголовок секции «Профилактика» на карточке болезни
+  ///
+  /// In ru, this message translates to:
+  /// **'Профилактика'**
+  String get diseaseDetailPreventionTitle;
+
   /// Пункт меню «ещё» на карточке растения — открыть редактирование
   ///
   /// In ru, this message translates to:
