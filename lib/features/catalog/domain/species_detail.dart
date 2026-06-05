@@ -8,7 +8,7 @@ import 'species_fact_category.dart';
 part 'species_detail.freezed.dart';
 
 /// Полная карточка вида (источник — `GET /api/v1/species/{id}`,
-/// [SpeciesDetailDto]). Экран 13.
+/// [SpeciesDetailDto]). Экран 20.
 ///
 /// Отдельная модель, а не [Species] с `description?`: деталь — единственный
 /// эндпоинт, где `description` приходит, и тип это фиксирует (список не обязан

@@ -17,7 +17,7 @@ import 'widgets/species_hero.dart';
 import 'widgets/species_light_meter.dart';
 import 'widgets/species_toxicity_banner.dart';
 
-/// Экран 13 «Деталь вида».
+/// Экран 20 «Карточка вида».
 ///
 /// Потребляет family-провайдер [speciesDetailProvider] по [id]. Состояния:
 /// loading (скелетон hero) / error (`ErrorState` + retry через invalidate) /
