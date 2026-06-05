@@ -28,6 +28,7 @@ import 'package:plantcare_mobile/features/home/presentation/home_providers.dart'
 import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_history_entry.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/streak.dart';
+import 'package:plantcare_mobile/features/plant_card/presentation/plant_card_history_state.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/plant_card_providers.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/plant_card_screen.dart';
 import 'package:plantcare_mobile/features/schedule/data/schedule_repository_provider.dart';
@@ -47,6 +48,13 @@ class _FixedClock implements Clock {
 class _MockScheduleRepo extends Mock implements ScheduleRepository {}
 
 class _MockCatalogRepo extends Mock implements CatalogRepository {}
+
+/// Стаб-нотифаер дневника: отдаёт пустое состояние без сети.
+class _EmptyHistoryNotifier extends PlantCardHistory {
+  @override
+  Future<PlantCardHistoryState> build(int plantId) async =>
+      const PlantCardHistoryState(items: [], total: 0, offset: 0);
+}
 
 const _config = AppConfig(
   flavor: Flavor.dev,
@@ -128,6 +136,9 @@ ScheduleWeek _emptyWeek(DateTime monday) => ScheduleWeek(
       ),
       plantHistoryProvider(_plantId).overrideWith(
         (ref) async => const <CareHistoryEntry>[],
+      ),
+      plantCardHistoryProvider(_plantId).overrideWith(
+        () => _EmptyHistoryNotifier(),
       ),
     ],
   );

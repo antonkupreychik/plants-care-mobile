@@ -10,6 +10,7 @@ import '../../home/domain/plant.dart';
 import '../domain/care_history_entry.dart';
 import '../domain/plant_card_repository.dart';
 import '../domain/plant_health.dart';
+import '../domain/plant_history_page.dart';
 import '../domain/streak.dart';
 import 'mappers/care_history_mapper.dart';
 import 'mappers/plant_health_mapper.dart';
@@ -47,9 +48,37 @@ class PlantCardRepositoryImpl implements PlantCardRepository {
   }
 
   @override
+  Future<Result<PlantHistoryPage>> getHistoryPage(
+    int plantId, {
+    int limit = 5,
+    int offset = 0,
+  }) async {
+    try {
+      final response = await _api.plantHistory.getPlantHistory(
+        id: plantId,
+        limit: limit,
+        offset: offset,
+        extras: authScopeExtra(AuthScope.chat),
+      );
+      return Result.success(
+        PlantHistoryPage(
+          items: response.items
+              .map((dto) => dto.toDomain())
+              .toList(growable: false),
+          total: response.total,
+          limit: response.limit,
+          offset: response.offset,
+        ),
+      );
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
+  @override
   Future<Result<List<CareHistoryEntry>>> getHistory(
     int plantId, {
-    int limit = 10,
+    int limit = 5,
   }) async {
     try {
       final response = await _api.plantHistory.getPlantHistory(

@@ -13,6 +13,7 @@ import 'package:plantcare_mobile/features/home/domain/plant.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_event_kind.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/care_history_entry.dart';
 import 'package:plantcare_mobile/features/plant_card/domain/streak.dart';
+import 'package:plantcare_mobile/features/plant_card/presentation/plant_card_history_state.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/plant_card_providers.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/plant_card_screen.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/widgets/plant_hero.dart';
@@ -40,12 +41,30 @@ typedef _Streak = Future<Streak> Function();
 typedef _History = Future<List<CareHistoryEntry>> Function();
 typedef _Events = Future<List<PlantEvent>> Function();
 
+/// Стаб-нотифаер дневника: возвращает предопределённое состояние или ждёт вечно.
+class _StubHistoryNotifier extends PlantCardHistory {
+  _StubHistoryNotifier(this._makeState);
+  final Future<PlantCardHistoryState> Function() _makeState;
+
+  @override
+  Future<PlantCardHistoryState> build(int plantId) => _makeState();
+}
+
+/// Преобразует плоский список записей в готовое состояние дневника без подгрузки.
+PlantCardHistoryState _historyState(List<CareHistoryEntry> entries) =>
+    PlantCardHistoryState(
+      items: entries,
+      total: entries.length,
+      offset: entries.length,
+    );
+
 Widget _wrap({
   _Detail? detail,
   _Streak? streak,
   _History? history,
   _Events? events,
 }) {
+  final historyFn = history ?? () async => const <CareHistoryEntry>[];
   return ProviderScope(
     overrides: [
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
@@ -56,8 +75,10 @@ Widget _wrap({
         (ref) =>
             (streak ?? () async => const Streak(plantId: _plantId, count: 0))(),
       ),
-      plantHistoryProvider(_plantId).overrideWith(
-        (ref) => (history ?? () async => const <CareHistoryEntry>[])(),
+      plantCardHistoryProvider(_plantId).overrideWith(
+        () => _StubHistoryNotifier(
+          () async => _historyState(await historyFn()),
+        ),
       ),
       // Журнал событий (issue #63): по умолчанию пуст — секция не должна
       // влиять на проверки других секций. В loading-тесте передаём _pending.

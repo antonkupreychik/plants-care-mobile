@@ -611,6 +611,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get plantCardJournalOnTime => 'вовремя';
 
   @override
+  String get plantCardJournalLoadMore => 'Показать ещё';
+
+  @override
+  String get plantCardJournalOpenFull => 'Открыть полный дневник';
+
+  @override
+  String get plantCardJournalLoadMoreError => 'Не удалось дозагрузить';
+
+  @override
   String get plantCardLogCare => 'Отметить уход';
 
   @override

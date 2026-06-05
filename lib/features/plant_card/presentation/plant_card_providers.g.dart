@@ -8,58 +8,16 @@ part of 'plant_card_providers.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// State-слой экрана «Карточка растения» (02).
-///
-/// Три независимых family-провайдера (по `plantId`), а не один агрегат: деталь,
-/// история и стрик грузятся и падают независимо — UI рисует skeleton/ошибку
-/// посекционно (например, стрик дал 404, а деталь и история готовы). Так же
-/// устроен экран 01 (`home_providers.dart`), повторяем паттерн 1:1.
-///
-/// Контракт для ui-builder: каждый провайдер отдаёт `AsyncValue<...>`
-/// (loading / error / data). В `AsyncError` лежит типизированный [ApiError]
-/// (см. [_unwrap]) — UI маппит его в текст через `AppLocalizations`.
-///
-/// После `POST /care-events` для этого растения инвалидируй
-/// `plantHistoryProvider(plantId)` и `plantStreakProvider(plantId)`
-/// (README §5 / FLUTTER.md «Правила state»).
 /// Деталь растения (`GET /plants/{id}`, scope user).
 
 @ProviderFor(plantDetail)
 final plantDetailProvider = PlantDetailFamily._();
 
-/// State-слой экрана «Карточка растения» (02).
-///
-/// Три независимых family-провайдера (по `plantId`), а не один агрегат: деталь,
-/// история и стрик грузятся и падают независимо — UI рисует skeleton/ошибку
-/// посекционно (например, стрик дал 404, а деталь и история готовы). Так же
-/// устроен экран 01 (`home_providers.dart`), повторяем паттерн 1:1.
-///
-/// Контракт для ui-builder: каждый провайдер отдаёт `AsyncValue<...>`
-/// (loading / error / data). В `AsyncError` лежит типизированный [ApiError]
-/// (см. [_unwrap]) — UI маппит его в текст через `AppLocalizations`.
-///
-/// После `POST /care-events` для этого растения инвалидируй
-/// `plantHistoryProvider(plantId)` и `plantStreakProvider(plantId)`
-/// (README §5 / FLUTTER.md «Правила state»).
 /// Деталь растения (`GET /plants/{id}`, scope user).
 
 final class PlantDetailProvider
     extends $FunctionalProvider<AsyncValue<Plant>, Plant, FutureOr<Plant>>
     with $FutureModifier<Plant>, $FutureProvider<Plant> {
-  /// State-слой экрана «Карточка растения» (02).
-  ///
-  /// Три независимых family-провайдера (по `plantId`), а не один агрегат: деталь,
-  /// история и стрик грузятся и падают независимо — UI рисует skeleton/ошибку
-  /// посекционно (например, стрик дал 404, а деталь и история готовы). Так же
-  /// устроен экран 01 (`home_providers.dart`), повторяем паттерн 1:1.
-  ///
-  /// Контракт для ui-builder: каждый провайдер отдаёт `AsyncValue<...>`
-  /// (loading / error / data). В `AsyncError` лежит типизированный [ApiError]
-  /// (см. [_unwrap]) — UI маппит его в текст через `AppLocalizations`.
-  ///
-  /// После `POST /care-events` для этого растения инвалидируй
-  /// `plantHistoryProvider(plantId)` и `plantStreakProvider(plantId)`
-  /// (README §5 / FLUTTER.md «Правила state»).
   /// Деталь растения (`GET /plants/{id}`, scope user).
   PlantDetailProvider._({
     required PlantDetailFamily super.from,
@@ -106,20 +64,6 @@ final class PlantDetailProvider
 
 String _$plantDetailHash() => r'2de59d8b14b3a8c93690413bd3800049b88adb57';
 
-/// State-слой экрана «Карточка растения» (02).
-///
-/// Три независимых family-провайдера (по `plantId`), а не один агрегат: деталь,
-/// история и стрик грузятся и падают независимо — UI рисует skeleton/ошибку
-/// посекционно (например, стрик дал 404, а деталь и история готовы). Так же
-/// устроен экран 01 (`home_providers.dart`), повторяем паттерн 1:1.
-///
-/// Контракт для ui-builder: каждый провайдер отдаёт `AsyncValue<...>`
-/// (loading / error / data). В `AsyncError` лежит типизированный [ApiError]
-/// (см. [_unwrap]) — UI маппит его в текст через `AppLocalizations`.
-///
-/// После `POST /care-events` для этого растения инвалидируй
-/// `plantHistoryProvider(plantId)` и `plantStreakProvider(plantId)`
-/// (README §5 / FLUTTER.md «Правила state»).
 /// Деталь растения (`GET /plants/{id}`, scope user).
 
 final class PlantDetailFamily extends $Family
@@ -133,20 +77,6 @@ final class PlantDetailFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// State-слой экрана «Карточка растения» (02).
-  ///
-  /// Три независимых family-провайдера (по `plantId`), а не один агрегат: деталь,
-  /// история и стрик грузятся и падают независимо — UI рисует skeleton/ошибку
-  /// посекционно (например, стрик дал 404, а деталь и история готовы). Так же
-  /// устроен экран 01 (`home_providers.dart`), повторяем паттерн 1:1.
-  ///
-  /// Контракт для ui-builder: каждый провайдер отдаёт `AsyncValue<...>`
-  /// (loading / error / data). В `AsyncError` лежит типизированный [ApiError]
-  /// (см. [_unwrap]) — UI маппит его в текст через `AppLocalizations`.
-  ///
-  /// После `POST /care-events` для этого растения инвалидируй
-  /// `plantHistoryProvider(plantId)` и `plantStreakProvider(plantId)`
-  /// (README §5 / FLUTTER.md «Правила state»).
   /// Деталь растения (`GET /plants/{id}`, scope user).
 
   PlantDetailProvider call(int plantId) =>
@@ -156,14 +86,20 @@ final class PlantDetailFamily extends $Family
   String toString() => r'plantDetailProvider';
 }
 
-/// История ухода (`GET /plants/{id}/history?limit=10`, scope chat).
-/// Записи приходят отсортированными backend; клиент порядок не меняет.
+/// История ухода для карточки — первые 5 записей без пагинации.
+///
+/// Используется для инвалидации после `POST /care-events` (LOG_CARE_EVENT_CONTROLLER)
+/// и как запасной провайдер в тестах, не переведённых на [plantCardHistoryProvider].
+/// Новый UI использует [plantCardHistoryProvider].
 
 @ProviderFor(plantHistory)
 final plantHistoryProvider = PlantHistoryFamily._();
 
-/// История ухода (`GET /plants/{id}/history?limit=10`, scope chat).
-/// Записи приходят отсортированными backend; клиент порядок не меняет.
+/// История ухода для карточки — первые 5 записей без пагинации.
+///
+/// Используется для инвалидации после `POST /care-events` (LOG_CARE_EVENT_CONTROLLER)
+/// и как запасной провайдер в тестах, не переведённых на [plantCardHistoryProvider].
+/// Новый UI использует [plantCardHistoryProvider].
 
 final class PlantHistoryProvider
     extends
@@ -175,8 +111,11 @@ final class PlantHistoryProvider
     with
         $FutureModifier<List<CareHistoryEntry>>,
         $FutureProvider<List<CareHistoryEntry>> {
-  /// История ухода (`GET /plants/{id}/history?limit=10`, scope chat).
-  /// Записи приходят отсортированными backend; клиент порядок не меняет.
+  /// История ухода для карточки — первые 5 записей без пагинации.
+  ///
+  /// Используется для инвалидации после `POST /care-events` (LOG_CARE_EVENT_CONTROLLER)
+  /// и как запасной провайдер в тестах, не переведённых на [plantCardHistoryProvider].
+  /// Новый UI использует [plantCardHistoryProvider].
   PlantHistoryProvider._({
     required PlantHistoryFamily super.from,
     required int super.argument,
@@ -223,8 +162,11 @@ final class PlantHistoryProvider
 
 String _$plantHistoryHash() => r'cf24cc88ffd54a3b02825d4a4b2ece8b663fea52';
 
-/// История ухода (`GET /plants/{id}/history?limit=10`, scope chat).
-/// Записи приходят отсортированными backend; клиент порядок не меняет.
+/// История ухода для карточки — первые 5 записей без пагинации.
+///
+/// Используется для инвалидации после `POST /care-events` (LOG_CARE_EVENT_CONTROLLER)
+/// и как запасной провайдер в тестах, не переведённых на [plantCardHistoryProvider].
+/// Новый UI использует [plantCardHistoryProvider].
 
 final class PlantHistoryFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<List<CareHistoryEntry>>, int> {
@@ -237,14 +179,158 @@ final class PlantHistoryFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// История ухода (`GET /plants/{id}/history?limit=10`, scope chat).
-  /// Записи приходят отсортированными backend; клиент порядок не меняет.
+  /// История ухода для карточки — первые 5 записей без пагинации.
+  ///
+  /// Используется для инвалидации после `POST /care-events` (LOG_CARE_EVENT_CONTROLLER)
+  /// и как запасной провайдер в тестах, не переведённых на [plantCardHistoryProvider].
+  /// Новый UI использует [plantCardHistoryProvider].
 
   PlantHistoryProvider call(int plantId) =>
       PlantHistoryProvider._(argument: plantId, from: this);
 
   @override
   String toString() => r'plantHistoryProvider';
+}
+
+/// Аккумулирующий нотифаер дневника ухода на карточке растения (02).
+///
+/// `build` грузит первую страницу (limit=5, offset=0). [loadMore] дотягивает
+/// следующие 5 и аппендит. [hasMore] = false когда `items.length >= total`.
+///
+/// После `POST /care-events` инвалидируй этот провайдер (и [plantHistoryProvider])
+/// — нотифаер перезагрузится с нуля (первые 5).
+
+@ProviderFor(PlantCardHistory)
+final plantCardHistoryProvider = PlantCardHistoryFamily._();
+
+/// Аккумулирующий нотифаер дневника ухода на карточке растения (02).
+///
+/// `build` грузит первую страницу (limit=5, offset=0). [loadMore] дотягивает
+/// следующие 5 и аппендит. [hasMore] = false когда `items.length >= total`.
+///
+/// После `POST /care-events` инвалидируй этот провайдер (и [plantHistoryProvider])
+/// — нотифаер перезагрузится с нуля (первые 5).
+final class PlantCardHistoryProvider
+    extends $AsyncNotifierProvider<PlantCardHistory, PlantCardHistoryState> {
+  /// Аккумулирующий нотифаер дневника ухода на карточке растения (02).
+  ///
+  /// `build` грузит первую страницу (limit=5, offset=0). [loadMore] дотягивает
+  /// следующие 5 и аппендит. [hasMore] = false когда `items.length >= total`.
+  ///
+  /// После `POST /care-events` инвалидируй этот провайдер (и [plantHistoryProvider])
+  /// — нотифаер перезагрузится с нуля (первые 5).
+  PlantCardHistoryProvider._({
+    required PlantCardHistoryFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'plantCardHistoryProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$plantCardHistoryHash();
+
+  @override
+  String toString() {
+    return r'plantCardHistoryProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  PlantCardHistory create() => PlantCardHistory();
+
+  @override
+  bool operator ==(Object other) {
+    return other is PlantCardHistoryProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$plantCardHistoryHash() => r'7edbed8be1b426debe601b970990ce9ad963f137';
+
+/// Аккумулирующий нотифаер дневника ухода на карточке растения (02).
+///
+/// `build` грузит первую страницу (limit=5, offset=0). [loadMore] дотягивает
+/// следующие 5 и аппендит. [hasMore] = false когда `items.length >= total`.
+///
+/// После `POST /care-events` инвалидируй этот провайдер (и [plantHistoryProvider])
+/// — нотифаер перезагрузится с нуля (первые 5).
+
+final class PlantCardHistoryFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          PlantCardHistory,
+          AsyncValue<PlantCardHistoryState>,
+          PlantCardHistoryState,
+          FutureOr<PlantCardHistoryState>,
+          int
+        > {
+  PlantCardHistoryFamily._()
+    : super(
+        retry: null,
+        name: r'plantCardHistoryProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Аккумулирующий нотифаер дневника ухода на карточке растения (02).
+  ///
+  /// `build` грузит первую страницу (limit=5, offset=0). [loadMore] дотягивает
+  /// следующие 5 и аппендит. [hasMore] = false когда `items.length >= total`.
+  ///
+  /// После `POST /care-events` инвалидируй этот провайдер (и [plantHistoryProvider])
+  /// — нотифаер перезагрузится с нуля (первые 5).
+
+  PlantCardHistoryProvider call(int plantId) =>
+      PlantCardHistoryProvider._(argument: plantId, from: this);
+
+  @override
+  String toString() => r'plantCardHistoryProvider';
+}
+
+/// Аккумулирующий нотифаер дневника ухода на карточке растения (02).
+///
+/// `build` грузит первую страницу (limit=5, offset=0). [loadMore] дотягивает
+/// следующие 5 и аппендит. [hasMore] = false когда `items.length >= total`.
+///
+/// После `POST /care-events` инвалидируй этот провайдер (и [plantHistoryProvider])
+/// — нотифаер перезагрузится с нуля (первые 5).
+
+abstract class _$PlantCardHistory
+    extends $AsyncNotifier<PlantCardHistoryState> {
+  late final _$args = ref.$arg as int;
+  int get plantId => _$args;
+
+  FutureOr<PlantCardHistoryState> build(int plantId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<PlantCardHistoryState>, PlantCardHistoryState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<PlantCardHistoryState>,
+                PlantCardHistoryState
+              >,
+              AsyncValue<PlantCardHistoryState>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
 }
 
 /// Стрик растения (`GET /stats/streak`, scope chat).

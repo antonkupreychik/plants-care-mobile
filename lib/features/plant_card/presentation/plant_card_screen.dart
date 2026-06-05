@@ -12,8 +12,8 @@ import '../../home/domain/plant.dart';
 import '../../plant_events/presentation/add_plant_event_sheet.dart';
 import '../../plant_events/presentation/widgets/plant_events_section.dart';
 import '../domain/care_event_kind.dart';
-import '../domain/care_history_entry.dart';
 import '../domain/streak.dart';
+import 'plant_card_history_state.dart';
 import 'plant_card_providers.dart';
 import 'widgets/plant_hero.dart';
 import 'widgets/plant_journal_card.dart';
@@ -24,7 +24,7 @@ import 'widgets/section_title.dart';
 /// Экран 02 «Карточка растения».
 ///
 /// Потребляет три независимых family-провайдера по [plantId]
-/// ([plantDetailProvider], [plantStreakProvider], [plantHistoryProvider]) —
+/// ([plantDetailProvider], [plantStreakProvider], [plantCardHistoryProvider]) —
 /// каждая секция рисует loading/error/empty/data самостоятельно (как в home).
 ///
 /// Бейдж здоровья (G1) показываем в шапке через `HealthBadge` (см. [PlantHero]);
@@ -81,7 +81,7 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
 
     final detail = ref.watch(plantDetailProvider(widget.plantId));
     final streak = ref.watch(plantStreakProvider(widget.plantId));
-    final history = ref.watch(plantHistoryProvider(widget.plantId));
+    final history = ref.watch(plantCardHistoryProvider(widget.plantId));
     final archiveState = ref.watch(archivePlantProvider(widget.plantId));
 
     return Scaffold(
@@ -184,8 +184,17 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
                   sliver: SliverToBoxAdapter(
                     child: _JournalSection(
                       history: history,
-                      onRetry: () =>
-                          ref.invalidate(plantHistoryProvider(widget.plantId)),
+                      onRetry: () => ref
+                          .invalidate(plantCardHistoryProvider(widget.plantId)),
+                      onLoadMore: () => ref
+                          .read(
+                            plantCardHistoryProvider(widget.plantId).notifier,
+                          )
+                          .loadMore(),
+                      onOpenFull: () => context.pushNamed(
+                        'plantHistory',
+                        pathParameters: {'id': '${widget.plantId}'},
+                      ),
                       // CTA «Полить сейчас» (экран 31): открывает sheet (06)
                       // с предвыбором CareEventKind.water.
                       onWaterNow: () => showLogCareEventSheet(
@@ -474,17 +483,26 @@ class _StreakSection extends StatelessWidget {
 
 /// Секция дневника: skeleton / ошибка с retry / empty (экран 31) / данные.
 ///
-/// При пустой истории ([entries.isEmpty]) показывает speech-bubble от растения
-/// «Жду первого ухода…» и CTA «Полить сейчас» → sheet (экран 06, полив).
+/// При пустой истории показывает speech-bubble от растения «Жду первого ухода…»
+/// и CTA «Полить сейчас» → sheet (экран 06, полив).
+///
+/// При наличии записей под лентой показывает:
+/// - «Показать ещё» если [PlantCardHistoryState.hasMore] и не идёт загрузка;
+/// - индикатор загрузки если [PlantCardHistoryState.isLoadingMore];
+/// - «Открыть полный дневник» если все записи загружены и их больше 5.
 class _JournalSection extends StatelessWidget {
   const _JournalSection({
     required this.history,
     required this.onRetry,
+    required this.onLoadMore,
+    required this.onOpenFull,
     required this.onWaterNow,
   });
 
-  final AsyncValue<List<CareHistoryEntry>> history;
+  final AsyncValue<PlantCardHistoryState> history;
   final VoidCallback onRetry;
+  final VoidCallback onLoadMore;
+  final VoidCallback onOpenFull;
 
   /// Открывает sheet (экран 06) с предвыбором полива — передаётся в [PlantJournalCard].
   final VoidCallback onWaterNow;
@@ -499,9 +517,113 @@ class _JournalSection extends StatelessWidget {
         retryLabel: l10n.retry,
         onRetry: onRetry,
       ),
-      data: (entries) => PlantJournalCard(
-        entries: entries,
-        onWaterNow: onWaterNow,
+      data: (histState) => Column(
+        children: [
+          PlantJournalCard(
+            entries: histState.items,
+            onWaterNow: histState.items.isEmpty ? onWaterNow : null,
+          ),
+          if (histState.items.isNotEmpty) ...[
+            if (histState.loadMoreError != null)
+              _JournalLoadMoreError(
+                message: l10n.plantCardJournalLoadMoreError,
+                onRetry: onLoadMore,
+              ),
+            if (histState.isLoadingMore)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Center(child: CircularProgressIndicator.adaptive()),
+              )
+            else if (histState.hasMore)
+              _JournalLoadMoreButton(
+                label: l10n.plantCardJournalLoadMore,
+                onPressed: onLoadMore,
+              )
+            else if (histState.offset > 5)
+              _JournalLoadMoreButton(
+                label: l10n.plantCardJournalOpenFull,
+                onPressed: onOpenFull,
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Кнопка дозагрузки / перехода в полный дневник под лентой записей.
+class _JournalLoadMoreButton extends StatelessWidget {
+  const _JournalLoadMoreButton({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Padding(
+      padding: const EdgeInsets.only(top: 4, bottom: 4),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(999),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onPressed,
+          child: Semantics(
+            button: true,
+            label: label,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              alignment: Alignment.center,
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: c.primary,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Компактная плашка ошибки дозагрузки с кнопкой retry.
+class _JournalLoadMoreError extends StatelessWidget {
+  const _JournalLoadMoreError({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            message,
+            style: TextStyle(fontSize: 13, color: c.inkSoft),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: onRetry,
+            child: Text(
+              '↻',
+              style: TextStyle(
+                fontSize: 16,
+                color: c.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
