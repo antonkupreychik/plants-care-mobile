@@ -148,6 +148,54 @@ abstract class AppLocalizations {
   /// **'Поиск'**
   String get homeSearchTooltip;
 
+  /// Плейсхолдер поля унифицированного поиска (экран Search)
+  ///
+  /// In ru, this message translates to:
+  /// **'Искать растения, виды, болезни…'**
+  String get searchScreenHint;
+
+  /// Подсказка пустого состояния, пока введено меньше 2 символов
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите минимум 2 символа'**
+  String get searchMinCharsHint;
+
+  /// Все секции поиска пусты при достаточной длине запроса
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не найдено'**
+  String get searchEmptyResult;
+
+  /// Заголовок секции результатов-растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Мои растения'**
+  String get searchSectionPlants;
+
+  /// Заголовок секции результатов-видов
+  ///
+  /// In ru, this message translates to:
+  /// **'Виды'**
+  String get searchSectionSpecies;
+
+  /// Заголовок секции результатов-болезней
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни и вредители'**
+  String get searchSectionDiseases;
+
+  /// Кнопка перехода к полному списку раздела поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать все'**
+  String get searchShowAll;
+
+  /// Подпись кнопки возврата с экрана поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get searchBack;
+
   /// Подсказка для иконки уведомлений в шапке
   ///
   /// In ru, this message translates to:
@@ -657,6 +705,36 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'{count, plural, =0{На этой неделе сад отдыхает} one{На этой неделе {count} забота в саду} few{На этой неделе {count} заботы в саду} many{На этой неделе {count} забот в саду} other{На этой неделе {count} заботы в саду}}'**
   String scheduleWeekTasksCount(int count);
+
+  /// Префикс hero-заголовка «График» перед выделенным числом задач (count > 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'На этой неделе '**
+  String get scheduleWeekTasksPrefix;
+
+  /// Суффикс hero-заголовка «График» после выделенного числа задач (count > 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{ забота в саду} few{ заботы в саду} many{ забот в саду} other{ заботы в саду}}'**
+  String scheduleWeekTasksSuffix(int count);
+
+  /// Hero-заголовок «График» когда задач на неделе нет (count = 0)
+  ///
+  /// In ru, this message translates to:
+  /// **'На этой неделе сад отдыхает'**
+  String get scheduleWeekRestTitle;
+
+  /// Subtitle под hero-заголовком «График»: перечисление дней без задач
+  ///
+  /// In ru, this message translates to:
+  /// **'{days} — свободные дни 🌳'**
+  String scheduleFreeDaysSubtitle(String days);
+
+  /// Заглушка дня без задач на экране «График» (serif italic 15px)
+  ///
+  /// In ru, this message translates to:
+  /// **'Свободный день 🌿'**
+  String get scheduleDayFree;
 
   /// Счётчик задач дня в строке недели (0 — свободный день)
   ///
@@ -1767,6 +1845,54 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Ещё'**
   String get profileSectionMore;
+
+  /// Имя в шапке профиля, когда у пользователя нет имени (анонимный)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пользователь'**
+  String get profileAnonymous;
+
+  /// Подпись в шапке профиля: дата регистрации (формат MMM yyyy)
+  ///
+  /// In ru, this message translates to:
+  /// **'С нами с {date}'**
+  String profileMemberSince(String date);
+
+  /// Подпись счётчика статистики: число растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения'**
+  String get profileStatPlants;
+
+  /// Подпись счётчика статистики: число уходов за всё время
+  ///
+  /// In ru, this message translates to:
+  /// **'Уходов'**
+  String get profileStatCareEvents;
+
+  /// Заголовок секции справочников на экране профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Справочники'**
+  String get profileSectionReferences;
+
+  /// Строка справочников: переход к каталогу болезней и вредителей
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни и вредители'**
+  String get profileDiseasesTitle;
+
+  /// Строка справочников: переход на таб каталога видов
+  ///
+  /// In ru, this message translates to:
+  /// **'Каталог видов'**
+  String get profileCatalogTitle;
+
+  /// Строка настроек: переход к экрану поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск'**
+  String get profileSearchTitle;
 
   /// Строка настроек: переход к управлению комнатами
   ///
@@ -3609,6 +3735,48 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Профилактика'**
   String get diseaseDetailPreventionTitle;
+
+  /// Пункт меню «ещё» на карточке растения — открыть редактирование
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактировать'**
+  String get plantCardMenuEdit;
+
+  /// Пункт меню «ещё» на карточке растения — отправить растение в архив
+  ///
+  /// In ru, this message translates to:
+  /// **'В архив'**
+  String get archivePlantMenuLabel;
+
+  /// Заголовок диалога подтверждения архивации растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить в архив?'**
+  String get archivePlantConfirmTitle;
+
+  /// Текст диалога подтверждения архивации растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение переместится в архив. Вернуть его в список можно будет из экрана «Архив».'**
+  String get archivePlantConfirmBody;
+
+  /// Кнопка подтверждения архивации в диалоге
+  ///
+  /// In ru, this message translates to:
+  /// **'Архивировать'**
+  String get archivePlantConfirmAction;
+
+  /// Снэкбар-подтверждение успешной архивации растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение перемещено в архив'**
+  String get archivePlantSuccess;
+
+  /// Универсальная кнопка отмены действия в диалогах
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

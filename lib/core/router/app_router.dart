@@ -28,6 +28,7 @@ import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
+import '../../features/search/presentation/unified_search_screen.dart';
 import '../../features/edit_plant/presentation/edit_plant_screen.dart';
 import '../../features/plant_diagnosis/presentation/plant_diagnosis_screen.dart';
 import '../../features/shopping/presentation/shopping_screen.dart';
@@ -109,6 +110,15 @@ GoRouter appRouter(Ref ref) {
         name: 'authWelcomeBack',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const AuthWelcomeBackScreen(),
+      ),
+      // Экран унифицированного поиска (issue #69) — полноэкранно поверх shell
+      // (на root-навигаторе, без таб-бара), как мастер добавления/карточка.
+      // Вход: иконка поиска в шапке главной (01).
+      GoRoute(
+        path: '/search',
+        name: 'search',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const UnifiedSearchScreen(),
       ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>

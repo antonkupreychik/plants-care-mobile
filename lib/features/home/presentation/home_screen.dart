@@ -92,6 +92,9 @@ class _HomeContent extends ConsumerWidget {
         ..showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
     }
 
+    // Открыть экран унифицированного поиска (issue #69) поверх shell.
+    void openSearch() => context.push('/search');
+
     // Открыть мастер добавления растения (экран 04) поверх shell.
     void openAddPlant() => context.push('/home/add');
 
@@ -119,7 +122,7 @@ class _HomeContent extends ConsumerWidget {
                 sliver: SliverToBoxAdapter(
                   child: HomeHeader(
                     now: nowLocal,
-                    onComingSoon: comingSoon,
+                    onSearch: openSearch,
                     onNotifications: openNotifications,
                     onProfile: openProfile,
                     isEmptyGarden: isEmptyGarden,

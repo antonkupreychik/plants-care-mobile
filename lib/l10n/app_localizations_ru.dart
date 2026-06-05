@@ -37,6 +37,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeSearchTooltip => 'Поиск';
 
   @override
+  String get searchScreenHint => 'Искать растения, виды, болезни…';
+
+  @override
+  String get searchMinCharsHint => 'Введите минимум 2 символа';
+
+  @override
+  String get searchEmptyResult => 'Ничего не найдено';
+
+  @override
+  String get searchSectionPlants => 'Мои растения';
+
+  @override
+  String get searchSectionSpecies => 'Виды';
+
+  @override
+  String get searchSectionDiseases => 'Болезни и вредители';
+
+  @override
+  String get searchShowAll => 'Показать все';
+
+  @override
+  String get searchBack => 'Назад';
+
+  @override
   String get homeNotificationsTooltip => 'Уведомления';
 
   @override
@@ -440,6 +464,33 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get scheduleWeekTasksPrefix => 'На этой неделе ';
+
+  @override
+  String scheduleWeekTasksSuffix(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: ' заботы в саду',
+      many: ' забот в саду',
+      few: ' заботы в саду',
+      one: ' забота в саду',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get scheduleWeekRestTitle => 'На этой неделе сад отдыхает';
+
+  @override
+  String scheduleFreeDaysSubtitle(String days) {
+    return '$days — свободные дни 🌳';
+  }
+
+  @override
+  String get scheduleDayFree => 'Свободный день 🌿';
 
   @override
   String scheduleDayTasksCount(int count) {
@@ -1116,6 +1167,32 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get profileSectionMore => 'Ещё';
+
+  @override
+  String get profileAnonymous => 'Пользователь';
+
+  @override
+  String profileMemberSince(String date) {
+    return 'С нами с $date';
+  }
+
+  @override
+  String get profileStatPlants => 'Растения';
+
+  @override
+  String get profileStatCareEvents => 'Уходов';
+
+  @override
+  String get profileSectionReferences => 'Справочники';
+
+  @override
+  String get profileDiseasesTitle => 'Болезни и вредители';
+
+  @override
+  String get profileCatalogTitle => 'Каталог видов';
+
+  @override
+  String get profileSearchTitle => 'Поиск';
 
   @override
   String get profileRoomsTitle => 'Дома и места';
@@ -2235,4 +2312,26 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get diseaseDetailPreventionTitle => 'Профилактика';
+
+  @override
+  String get plantCardMenuEdit => 'Редактировать';
+
+  @override
+  String get archivePlantMenuLabel => 'В архив';
+
+  @override
+  String get archivePlantConfirmTitle => 'Отправить в архив?';
+
+  @override
+  String get archivePlantConfirmBody =>
+      'Растение переместится в архив. Вернуть его в список можно будет из экрана «Архив».';
+
+  @override
+  String get archivePlantConfirmAction => 'Архивировать';
+
+  @override
+  String get archivePlantSuccess => 'Растение перемещено в архив';
+
+  @override
+  String get cancel => 'Отмена';
 }
