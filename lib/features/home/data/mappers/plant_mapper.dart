@@ -16,5 +16,7 @@ extension PlantDtoMapper on PlantDto {
         speciesId: speciesId,
         speciesName: speciesName,
         createdAt: createdAt,
+        acquiredAt: acquiredAt,
+        inAcclimation: inAcclimation,
       );
 }

@@ -28,6 +28,7 @@ import '../../features/push_priming/presentation/push_permission_screen.dart';
 import '../../features/language/presentation/language_screen.dart';
 import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
+import '../../features/vacation/presentation/vacation_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
 import '../../features/seasonal/presentation/seasonal_screen.dart';
@@ -52,7 +53,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 /// держит свой стек: в саду живут push-маршруты `/home/today` (экран 03
 /// «Сегодня»), `/home/add` (экран 04 «Мастер добавления») и `/home/plants/:id`
 /// (экран 02 «Карточка растения»), в каталоге —
-/// `/catalog/:id` (экран 13 «Деталь вида»), в профиле — `/profile/rooms`
+/// `/catalog/:id` (экран 20 «Карточка вида»), в профиле — `/profile/rooms`
 /// (управление комнатами). Detail/drill-in-экраны со своей нижней кнопкой/назад
 /// рендерятся на [_rootNavigatorKey] (поверх shell, без плавающего таб-бара).
 /// Профиль — branch 3 (`/profile`), таб в нижней навигации активен, см.
@@ -385,6 +386,14 @@ GoRouter appRouter(Ref ref) {
                   name: 'timezone',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const TimezoneScreen(),
+                ),
+                // Экран 25 «Режим отпуска» — полноэкранно поверх shell (своя
+                // кнопка «назад», без таб-бара), как quiet-hours/report.
+                GoRoute(
+                  path: 'vacation',
+                  name: 'vacation',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const VacationScreen(),
                 ),
                 // Экран 35 «Сезонные интервалы» — полноэкранно поверх shell
                 // (своя кнопка «назад», без таб-бара), как quiet-hours/report.

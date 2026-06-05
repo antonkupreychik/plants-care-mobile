@@ -64,6 +64,8 @@ class AddPlantRepositoryImpl implements AddPlantRepository {
     int? locationId,
     String? notes,
     int? speciesId,
+    DateTime? acquiredAt,
+    bool? isNew,
   }) async {
     try {
       final dto = await _api.plants.createPlant(
@@ -72,6 +74,8 @@ class AddPlantRepositoryImpl implements AddPlantRepository {
           locationId: locationId,
           notes: notes,
           speciesId: speciesId,
+          acquiredAt: acquiredAt,
+          isNew: isNew,
         ),
         extras: authScopeExtra(AuthScope.user),
       );

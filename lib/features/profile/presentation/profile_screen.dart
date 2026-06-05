@@ -152,6 +152,13 @@ class ProfileScreen extends ConsumerWidget {
                   divider: true,
                   onTap: () => context.push('/profile/quiet-hours'),
                 ),
+                // Экран 25 «Режим отпуска» → push поверх shell.
+                SettingsRow(
+                  title: l10n.profileVacationTitle,
+                  icon: Icons.beach_access_outlined,
+                  divider: true,
+                  onTap: () => context.push('/profile/vacation'),
+                ),
                 // Экран 35 «Сезонные интервалы» → push поверх shell.
                 SettingsRow(
                   title: l10n.profileSeasonalTitle,

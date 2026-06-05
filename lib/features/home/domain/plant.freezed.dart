@@ -19,7 +19,11 @@ mixin _$Plant {
  String? get photoFileId;/// Локация, в которой стоит растение.
  int? get locationId; String? get locationName;/// Вид из справочника — UI выбирает иллюстрацию по нему (G6).
  int? get speciesId; String? get speciesName;/// Момент создания записи (UTC).
- DateTime? get createdAt;
+ DateTime? get createdAt;/// Дата приобретения растения пользователем (UTC-дата без времени).
+/// null → не указана (пропустил шаг мастера или задан через старый API).
+ DateTime? get acquiredAt;/// `true` — растение проходит акклиматизацию (21 день мягкого режима).
+/// null/false → обычный режим.
+ bool? get inAcclimation;
 /// Create a copy of Plant
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,16 +34,16 @@ $PlantCopyWith<Plant> get copyWith => _$PlantCopyWithImpl<Plant>(this as Plant, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Plant&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.photoFileId, photoFileId) || other.photoFileId == photoFileId)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.speciesName, speciesName) || other.speciesName == speciesName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Plant&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.photoFileId, photoFileId) || other.photoFileId == photoFileId)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.speciesName, speciesName) || other.speciesName == speciesName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.acquiredAt, acquiredAt) || other.acquiredAt == acquiredAt)&&(identical(other.inAcclimation, inAcclimation) || other.inAcclimation == inAcclimation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,notes,photoFileId,locationId,locationName,speciesId,speciesName,createdAt);
+int get hashCode => Object.hash(runtimeType,id,name,notes,photoFileId,locationId,locationName,speciesId,speciesName,createdAt,acquiredAt,inAcclimation);
 
 @override
 String toString() {
-  return 'Plant(id: $id, name: $name, notes: $notes, photoFileId: $photoFileId, locationId: $locationId, locationName: $locationName, speciesId: $speciesId, speciesName: $speciesName, createdAt: $createdAt)';
+  return 'Plant(id: $id, name: $name, notes: $notes, photoFileId: $photoFileId, locationId: $locationId, locationName: $locationName, speciesId: $speciesId, speciesName: $speciesName, createdAt: $createdAt, acquiredAt: $acquiredAt, inAcclimation: $inAcclimation)';
 }
 
 
@@ -50,7 +54,7 @@ abstract mixin class $PlantCopyWith<$Res>  {
   factory $PlantCopyWith(Plant value, $Res Function(Plant) _then) = _$PlantCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String? notes, String? photoFileId, int? locationId, String? locationName, int? speciesId, String? speciesName, DateTime? createdAt
+ int id, String name, String? notes, String? photoFileId, int? locationId, String? locationName, int? speciesId, String? speciesName, DateTime? createdAt, DateTime? acquiredAt, bool? inAcclimation
 });
 
 
@@ -67,7 +71,7 @@ class _$PlantCopyWithImpl<$Res>
 
 /// Create a copy of Plant
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? notes = freezed,Object? photoFileId = freezed,Object? locationId = freezed,Object? locationName = freezed,Object? speciesId = freezed,Object? speciesName = freezed,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? notes = freezed,Object? photoFileId = freezed,Object? locationId = freezed,Object? locationName = freezed,Object? speciesId = freezed,Object? speciesName = freezed,Object? createdAt = freezed,Object? acquiredAt = freezed,Object? inAcclimation = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -78,7 +82,9 @@ as int?,locationName: freezed == locationName ? _self.locationName : locationNam
 as String?,speciesId: freezed == speciesId ? _self.speciesId : speciesId // ignore: cast_nullable_to_non_nullable
 as int?,speciesName: freezed == speciesName ? _self.speciesName : speciesName // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,acquiredAt: freezed == acquiredAt ? _self.acquiredAt : acquiredAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,inAcclimation: freezed == inAcclimation ? _self.inAcclimation : inAcclimation // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 
@@ -163,10 +169,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String? notes,  String? photoFileId,  int? locationId,  String? locationName,  int? speciesId,  String? speciesName,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String? notes,  String? photoFileId,  int? locationId,  String? locationName,  int? speciesId,  String? speciesName,  DateTime? createdAt,  DateTime? acquiredAt,  bool? inAcclimation)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Plant() when $default != null:
-return $default(_that.id,_that.name,_that.notes,_that.photoFileId,_that.locationId,_that.locationName,_that.speciesId,_that.speciesName,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.notes,_that.photoFileId,_that.locationId,_that.locationName,_that.speciesId,_that.speciesName,_that.createdAt,_that.acquiredAt,_that.inAcclimation);case _:
   return orElse();
 
 }
@@ -184,10 +190,10 @@ return $default(_that.id,_that.name,_that.notes,_that.photoFileId,_that.location
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String? notes,  String? photoFileId,  int? locationId,  String? locationName,  int? speciesId,  String? speciesName,  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String? notes,  String? photoFileId,  int? locationId,  String? locationName,  int? speciesId,  String? speciesName,  DateTime? createdAt,  DateTime? acquiredAt,  bool? inAcclimation)  $default,) {final _that = this;
 switch (_that) {
 case _Plant():
-return $default(_that.id,_that.name,_that.notes,_that.photoFileId,_that.locationId,_that.locationName,_that.speciesId,_that.speciesName,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.notes,_that.photoFileId,_that.locationId,_that.locationName,_that.speciesId,_that.speciesName,_that.createdAt,_that.acquiredAt,_that.inAcclimation);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +210,10 @@ return $default(_that.id,_that.name,_that.notes,_that.photoFileId,_that.location
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String? notes,  String? photoFileId,  int? locationId,  String? locationName,  int? speciesId,  String? speciesName,  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String? notes,  String? photoFileId,  int? locationId,  String? locationName,  int? speciesId,  String? speciesName,  DateTime? createdAt,  DateTime? acquiredAt,  bool? inAcclimation)?  $default,) {final _that = this;
 switch (_that) {
 case _Plant() when $default != null:
-return $default(_that.id,_that.name,_that.notes,_that.photoFileId,_that.locationId,_that.locationName,_that.speciesId,_that.speciesName,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.notes,_that.photoFileId,_that.locationId,_that.locationName,_that.speciesId,_that.speciesName,_that.createdAt,_that.acquiredAt,_that.inAcclimation);case _:
   return null;
 
 }
@@ -219,7 +225,7 @@ return $default(_that.id,_that.name,_that.notes,_that.photoFileId,_that.location
 
 
 class _Plant implements Plant {
-  const _Plant({required this.id, required this.name, this.notes, this.photoFileId, this.locationId, this.locationName, this.speciesId, this.speciesName, this.createdAt});
+  const _Plant({required this.id, required this.name, this.notes, this.photoFileId, this.locationId, this.locationName, this.speciesId, this.speciesName, this.createdAt, this.acquiredAt, this.inAcclimation});
   
 
 @override final  int id;
@@ -236,6 +242,12 @@ class _Plant implements Plant {
 @override final  String? speciesName;
 /// Момент создания записи (UTC).
 @override final  DateTime? createdAt;
+/// Дата приобретения растения пользователем (UTC-дата без времени).
+/// null → не указана (пропустил шаг мастера или задан через старый API).
+@override final  DateTime? acquiredAt;
+/// `true` — растение проходит акклиматизацию (21 день мягкого режима).
+/// null/false → обычный режим.
+@override final  bool? inAcclimation;
 
 /// Create a copy of Plant
 /// with the given fields replaced by the non-null parameter values.
@@ -247,16 +259,16 @@ _$PlantCopyWith<_Plant> get copyWith => __$PlantCopyWithImpl<_Plant>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Plant&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.photoFileId, photoFileId) || other.photoFileId == photoFileId)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.speciesName, speciesName) || other.speciesName == speciesName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Plant&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.photoFileId, photoFileId) || other.photoFileId == photoFileId)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.speciesName, speciesName) || other.speciesName == speciesName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.acquiredAt, acquiredAt) || other.acquiredAt == acquiredAt)&&(identical(other.inAcclimation, inAcclimation) || other.inAcclimation == inAcclimation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,notes,photoFileId,locationId,locationName,speciesId,speciesName,createdAt);
+int get hashCode => Object.hash(runtimeType,id,name,notes,photoFileId,locationId,locationName,speciesId,speciesName,createdAt,acquiredAt,inAcclimation);
 
 @override
 String toString() {
-  return 'Plant(id: $id, name: $name, notes: $notes, photoFileId: $photoFileId, locationId: $locationId, locationName: $locationName, speciesId: $speciesId, speciesName: $speciesName, createdAt: $createdAt)';
+  return 'Plant(id: $id, name: $name, notes: $notes, photoFileId: $photoFileId, locationId: $locationId, locationName: $locationName, speciesId: $speciesId, speciesName: $speciesName, createdAt: $createdAt, acquiredAt: $acquiredAt, inAcclimation: $inAcclimation)';
 }
 
 
@@ -267,7 +279,7 @@ abstract mixin class _$PlantCopyWith<$Res> implements $PlantCopyWith<$Res> {
   factory _$PlantCopyWith(_Plant value, $Res Function(_Plant) _then) = __$PlantCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String? notes, String? photoFileId, int? locationId, String? locationName, int? speciesId, String? speciesName, DateTime? createdAt
+ int id, String name, String? notes, String? photoFileId, int? locationId, String? locationName, int? speciesId, String? speciesName, DateTime? createdAt, DateTime? acquiredAt, bool? inAcclimation
 });
 
 
@@ -284,7 +296,7 @@ class __$PlantCopyWithImpl<$Res>
 
 /// Create a copy of Plant
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? notes = freezed,Object? photoFileId = freezed,Object? locationId = freezed,Object? locationName = freezed,Object? speciesId = freezed,Object? speciesName = freezed,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? notes = freezed,Object? photoFileId = freezed,Object? locationId = freezed,Object? locationName = freezed,Object? speciesId = freezed,Object? speciesName = freezed,Object? createdAt = freezed,Object? acquiredAt = freezed,Object? inAcclimation = freezed,}) {
   return _then(_Plant(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -295,7 +307,9 @@ as int?,locationName: freezed == locationName ? _self.locationName : locationNam
 as String?,speciesId: freezed == speciesId ? _self.speciesId : speciesId // ignore: cast_nullable_to_non_nullable
 as int?,speciesName: freezed == speciesName ? _self.speciesName : speciesName // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,acquiredAt: freezed == acquiredAt ? _self.acquiredAt : acquiredAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,inAcclimation: freezed == inAcclimation ? _self.inAcclimation : inAcclimation // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 

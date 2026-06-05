@@ -2052,6 +2052,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileNotificationsTitle => 'Уведомления и время';
 
   @override
+  String get profileVacationTitle => 'Режим отпуска';
+
+  @override
   String get profileSeasonalTitle => 'Сезонные интервалы';
 
   @override
@@ -2331,6 +2334,47 @@ class AppLocalizationsRu extends AppLocalizations {
   String get editPlantSuccessSnackbar => 'Изменения сохранены';
 
   @override
+  String addPlantStepAcquiredTitle(String name) {
+    return 'Когда завели $name?';
+  }
+
+  @override
+  String get addPlantStepAcquiredToday => 'Сегодня';
+
+  @override
+  String get addPlantStepAcquiredThisWeek => 'На этой неделе';
+
+  @override
+  String get addPlantStepAcquiredMonthAgo => 'Месяц назад';
+
+  @override
+  String get addPlantStepAcquiredEarlier => 'Раньше';
+
+  @override
+  String get addPlantStepAcquiredSkip => 'Пропустить';
+
+  @override
+  String get addPlantStepAcclimationTitle => 'Растение новое?';
+
+  @override
+  String get addPlantStepAcclimationYes => 'Да, только купил';
+
+  @override
+  String get addPlantStepAcclimationNo => 'Нет, уже адаптировалось';
+
+  @override
+  String get addPlantStepAcclimationHint =>
+      'Во время акклиматизации (21 день) мы будем задавать вопросы о состоянии растения.';
+
+  @override
+  String plantCardAcquiredSince(String date, String age) {
+    return 'С тобой с $date ($age)';
+  }
+
+  @override
+  String get plantCardAcclimationBadge => 'Акклиматизация';
+
+  @override
   String get seasonalOverline => 'Сезонные интервалы';
 
   @override
@@ -2608,4 +2652,83 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get sharingInviteSuccess => 'Приглашение отправлено';
+
+  @override
+  String get vacationBack => 'Назад';
+
+  @override
+  String get vacationOverline => 'Режим отпуска';
+
+  @override
+  String get vacationTitleLead => 'Уезжаешь? ';
+
+  @override
+  String get vacationTitleAccent => 'Сад подождёт';
+
+  @override
+  String get vacationSubtitle => 'Поставим напоминания на паузу, пока тебя нет';
+
+  @override
+  String get vacationActiveBannerTitle => 'Отпуск включён';
+
+  @override
+  String vacationActiveBannerUntil(String date) {
+    return 'Напоминания на паузе до $date';
+  }
+
+  @override
+  String get vacationActiveBannerNoDate => 'Напоминания на паузе';
+
+  @override
+  String get vacationFromLabel => 'С';
+
+  @override
+  String get vacationToLabel => 'По';
+
+  @override
+  String vacationDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count дней без забот',
+      many: '$count дней без забот',
+      few: '$count дня без забот',
+      one: '$count день без забот',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacationRangeTooLong(int max) {
+    return 'Отпуск не может быть дольше $max дней';
+  }
+
+  @override
+  String get vacationWhatHappensSection => 'Что будет с садом';
+
+  @override
+  String get vacationPausePushTitle => 'Напоминания на паузе';
+
+  @override
+  String get vacationPausePushSubtitle =>
+      'Не будем напоминать об уходе, пока ты в отпуске';
+
+  @override
+  String get vacationDeadlinesTitle => 'Дедлайны не сдвигаются';
+
+  @override
+  String get vacationDeadlinesSubtitle =>
+      'Просроченные задачи соберём в сводку «С возвращением!»';
+
+  @override
+  String get vacationEnableCta => 'Включить отпуск';
+
+  @override
+  String get vacationDisableCta => 'Завершить отпуск';
+
+  @override
+  String get vacationEnabledSnack => 'Режим отпуска включён';
+
+  @override
+  String get vacationDisabledSnack => 'Режим отпуска выключен';
 }

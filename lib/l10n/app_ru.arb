@@ -2907,6 +2907,11 @@
     "description": "Строка профиля — вход на экран 23 «Тихие часы»"
   },
 
+  "profileVacationTitle": "Режим отпуска",
+  "@profileVacationTitle": {
+    "description": "Строка профиля — вход на экран 25 «Режим отпуска»"
+  },
+
   "profileSeasonalTitle": "Сезонные интервалы",
   "@profileSeasonalTitle": {
     "description": "Строка профиля — вход на экран 35 «Сезонные интервалы»"
@@ -3329,6 +3334,73 @@
   "editPlantSuccessSnackbar": "Изменения сохранены",
   "@editPlantSuccessSnackbar": {
     "description": "Снэкбар-подтверждение после успешного сохранения изменений растения"
+  },
+
+  "addPlantStepAcquiredTitle": "Когда завели {name}?",
+  "@addPlantStepAcquiredTitle": {
+    "description": "Заголовок шага 5 мастера: дата приобретения растения",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "addPlantStepAcquiredToday": "Сегодня",
+  "@addPlantStepAcquiredToday": {
+    "description": "Chip быстрого выбора даты: сегодня"
+  },
+
+  "addPlantStepAcquiredThisWeek": "На этой неделе",
+  "@addPlantStepAcquiredThisWeek": {
+    "description": "Chip быстрого выбора даты: примерно 3 дня назад"
+  },
+
+  "addPlantStepAcquiredMonthAgo": "Месяц назад",
+  "@addPlantStepAcquiredMonthAgo": {
+    "description": "Chip быстрого выбора даты: 30 дней назад"
+  },
+
+  "addPlantStepAcquiredEarlier": "Раньше",
+  "@addPlantStepAcquiredEarlier": {
+    "description": "Chip быстрого выбора даты: открывает DatePicker для произвольной прошлой даты"
+  },
+
+  "addPlantStepAcquiredSkip": "Пропустить",
+  "@addPlantStepAcquiredSkip": {
+    "description": "Кнопка пропуска шага даты приобретения (и шага акклиматизации)"
+  },
+
+  "addPlantStepAcclimationTitle": "Растение новое?",
+  "@addPlantStepAcclimationTitle": {
+    "description": "Заголовок шага 6 мастера: является ли растение новым (акклиматизация)"
+  },
+
+  "addPlantStepAcclimationYes": "Да, только купил",
+  "@addPlantStepAcclimationYes": {
+    "description": "Вариант ответа: растение новое → включить акклиматизацию"
+  },
+
+  "addPlantStepAcclimationNo": "Нет, уже адаптировалось",
+  "@addPlantStepAcclimationNo": {
+    "description": "Вариант ответа: растение уже адаптировано"
+  },
+
+  "addPlantStepAcclimationHint": "Во время акклиматизации (21 день) мы будем задавать вопросы о состоянии растения.",
+  "@addPlantStepAcclimationHint": {
+    "description": "Подсказка под кнопками шага акклиматизации: объяснение периода акклиматизации"
+  },
+
+  "plantCardAcquiredSince": "С тобой с {date} ({age})",
+  "@plantCardAcquiredSince": {
+    "description": "Строка на карточке растения: дата приобретения и возраст",
+    "placeholders": {
+      "date": { "type": "String" },
+      "age": { "type": "String" }
+    }
+  },
+
+  "plantCardAcclimationBadge": "Акклиматизация",
+  "@plantCardAcclimationBadge": {
+    "description": "Бейдж на карточке растения: растение в периоде акклиматизации"
   },
 
   "seasonalOverline": "Сезонные интервалы",
@@ -3758,5 +3830,128 @@
   "sharingInviteSuccess": "Приглашение отправлено",
   "@sharingInviteSuccess": {
     "description": "Снэкбар-подтверждение успешной отправки приглашения"
+  },
+
+  "vacationBack": "Назад",
+  "@vacationBack": {
+    "description": "Тултип кнопки «назад» на экране 25 «Режим отпуска»"
+  },
+
+  "vacationOverline": "Режим отпуска",
+  "@vacationOverline": {
+    "description": "Оверлайн-заголовок в шапке экрана 25"
+  },
+
+  "vacationTitleLead": "Уезжаешь? ",
+  "@vacationTitleLead": {
+    "description": "Первая часть серифного заголовка экрана 25"
+  },
+
+  "vacationTitleAccent": "Сад подождёт",
+  "@vacationTitleAccent": {
+    "description": "Акцентная (курсив) часть серифного заголовка экрана 25"
+  },
+
+  "vacationSubtitle": "Поставим напоминания на паузу, пока тебя нет",
+  "@vacationSubtitle": {
+    "description": "Подзаголовок экрана 25"
+  },
+
+  "vacationActiveBannerTitle": "Отпуск включён",
+  "@vacationActiveBannerTitle": {
+    "description": "Заголовок баннера активного отпуска на экране 25"
+  },
+
+  "vacationActiveBannerUntil": "Напоминания на паузе до {date}",
+  "@vacationActiveBannerUntil": {
+    "description": "Подпись баннера активного отпуска — до какой даты пауза",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "14 июня 2026 г."
+      }
+    }
+  },
+
+  "vacationActiveBannerNoDate": "Напоминания на паузе",
+  "@vacationActiveBannerNoDate": {
+    "description": "Подпись баннера активного отпуска, когда дата окончания неизвестна"
+  },
+
+  "vacationFromLabel": "С",
+  "@vacationFromLabel": {
+    "description": "Подпись карточки даты начала отпуска (экран 25)"
+  },
+
+  "vacationToLabel": "По",
+  "@vacationToLabel": {
+    "description": "Подпись карточки даты конца отпуска (экран 25)"
+  },
+
+  "vacationDaysCount": "{count, plural, one{{count} день без забот} few{{count} дня без забот} many{{count} дней без забот} other{{count} дней без забот}}",
+  "@vacationDaysCount": {
+    "description": "Длительность выбранного отпуска в днях (экран 25)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "14"
+      }
+    }
+  },
+
+  "vacationRangeTooLong": "Отпуск не может быть дольше {max} дней",
+  "@vacationRangeTooLong": {
+    "description": "Подсказка-ошибка, если выбранный диапазон превышает лимит backend",
+    "placeholders": {
+      "max": {
+        "type": "int",
+        "example": "60"
+      }
+    }
+  },
+
+  "vacationWhatHappensSection": "Что будет с садом",
+  "@vacationWhatHappensSection": {
+    "description": "Заголовок секции «что произойдёт» на экране 25"
+  },
+
+  "vacationPausePushTitle": "Напоминания на паузе",
+  "@vacationPausePushTitle": {
+    "description": "Пункт «пуши приостановлены» в секции «что будет с садом»"
+  },
+
+  "vacationPausePushSubtitle": "Не будем напоминать об уходе, пока ты в отпуске",
+  "@vacationPausePushSubtitle": {
+    "description": "Описание пункта «пуши приостановлены»"
+  },
+
+  "vacationDeadlinesTitle": "Дедлайны не сдвигаются",
+  "@vacationDeadlinesTitle": {
+    "description": "Пункт о поведении дедлайнов в секции «что будет с садом»"
+  },
+
+  "vacationDeadlinesSubtitle": "Просроченные задачи соберём в сводку «С возвращением!»",
+  "@vacationDeadlinesSubtitle": {
+    "description": "Описание поведения дедлайнов во время отпуска"
+  },
+
+  "vacationEnableCta": "Включить отпуск",
+  "@vacationEnableCta": {
+    "description": "Кнопка включения режима отпуска (экран 25)"
+  },
+
+  "vacationDisableCta": "Завершить отпуск",
+  "@vacationDisableCta": {
+    "description": "Кнопка досрочного завершения режима отпуска (экран 25)"
+  },
+
+  "vacationEnabledSnack": "Режим отпуска включён",
+  "@vacationEnabledSnack": {
+    "description": "Снэкбар-подтверждение включения отпуска"
+  },
+
+  "vacationDisabledSnack": "Режим отпуска выключен",
+  "@vacationDisabledSnack": {
+    "description": "Снэкбар-подтверждение выключения отпуска"
   }
 }

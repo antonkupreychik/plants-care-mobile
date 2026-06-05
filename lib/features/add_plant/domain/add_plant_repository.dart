@@ -29,5 +29,7 @@ abstract interface class AddPlantRepository {
     int? locationId,
     String? notes,
     int? speciesId,
+    DateTime? acquiredAt,
+    bool? isNew,
   });
 }
