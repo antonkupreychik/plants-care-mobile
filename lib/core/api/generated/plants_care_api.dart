@@ -21,6 +21,8 @@ import 'clients/care_types_client.dart';
 import 'clients/shopping_client.dart';
 import 'clients/notifications_client.dart';
 import 'clients/me_client.dart';
+import 'clients/vacation_client.dart';
+import 'clients/sharing_client.dart';
 
 /// Plants Care API `v0.1.0`.
 ///
@@ -78,6 +80,8 @@ class PlantsCareApi {
   ShoppingClient? _shopping;
   NotificationsClient? _notifications;
   MeClient? _me;
+  VacationClient? _vacation;
+  SharingClient? _sharing;
 
   AuthClient get auth => _auth ??= AuthClient(_dio, baseUrl: _baseUrl);
 
@@ -112,4 +116,8 @@ class PlantsCareApi {
   NotificationsClient get notifications => _notifications ??= NotificationsClient(_dio, baseUrl: _baseUrl);
 
   MeClient get me => _me ??= MeClient(_dio, baseUrl: _baseUrl);
+
+  VacationClient get vacation => _vacation ??= VacationClient(_dio, baseUrl: _baseUrl);
+
+  SharingClient get sharing => _sharing ??= SharingClient(_dio, baseUrl: _baseUrl);
 }
