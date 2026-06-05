@@ -2907,6 +2907,11 @@
     "description": "Строка профиля — вход на экран 23 «Тихие часы»"
   },
 
+  "profileSeasonalTitle": "Сезонные интервалы",
+  "@profileSeasonalTitle": {
+    "description": "Строка профиля — вход на экран 35 «Сезонные интервалы»"
+  },
+
   "quietHoursBack": "Назад",
   "@quietHoursBack": {
     "description": "Кнопка «назад» экрана 23"
@@ -3324,6 +3329,149 @@
   "editPlantSuccessSnackbar": "Изменения сохранены",
   "@editPlantSuccessSnackbar": {
     "description": "Снэкбар-подтверждение после успешного сохранения изменений растения"
+  },
+
+  "seasonalOverline": "Сезонные интервалы",
+  "@seasonalOverline": {
+    "description": "Оверлайн шапки экрана 35"
+  },
+
+  "seasonalBack": "Назад",
+  "@seasonalBack": {
+    "description": "Кнопка «назад» экрана 35"
+  },
+
+  "seasonalTitleLead": "Уход ",
+  "@seasonalTitleLead": {
+    "description": "Серифный заголовок 35, обычная часть перед акцентом"
+  },
+
+  "seasonalTitleAccent": "по сезону",
+  "@seasonalTitleAccent": {
+    "description": "Серифный заголовок 35, акцентная курсивная часть"
+  },
+
+  "seasonalSubtitle": "Летом растения пьют чаще, зимой почти спят. Подстраиваем расписание автоматически.",
+  "@seasonalSubtitle": {
+    "description": "Подзаголовок экрана 35"
+  },
+
+  "seasonalToggleTitle": "Автоматически по сезону",
+  "@seasonalToggleTitle": {
+    "description": "Заголовок тумблера авто-подстройки на экране 35"
+  },
+
+  "seasonalToggleSubtitle": "Менять частоту полива и опрыскивания",
+  "@seasonalToggleSubtitle": {
+    "description": "Подпись тумблера авто-подстройки на экране 35"
+  },
+
+  "seasonalModeMultiplier": "Множитель к базовому интервалу",
+  "@seasonalModeMultiplier": {
+    "description": "Пояснение режима MULTIPLIER на экране 35"
+  },
+
+  "seasonalModeFixed": "Фиксированные интервалы на сезон",
+  "@seasonalModeFixed": {
+    "description": "Пояснение режима FIXED на экране 35"
+  },
+
+  "seasonalNowLabel": "Сейчас · {season}",
+  "@seasonalNowLabel": {
+    "description": "Оверлайн карточки текущего сезона на экране 35",
+    "placeholders": {
+      "season": { "type": "String" }
+    }
+  },
+
+  "seasonalSpring": "весна 🌱",
+  "@seasonalSpring": {
+    "description": "Название сезона «весна» с эмодзи (экран 35)"
+  },
+
+  "seasonalSummer": "лето ☀️",
+  "@seasonalSummer": {
+    "description": "Название сезона «лето» с эмодзи (экран 35)"
+  },
+
+  "seasonalAutumn": "осень 🍂",
+  "@seasonalAutumn": {
+    "description": "Название сезона «осень» с эмодзи (экран 35)"
+  },
+
+  "seasonalWinter": "зима ❄️",
+  "@seasonalWinter": {
+    "description": "Название сезона «зима» с эмодзи (экран 35)"
+  },
+
+  "seasonalCardOnTitle": "Подстраиваем под сезон",
+  "@seasonalCardOnTitle": {
+    "description": "Заголовок карточки текущего сезона, когда авто-подстройка включена (экран 35)"
+  },
+
+  "seasonalCardOnSpring": "Весной растения просыпаются — поливаем чуть чаще.",
+  "@seasonalCardOnSpring": {
+    "description": "Текст карточки сезона: весна, авто-подстройка включена"
+  },
+
+  "seasonalCardOnSummer": "Летом растения пьют активнее — поливаем чаще.",
+  "@seasonalCardOnSummer": {
+    "description": "Текст карточки сезона: лето, авто-подстройка включена"
+  },
+
+  "seasonalCardOnAutumn": "Осенью рост замедляется — поливаем реже.",
+  "@seasonalCardOnAutumn": {
+    "description": "Текст карточки сезона: осень, авто-подстройка включена"
+  },
+
+  "seasonalCardOnWinter": "Зимой растения отдыхают — поливаем заметно реже.",
+  "@seasonalCardOnWinter": {
+    "description": "Текст карточки сезона: зима, авто-подстройка включена"
+  },
+
+  "seasonalCardOffTitle": "Авто-подстройка выключена",
+  "@seasonalCardOffTitle": {
+    "description": "Заголовок карточки, когда авто-подстройка выключена (экран 35)"
+  },
+
+  "seasonalCardOffBody": "Расписание не меняется по сезонам. Включите тумблер, чтобы летом поливать чаще, а зимой реже.",
+  "@seasonalCardOffBody": {
+    "description": "Текст карточки, когда авто-подстройка выключена (экран 35)"
+  },
+
+  "seasonalSeasonsSection": "Частота полива по году",
+  "@seasonalSeasonsSection": {
+    "description": "Заголовок секции со столбчатой диаграммой сезонов (экран 35)"
+  },
+
+  "seasonalSpringFactor": "+10%",
+  "@seasonalSpringFactor": {
+    "description": "Относительная частота полива весной (диаграмма экрана 35)"
+  },
+
+  "seasonalSummerFactor": "+20%",
+  "@seasonalSummerFactor": {
+    "description": "Относительная частота полива летом (диаграмма экрана 35)"
+  },
+
+  "seasonalAutumnFactor": "базовый",
+  "@seasonalAutumnFactor": {
+    "description": "Относительная частота полива осенью (диаграмма экрана 35)"
+  },
+
+  "seasonalWinterFactor": "−30%",
+  "@seasonalWinterFactor": {
+    "description": "Относительная частота полива зимой (диаграмма экрана 35)"
+  },
+
+  "seasonalQuote": "«Зимой не заливай меня — я отдыхаю и пью совсем мало.»",
+  "@seasonalQuote": {
+    "description": "Декоративная цитата внизу экрана 35"
+  },
+
+  "seasonalNote": "Точные интервалы по сезонам считаются для каждого растения индивидуально на основе его расписания ухода.",
+  "@seasonalNote": {
+    "description": "Сноска про per-plant интервалы на экране 35"
   },
 
   "plantEventTypeTransplant": "Пересадка",

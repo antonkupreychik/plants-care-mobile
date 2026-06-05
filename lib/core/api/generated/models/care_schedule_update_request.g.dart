@@ -13,6 +13,7 @@ CareScheduleUpdateRequest _$CareScheduleUpdateRequestFromJson(
   unit: CareScheduleUpdateRequestUnit.fromJson(json['unit'] as String),
   enabled: json['enabled'] as bool,
   amountMl: (json['amountMl'] as num?)?.toInt(),
+  seasonalOverride: json['seasonalOverride'] as String?,
 );
 
 Map<String, dynamic> _$CareScheduleUpdateRequestToJson(
@@ -22,4 +23,5 @@ Map<String, dynamic> _$CareScheduleUpdateRequestToJson(
   'unit': instance.unit,
   'amountMl': instance.amountMl,
   'enabled': instance.enabled,
+  'seasonalOverride': instance.seasonalOverride,
 };

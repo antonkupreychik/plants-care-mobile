@@ -30,6 +30,7 @@ import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
+import '../../features/seasonal/presentation/seasonal_screen.dart';
 import '../../features/search/presentation/unified_search_screen.dart';
 import '../../features/edit_plant/presentation/edit_plant_screen.dart';
 import '../../features/plant_diagnosis/presentation/plant_diagnosis_screen.dart';
@@ -375,6 +376,15 @@ GoRouter appRouter(Ref ref) {
                   name: 'timezone',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const TimezoneScreen(),
+                ),
+                // Экран 35 «Сезонные интервалы» — полноэкранно поверх shell
+                // (своя кнопка «назад», без таб-бара), как quiet-hours/report.
+                // Вход: профиль 13 → строка «Сезонные интервалы».
+                GoRoute(
+                  path: 'seasonal',
+                  name: 'seasonal',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const SeasonalScreen(),
                 ),
                 // Экран 19 «Список покупок» — полноэкранно поверх shell (своя
                 // кнопка «назад», без таб-бара), как rooms/archive.

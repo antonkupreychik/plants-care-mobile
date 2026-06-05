@@ -12,6 +12,9 @@ CareScheduleDto _$CareScheduleDtoFromJson(Map<String, dynamic> json) =>
       every: (json['every'] as num).toInt(),
       unit: CareScheduleDtoUnit.fromJson(json['unit'] as String),
       enabled: json['enabled'] as bool,
+      seasonal: SeasonalScheduleDto.fromJson(
+        json['seasonal'] as Map<String, dynamic>,
+      ),
       amountMl: (json['amountMl'] as num?)?.toInt(),
       nextDueAt: json['nextDueAt'] == null
           ? null
@@ -26,4 +29,5 @@ Map<String, dynamic> _$CareScheduleDtoToJson(CareScheduleDto instance) =>
       'amountMl': instance.amountMl,
       'enabled': instance.enabled,
       'nextDueAt': instance.nextDueAt?.toIso8601String(),
+      'seasonal': instance.seasonal,
     };

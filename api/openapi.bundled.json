@@ -2069,7 +2069,8 @@
           "type",
           "every",
           "unit",
-          "enabled"
+          "enabled",
+          "seasonal"
         ],
         "properties": {
           "type": {
@@ -2112,6 +2113,9 @@
             "format": "date-time",
             "nullable": true,
             "description": "Ближайшее срабатывание (UTC). Заполнено только если enabled=true."
+          },
+          "seasonal": {
+            "$ref": "#/components/schemas/SeasonalScheduleDto"
           }
         }
       },
@@ -2148,6 +2152,12 @@
           "enabled": {
             "type": "boolean",
             "example": true
+          },
+          "seasonalOverride": {
+            "type": "string",
+            "pattern": "^(INHERIT|ON|OFF)$",
+            "nullable": true,
+            "description": "Per-plant переопределение авто-подстройки по сезонам.\nINHERIT — следовать глобальной настройке пользователя;\nON — включить только для этого растения;\nOFF — выключить только для этого растения.\nОтсутствие поля — текущее значение не меняется.\n"
           }
         }
       },
@@ -3104,6 +3114,35 @@
             "type": "boolean",
             "nullable": true,
             "description": "`true` — значение взято из серверного кеша (60-мин окно), без\nобращения к внешнему API. `null`, если `available = false`.\n"
+          }
+        }
+      },
+      "SeasonalScheduleDto": {
+        "type": "object",
+        "description": "Сезонные параметры расписания ухода (issue #188 backend / G20 mobile #48).\nПоказывает, включена ли авто-подстройка и каким будет эффективный\nинтервал в каждый из двух сезонов (лето / зима).\n",
+        "required": [
+          "active",
+          "summerIntervalDays",
+          "winterIntervalDays"
+        ],
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "description": "Активна ли авто-подстройка по сезонам для этого растения."
+          },
+          "summerIntervalDays": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 60,
+            "description": "Эффективный интервал ухода в летний период (дней)."
+          },
+          "winterIntervalDays": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 60,
+            "description": "Эффективный интервал ухода в зимний период (дней)."
           }
         }
       },

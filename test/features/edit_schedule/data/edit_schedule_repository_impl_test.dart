@@ -7,6 +7,7 @@ import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto_typ
 import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto_unit.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_schedule_update_request.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_schedule_update_request_unit.dart';
+import 'package:plantcare_mobile/core/api/generated/models/seasonal_schedule_dto.dart';
 import 'package:plantcare_mobile/core/api/generated/models/type.dart';
 import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
@@ -36,6 +37,11 @@ CareScheduleDto _wateringDto({int every = 7}) => CareScheduleDto(
       enabled: true,
       amountMl: 200,
       nextDueAt: DateTime.utc(2026, 6, 1, 9),
+      seasonal: const SeasonalScheduleDto(
+        active: false,
+        summerIntervalDays: 7,
+        winterIntervalDays: 7,
+      ),
     );
 
 const _wateringDomain = PlantCareSchedule(

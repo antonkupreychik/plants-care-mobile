@@ -2052,6 +2052,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileNotificationsTitle => 'Уведомления и время';
 
   @override
+  String get profileSeasonalTitle => 'Сезонные интервалы';
+
+  @override
   String get quietHoursBack => 'Назад';
 
   @override
@@ -2326,6 +2329,99 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get editPlantSuccessSnackbar => 'Изменения сохранены';
+
+  @override
+  String get seasonalOverline => 'Сезонные интервалы';
+
+  @override
+  String get seasonalBack => 'Назад';
+
+  @override
+  String get seasonalTitleLead => 'Уход ';
+
+  @override
+  String get seasonalTitleAccent => 'по сезону';
+
+  @override
+  String get seasonalSubtitle =>
+      'Летом растения пьют чаще, зимой почти спят. Подстраиваем расписание автоматически.';
+
+  @override
+  String get seasonalToggleTitle => 'Автоматически по сезону';
+
+  @override
+  String get seasonalToggleSubtitle => 'Менять частоту полива и опрыскивания';
+
+  @override
+  String get seasonalModeMultiplier => 'Множитель к базовому интервалу';
+
+  @override
+  String get seasonalModeFixed => 'Фиксированные интервалы на сезон';
+
+  @override
+  String seasonalNowLabel(String season) {
+    return 'Сейчас · $season';
+  }
+
+  @override
+  String get seasonalSpring => 'весна 🌱';
+
+  @override
+  String get seasonalSummer => 'лето ☀️';
+
+  @override
+  String get seasonalAutumn => 'осень 🍂';
+
+  @override
+  String get seasonalWinter => 'зима ❄️';
+
+  @override
+  String get seasonalCardOnTitle => 'Подстраиваем под сезон';
+
+  @override
+  String get seasonalCardOnSpring =>
+      'Весной растения просыпаются — поливаем чуть чаще.';
+
+  @override
+  String get seasonalCardOnSummer =>
+      'Летом растения пьют активнее — поливаем чаще.';
+
+  @override
+  String get seasonalCardOnAutumn => 'Осенью рост замедляется — поливаем реже.';
+
+  @override
+  String get seasonalCardOnWinter =>
+      'Зимой растения отдыхают — поливаем заметно реже.';
+
+  @override
+  String get seasonalCardOffTitle => 'Авто-подстройка выключена';
+
+  @override
+  String get seasonalCardOffBody =>
+      'Расписание не меняется по сезонам. Включите тумблер, чтобы летом поливать чаще, а зимой реже.';
+
+  @override
+  String get seasonalSeasonsSection => 'Частота полива по году';
+
+  @override
+  String get seasonalSpringFactor => '+10%';
+
+  @override
+  String get seasonalSummerFactor => '+20%';
+
+  @override
+  String get seasonalAutumnFactor => 'базовый';
+
+  @override
+  String get seasonalWinterFactor => '−30%';
+
+  @override
+  String get seasonalQuote =>
+      '«Зимой не заливай меня — я отдыхаю и пью совсем мало.»';
+
+  @override
+  String get seasonalNote =>
+      'Точные интервалы по сезонам считаются для каждого растения индивидуально на основе его расписания ухода.';
 
   @override
   String get plantEventTypeTransplant => 'Пересадка';
