@@ -1444,6 +1444,32 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authGoHome => 'Я просто посмотрю';
 
   @override
+  String get pushPrimingSkip => 'Позже';
+
+  @override
+  String get pushPrimingTitleLead => 'Я напомню ';
+
+  @override
+  String get pushPrimingTitleAccent => 'вовремя';
+
+  @override
+  String get pushPrimingSubtitle =>
+      'Растения будут писать тебе сами — когда захотят пить, и только в удобные часы. Без спама.';
+
+  @override
+  String get pushPrimingPreviewTitle => 'Моника · сейчас';
+
+  @override
+  String get pushPrimingPreviewBody => '«Полей меня, пожалуйста!»';
+
+  @override
+  String get pushPrimingAllow => 'Разрешить уведомления';
+
+  @override
+  String get pushPrimingFootnote =>
+      'Можно изменить в любой момент в настройках';
+
+  @override
   String get authEmailTitle => 'Вход по почте';
 
   @override

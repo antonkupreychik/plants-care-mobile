@@ -2031,6 +2031,46 @@
     "description": "Вторичная ссылка экрана 09: уйти на главную без добавления растения"
   },
 
+  "pushPrimingSkip": "Позже",
+  "@pushPrimingSkip": {
+    "description": "Экран 27: ссылка вверху справа — отложить запрос разрешения на пуши"
+  },
+
+  "pushPrimingTitleLead": "Я напомню ",
+  "@pushPrimingTitleLead": {
+    "description": "Экран 27: первая часть hero-заголовка (обычное начертание)"
+  },
+
+  "pushPrimingTitleAccent": "вовремя",
+  "@pushPrimingTitleAccent": {
+    "description": "Экран 27: акцентное слово hero-заголовка (серифный курсив)"
+  },
+
+  "pushPrimingSubtitle": "Растения будут писать тебе сами — когда захотят пить, и только в удобные часы. Без спама.",
+  "@pushPrimingSubtitle": {
+    "description": "Экран 27: подзаголовок-объяснение ценности уведомлений"
+  },
+
+  "pushPrimingPreviewTitle": "Моника · сейчас",
+  "@pushPrimingPreviewTitle": {
+    "description": "Экран 27: заголовок образца пуш-уведомления (имя растения + время)"
+  },
+
+  "pushPrimingPreviewBody": "«Полей меня, пожалуйста!»",
+  "@pushPrimingPreviewBody": {
+    "description": "Экран 27: текст образца пуш-уведомления (voice line растения)"
+  },
+
+  "pushPrimingAllow": "Разрешить уведомления",
+  "@pushPrimingAllow": {
+    "description": "Экран 27: основная кнопка — согласиться на пуши"
+  },
+
+  "pushPrimingFootnote": "Можно изменить в любой момент в настройках",
+  "@pushPrimingFootnote": {
+    "description": "Экран 27: подпись под кнопкой о возможности изменить разрешение позже"
+  },
+
   "authEmailTitle": "Вход по почте",
   "@authEmailTitle": {
     "description": "Заголовок экрана ввода email для magic link"

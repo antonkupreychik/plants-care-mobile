@@ -2332,6 +2332,54 @@ abstract class AppLocalizations {
   /// **'Я просто посмотрю'**
   String get authGoHome;
 
+  /// Экран 27: ссылка вверху справа — отложить запрос разрешения на пуши
+  ///
+  /// In ru, this message translates to:
+  /// **'Позже'**
+  String get pushPrimingSkip;
+
+  /// Экран 27: первая часть hero-заголовка (обычное начертание)
+  ///
+  /// In ru, this message translates to:
+  /// **'Я напомню '**
+  String get pushPrimingTitleLead;
+
+  /// Экран 27: акцентное слово hero-заголовка (серифный курсив)
+  ///
+  /// In ru, this message translates to:
+  /// **'вовремя'**
+  String get pushPrimingTitleAccent;
+
+  /// Экран 27: подзаголовок-объяснение ценности уведомлений
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения будут писать тебе сами — когда захотят пить, и только в удобные часы. Без спама.'**
+  String get pushPrimingSubtitle;
+
+  /// Экран 27: заголовок образца пуш-уведомления (имя растения + время)
+  ///
+  /// In ru, this message translates to:
+  /// **'Моника · сейчас'**
+  String get pushPrimingPreviewTitle;
+
+  /// Экран 27: текст образца пуш-уведомления (voice line растения)
+  ///
+  /// In ru, this message translates to:
+  /// **'«Полей меня, пожалуйста!»'**
+  String get pushPrimingPreviewBody;
+
+  /// Экран 27: основная кнопка — согласиться на пуши
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешить уведомления'**
+  String get pushPrimingAllow;
+
+  /// Экран 27: подпись под кнопкой о возможности изменить разрешение позже
+  ///
+  /// In ru, this message translates to:
+  /// **'Можно изменить в любой момент в настройках'**
+  String get pushPrimingFootnote;
+
   /// Заголовок экрана ввода email для magic link
   ///
   /// In ru, this message translates to:
