@@ -86,6 +86,14 @@
     {
       "name": "Notifications",
       "description": "Персистентный inbox уведомлений пользователя для мобильного приложения\n(gap G17): лента со счётчиком непрочитанных и идемпотентная отметка прочтения.\n"
+    },
+    {
+      "name": "Vacation",
+      "description": "Режим отпуска (issue #189, mobile G21, экран 25): включение/выключение\nпаузы напоминаний на диапазон дат. Дедлайны не переносятся.\n"
+    },
+    {
+      "name": "Sharing",
+      "description": "Совместный уход (issue #191, mobile G22, экран 26): приглашение\nсоухаживающих на набор растений с правом отмечать уход.\n"
     }
   ],
   "paths": {
@@ -1882,6 +1890,186 @@
           }
         }
       }
+    },
+    "/api/v1/vacation": {
+      "get": {
+        "tags": [
+          "Vacation"
+        ],
+        "operationId": "getVacation",
+        "summary": "Текущее состояние режима отпуска",
+        "description": "Возвращает активный период отпуска или объект с `active = false`,\nесли отпуск не включён. «Активен» — `paused_until IS NOT NULL\nAND paused_until > now()`.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Статус режима отпуска.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VacationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Vacation"
+        ],
+        "operationId": "startVacation",
+        "summary": "Включить режим отпуска",
+        "description": "Включает режим отпуска: напоминания приостанавливаются с текущего\nмомента до конца дня `to` в таймзоне пользователя.\n\n**Поведение дедлайнов:** дедлайны расписаний **не переносятся**.\nПока отпуск активен, задачи накапливаются как просроченные и\nотображаются в сводке «С возвращением!» сразу после окончания отпуска.\nЭто предсказуемо и понятно пользователю.\n\n**Идемпотентность:** повторный POST перезаписывает `paused_until`\n(продление текущего отпуска). Если `to` < `from` или длительность\n> 60 дней → `400`.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VacationRequest"
+              },
+              "example": {
+                "from": "2026-06-01",
+                "to": "2026-06-14"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Режим отпуска включён.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VacationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Vacation"
+        ],
+        "operationId": "endVacation",
+        "summary": "Выключить режим отпуска досрочно",
+        "description": "Досрочно завершает режим отпуска — `paused_until` сбрасывается в `null`,\nнапоминания возобновляются немедленно. Идемпотентен: если отпуск уже\nнеактивен, возвращает `204` без ошибки.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Режим отпуска выключен (или уже был выключен)."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v1/sharing": {
+      "get": {
+        "tags": [
+          "Sharing"
+        ],
+        "operationId": "listSharingMembers",
+        "summary": "Соухаживающие текущего пользователя",
+        "description": "Возвращает приглашения, выпущенные текущим пользователем\n(`sub` из bearer-токена), со статусом (`PENDING`/`ACCEPTED`),\nправом `canLogCare` и набором растений каждого приглашения.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список соухаживающих.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharingMembersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v1/sharing/invites": {
+      "post": {
+        "tags": [
+          "Sharing"
+        ],
+        "operationId": "createSharingInvite",
+        "summary": "Пригласить соухаживающего",
+        "description": "Создаёт приглашение на набор растений с правом `canLogCare`.\nРастения должны принадлежать текущему пользователю — иначе 404.\nПустой набор растений или пустой контакт — 400.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SharingInviteCreateRequest"
+              },
+              "example": {
+                "plantIds": [
+                  23,
+                  24
+                ],
+                "inviteeContact": "@anna",
+                "canLogCare": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Приглашение создано.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharingMemberDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2897,6 +3085,109 @@
           }
         }
       },
+      "SharingStatus": {
+        "type": "string",
+        "description": "Статус приглашения соухаживающего.",
+        "enum": [
+          "PENDING",
+          "ACCEPTED"
+        ],
+        "example": "PENDING"
+      },
+      "SharingMemberDto": {
+        "type": "object",
+        "description": "Соухаживающий — приглашение, выпущенное владельцем.",
+        "required": [
+          "id",
+          "contact",
+          "status",
+          "canLogCare",
+          "plantIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Идентификатор приглашения (membership).",
+            "example": 5
+          },
+          "contact": {
+            "type": "string",
+            "description": "Контакт приглашённого (@username или телефон).",
+            "example": "@anna"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SharingStatus"
+          },
+          "canLogCare": {
+            "type": "boolean",
+            "description": "Может ли приглашённый отмечать уход за растениями набора.",
+            "example": true
+          },
+          "plantIds": {
+            "type": "array",
+            "description": "Растения, на которые распространяется приглашение.",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": [
+              23,
+              24
+            ]
+          }
+        }
+      },
+      "SharingMembersResponse": {
+        "type": "object",
+        "description": "Обёртка над списком соухаживающих.",
+        "required": [
+          "members"
+        ],
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SharingMemberDto"
+            }
+          }
+        }
+      },
+      "SharingInviteCreateRequest": {
+        "type": "object",
+        "required": [
+          "plantIds",
+          "inviteeContact"
+        ],
+        "properties": {
+          "plantIds": {
+            "type": "array",
+            "description": "Растения, на которые выдаётся доступ. Минимум одно.",
+            "minItems": 1,
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": [
+              23,
+              24
+            ]
+          },
+          "inviteeContact": {
+            "type": "string",
+            "description": "Контакт приглашённого — @username или телефон.",
+            "minLength": 1,
+            "maxLength": 255,
+            "example": "@anna"
+          },
+          "canLogCare": {
+            "type": "boolean",
+            "description": "Дать ли приглашённому право отмечать уход. По умолчанию false.",
+            "default": false,
+            "example": true
+          }
+        }
+      },
       "NotificationDto": {
         "type": "object",
         "description": "Уведомление в ленте пользователя.",
@@ -3072,6 +3363,49 @@
             "type": "string",
             "description": "Локализованное русское имя для UI.",
             "example": "Полив"
+          }
+        }
+      },
+      "VacationRequest": {
+        "type": "object",
+        "description": "Запрос на включение режима отпуска.",
+        "required": [
+          "from",
+          "to"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date",
+            "description": "Начало отпуска (включительно). Формат `YYYY-MM-DD`. Как правило,\nсегодняшняя дата или ближайшая в будущем.\n",
+            "example": "2026-06-01"
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "description": "Конец отпуска (включительно). Формат `YYYY-MM-DD`. Должно быть\n≥ `from` и не более 60 дней от `from`.\n",
+            "example": "2026-06-14"
+          }
+        }
+      },
+      "VacationResponse": {
+        "type": "object",
+        "description": "Статус режима отпуска. Если отпуск не активен — `active = false`\nи `pausedUntil = null`.\n",
+        "required": [
+          "active"
+        ],
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "description": "`true` — режим отпуска сейчас включён.",
+            "example": true
+          },
+          "pausedUntil": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Момент до которого паузированы напоминания (UTC). `null` если отпуск\nнеактивен.\n",
+            "example": "2026-06-14T20:59:59Z"
           }
         }
       },

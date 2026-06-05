@@ -96,6 +96,14 @@ tags:
     description: |
       Персистентный inbox уведомлений пользователя для мобильного приложения
       (gap G17): лента со счётчиком непрочитанных и идемпотентная отметка прочтения.
+  - name: Vacation
+    description: |
+      Режим отпуска (issue #189, mobile G21, экран 25): включение/выключение
+      паузы напоминаний на диапазон дат. Дедлайны не переносятся.
+  - name: Sharing
+    description: |
+      Совместный уход (issue #191, mobile G22, экран 26): приглашение
+      соухаживающих на набор растений с правом отмечать уход.
 
 paths:
   /api/v1/auth/apple:
@@ -180,6 +188,14 @@ paths:
 
   /api/v1/me:
     $ref: './resources/me.yaml#/paths/Me'
+
+  /api/v1/vacation:
+    $ref: './resources/vacation.yaml#/paths/Vacation'
+
+  /api/v1/sharing:
+    $ref: './resources/sharing.yaml#/paths/Collection'
+  /api/v1/sharing/invites:
+    $ref: './resources/sharing.yaml#/paths/Invites'
 
 components:
   securitySchemes:
@@ -325,6 +341,20 @@ components:
       $ref: './resources/notifications.yaml#/schemas/NotificationDto'
     NotificationsResponse:
       $ref: './resources/notifications.yaml#/schemas/NotificationsResponse'
+
+    VacationRequest:
+      $ref: './resources/vacation.yaml#/schemas/VacationRequest'
+    VacationResponse:
+      $ref: './resources/vacation.yaml#/schemas/VacationResponse'
+
+    SharingStatus:
+      $ref: './resources/sharing.yaml#/schemas/SharingStatus'
+    SharingMemberDto:
+      $ref: './resources/sharing.yaml#/schemas/SharingMemberDto'
+    SharingMembersResponse:
+      $ref: './resources/sharing.yaml#/schemas/SharingMembersResponse'
+    SharingInviteCreateRequest:
+      $ref: './resources/sharing.yaml#/schemas/SharingInviteCreateRequest'
 
     ApiErrorResponse:
       $ref: './_common/errors.yaml#/schemas/ApiErrorResponse'
