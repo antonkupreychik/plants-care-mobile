@@ -94,6 +94,10 @@ void main() {
     expect(find.byType(ProfileScreen), findsOneWidget);
     expect(find.text(l10n.profileReportTitle), findsOneWidget);
 
+    // Строка может быть ниже по скроллу (список настроек растёт) — доводим её
+    // до видимой области перед тапом.
+    await tester.ensureVisible(find.text(l10n.profileReportTitle));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(l10n.profileReportTitle));
     await tester.pumpAndSettle();
 

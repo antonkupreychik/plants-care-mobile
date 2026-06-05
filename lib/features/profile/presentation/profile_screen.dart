@@ -117,6 +117,13 @@ class ProfileScreen extends ConsumerWidget {
                   divider: true,
                   onTap: () => context.push('/profile/rooms'),
                 ),
+                // Экран 26 «Совместный уход» → push поверх shell.
+                SettingsRow(
+                  title: l10n.profileSharingTitle,
+                  icon: Icons.group_outlined,
+                  divider: true,
+                  onTap: () => context.push('/profile/sharing'),
+                ),
                 // Экран 19 «Список покупок» → push поверх shell.
                 SettingsRow(
                   title: l10n.profileShoppingTitle,

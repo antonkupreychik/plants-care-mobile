@@ -4198,6 +4198,156 @@ abstract class AppLocalizations {
   /// **'Отмена'**
   String get cancel;
 
+  /// Заголовок строки перехода на экран совместного ухода (экран 26) в профиле
+  ///
+  /// In ru, this message translates to:
+  /// **'Совместный уход'**
+  String get profileSharingTitle;
+
+  /// Семантический ярлык кнопки «назад» на экране совместного ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get sharingBack;
+
+  /// Надзаголовок (overline) экрана совместного ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Совместный уход'**
+  String get sharingOverline;
+
+  /// Серифный заголовок экрана совместного ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Ухаживайте вместе'**
+  String get sharingTitle;
+
+  /// Подзаголовок-описание под заголовком экрана совместного ухода
+  ///
+  /// In ru, this message translates to:
+  /// **'Близкий человек сможет отмечать полив, пока тебя нет'**
+  String get sharingSubtitle;
+
+  /// Заголовок секции со списком текущих соухаживающих
+  ///
+  /// In ru, this message translates to:
+  /// **'Помогают сейчас'**
+  String get sharingCurrentLabel;
+
+  /// Текст статуса приглашения в строке соухаживающего: ожидает принятия
+  ///
+  /// In ru, this message translates to:
+  /// **'приглашение отправлено'**
+  String get sharingStatusPending;
+
+  /// Текст статуса принятого приглашения в строке соухаживающего
+  ///
+  /// In ru, this message translates to:
+  /// **'помогает с уходом'**
+  String get sharingStatusAccepted;
+
+  /// Бейдж статуса PENDING в строке соухаживающего
+  ///
+  /// In ru, this message translates to:
+  /// **'ОЖИДАЕТ'**
+  String get sharingBadgePending;
+
+  /// Бейдж статуса ACCEPTED в строке соухаживающего
+  ///
+  /// In ru, this message translates to:
+  /// **'ПРИНЯТО'**
+  String get sharingBadgeAccepted;
+
+  /// Количество растений, доверенных соухаживающему
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{нет растений} one{{count} растение} few{{count} растения} many{{count} растений} other{{count} растения}}'**
+  String sharingMemberPlants(int count);
+
+  /// Заголовок пустого состояния списка соухаживающих
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока никого нет'**
+  String get sharingEmptyTitle;
+
+  /// Подсказка пустого состояния списка соухаживающих
+  ///
+  /// In ru, this message translates to:
+  /// **'Пригласите близкого человека помочь с уходом за вашими растениями'**
+  String get sharingEmptyHint;
+
+  /// Заголовок секции приглашения нового соухаживающего
+  ///
+  /// In ru, this message translates to:
+  /// **'Пригласить'**
+  String get sharingInviteLabel;
+
+  /// Плейсхолдер поля ввода контакта приглашаемого
+  ///
+  /// In ru, this message translates to:
+  /// **'@username или телефон'**
+  String get sharingContactHint;
+
+  /// Inline-ошибка пустого поля контакта
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите контакт приглашаемого'**
+  String get sharingContactError;
+
+  /// Заголовок секции выбора растений для приглашения
+  ///
+  /// In ru, this message translates to:
+  /// **'Какие растения доверить'**
+  String get sharingSelectPlantsLabel;
+
+  /// Счётчик выбранных растений в секции выбора
+  ///
+  /// In ru, this message translates to:
+  /// **'{count} выбрано'**
+  String sharingSelectedCount(int count);
+
+  /// Inline-ошибка, когда не выбрано ни одного растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите хотя бы одно растение'**
+  String get sharingNoPlantsError;
+
+  /// Сообщение, когда у пользователя нет растений для выбора в приглашении
+  ///
+  /// In ru, this message translates to:
+  /// **'У вас пока нет растений, которыми можно поделиться'**
+  String get sharingNoPlantsAvailable;
+
+  /// Сообщение об ошибке загрузки списка растений в секции выбора
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить растения'**
+  String get sharingPlantsLoadError;
+
+  /// Заголовок переключателя права отмечать уход
+  ///
+  /// In ru, this message translates to:
+  /// **'Может отмечать уход'**
+  String get sharingPermissionTitle;
+
+  /// Подсказка под переключателем права отмечать уход
+  ///
+  /// In ru, this message translates to:
+  /// **'Иначе — только смотреть расписание'**
+  String get sharingPermissionHint;
+
+  /// Кнопка отправки приглашения соухаживающего
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить приглашение'**
+  String get sharingSubmit;
+
+  /// Снэкбар-подтверждение успешной отправки приглашения
+  ///
+  /// In ru, this message translates to:
+  /// **'Приглашение отправлено'**
+  String get sharingInviteSuccess;
+
   /// Тултип кнопки «назад» на экране 25 «Режим отпуска»
   ///
   /// In ru, this message translates to:
