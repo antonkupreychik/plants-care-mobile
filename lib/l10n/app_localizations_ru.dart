@@ -2331,6 +2331,47 @@ class AppLocalizationsRu extends AppLocalizations {
   String get editPlantSuccessSnackbar => 'Изменения сохранены';
 
   @override
+  String addPlantStepAcquiredTitle(String name) {
+    return 'Когда завели $name?';
+  }
+
+  @override
+  String get addPlantStepAcquiredToday => 'Сегодня';
+
+  @override
+  String get addPlantStepAcquiredThisWeek => 'На этой неделе';
+
+  @override
+  String get addPlantStepAcquiredMonthAgo => 'Месяц назад';
+
+  @override
+  String get addPlantStepAcquiredEarlier => 'Раньше';
+
+  @override
+  String get addPlantStepAcquiredSkip => 'Пропустить';
+
+  @override
+  String get addPlantStepAcclimationTitle => 'Растение новое?';
+
+  @override
+  String get addPlantStepAcclimationYes => 'Да, только купил';
+
+  @override
+  String get addPlantStepAcclimationNo => 'Нет, уже адаптировалось';
+
+  @override
+  String get addPlantStepAcclimationHint =>
+      'Во время акклиматизации (21 день) мы будем задавать вопросы о состоянии растения.';
+
+  @override
+  String plantCardAcquiredSince(String date, String age) {
+    return 'С тобой с $date ($age)';
+  }
+
+  @override
+  String get plantCardAcclimationBadge => 'Акклиматизация';
+
+  @override
   String get seasonalOverline => 'Сезонные интервалы';
 
   @override

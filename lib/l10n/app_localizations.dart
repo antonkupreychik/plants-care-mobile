@@ -3766,6 +3766,78 @@ abstract class AppLocalizations {
   /// **'Изменения сохранены'**
   String get editPlantSuccessSnackbar;
 
+  /// Заголовок шага 5 мастера: дата приобретения растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Когда завели {name}?'**
+  String addPlantStepAcquiredTitle(String name);
+
+  /// Chip быстрого выбора даты: сегодня
+  ///
+  /// In ru, this message translates to:
+  /// **'Сегодня'**
+  String get addPlantStepAcquiredToday;
+
+  /// Chip быстрого выбора даты: примерно 3 дня назад
+  ///
+  /// In ru, this message translates to:
+  /// **'На этой неделе'**
+  String get addPlantStepAcquiredThisWeek;
+
+  /// Chip быстрого выбора даты: 30 дней назад
+  ///
+  /// In ru, this message translates to:
+  /// **'Месяц назад'**
+  String get addPlantStepAcquiredMonthAgo;
+
+  /// Chip быстрого выбора даты: открывает DatePicker для произвольной прошлой даты
+  ///
+  /// In ru, this message translates to:
+  /// **'Раньше'**
+  String get addPlantStepAcquiredEarlier;
+
+  /// Кнопка пропуска шага даты приобретения (и шага акклиматизации)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пропустить'**
+  String get addPlantStepAcquiredSkip;
+
+  /// Заголовок шага 6 мастера: является ли растение новым (акклиматизация)
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение новое?'**
+  String get addPlantStepAcclimationTitle;
+
+  /// Вариант ответа: растение новое → включить акклиматизацию
+  ///
+  /// In ru, this message translates to:
+  /// **'Да, только купил'**
+  String get addPlantStepAcclimationYes;
+
+  /// Вариант ответа: растение уже адаптировано
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет, уже адаптировалось'**
+  String get addPlantStepAcclimationNo;
+
+  /// Подсказка под кнопками шага акклиматизации: объяснение периода акклиматизации
+  ///
+  /// In ru, this message translates to:
+  /// **'Во время акклиматизации (21 день) мы будем задавать вопросы о состоянии растения.'**
+  String get addPlantStepAcclimationHint;
+
+  /// Строка на карточке растения: дата приобретения и возраст
+  ///
+  /// In ru, this message translates to:
+  /// **'С тобой с {date} ({age})'**
+  String plantCardAcquiredSince(String date, String age);
+
+  /// Бейдж на карточке растения: растение в периоде акклиматизации
+  ///
+  /// In ru, this message translates to:
+  /// **'Акклиматизация'**
+  String get plantCardAcclimationBadge;
+
   /// Оверлайн шапки экрана 35
   ///
   /// In ru, this message translates to:

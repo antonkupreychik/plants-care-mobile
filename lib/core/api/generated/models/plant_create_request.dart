@@ -15,6 +15,8 @@ class PlantCreateRequest {
     this.locationId,
     this.speciesId,
     this.parentPlantId,
+    this.acquiredAt,
+    this.isNew,
   });
   
   factory PlantCreateRequest.fromJson(Map<String, Object?> json) => _$PlantCreateRequestFromJson(json);
@@ -40,6 +42,16 @@ class PlantCreateRequest {
   /// пользователю и не быть архивированным, иначе 404/403.
   ///
   final int? parentPlantId;
+
+  /// Дата приобретения растения (ISO-8601 date). Если не задана,.
+  /// не сохраняется. Только прошлые или сегодняшняя даты.
+  ///
+  final DateTime? acquiredAt;
+
+  /// Если `true`, включает период акклиматизации (21 день мягкого режима ухода).
+  /// `false`/`null` — акклиматизация не включается.
+  ///
+  final bool? isNew;
 
   Map<String, Object?> toJson() => _$PlantCreateRequestToJson(this);
 }

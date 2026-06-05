@@ -288,15 +288,20 @@ void main() {
   });
 
   group('step 4 (photo + window + submit)', () {
-    /// Доводит мастер до шага 4 с валидным именем «Алоэ» (без вида).
+    /// Доводит мастер до шага 6 (акклиматизация, кнопка «Добавить в сад»)
+    /// с валидным именем «Алоэ» (без вида).
     Future<void> goToConfirm(WidgetTester tester) async {
       await _skipToNameStep(tester);
       final l10n = _l10n(tester);
       await tester.enterText(find.byType(TextField).first, 'Алоэ');
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 3
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 3 (care plan)
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4 (photo/window)
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 5 (acquired date)
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 6 (acclimation)
       await tester.pumpAndSettle();
     }
 
@@ -308,6 +313,9 @@ void main() {
             name: any(named: 'name'),
             locationId: any(named: 'locationId'),
             notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+            acquiredAt: any(named: 'acquiredAt'),
+            isNew: any(named: 'isNew'),
           )).thenAnswer((_) => completer.future);
 
       await _pump(tester, species: const [], repo: repo);
@@ -331,6 +339,9 @@ void main() {
             name: any(named: 'name'),
             locationId: any(named: 'locationId'),
             notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+            acquiredAt: any(named: 'acquiredAt'),
+            isNew: any(named: 'isNew'),
           )).thenAnswer((_) async => const Result.failure(ApiError.network()));
 
       await _pump(tester, species: const [], repo: repo);
@@ -346,7 +357,7 @@ void main() {
         find.text(l10n.messageForError(const ApiError.network())),
         findsOneWidget,
       );
-      expect(find.text(l10n.addPlantPhotoSubtitle), findsOneWidget);
+      expect(find.text(l10n.addPlantStepAcclimationTitle), findsOneWidget);
       expect(find.text(l10n.addPlantSubmitGarden), findsOneWidget);
     });
 
@@ -357,6 +368,9 @@ void main() {
             name: any(named: 'name'),
             locationId: any(named: 'locationId'),
             notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+            acquiredAt: any(named: 'acquiredAt'),
+            isNew: any(named: 'isNew'),
           )).thenAnswer((_) async => const Result.success(99));
 
       await _pump(tester, species: const [], repo: repo);
@@ -374,6 +388,9 @@ void main() {
             name: 'Алоэ',
             locationId: any(named: 'locationId'),
             notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+            acquiredAt: any(named: 'acquiredAt'),
+            isNew: any(named: 'isNew'),
           )).called(1);
     });
   });
@@ -423,9 +440,9 @@ void main() {
       final l10n = _l10n(tester);
       await tester.enterText(find.byType(TextField).first, 'Алоэ');
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 3
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 3 (care plan)
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4 (photo/window)
       await tester.pumpAndSettle();
     }
 

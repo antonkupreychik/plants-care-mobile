@@ -22,6 +22,8 @@ class PlantDto {
     this.speciesId,
     this.speciesName,
     this.createdAt,
+    this.acquiredAt,
+    this.inAcclimation,
   });
   
   factory PlantDto.fromJson(Map<String, Object?> json) => _$PlantDtoFromJson(json);
@@ -55,6 +57,14 @@ class PlantDto {
 
   /// Момент создания записи в БД (UTC).
   final DateTime? createdAt;
+
+  /// Дата приобретения растения (ISO-8601 date). Задаётся при создании, null — не указана.
+  final DateTime? acquiredAt;
+
+  /// `true` — растение находится в периоде акклиматизации (21 день мягкого.
+  /// режима ухода). Включается при создании с `isNew = true`.
+  ///
+  final bool? inAcclimation;
 
   Map<String, Object?> toJson() => _$PlantDtoToJson(this);
 }

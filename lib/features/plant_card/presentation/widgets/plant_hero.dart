@@ -93,12 +93,20 @@ class PlantHero extends StatelessWidget {
           ),
         ],
         const SizedBox(height: 10),
-        // Ряд чипов-бейджей. Сейчас один — бейдж здоровья (G1); сюда же
-        // встанут «токсично»/«черенок», когда появятся данные.
+        // Строка «С тобой с {дата} ({возраст})» если acquiredAt задан.
+        if (plant.acquiredAt != null) ...[
+          _AcquiredSinceRow(acquiredAt: plant.acquiredAt!, now: now),
+          const SizedBox(height: 8),
+        ],
+        // Ряд чипов-бейджей. Сейчас: бейдж здоровья (G1) + бейдж акклиматизации.
         Wrap(
           spacing: 6,
           runSpacing: 6,
-          children: [HealthBadge(plantId: plant.id)],
+          children: [
+            HealthBadge(plantId: plant.id),
+            if (plant.inAcclimation == true)
+              _AcclimationBadge(),
+          ],
         ),
       ],
     );
@@ -125,6 +133,80 @@ class PlantHero extends StatelessWidget {
       duration = l10n.plantCardAgeDays(days);
     }
     return l10n.plantCardWithMeFor(duration);
+  }
+}
+
+/// Строка «🌱 С тобой с {дата} ({возраст})» — показывается если [acquiredAt] задан.
+class _AcquiredSinceRow extends StatelessWidget {
+  const _AcquiredSinceRow({
+    required this.acquiredAt,
+    required this.now,
+  });
+
+  final DateTime acquiredAt;
+  final DateTime now;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+
+    final from = acquiredAt.toLocal();
+    final days = now.difference(from).inDays.abs();
+    final String age;
+    if (days >= 365) {
+      age = l10n.plantCardAgeYears(days ~/ 365);
+    } else if (days >= 30) {
+      age = l10n.plantCardAgeMonths(days ~/ 30);
+    } else {
+      age = l10n.plantCardAgeDays(days);
+    }
+
+    final dateStr =
+        '${from.day.toString().padLeft(2, '0')}.${from.month.toString().padLeft(2, '0')}.${from.year}';
+
+    return Row(
+      children: [
+        const Text('🌱', style: TextStyle(fontSize: 13)),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            l10n.plantCardAcquiredSince(dateStr, age),
+            style: TextStyle(fontSize: 13, color: c.inkSoft),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Бейдж «Акклиматизация» — показывается если [Plant.inAcclimation] == true.
+class _AcclimationBadge extends StatelessWidget {
+  const _AcclimationBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: c.primarySoft,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: c.primary.withAlpha(80)),
+      ),
+      child: Text(
+        l10n.plantCardAcclimationBadge,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.4,
+          color: c.primary,
+        ),
+      ),
+    );
   }
 }
 

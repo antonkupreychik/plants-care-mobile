@@ -33,5 +33,13 @@ abstract class Plant with _$Plant {
 
     /// Момент создания записи (UTC).
     DateTime? createdAt,
+
+    /// Дата приобретения растения пользователем (UTC-дата без времени).
+    /// null → не указана (пропустил шаг мастера или задан через старый API).
+    DateTime? acquiredAt,
+
+    /// `true` — растение проходит акклиматизацию (21 день мягкого режима).
+    /// null/false → обычный режим.
+    bool? inAcclimation,
   }) = _Plant;
 }

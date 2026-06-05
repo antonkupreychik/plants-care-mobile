@@ -19,6 +19,10 @@ PlantDto _$PlantDtoFromJson(Map<String, dynamic> json) => PlantDto(
   createdAt: json['createdAt'] == null
       ? null
       : DateTime.parse(json['createdAt'] as String),
+  acquiredAt: json['acquiredAt'] == null
+      ? null
+      : DateTime.parse(json['acquiredAt'] as String),
+  inAcclimation: json['inAcclimation'] as bool?,
 );
 
 Map<String, dynamic> _$PlantDtoToJson(PlantDto instance) => <String, dynamic>{
@@ -32,4 +36,6 @@ Map<String, dynamic> _$PlantDtoToJson(PlantDto instance) => <String, dynamic>{
   'speciesName': instance.speciesName,
   'archived': instance.archived,
   'createdAt': instance.createdAt?.toIso8601String(),
+  'acquiredAt': instance.acquiredAt?.toIso8601String(),
+  'inAcclimation': instance.inAcclimation,
 };

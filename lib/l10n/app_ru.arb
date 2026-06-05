@@ -3331,6 +3331,73 @@
     "description": "Снэкбар-подтверждение после успешного сохранения изменений растения"
   },
 
+  "addPlantStepAcquiredTitle": "Когда завели {name}?",
+  "@addPlantStepAcquiredTitle": {
+    "description": "Заголовок шага 5 мастера: дата приобретения растения",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "addPlantStepAcquiredToday": "Сегодня",
+  "@addPlantStepAcquiredToday": {
+    "description": "Chip быстрого выбора даты: сегодня"
+  },
+
+  "addPlantStepAcquiredThisWeek": "На этой неделе",
+  "@addPlantStepAcquiredThisWeek": {
+    "description": "Chip быстрого выбора даты: примерно 3 дня назад"
+  },
+
+  "addPlantStepAcquiredMonthAgo": "Месяц назад",
+  "@addPlantStepAcquiredMonthAgo": {
+    "description": "Chip быстрого выбора даты: 30 дней назад"
+  },
+
+  "addPlantStepAcquiredEarlier": "Раньше",
+  "@addPlantStepAcquiredEarlier": {
+    "description": "Chip быстрого выбора даты: открывает DatePicker для произвольной прошлой даты"
+  },
+
+  "addPlantStepAcquiredSkip": "Пропустить",
+  "@addPlantStepAcquiredSkip": {
+    "description": "Кнопка пропуска шага даты приобретения (и шага акклиматизации)"
+  },
+
+  "addPlantStepAcclimationTitle": "Растение новое?",
+  "@addPlantStepAcclimationTitle": {
+    "description": "Заголовок шага 6 мастера: является ли растение новым (акклиматизация)"
+  },
+
+  "addPlantStepAcclimationYes": "Да, только купил",
+  "@addPlantStepAcclimationYes": {
+    "description": "Вариант ответа: растение новое → включить акклиматизацию"
+  },
+
+  "addPlantStepAcclimationNo": "Нет, уже адаптировалось",
+  "@addPlantStepAcclimationNo": {
+    "description": "Вариант ответа: растение уже адаптировано"
+  },
+
+  "addPlantStepAcclimationHint": "Во время акклиматизации (21 день) мы будем задавать вопросы о состоянии растения.",
+  "@addPlantStepAcclimationHint": {
+    "description": "Подсказка под кнопками шага акклиматизации: объяснение периода акклиматизации"
+  },
+
+  "plantCardAcquiredSince": "С тобой с {date} ({age})",
+  "@plantCardAcquiredSince": {
+    "description": "Строка на карточке растения: дата приобретения и возраст",
+    "placeholders": {
+      "date": { "type": "String" },
+      "age": { "type": "String" }
+    }
+  },
+
+  "plantCardAcclimationBadge": "Акклиматизация",
+  "@plantCardAcclimationBadge": {
+    "description": "Бейдж на карточке растения: растение в периоде акклиматизации"
+  },
+
   "seasonalOverline": "Сезонные интервалы",
   "@seasonalOverline": {
     "description": "Оверлайн шапки экрана 35"
