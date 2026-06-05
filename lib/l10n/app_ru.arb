@@ -46,6 +46,46 @@
     "description": "Подсказка для иконки поиска в шапке"
   },
 
+  "searchScreenHint": "Искать растения, виды, болезни…",
+  "@searchScreenHint": {
+    "description": "Плейсхолдер поля унифицированного поиска (экран Search)"
+  },
+
+  "searchMinCharsHint": "Введите минимум 2 символа",
+  "@searchMinCharsHint": {
+    "description": "Подсказка пустого состояния, пока введено меньше 2 символов"
+  },
+
+  "searchEmptyResult": "Ничего не найдено",
+  "@searchEmptyResult": {
+    "description": "Все секции поиска пусты при достаточной длине запроса"
+  },
+
+  "searchSectionPlants": "Мои растения",
+  "@searchSectionPlants": {
+    "description": "Заголовок секции результатов-растений"
+  },
+
+  "searchSectionSpecies": "Виды",
+  "@searchSectionSpecies": {
+    "description": "Заголовок секции результатов-видов"
+  },
+
+  "searchSectionDiseases": "Болезни и вредители",
+  "@searchSectionDiseases": {
+    "description": "Заголовок секции результатов-болезней"
+  },
+
+  "searchShowAll": "Показать все",
+  "@searchShowAll": {
+    "description": "Кнопка перехода к полному списку раздела поиска"
+  },
+
+  "searchBack": "Назад",
+  "@searchBack": {
+    "description": "Подпись кнопки возврата с экрана поиска"
+  },
+
   "homeNotificationsTooltip": "Уведомления",
   "@homeNotificationsTooltip": {
     "description": "Подсказка для иконки уведомлений в шапке"
@@ -534,6 +574,37 @@
     "placeholders": {
       "count": { "type": "int" }
     }
+  },
+
+  "scheduleWeekTasksPrefix": "На этой неделе ",
+  "@scheduleWeekTasksPrefix": {
+    "description": "Префикс hero-заголовка «График» перед выделенным числом задач (count > 0)"
+  },
+
+  "scheduleWeekTasksSuffix": "{count, plural, one{ забота в саду} few{ заботы в саду} many{ забот в саду} other{ заботы в саду}}",
+  "@scheduleWeekTasksSuffix": {
+    "description": "Суффикс hero-заголовка «График» после выделенного числа задач (count > 0)",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "scheduleWeekRestTitle": "На этой неделе сад отдыхает",
+  "@scheduleWeekRestTitle": {
+    "description": "Hero-заголовок «График» когда задач на неделе нет (count = 0)"
+  },
+
+  "scheduleFreeDaysSubtitle": "{days} — свободные дни 🌳",
+  "@scheduleFreeDaysSubtitle": {
+    "description": "Subtitle под hero-заголовком «График»: перечисление дней без задач",
+    "placeholders": {
+      "days": { "type": "String" }
+    }
+  },
+
+  "scheduleDayFree": "Свободный день 🌿",
+  "@scheduleDayFree": {
+    "description": "Заглушка дня без задач на экране «График» (serif italic 15px)"
   },
 
   "scheduleDayTasksCount": "{count, plural, =0{Свободно} one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}",
@@ -1537,6 +1608,52 @@
     "description": "Заголовок секции дополнительных настроек на экране профиля"
   },
 
+  "profileAnonymous": "Пользователь",
+  "@profileAnonymous": {
+    "description": "Имя в шапке профиля, когда у пользователя нет имени (анонимный)"
+  },
+
+  "profileMemberSince": "С нами с {date}",
+  "@profileMemberSince": {
+    "description": "Подпись в шапке профиля: дата регистрации (формат MMM yyyy)",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "май 2025"
+      }
+    }
+  },
+
+  "profileStatPlants": "Растения",
+  "@profileStatPlants": {
+    "description": "Подпись счётчика статистики: число растений"
+  },
+
+  "profileStatCareEvents": "Уходов",
+  "@profileStatCareEvents": {
+    "description": "Подпись счётчика статистики: число уходов за всё время"
+  },
+
+  "profileSectionReferences": "Справочники",
+  "@profileSectionReferences": {
+    "description": "Заголовок секции справочников на экране профиля"
+  },
+
+  "profileDiseasesTitle": "Болезни и вредители",
+  "@profileDiseasesTitle": {
+    "description": "Строка справочников: переход к каталогу болезней и вредителей"
+  },
+
+  "profileCatalogTitle": "Каталог видов",
+  "@profileCatalogTitle": {
+    "description": "Строка справочников: переход на таб каталога видов"
+  },
+
+  "profileSearchTitle": "Поиск",
+  "@profileSearchTitle": {
+    "description": "Строка настроек: переход к экрану поиска"
+  },
+
   "profileRoomsTitle": "Дома и места",
   "@profileRoomsTitle": {
     "description": "Строка настроек: переход к управлению комнатами"
@@ -1924,6 +2041,46 @@
   "authGoHome": "Я просто посмотрю",
   "@authGoHome": {
     "description": "Вторичная ссылка экрана 09: уйти на главную без добавления растения"
+  },
+
+  "pushPrimingSkip": "Позже",
+  "@pushPrimingSkip": {
+    "description": "Экран 27: ссылка вверху справа — отложить запрос разрешения на пуши"
+  },
+
+  "pushPrimingTitleLead": "Я напомню ",
+  "@pushPrimingTitleLead": {
+    "description": "Экран 27: первая часть hero-заголовка (обычное начертание)"
+  },
+
+  "pushPrimingTitleAccent": "вовремя",
+  "@pushPrimingTitleAccent": {
+    "description": "Экран 27: акцентное слово hero-заголовка (серифный курсив)"
+  },
+
+  "pushPrimingSubtitle": "Растения будут писать тебе сами — когда захотят пить, и только в удобные часы. Без спама.",
+  "@pushPrimingSubtitle": {
+    "description": "Экран 27: подзаголовок-объяснение ценности уведомлений"
+  },
+
+  "pushPrimingPreviewTitle": "Моника · сейчас",
+  "@pushPrimingPreviewTitle": {
+    "description": "Экран 27: заголовок образца пуш-уведомления (имя растения + время)"
+  },
+
+  "pushPrimingPreviewBody": "«Полей меня, пожалуйста!»",
+  "@pushPrimingPreviewBody": {
+    "description": "Экран 27: текст образца пуш-уведомления (voice line растения)"
+  },
+
+  "pushPrimingAllow": "Разрешить уведомления",
+  "@pushPrimingAllow": {
+    "description": "Экран 27: основная кнопка — согласиться на пуши"
+  },
+
+  "pushPrimingFootnote": "Можно изменить в любой момент в настройках",
+  "@pushPrimingFootnote": {
+    "description": "Экран 27: подпись под кнопкой о возможности изменить разрешение позже"
   },
 
   "authEmailTitle": "Вход по почте",
@@ -3167,5 +3324,160 @@
   "editPlantSuccessSnackbar": "Изменения сохранены",
   "@editPlantSuccessSnackbar": {
     "description": "Снэкбар-подтверждение после успешного сохранения изменений растения"
+  },
+
+  "plantEventTypeTransplant": "Пересадка",
+  "@plantEventTypeTransplant": {
+    "description": "Тип события журнала растения: пересадка (TRANSPLANT)"
+  },
+
+  "plantEventTypeSoilChange": "Замена грунта",
+  "@plantEventTypeSoilChange": {
+    "description": "Тип события журнала растения: замена грунта (SOIL_CHANGE)"
+  },
+
+  "plantEventTypePruning": "Обрезка",
+  "@plantEventTypePruning": {
+    "description": "Тип события журнала растения: обрезка (PRUNING)"
+  },
+
+  "plantEventTypePestTreatment": "Обработка от вредителей",
+  "@plantEventTypePestTreatment": {
+    "description": "Тип события журнала растения: обработка от вредителей (PEST_TREATMENT)"
+  },
+
+  "plantEventsScreenTitle": "Журнал событий",
+  "@plantEventsScreenTitle": {
+    "description": "Заголовок экрана журнала событий растения"
+  },
+
+  "addPlantEventButton": "Добавить событие",
+  "@addPlantEventButton": {
+    "description": "Кнопка открытия sheet добавления события (журнал событий)"
+  },
+
+  "plantEventsViewAll": "Все события",
+  "@plantEventsViewAll": {
+    "description": "Ссылка-вход на полный журнал событий с карточки растения (02)"
+  },
+
+  "plantEventsSectionTitle": "Журнал событий",
+  "@plantEventsSectionTitle": {
+    "description": "Заголовок секции журнала событий в карточке растения (02)"
+  },
+
+  "plantEventsEmptyTitle": "Событий пока нет",
+  "@plantEventsEmptyTitle": {
+    "description": "Заголовок пустого состояния журнала событий"
+  },
+
+  "plantEventsEmptyHint": "Отмечайте пересадки, обрезку и другие важные моменты — так проще вспомнить историю растения.",
+  "@plantEventsEmptyHint": {
+    "description": "Подпись пустого состояния журнала событий"
+  },
+
+  "plantEventsEmptyCta": "Добавить первое событие",
+  "@plantEventsEmptyCta": {
+    "description": "CTA в пустом состоянии журнала событий"
+  },
+
+  "addPlantEventSheetTitle": "Что произошло?",
+  "@addPlantEventSheetTitle": {
+    "description": "Заголовок sheet добавления события растения"
+  },
+
+  "addPlantEventSheetOverline": "Журнал событий",
+  "@addPlantEventSheetOverline": {
+    "description": "Overline (надзаголовок) sheet добавления события растения"
+  },
+
+  "plantEventAddedSnackbar": "Событие записано",
+  "@plantEventAddedSnackbar": {
+    "description": "Снэкбар-подтверждение после записи события растения"
+  },
+
+  "plantEventDuplicateSnackbar": "Событие уже записано",
+  "@plantEventDuplicateSnackbar": {
+    "description": "Тост при дедупе (409) записи события растения"
+  },
+
+  "plantEventsLoadMore": "Показать ещё",
+  "@plantEventsLoadMore": {
+    "description": "Кнопка подзагрузки следующей страницы журнала событий"
+  },
+
+  "plantEventsLoadMoreError": "Не удалось загрузить ещё",
+  "@plantEventsLoadMoreError": {
+    "description": "Строка ошибки подзагрузки страницы журнала событий"
+  },
+
+  "diseaseCatalogTitle": "Болезни и вредители",
+  "@diseaseCatalogTitle": {
+    "description": "Заголовок экрана справочника болезней и вредителей (issue #68)"
+  },
+
+  "diseaseCatalogSearchHint": "Поиск по названию или симптому",
+  "@diseaseCatalogSearchHint": {
+    "description": "Подсказка поля поиска в справочнике болезней"
+  },
+
+  "diseaseCatalogSearchClear": "Очистить поиск",
+  "@diseaseCatalogSearchClear": {
+    "description": "Метка кнопки очистки поля поиска в справочнике болезней"
+  },
+
+  "diseaseCatalogEmpty": "Болезни не найдены",
+  "@diseaseCatalogEmpty": {
+    "description": "Пустое состояние списка справочника болезней (нет результатов)"
+  },
+
+  "diseaseDetailSymptomsTitle": "Симптомы",
+  "@diseaseDetailSymptomsTitle": {
+    "description": "Заголовок секции «Симптомы» на карточке болезни"
+  },
+
+  "diseaseDetailTreatmentTitle": "Лечение",
+  "@diseaseDetailTreatmentTitle": {
+    "description": "Заголовок секции «Лечение» на карточке болезни"
+  },
+
+  "diseaseDetailPreventionTitle": "Профилактика",
+  "@diseaseDetailPreventionTitle": {
+    "description": "Заголовок секции «Профилактика» на карточке болезни"
+  },
+
+  "plantCardMenuEdit": "Редактировать",
+  "@plantCardMenuEdit": {
+    "description": "Пункт меню «ещё» на карточке растения — открыть редактирование"
+  },
+
+  "archivePlantMenuLabel": "В архив",
+  "@archivePlantMenuLabel": {
+    "description": "Пункт меню «ещё» на карточке растения — отправить растение в архив"
+  },
+
+  "archivePlantConfirmTitle": "Отправить в архив?",
+  "@archivePlantConfirmTitle": {
+    "description": "Заголовок диалога подтверждения архивации растения"
+  },
+
+  "archivePlantConfirmBody": "Растение переместится в архив. Вернуть его в список можно будет из экрана «Архив».",
+  "@archivePlantConfirmBody": {
+    "description": "Текст диалога подтверждения архивации растения"
+  },
+
+  "archivePlantConfirmAction": "Архивировать",
+  "@archivePlantConfirmAction": {
+    "description": "Кнопка подтверждения архивации в диалоге"
+  },
+
+  "archivePlantSuccess": "Растение перемещено в архив",
+  "@archivePlantSuccess": {
+    "description": "Снэкбар-подтверждение успешной архивации растения"
+  },
+
+  "cancel": "Отмена",
+  "@cancel": {
+    "description": "Универсальная кнопка отмены действия в диалогах"
   }
 }

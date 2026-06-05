@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
 import '../../home/domain/plant.dart';
+import '../../home/presentation/home_providers.dart';
 import '../data/plant_card_repository_provider.dart';
 import '../domain/care_history_entry.dart';
 import '../domain/plant_health.dart';
@@ -139,6 +140,35 @@ Future<PlantHealth> plantHealth(Ref ref, int plantId) async {
   final result =
       await ref.watch(plantCardRepositoryProvider).getPlantHealth(plantId);
   return _unwrap(result);
+}
+
+/// Нотифайер архивации растения (`DELETE /api/v1/plants/{id}`).
+///
+/// Idle — `AsyncData(null)`, loading — `AsyncLoading`, error — `AsyncError`.
+/// После успеха инвалидирует [plantDetailProvider] и [homePlantsProvider],
+/// чтобы домашний экран больше не показывал архивное растение.
+/// UI должен слушать state и при [AsyncData] навигироваться на '/home'.
+@riverpod
+class ArchivePlant extends _$ArchivePlant {
+  @override
+  FutureOr<void> build(int plantId) => null;
+
+  /// Запускает архивацию; повторный вызов в [AsyncLoading] игнорируется
+  /// (защита от двойного тапа).
+  Future<void> archive() async {
+    if (state.isLoading) return;
+    state = const AsyncLoading();
+    final result =
+        await ref.read(plantCardRepositoryProvider).archivePlant(plantId);
+    switch (result) {
+      case Success<void>():
+        ref.invalidate(plantDetailProvider(plantId));
+        ref.invalidate(homePlantsProvider);
+        state = const AsyncData(null);
+      case Failure<void>(:final error):
+        state = AsyncError(error, StackTrace.current);
+    }
+  }
 }
 
 /// Разворачивает `Result<T>`: успех → значение, ошибка → бросок [ApiError],

@@ -45,4 +45,8 @@ abstract interface class PlantCardRepository {
   /// эндпоинт публичный, идентичность не требуется). Значения посчитаны
   /// backend, клиент их не пересчитывает.
   Future<Result<PlantHealth>> getPlantHealth(int plantId);
+
+  /// Отправить растение в архив (`DELETE /api/v1/plants/{id}`, soft-delete,
+  /// выставляет `archived_at`). Scope user.
+  Future<Result<void>> archivePlant(int plantId);
 }

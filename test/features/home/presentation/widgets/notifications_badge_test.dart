@@ -18,7 +18,7 @@ Widget _wrap(int unread, {VoidCallback? onNotifications}) => ProviderScope(
         home: Scaffold(
           body: HomeHeader(
             now: DateTime(2026, 6, 1),
-            onComingSoon: () {},
+            onSearch: () {},
             onNotifications: onNotifications ?? () {},
             onProfile: () {},
           ),

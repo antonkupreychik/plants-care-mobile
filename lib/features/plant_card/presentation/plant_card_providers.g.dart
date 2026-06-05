@@ -514,3 +514,132 @@ final class PlantHealthFamily extends $Family
   @override
   String toString() => r'plantHealthProvider';
 }
+
+/// Нотифайер архивации растения (`DELETE /api/v1/plants/{id}`).
+///
+/// Idle — `AsyncData(null)`, loading — `AsyncLoading`, error — `AsyncError`.
+/// После успеха инвалидирует [plantDetailProvider] и [homePlantsProvider],
+/// чтобы домашний экран больше не показывал архивное растение.
+/// UI должен слушать state и при [AsyncData] навигироваться на '/home'.
+
+@ProviderFor(ArchivePlant)
+final archivePlantProvider = ArchivePlantFamily._();
+
+/// Нотифайер архивации растения (`DELETE /api/v1/plants/{id}`).
+///
+/// Idle — `AsyncData(null)`, loading — `AsyncLoading`, error — `AsyncError`.
+/// После успеха инвалидирует [plantDetailProvider] и [homePlantsProvider],
+/// чтобы домашний экран больше не показывал архивное растение.
+/// UI должен слушать state и при [AsyncData] навигироваться на '/home'.
+final class ArchivePlantProvider
+    extends $AsyncNotifierProvider<ArchivePlant, void> {
+  /// Нотифайер архивации растения (`DELETE /api/v1/plants/{id}`).
+  ///
+  /// Idle — `AsyncData(null)`, loading — `AsyncLoading`, error — `AsyncError`.
+  /// После успеха инвалидирует [plantDetailProvider] и [homePlantsProvider],
+  /// чтобы домашний экран больше не показывал архивное растение.
+  /// UI должен слушать state и при [AsyncData] навигироваться на '/home'.
+  ArchivePlantProvider._({
+    required ArchivePlantFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'archivePlantProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$archivePlantHash();
+
+  @override
+  String toString() {
+    return r'archivePlantProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  ArchivePlant create() => ArchivePlant();
+
+  @override
+  bool operator ==(Object other) {
+    return other is ArchivePlantProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$archivePlantHash() => r'4e6692f8c7bed8b8f4533307111a7f0af5c861b2';
+
+/// Нотифайер архивации растения (`DELETE /api/v1/plants/{id}`).
+///
+/// Idle — `AsyncData(null)`, loading — `AsyncLoading`, error — `AsyncError`.
+/// После успеха инвалидирует [plantDetailProvider] и [homePlantsProvider],
+/// чтобы домашний экран больше не показывал архивное растение.
+/// UI должен слушать state и при [AsyncData] навигироваться на '/home'.
+
+final class ArchivePlantFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          ArchivePlant,
+          AsyncValue<void>,
+          void,
+          FutureOr<void>,
+          int
+        > {
+  ArchivePlantFamily._()
+    : super(
+        retry: null,
+        name: r'archivePlantProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Нотифайер архивации растения (`DELETE /api/v1/plants/{id}`).
+  ///
+  /// Idle — `AsyncData(null)`, loading — `AsyncLoading`, error — `AsyncError`.
+  /// После успеха инвалидирует [plantDetailProvider] и [homePlantsProvider],
+  /// чтобы домашний экран больше не показывал архивное растение.
+  /// UI должен слушать state и при [AsyncData] навигироваться на '/home'.
+
+  ArchivePlantProvider call(int plantId) =>
+      ArchivePlantProvider._(argument: plantId, from: this);
+
+  @override
+  String toString() => r'archivePlantProvider';
+}
+
+/// Нотифайер архивации растения (`DELETE /api/v1/plants/{id}`).
+///
+/// Idle — `AsyncData(null)`, loading — `AsyncLoading`, error — `AsyncError`.
+/// После успеха инвалидирует [plantDetailProvider] и [homePlantsProvider],
+/// чтобы домашний экран больше не показывал архивное растение.
+/// UI должен слушать state и при [AsyncData] навигироваться на '/home'.
+
+abstract class _$ArchivePlant extends $AsyncNotifier<void> {
+  late final _$args = ref.$arg as int;
+  int get plantId => _$args;
+
+  FutureOr<void> build(int plantId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
+}

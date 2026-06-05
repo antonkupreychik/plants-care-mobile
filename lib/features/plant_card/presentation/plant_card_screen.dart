@@ -9,6 +9,8 @@ import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../care_event/presentation/log_care_event_sheet.dart';
 import '../../home/domain/plant.dart';
+import '../../plant_events/presentation/add_plant_event_sheet.dart';
+import '../../plant_events/presentation/widgets/plant_events_section.dart';
 import '../domain/care_event_kind.dart';
 import '../domain/streak.dart';
 import 'plant_card_history_state.dart';
@@ -30,20 +32,57 @@ import 'widgets/section_title.dart';
 /// (BACKEND-GAPS): реплика-настроение voiceLine (G2) — не показываем (генерится
 /// не из данных, экран 01 её тоже не показывает). «Отметить уход» — sheet
 /// фичи 06.
-class PlantCardScreen extends ConsumerWidget {
+class PlantCardScreen extends ConsumerStatefulWidget {
   const PlantCardScreen({super.key, required this.plantId});
 
   final int plantId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PlantCardScreen> createState() => _PlantCardScreenState();
+}
+
+class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Слушаем archivePlantProvider, чтобы после успешной архивации вернуться
+    // на Home. listen вызывается при каждом изменении state.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.listenManual(
+        archivePlantProvider(widget.plantId),
+        (prev, next) {
+          if (!mounted) return;
+          if (next is AsyncData<void> && prev?.isLoading == true) {
+            final l10n = AppLocalizations.of(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(l10n.archivePlantSuccess)),
+            );
+            context.go('/home');
+          }
+          if (next is AsyncError) {
+            final l10n = AppLocalizations.of(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.messageForError(next.error)),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+          }
+        },
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
     final nowLocal = ref.watch(clockProvider).nowUtc().toLocal();
 
-    final detail = ref.watch(plantDetailProvider(plantId));
-    final streak = ref.watch(plantStreakProvider(plantId));
-    final history = ref.watch(plantCardHistoryProvider(plantId));
+    final detail = ref.watch(plantDetailProvider(widget.plantId));
+    final streak = ref.watch(plantStreakProvider(widget.plantId));
+    final history = ref.watch(plantCardHistoryProvider(widget.plantId));
+    final archiveState = ref.watch(archivePlantProvider(widget.plantId));
 
     return Scaffold(
       backgroundColor: c.bg,
@@ -57,10 +96,12 @@ class PlantCardScreen extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
                   sliver: SliverToBoxAdapter(
                     child: _TopBar(
-                      onMore: () => context.pushNamed(
+                      isArchiving: archiveState.isLoading,
+                      onEdit: () => context.pushNamed(
                         'editPlant',
-                        pathParameters: {'id': '$plantId'},
+                        pathParameters: {'id': '${widget.plantId}'},
                       ),
+                      onArchive: () => _confirmArchive(context, l10n),
                     ),
                   ),
                 ),
@@ -73,7 +114,7 @@ class PlantCardScreen extends ConsumerWidget {
                       detail: detail,
                       now: nowLocal,
                       onRetry: () =>
-                          ref.invalidate(plantDetailProvider(plantId)),
+                          ref.invalidate(plantDetailProvider(widget.plantId)),
                     ),
                   ),
                 ),
@@ -95,7 +136,7 @@ class PlantCardScreen extends ConsumerWidget {
                     child: _StreakSection(
                       streak: streak,
                       onRetry: () =>
-                          ref.invalidate(plantStreakProvider(plantId)),
+                          ref.invalidate(plantStreakProvider(widget.plantId)),
                     ),
                   ),
                 ),
@@ -112,7 +153,7 @@ class PlantCardScreen extends ConsumerWidget {
                         label: l10n.plantCardScheduleEdit,
                         onTap: () => context.pushNamed(
                           'editSchedule',
-                          pathParameters: {'id': '$plantId'},
+                          pathParameters: {'id': '${widget.plantId}'},
                           extra: detail.value?.name,
                         ),
                       ),
@@ -130,7 +171,7 @@ class PlantCardScreen extends ConsumerWidget {
                         label: l10n.careHistoryViewAll,
                         onTap: () => context.pushNamed(
                           'plantHistory',
-                          pathParameters: {'id': '$plantId'},
+                          pathParameters: {'id': '${widget.plantId}'},
                         ),
                       ),
                     ),
@@ -143,24 +184,57 @@ class PlantCardScreen extends ConsumerWidget {
                   sliver: SliverToBoxAdapter(
                     child: _JournalSection(
                       history: history,
-                      onRetry: () =>
-                          ref.invalidate(plantCardHistoryProvider(plantId)),
+                      onRetry: () => ref
+                          .invalidate(plantCardHistoryProvider(widget.plantId)),
                       onLoadMore: () => ref
                           .read(
-                            plantCardHistoryProvider(plantId).notifier,
+                            plantCardHistoryProvider(widget.plantId).notifier,
                           )
                           .loadMore(),
                       onOpenFull: () => context.pushNamed(
                         'plantHistory',
-                        pathParameters: {'id': '$plantId'},
+                        pathParameters: {'id': '${widget.plantId}'},
                       ),
                       // CTA «Полить сейчас» (экран 31): открывает sheet (06)
                       // с предвыбором CareEventKind.water.
                       onWaterNow: () => showLogCareEventSheet(
                         context,
-                        plantId: plantId,
+                        plantId: widget.plantId,
                         presetType: CareEventKind.water,
                         plantName: detail.value?.name,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ЖУРНАЛ СОБЫТИЙ (issue #63) — заголовок + ссылка на полный
+                // журнал (все события).
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 24, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: SectionTitle(
+                      title: l10n.plantEventsSectionTitle,
+                      trailing: _ViewAllHistoryLink(
+                        label: l10n.plantEventsViewAll,
+                        onTap: () => context.pushNamed(
+                          'plantEvents',
+                          pathParameters: {'id': '${widget.plantId}'},
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ЖУРНАЛ СОБЫТИЙ — секция: последние 3 события (skeleton /
+                // ошибка / empty / данные). «+ Событие» открывает sheet.
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: PlantEventsSection(
+                      plantId: widget.plantId,
+                      onAdd: () => showAddPlantEventSheet(
+                        context,
+                        plantId: widget.plantId,
                       ),
                     ),
                   ),
@@ -180,7 +254,7 @@ class PlantCardScreen extends ConsumerWidget {
               child: _LogCareButton(
                 onPressed: () => showLogCareEventSheet(
                   context,
-                  plantId: plantId,
+                  plantId: widget.plantId,
                   plantName: detail.value?.name,
                 ),
               ),
@@ -190,13 +264,51 @@ class PlantCardScreen extends ConsumerWidget {
       ),
     );
   }
+
+  /// Показывает диалог подтверждения архивации. При подтверждении запускает
+  /// [ArchivePlant.archive]. Loading-state блокирует повторный тап через
+  /// [_TopBar.isArchiving].
+  Future<void> _confirmArchive(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.archivePlantConfirmTitle),
+        content: Text(l10n.archivePlantConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.archivePlantConfirmAction),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && mounted) {
+      await ref.read(archivePlantProvider(widget.plantId).notifier).archive();
+    }
+  }
 }
 
 /// Шапка: кнопка «назад», overline «Карточка», кнопка «ещё».
+///
+/// [isArchiving] — true пока идёт запрос архивации; блокирует кнопку «ещё»
+/// чтобы предотвратить двойной тап.
 class _TopBar extends StatelessWidget {
-  const _TopBar({required this.onMore});
+  const _TopBar({
+    required this.isArchiving,
+    required this.onEdit,
+    required this.onArchive,
+  });
 
-  final VoidCallback onMore;
+  final bool isArchiving;
+  final VoidCallback onEdit;
+  final VoidCallback onArchive;
 
   @override
   Widget build(BuildContext context) {
@@ -221,11 +333,24 @@ class _TopBar extends StatelessWidget {
             ),
           ),
         ),
-        _TopBarButton(
-          icon: Icons.more_horiz_rounded,
-          tooltip: l10n.plantCardMore,
-          onPressed: onMore,
-        ),
+        if (isArchiving)
+          const SizedBox(
+            width: 44,
+            height: 44,
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          )
+        else
+          _TopBarButton(
+            icon: Icons.more_horiz_rounded,
+            tooltip: l10n.plantCardMore,
+            onPressed: () => _showMoreMenu(context, l10n),
+          ),
       ],
     );
   }
@@ -236,6 +361,36 @@ class _TopBar extends StatelessWidget {
     } else {
       context.go('/home');
     }
+  }
+
+  /// Показывает меню «ещё» с пунктами «Редактировать» и «В архив».
+  void _showMoreMenu(BuildContext context, AppLocalizations l10n) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: Text(l10n.plantCardMenuEdit),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                onEdit();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.archive_outlined),
+              title: Text(l10n.archivePlantMenuLabel),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                onArchive();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

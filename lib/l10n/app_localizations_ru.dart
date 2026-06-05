@@ -37,6 +37,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeSearchTooltip => 'Поиск';
 
   @override
+  String get searchScreenHint => 'Искать растения, виды, болезни…';
+
+  @override
+  String get searchMinCharsHint => 'Введите минимум 2 символа';
+
+  @override
+  String get searchEmptyResult => 'Ничего не найдено';
+
+  @override
+  String get searchSectionPlants => 'Мои растения';
+
+  @override
+  String get searchSectionSpecies => 'Виды';
+
+  @override
+  String get searchSectionDiseases => 'Болезни и вредители';
+
+  @override
+  String get searchShowAll => 'Показать все';
+
+  @override
+  String get searchBack => 'Назад';
+
+  @override
   String get homeNotificationsTooltip => 'Уведомления';
 
   @override
@@ -440,6 +464,33 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get scheduleWeekTasksPrefix => 'На этой неделе ';
+
+  @override
+  String scheduleWeekTasksSuffix(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: ' заботы в саду',
+      many: ' забот в саду',
+      few: ' заботы в саду',
+      one: ' забота в саду',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get scheduleWeekRestTitle => 'На этой неделе сад отдыхает';
+
+  @override
+  String scheduleFreeDaysSubtitle(String days) {
+    return '$days — свободные дни 🌳';
+  }
+
+  @override
+  String get scheduleDayFree => 'Свободный день 🌿';
 
   @override
   String scheduleDayTasksCount(int count) {
@@ -1127,6 +1178,32 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileSectionMore => 'Ещё';
 
   @override
+  String get profileAnonymous => 'Пользователь';
+
+  @override
+  String profileMemberSince(String date) {
+    return 'С нами с $date';
+  }
+
+  @override
+  String get profileStatPlants => 'Растения';
+
+  @override
+  String get profileStatCareEvents => 'Уходов';
+
+  @override
+  String get profileSectionReferences => 'Справочники';
+
+  @override
+  String get profileDiseasesTitle => 'Болезни и вредители';
+
+  @override
+  String get profileCatalogTitle => 'Каталог видов';
+
+  @override
+  String get profileSearchTitle => 'Поиск';
+
+  @override
   String get profileRoomsTitle => 'Дома и места';
 
   @override
@@ -1374,6 +1451,32 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get authGoHome => 'Я просто посмотрю';
+
+  @override
+  String get pushPrimingSkip => 'Позже';
+
+  @override
+  String get pushPrimingTitleLead => 'Я напомню ';
+
+  @override
+  String get pushPrimingTitleAccent => 'вовремя';
+
+  @override
+  String get pushPrimingSubtitle =>
+      'Растения будут писать тебе сами — когда захотят пить, и только в удобные часы. Без спама.';
+
+  @override
+  String get pushPrimingPreviewTitle => 'Моника · сейчас';
+
+  @override
+  String get pushPrimingPreviewBody => '«Полей меня, пожалуйста!»';
+
+  @override
+  String get pushPrimingAllow => 'Разрешить уведомления';
+
+  @override
+  String get pushPrimingFootnote =>
+      'Можно изменить в любой момент в настройках';
 
   @override
   String get authEmailTitle => 'Вход по почте';
@@ -2223,4 +2326,99 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get editPlantSuccessSnackbar => 'Изменения сохранены';
+
+  @override
+  String get plantEventTypeTransplant => 'Пересадка';
+
+  @override
+  String get plantEventTypeSoilChange => 'Замена грунта';
+
+  @override
+  String get plantEventTypePruning => 'Обрезка';
+
+  @override
+  String get plantEventTypePestTreatment => 'Обработка от вредителей';
+
+  @override
+  String get plantEventsScreenTitle => 'Журнал событий';
+
+  @override
+  String get addPlantEventButton => 'Добавить событие';
+
+  @override
+  String get plantEventsViewAll => 'Все события';
+
+  @override
+  String get plantEventsSectionTitle => 'Журнал событий';
+
+  @override
+  String get plantEventsEmptyTitle => 'Событий пока нет';
+
+  @override
+  String get plantEventsEmptyHint =>
+      'Отмечайте пересадки, обрезку и другие важные моменты — так проще вспомнить историю растения.';
+
+  @override
+  String get plantEventsEmptyCta => 'Добавить первое событие';
+
+  @override
+  String get addPlantEventSheetTitle => 'Что произошло?';
+
+  @override
+  String get addPlantEventSheetOverline => 'Журнал событий';
+
+  @override
+  String get plantEventAddedSnackbar => 'Событие записано';
+
+  @override
+  String get plantEventDuplicateSnackbar => 'Событие уже записано';
+
+  @override
+  String get plantEventsLoadMore => 'Показать ещё';
+
+  @override
+  String get plantEventsLoadMoreError => 'Не удалось загрузить ещё';
+
+  @override
+  String get diseaseCatalogTitle => 'Болезни и вредители';
+
+  @override
+  String get diseaseCatalogSearchHint => 'Поиск по названию или симптому';
+
+  @override
+  String get diseaseCatalogSearchClear => 'Очистить поиск';
+
+  @override
+  String get diseaseCatalogEmpty => 'Болезни не найдены';
+
+  @override
+  String get diseaseDetailSymptomsTitle => 'Симптомы';
+
+  @override
+  String get diseaseDetailTreatmentTitle => 'Лечение';
+
+  @override
+  String get diseaseDetailPreventionTitle => 'Профилактика';
+
+  @override
+  String get plantCardMenuEdit => 'Редактировать';
+
+  @override
+  String get archivePlantMenuLabel => 'В архив';
+
+  @override
+  String get archivePlantConfirmTitle => 'Отправить в архив?';
+
+  @override
+  String get archivePlantConfirmBody =>
+      'Растение переместится в архив. Вернуть его в список можно будет из экрана «Архив».';
+
+  @override
+  String get archivePlantConfirmAction => 'Архивировать';
+
+  @override
+  String get archivePlantSuccess => 'Растение перемещено в архив';
+
+  @override
+  String get cancel => 'Отмена';
 }

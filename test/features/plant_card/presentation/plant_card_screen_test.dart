@@ -19,6 +19,8 @@ import 'package:plantcare_mobile/features/plant_card/presentation/plant_card_scr
 import 'package:plantcare_mobile/features/plant_card/presentation/widgets/plant_hero.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/widgets/plant_journal_card.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/widgets/plant_streak_card.dart';
+import 'package:plantcare_mobile/features/plant_events/domain/plant_event.dart';
+import 'package:plantcare_mobile/features/plant_events/presentation/plant_events_providers.dart';
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 class _FixedClock implements Clock {
@@ -37,6 +39,7 @@ final _utcNow = DateTime.utc(2026, 5, 27, 9);
 typedef _Detail = Future<Plant> Function();
 typedef _Streak = Future<Streak> Function();
 typedef _History = Future<List<CareHistoryEntry>> Function();
+typedef _Events = Future<List<PlantEvent>> Function();
 
 /// Стаб-нотифаер дневника: возвращает предопределённое состояние или ждёт вечно.
 class _StubHistoryNotifier extends PlantCardHistory {
@@ -59,6 +62,7 @@ Widget _wrap({
   _Detail? detail,
   _Streak? streak,
   _History? history,
+  _Events? events,
 }) {
   final historyFn = history ?? () async => const <CareHistoryEntry>[];
   return ProviderScope(
@@ -75,6 +79,11 @@ Widget _wrap({
         () => _StubHistoryNotifier(
           () async => _historyState(await historyFn()),
         ),
+      ),
+      // Журнал событий (issue #63): по умолчанию пуст — секция не должна
+      // влиять на проверки других секций. В loading-тесте передаём _pending.
+      recentPlantEventsProvider(_plantId).overrideWith(
+        (ref) => (events ?? () async => const <PlantEvent>[])(),
       ),
     ],
     child: MaterialApp(
@@ -104,6 +113,7 @@ void main() {
         detail: _pending<Plant>,
         streak: _pending<Streak>,
         history: _pending<List<CareHistoryEntry>>,
+        events: _pending<List<PlantEvent>>,
       ));
       await tester.pump();
 
