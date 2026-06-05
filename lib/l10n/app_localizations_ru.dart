@@ -2052,6 +2052,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileNotificationsTitle => 'Уведомления и время';
 
   @override
+  String get profileVacationTitle => 'Режим отпуска';
+
+  @override
   String get profileSeasonalTitle => 'Сезонные интервалы';
 
   @override
@@ -2517,4 +2520,83 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cancel => 'Отмена';
+
+  @override
+  String get vacationBack => 'Назад';
+
+  @override
+  String get vacationOverline => 'Режим отпуска';
+
+  @override
+  String get vacationTitleLead => 'Уезжаешь? ';
+
+  @override
+  String get vacationTitleAccent => 'Сад подождёт';
+
+  @override
+  String get vacationSubtitle => 'Поставим напоминания на паузу, пока тебя нет';
+
+  @override
+  String get vacationActiveBannerTitle => 'Отпуск включён';
+
+  @override
+  String vacationActiveBannerUntil(String date) {
+    return 'Напоминания на паузе до $date';
+  }
+
+  @override
+  String get vacationActiveBannerNoDate => 'Напоминания на паузе';
+
+  @override
+  String get vacationFromLabel => 'С';
+
+  @override
+  String get vacationToLabel => 'По';
+
+  @override
+  String vacationDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count дней без забот',
+      many: '$count дней без забот',
+      few: '$count дня без забот',
+      one: '$count день без забот',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacationRangeTooLong(int max) {
+    return 'Отпуск не может быть дольше $max дней';
+  }
+
+  @override
+  String get vacationWhatHappensSection => 'Что будет с садом';
+
+  @override
+  String get vacationPausePushTitle => 'Напоминания на паузе';
+
+  @override
+  String get vacationPausePushSubtitle =>
+      'Не будем напоминать об уходе, пока ты в отпуске';
+
+  @override
+  String get vacationDeadlinesTitle => 'Дедлайны не сдвигаются';
+
+  @override
+  String get vacationDeadlinesSubtitle =>
+      'Просроченные задачи соберём в сводку «С возвращением!»';
+
+  @override
+  String get vacationEnableCta => 'Включить отпуск';
+
+  @override
+  String get vacationDisableCta => 'Завершить отпуск';
+
+  @override
+  String get vacationEnabledSnack => 'Режим отпуска включён';
+
+  @override
+  String get vacationDisabledSnack => 'Режим отпуска выключен';
 }

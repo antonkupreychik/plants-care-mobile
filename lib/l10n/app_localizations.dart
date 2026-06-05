@@ -3274,6 +3274,12 @@ abstract class AppLocalizations {
   /// **'Уведомления и время'**
   String get profileNotificationsTitle;
 
+  /// Строка профиля — вход на экран 25 «Режим отпуска»
+  ///
+  /// In ru, this message translates to:
+  /// **'Режим отпуска'**
+  String get profileVacationTitle;
+
   /// Строка профиля — вход на экран 35 «Сезонные интервалы»
   ///
   /// In ru, this message translates to:
@@ -4119,6 +4125,132 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Отмена'**
   String get cancel;
+
+  /// Тултип кнопки «назад» на экране 25 «Режим отпуска»
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get vacationBack;
+
+  /// Оверлайн-заголовок в шапке экрана 25
+  ///
+  /// In ru, this message translates to:
+  /// **'Режим отпуска'**
+  String get vacationOverline;
+
+  /// Первая часть серифного заголовка экрана 25
+  ///
+  /// In ru, this message translates to:
+  /// **'Уезжаешь? '**
+  String get vacationTitleLead;
+
+  /// Акцентная (курсив) часть серифного заголовка экрана 25
+  ///
+  /// In ru, this message translates to:
+  /// **'Сад подождёт'**
+  String get vacationTitleAccent;
+
+  /// Подзаголовок экрана 25
+  ///
+  /// In ru, this message translates to:
+  /// **'Поставим напоминания на паузу, пока тебя нет'**
+  String get vacationSubtitle;
+
+  /// Заголовок баннера активного отпуска на экране 25
+  ///
+  /// In ru, this message translates to:
+  /// **'Отпуск включён'**
+  String get vacationActiveBannerTitle;
+
+  /// Подпись баннера активного отпуска — до какой даты пауза
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания на паузе до {date}'**
+  String vacationActiveBannerUntil(String date);
+
+  /// Подпись баннера активного отпуска, когда дата окончания неизвестна
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания на паузе'**
+  String get vacationActiveBannerNoDate;
+
+  /// Подпись карточки даты начала отпуска (экран 25)
+  ///
+  /// In ru, this message translates to:
+  /// **'С'**
+  String get vacationFromLabel;
+
+  /// Подпись карточки даты конца отпуска (экран 25)
+  ///
+  /// In ru, this message translates to:
+  /// **'По'**
+  String get vacationToLabel;
+
+  /// Длительность выбранного отпуска в днях (экран 25)
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{{count} день без забот} few{{count} дня без забот} many{{count} дней без забот} other{{count} дней без забот}}'**
+  String vacationDaysCount(int count);
+
+  /// Подсказка-ошибка, если выбранный диапазон превышает лимит backend
+  ///
+  /// In ru, this message translates to:
+  /// **'Отпуск не может быть дольше {max} дней'**
+  String vacationRangeTooLong(int max);
+
+  /// Заголовок секции «что произойдёт» на экране 25
+  ///
+  /// In ru, this message translates to:
+  /// **'Что будет с садом'**
+  String get vacationWhatHappensSection;
+
+  /// Пункт «пуши приостановлены» в секции «что будет с садом»
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания на паузе'**
+  String get vacationPausePushTitle;
+
+  /// Описание пункта «пуши приостановлены»
+  ///
+  /// In ru, this message translates to:
+  /// **'Не будем напоминать об уходе, пока ты в отпуске'**
+  String get vacationPausePushSubtitle;
+
+  /// Пункт о поведении дедлайнов в секции «что будет с садом»
+  ///
+  /// In ru, this message translates to:
+  /// **'Дедлайны не сдвигаются'**
+  String get vacationDeadlinesTitle;
+
+  /// Описание поведения дедлайнов во время отпуска
+  ///
+  /// In ru, this message translates to:
+  /// **'Просроченные задачи соберём в сводку «С возвращением!»'**
+  String get vacationDeadlinesSubtitle;
+
+  /// Кнопка включения режима отпуска (экран 25)
+  ///
+  /// In ru, this message translates to:
+  /// **'Включить отпуск'**
+  String get vacationEnableCta;
+
+  /// Кнопка досрочного завершения режима отпуска (экран 25)
+  ///
+  /// In ru, this message translates to:
+  /// **'Завершить отпуск'**
+  String get vacationDisableCta;
+
+  /// Снэкбар-подтверждение включения отпуска
+  ///
+  /// In ru, this message translates to:
+  /// **'Режим отпуска включён'**
+  String get vacationEnabledSnack;
+
+  /// Снэкбар-подтверждение выключения отпуска
+  ///
+  /// In ru, this message translates to:
+  /// **'Режим отпуска выключен'**
+  String get vacationDisabledSnack;
 }
 
 class _AppLocalizationsDelegate

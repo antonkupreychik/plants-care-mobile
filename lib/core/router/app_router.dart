@@ -28,6 +28,7 @@ import '../../features/push_priming/presentation/push_permission_screen.dart';
 import '../../features/language/presentation/language_screen.dart';
 import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
+import '../../features/vacation/presentation/vacation_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
 import '../../features/seasonal/presentation/seasonal_screen.dart';
@@ -376,6 +377,14 @@ GoRouter appRouter(Ref ref) {
                   name: 'timezone',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const TimezoneScreen(),
+                ),
+                // Экран 25 «Режим отпуска» — полноэкранно поверх shell (своя
+                // кнопка «назад», без таб-бара), как quiet-hours/report.
+                GoRoute(
+                  path: 'vacation',
+                  name: 'vacation',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const VacationScreen(),
                 ),
                 // Экран 35 «Сезонные интервалы» — полноэкранно поверх shell
                 // (своя кнопка «назад», без таб-бара), как quiet-hours/report.

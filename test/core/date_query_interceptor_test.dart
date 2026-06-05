@@ -97,4 +97,66 @@ void main() {
 
     expect(result.queryParameters['from'], '2026-05-20');
   });
+
+  group('date-only body fix', () {
+    /// Прогоняет onRequest с JSON-телом и возвращает усечённое тело.
+    Map<String, dynamic> runBody({
+      required Map<String, dynamic> data,
+      Map<String, dynamic> extra = const {},
+    }) {
+      final options = RequestOptions(
+        path: '/vacation',
+        data: Map<String, dynamic>.from(data),
+        extra: Map<String, dynamic>.from(extra),
+      );
+      interceptor.onRequest(options, handler);
+      final captured =
+          verify(() => handler.next(captureAny())).captured.single
+              as RequestOptions;
+      return captured.data as Map<String, dynamic>;
+    }
+
+    test('should_truncate_marked_iso_string_body_fields_to_date_only', () {
+      // Реальный кейс POST /vacation: from/to уходят как datetime, backend 400.
+      final body = runBody(
+        data: {
+          'from': '2026-06-01T00:00:00.000',
+          'to': '2026-06-14T00:00:00.000',
+        },
+        extra: dateOnlyBodyExtra({'from', 'to'}),
+      );
+
+      expect(body['from'], '2026-06-01');
+      expect(body['to'], '2026-06-14');
+    });
+
+    test('should_not_touch_body_fields_outside_marked_set', () {
+      final body = runBody(
+        data: {
+          'from': '2026-06-01T00:00:00.000',
+          'note': '2026-06-01T12:00:00.000',
+        },
+        extra: dateOnlyBodyExtra({'from'}),
+      );
+
+      expect(body['from'], '2026-06-01');
+      expect(body['note'], '2026-06-01T12:00:00.000');
+    });
+
+    test('should_leave_body_unchanged_when_extra_absent', () {
+      final body = runBody(data: {'from': '2026-06-01T00:00:00.000'});
+
+      expect(body['from'], '2026-06-01T00:00:00.000');
+    });
+
+    test('should_skip_marked_body_key_missing_from_data', () {
+      final body = runBody(
+        data: {'from': '2026-06-01T00:00:00.000'},
+        extra: dateOnlyBodyExtra({'from', 'to'}),
+      );
+
+      expect(body['from'], '2026-06-01');
+      expect(body.containsKey('to'), isFalse);
+    });
+  });
 }
