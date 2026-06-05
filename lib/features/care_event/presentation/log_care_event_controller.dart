@@ -171,6 +171,7 @@ class LogCareEventController extends _$LogCareEventController {
       ..invalidate(homeTasksProvider)
       ..invalidate(plantDetailProvider(plantId))
       ..invalidate(plantHistoryProvider(plantId))
+      ..invalidate(plantCardHistoryProvider(plantId))
       ..invalidate(plantStreakProvider(plantId));
   }
 

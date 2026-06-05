@@ -214,7 +214,7 @@ void main() {
   });
 
   group('ScheduleScreen empty day', () {
-    testWidgets('should_show_empty_day_hint_when_selected_day_has_no_tasks',
+    testWidgets('should_show_free_day_serif_hint_when_selected_day_has_no_tasks',
         (tester) async {
       final repo = _MockRepo();
       when(() => repo.getWeek(weekStart: any(named: 'weekStart'))).thenAnswer(
@@ -227,7 +227,8 @@ void main() {
       await tester.pumpAndSettle();
 
       final l10n = l10nOf(tester);
-      expect(find.text(l10n.scheduleDayEmpty), findsOneWidget);
+      // Расхождение 3 — «Свободный день» вместо старого scheduleDayEmpty.
+      expect(find.text(l10n.scheduleDayFree), findsOneWidget);
       expect(find.byType(ScheduleAgendaRow), findsNothing);
       // Селектор по-прежнему доступен.
       expect(find.byType(ScheduleDaySelector), findsOneWidget);
@@ -235,7 +236,7 @@ void main() {
   });
 
   group('ScheduleScreen day selection', () {
-    testWidgets('should_switch_to_empty_hint_when_free_day_tapped',
+    testWidgets('should_switch_to_free_day_hint_when_free_day_tapped',
         (tester) async {
       final repo = _MockRepo();
       when(() => repo.getWeek(weekStart: any(named: 'weekStart'))).thenAnswer(
@@ -249,14 +250,81 @@ void main() {
 
       final l10n = l10nOf(tester);
       expect(find.byType(ScheduleAgendaRow), findsNWidgets(2));
-      expect(find.text(l10n.scheduleDayEmpty), findsNothing);
+      expect(find.text(l10n.scheduleDayFree), findsNothing);
 
       // Тап по понедельнику (число «18», свободный день).
       await tester.tap(find.text('18'));
       await tester.pumpAndSettle();
 
       expect(find.byType(ScheduleAgendaRow), findsNothing);
-      expect(find.text(l10n.scheduleDayEmpty), findsOneWidget);
+      // Расхождение 3 — «Свободный день» serif italic.
+      expect(find.text(l10n.scheduleDayFree), findsOneWidget);
+    });
+  });
+
+  group('ScheduleScreen hero number', () {
+    testWidgets('should_show_hero_task_count_with_colored_number_when_tasks_exist',
+        (tester) async {
+      final repo = _MockRepo();
+      when(() => repo.getWeek(weekStart: any(named: 'weekStart'))).thenAnswer(
+        (i) async => Result.success(
+          _weekWithTasks(i.namedArguments[#weekStart] as DateTime),
+        ),
+      );
+
+      await tester.pumpWidget(_wrap(repo: repo));
+      await tester.pumpAndSettle();
+
+      final l10n = l10nOf(tester);
+      // Расхождение 1 — hero-число выделено цветом через Text.rich (RichText).
+      // Text.rich рендерится в RichText, поэтому ищем RichText с нужными spans.
+      final prefix = l10n.scheduleWeekTasksPrefix;
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is RichText &&
+              w.text.toPlainText().contains(prefix.trim()),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('should_show_rest_title_when_week_has_no_tasks',
+        (tester) async {
+      final repo = _MockRepo();
+      when(() => repo.getWeek(weekStart: any(named: 'weekStart'))).thenAnswer(
+        (i) async => Result.success(
+          _emptyWeek(i.namedArguments[#weekStart] as DateTime),
+        ),
+      );
+
+      await tester.pumpWidget(_wrap(repo: repo));
+      await tester.pumpAndSettle();
+
+      final l10n = l10nOf(tester);
+      expect(find.text(l10n.scheduleWeekRestTitle), findsOneWidget);
+    });
+
+    testWidgets('should_show_free_days_subtitle_when_week_has_free_days',
+        (tester) async {
+      final repo = _MockRepo();
+      when(() => repo.getWeek(weekStart: any(named: 'weekStart'))).thenAnswer(
+        (i) async => Result.success(
+          _weekWithTasks(i.namedArguments[#weekStart] as DateTime),
+        ),
+      );
+
+      await tester.pumpWidget(_wrap(repo: repo));
+      await tester.pumpAndSettle();
+
+      // Расхождение 2 — subtitle со свободными днями виден.
+      // У _weekWithTasks только среда имеет задачи → 6 свободных дней → subtitle присутствует.
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Text && (w.data?.contains('свободные') ?? false),
+        ),
+        findsOneWidget,
+      );
     });
   });
 

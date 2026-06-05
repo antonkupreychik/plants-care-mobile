@@ -2,6 +2,7 @@ import '../../../core/error/result.dart';
 import '../../home/domain/plant.dart';
 import 'care_history_entry.dart';
 import 'plant_health.dart';
+import 'plant_history_page.dart';
 import 'streak.dart';
 
 /// Контракт data-слоя для экрана «Карточка растения» (02).
@@ -18,8 +19,20 @@ abstract interface class PlantCardRepository {
   /// Деталь растения (`GET /plants/{id}`, scope user).
   Future<Result<Plant>> getPlant(int plantId);
 
-  /// История ухода (`GET /plants/{id}/history`, scope chat).
+  /// Страница истории ухода (`GET /plants/{id}/history`, scope chat).
   /// [limit] — размер страницы (backend требует диапазон [1, 100]).
+  /// [offset] — сдвиг от начала истории.
+  Future<Result<PlantHistoryPage>> getHistoryPage(
+    int plantId, {
+    int limit,
+    int offset,
+  });
+
+  /// Первые записи истории ухода (`GET /plants/{id}/history?limit=5`, scope chat).
+  ///
+  /// Удобный метод для первичной загрузки дневника на карточке растения:
+  /// запрашивает первые [limit] записей (offset=0) и возвращает плоский список.
+  /// Для постраничной дозагрузки используй [getHistoryPage].
   Future<Result<List<CareHistoryEntry>>> getHistory(
     int plantId, {
     int limit,
@@ -32,4 +45,8 @@ abstract interface class PlantCardRepository {
   /// эндпоинт публичный, идентичность не требуется). Значения посчитаны
   /// backend, клиент их не пересчитывает.
   Future<Result<PlantHealth>> getPlantHealth(int plantId);
+
+  /// Отправить растение в архив (`DELETE /api/v1/plants/{id}`, soft-delete,
+  /// выставляет `archived_at`). Scope user.
+  Future<Result<void>> archivePlant(int plantId);
 }

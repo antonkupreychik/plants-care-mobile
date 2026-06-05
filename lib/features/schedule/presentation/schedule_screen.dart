@@ -183,7 +183,8 @@ class _ScheduleHeaderBar extends StatelessWidget {
   }
 }
 
-/// Тело data-состояния: день-селектор + подзаголовок дня + секции/заглушка.
+/// Тело data-состояния: герой-счётчик задач + subtitle свободных дней +
+/// день-селектор + подзаголовок дня + секции/заглушка.
 class _ScheduleBody extends ConsumerWidget {
   const _ScheduleBody({
     required this.week,
@@ -204,6 +205,7 @@ class _ScheduleBody extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        _WeekHero(week: week),
         const SizedBox(height: 14),
         ScheduleDaySelector(
           days: week.days,
@@ -221,6 +223,78 @@ class _ScheduleBody extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Hero-блок над день-селектором: число задач с цветовым акцентом +
+/// subtitle со списком свободных дней (если есть).
+class _WeekHero extends StatelessWidget {
+  const _WeekHero({required this.week});
+
+  final ScheduleWeek week;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+
+    final totalTasks = week.days.fold(0, (sum, d) => sum + d.tasks.length);
+
+    final Widget heroText;
+    if (totalTasks == 0) {
+      heroText = Text(
+        l10n.scheduleWeekRestTitle,
+        style: AppTheme.serif(fontSize: 32, color: c.ink),
+      );
+    } else {
+      heroText = Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: l10n.scheduleWeekTasksPrefix,
+              style: AppTheme.serif(fontSize: 32, color: c.ink),
+            ),
+            TextSpan(
+              text: '$totalTasks',
+              style: AppTheme.serif(
+                fontSize: 32,
+                color: c.primary,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            TextSpan(
+              text: l10n.scheduleWeekTasksSuffix(totalTasks),
+              style: AppTheme.serif(fontSize: 32, color: c.ink),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final freeDays = week.days
+        .where((d) => d.tasks.isEmpty)
+        .map((d) => DateFormat.E(l10n.localeName).format(d.date))
+        .toList();
+
+    final String? subtitleText =
+        freeDays.isNotEmpty ? l10n.scheduleFreeDaysSubtitle(freeDays.join(', ')) : null;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(22, 2, 22, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          heroText,
+          if (subtitleText != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              subtitleText,
+              style: TextStyle(fontSize: 13, color: c.inkSoft),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -385,11 +459,11 @@ class _DayEmpty extends StatelessWidget {
           border: Border.all(color: c.line),
         ),
         child: Text(
-          l10n.scheduleDayEmpty,
+          l10n.scheduleDayFree,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: AppTheme.serif(
             fontSize: 15,
-            fontWeight: FontWeight.w600,
+            fontStyle: FontStyle.italic,
             color: c.inkSoft,
           ),
         ),

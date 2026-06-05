@@ -3,10 +3,19 @@ import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto.dar
 import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto_type.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_schedule_dto_unit.dart';
 import 'package:plantcare_mobile/core/api/generated/models/care_schedule_update_request_unit.dart';
+import 'package:plantcare_mobile/core/api/generated/models/seasonal_schedule_dto.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/features/edit_schedule/data/mappers/care_schedule_mapper.dart';
 import 'package:plantcare_mobile/features/edit_schedule/domain/care_schedule_unit.dart';
 import 'package:plantcare_mobile/features/edit_schedule/domain/plant_care_schedule.dart';
+
+// Минимальный seasonal-блок для конструкторов DTO: маппер edit_schedule его
+// игнорирует (фича не показывает сезонные интервалы), но поле обязательное.
+const _seasonal = SeasonalScheduleDto(
+  active: false,
+  summerIntervalDays: 7,
+  winterIntervalDays: 7,
+);
 
 void main() {
   group('CareScheduleDto.toDomain', () {
@@ -18,6 +27,7 @@ void main() {
         enabled: true,
         amountMl: 200,
         nextDueAt: DateTime.utc(2026, 6, 1, 9),
+        seasonal: _seasonal,
       );
 
       final domain = dto.toDomain();
@@ -40,6 +50,7 @@ void main() {
         every: 3,
         unit: CareScheduleDtoUnit.day,
         enabled: true,
+        seasonal: _seasonal,
       );
 
       final domain = dto.toDomain();
@@ -56,6 +67,7 @@ void main() {
         every: 2,
         unit: CareScheduleDtoUnit.$unknown,
         enabled: true,
+        seasonal: _seasonal,
       );
 
       final domain = dto.toDomain();
@@ -70,12 +82,14 @@ void main() {
         every: 0,
         unit: CareScheduleDtoUnit.day,
         enabled: true,
+        seasonal: _seasonal,
       );
       const dtoNegative = CareScheduleDto(
         type: CareScheduleDtoType.fertilizing,
         every: -5,
         unit: CareScheduleDtoUnit.day,
         enabled: true,
+        seasonal: _seasonal,
       );
 
       expect(dtoZero.toDomain().every, 1);
@@ -88,6 +102,7 @@ void main() {
         every: 14,
         unit: CareScheduleDtoUnit.day,
         enabled: false,
+        seasonal: _seasonal,
         // amountMl и nextDueAt не заданы.
       );
 
