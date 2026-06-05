@@ -2517,4 +2517,95 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cancel => 'Отмена';
+
+  @override
+  String get profileSharingTitle => 'Совместный уход';
+
+  @override
+  String get sharingBack => 'Назад';
+
+  @override
+  String get sharingOverline => 'Совместный уход';
+
+  @override
+  String get sharingTitle => 'Ухаживайте вместе';
+
+  @override
+  String get sharingSubtitle =>
+      'Близкий человек сможет отмечать полив, пока тебя нет';
+
+  @override
+  String get sharingCurrentLabel => 'Помогают сейчас';
+
+  @override
+  String get sharingStatusPending => 'приглашение отправлено';
+
+  @override
+  String get sharingStatusAccepted => 'помогает с уходом';
+
+  @override
+  String get sharingBadgePending => 'ОЖИДАЕТ';
+
+  @override
+  String get sharingBadgeAccepted => 'ПРИНЯТО';
+
+  @override
+  String sharingMemberPlants(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count растения',
+      many: '$count растений',
+      few: '$count растения',
+      one: '$count растение',
+      zero: 'нет растений',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sharingEmptyTitle => 'Пока никого нет';
+
+  @override
+  String get sharingEmptyHint =>
+      'Пригласите близкого человека помочь с уходом за вашими растениями';
+
+  @override
+  String get sharingInviteLabel => 'Пригласить';
+
+  @override
+  String get sharingContactHint => '@username или телефон';
+
+  @override
+  String get sharingContactError => 'Введите контакт приглашаемого';
+
+  @override
+  String get sharingSelectPlantsLabel => 'Какие растения доверить';
+
+  @override
+  String sharingSelectedCount(int count) {
+    return '$count выбрано';
+  }
+
+  @override
+  String get sharingNoPlantsError => 'Выберите хотя бы одно растение';
+
+  @override
+  String get sharingNoPlantsAvailable =>
+      'У вас пока нет растений, которыми можно поделиться';
+
+  @override
+  String get sharingPlantsLoadError => 'Не удалось загрузить растения';
+
+  @override
+  String get sharingPermissionTitle => 'Может отмечать уход';
+
+  @override
+  String get sharingPermissionHint => 'Иначе — только смотреть расписание';
+
+  @override
+  String get sharingSubmit => 'Отправить приглашение';
+
+  @override
+  String get sharingInviteSuccess => 'Приглашение отправлено';
 }

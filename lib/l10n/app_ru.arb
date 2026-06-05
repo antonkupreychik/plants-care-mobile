@@ -3627,5 +3627,136 @@
   "cancel": "Отмена",
   "@cancel": {
     "description": "Универсальная кнопка отмены действия в диалогах"
+  },
+
+  "profileSharingTitle": "Совместный уход",
+  "@profileSharingTitle": {
+    "description": "Заголовок строки перехода на экран совместного ухода (экран 26) в профиле"
+  },
+
+  "sharingBack": "Назад",
+  "@sharingBack": {
+    "description": "Семантический ярлык кнопки «назад» на экране совместного ухода"
+  },
+
+  "sharingOverline": "Совместный уход",
+  "@sharingOverline": {
+    "description": "Надзаголовок (overline) экрана совместного ухода"
+  },
+
+  "sharingTitle": "Ухаживайте вместе",
+  "@sharingTitle": {
+    "description": "Серифный заголовок экрана совместного ухода"
+  },
+
+  "sharingSubtitle": "Близкий человек сможет отмечать полив, пока тебя нет",
+  "@sharingSubtitle": {
+    "description": "Подзаголовок-описание под заголовком экрана совместного ухода"
+  },
+
+  "sharingCurrentLabel": "Помогают сейчас",
+  "@sharingCurrentLabel": {
+    "description": "Заголовок секции со списком текущих соухаживающих"
+  },
+
+  "sharingStatusPending": "приглашение отправлено",
+  "@sharingStatusPending": {
+    "description": "Текст статуса приглашения в строке соухаживающего: ожидает принятия"
+  },
+
+  "sharingStatusAccepted": "помогает с уходом",
+  "@sharingStatusAccepted": {
+    "description": "Текст статуса принятого приглашения в строке соухаживающего"
+  },
+
+  "sharingBadgePending": "ОЖИДАЕТ",
+  "@sharingBadgePending": {
+    "description": "Бейдж статуса PENDING в строке соухаживающего"
+  },
+
+  "sharingBadgeAccepted": "ПРИНЯТО",
+  "@sharingBadgeAccepted": {
+    "description": "Бейдж статуса ACCEPTED в строке соухаживающего"
+  },
+
+  "sharingMemberPlants": "{count, plural, =0{нет растений} one{{count} растение} few{{count} растения} many{{count} растений} other{{count} растения}}",
+  "@sharingMemberPlants": {
+    "description": "Количество растений, доверенных соухаживающему",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "sharingEmptyTitle": "Пока никого нет",
+  "@sharingEmptyTitle": {
+    "description": "Заголовок пустого состояния списка соухаживающих"
+  },
+
+  "sharingEmptyHint": "Пригласите близкого человека помочь с уходом за вашими растениями",
+  "@sharingEmptyHint": {
+    "description": "Подсказка пустого состояния списка соухаживающих"
+  },
+
+  "sharingInviteLabel": "Пригласить",
+  "@sharingInviteLabel": {
+    "description": "Заголовок секции приглашения нового соухаживающего"
+  },
+
+  "sharingContactHint": "@username или телефон",
+  "@sharingContactHint": {
+    "description": "Плейсхолдер поля ввода контакта приглашаемого"
+  },
+
+  "sharingContactError": "Введите контакт приглашаемого",
+  "@sharingContactError": {
+    "description": "Inline-ошибка пустого поля контакта"
+  },
+
+  "sharingSelectPlantsLabel": "Какие растения доверить",
+  "@sharingSelectPlantsLabel": {
+    "description": "Заголовок секции выбора растений для приглашения"
+  },
+
+  "sharingSelectedCount": "{count} выбрано",
+  "@sharingSelectedCount": {
+    "description": "Счётчик выбранных растений в секции выбора",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "sharingNoPlantsError": "Выберите хотя бы одно растение",
+  "@sharingNoPlantsError": {
+    "description": "Inline-ошибка, когда не выбрано ни одного растения"
+  },
+
+  "sharingNoPlantsAvailable": "У вас пока нет растений, которыми можно поделиться",
+  "@sharingNoPlantsAvailable": {
+    "description": "Сообщение, когда у пользователя нет растений для выбора в приглашении"
+  },
+
+  "sharingPlantsLoadError": "Не удалось загрузить растения",
+  "@sharingPlantsLoadError": {
+    "description": "Сообщение об ошибке загрузки списка растений в секции выбора"
+  },
+
+  "sharingPermissionTitle": "Может отмечать уход",
+  "@sharingPermissionTitle": {
+    "description": "Заголовок переключателя права отмечать уход"
+  },
+
+  "sharingPermissionHint": "Иначе — только смотреть расписание",
+  "@sharingPermissionHint": {
+    "description": "Подсказка под переключателем права отмечать уход"
+  },
+
+  "sharingSubmit": "Отправить приглашение",
+  "@sharingSubmit": {
+    "description": "Кнопка отправки приглашения соухаживающего"
+  },
+
+  "sharingInviteSuccess": "Приглашение отправлено",
+  "@sharingInviteSuccess": {
+    "description": "Снэкбар-подтверждение успешной отправки приглашения"
   }
 }

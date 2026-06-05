@@ -32,6 +32,7 @@ import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
 import '../../features/seasonal/presentation/seasonal_screen.dart';
 import '../../features/search/presentation/unified_search_screen.dart';
+import '../../features/sharing/presentation/sharing_screen.dart';
 import '../../features/edit_plant/presentation/edit_plant_screen.dart';
 import '../../features/plant_diagnosis/presentation/plant_diagnosis_screen.dart';
 import '../../features/shopping/presentation/shopping_screen.dart';
@@ -342,6 +343,14 @@ GoRouter appRouter(Ref ref) {
                   name: 'rooms',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const RoomsScreen(),
+                ),
+                // Экран 26 «Совместный уход» (sharing) — полноэкранно поверх
+                // shell (своя кнопка «назад», без таб-бара), как rooms.
+                GoRoute(
+                  path: 'sharing',
+                  name: 'sharing',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const SharingScreen(),
                 ),
                 // Экран 17 «Архив» (memorial) — полноэкранно поверх shell (своя
                 // кнопка «назад», без таб-бара), как rooms/карточка.
