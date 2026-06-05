@@ -28,3 +28,19 @@ const String kDateOnlyQueryKeysExtraKey = 'dateOnlyQueryKeys';
 /// `extras: {...authScopeExtra(AuthScope.chat), ...dateOnlyQueryExtra({'from', 'to'})}`.
 Map<String, dynamic> dateOnlyQueryExtra(Set<String> keys) =>
     {kDateOnlyQueryKeysExtraKey: keys};
+
+/// Ключ в `RequestOptions.extra` со множеством имён полей JSON-тела, значения
+/// которых [DateQueryInterceptor] должен усечь до date-only (`YYYY-MM-DD`).
+const String kDateOnlyBodyKeysExtraKey = 'dateOnlyBodyKeys';
+
+/// Тот же баг кодгена, что и у [dateOnlyQueryExtra], но для полей тела запроса
+/// (`POST`/`PATCH`): swagger_parser маппит `format: date` в `DateTime`, а
+/// Retrofit сериализует его через `toIso8601String()` →
+/// `2026-06-01T00:00:00.000`, тогда как backend ждёт `2026-06-01`. Data source
+/// помечает нужные ключи тела через этот хелпер; [DateQueryInterceptor] усекает
+/// только перечисленные поля верхнего уровня JSON-объекта тела.
+///
+/// Снимается вместе с [dateOnlyQueryExtra], когда кодген/спека починят
+/// сериализацию даты.
+Map<String, dynamic> dateOnlyBodyExtra(Set<String> keys) =>
+    {kDateOnlyBodyKeysExtraKey: keys};
