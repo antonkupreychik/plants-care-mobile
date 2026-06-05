@@ -3314,6 +3314,91 @@
     "description": "Снэкбар-подтверждение после успешного сохранения изменений растения"
   },
 
+  "plantEventTypeTransplant": "Пересадка",
+  "@plantEventTypeTransplant": {
+    "description": "Тип события журнала растения: пересадка (TRANSPLANT)"
+  },
+
+  "plantEventTypeSoilChange": "Замена грунта",
+  "@plantEventTypeSoilChange": {
+    "description": "Тип события журнала растения: замена грунта (SOIL_CHANGE)"
+  },
+
+  "plantEventTypePruning": "Обрезка",
+  "@plantEventTypePruning": {
+    "description": "Тип события журнала растения: обрезка (PRUNING)"
+  },
+
+  "plantEventTypePestTreatment": "Обработка от вредителей",
+  "@plantEventTypePestTreatment": {
+    "description": "Тип события журнала растения: обработка от вредителей (PEST_TREATMENT)"
+  },
+
+  "plantEventsScreenTitle": "Журнал событий",
+  "@plantEventsScreenTitle": {
+    "description": "Заголовок экрана журнала событий растения"
+  },
+
+  "addPlantEventButton": "Добавить событие",
+  "@addPlantEventButton": {
+    "description": "Кнопка открытия sheet добавления события (журнал событий)"
+  },
+
+  "plantEventsViewAll": "Все события",
+  "@plantEventsViewAll": {
+    "description": "Ссылка-вход на полный журнал событий с карточки растения (02)"
+  },
+
+  "plantEventsSectionTitle": "Журнал событий",
+  "@plantEventsSectionTitle": {
+    "description": "Заголовок секции журнала событий в карточке растения (02)"
+  },
+
+  "plantEventsEmptyTitle": "Событий пока нет",
+  "@plantEventsEmptyTitle": {
+    "description": "Заголовок пустого состояния журнала событий"
+  },
+
+  "plantEventsEmptyHint": "Отмечайте пересадки, обрезку и другие важные моменты — так проще вспомнить историю растения.",
+  "@plantEventsEmptyHint": {
+    "description": "Подпись пустого состояния журнала событий"
+  },
+
+  "plantEventsEmptyCta": "Добавить первое событие",
+  "@plantEventsEmptyCta": {
+    "description": "CTA в пустом состоянии журнала событий"
+  },
+
+  "addPlantEventSheetTitle": "Что произошло?",
+  "@addPlantEventSheetTitle": {
+    "description": "Заголовок sheet добавления события растения"
+  },
+
+  "addPlantEventSheetOverline": "Журнал событий",
+  "@addPlantEventSheetOverline": {
+    "description": "Overline (надзаголовок) sheet добавления события растения"
+  },
+
+  "plantEventAddedSnackbar": "Событие записано",
+  "@plantEventAddedSnackbar": {
+    "description": "Снэкбар-подтверждение после записи события растения"
+  },
+
+  "plantEventDuplicateSnackbar": "Событие уже записано",
+  "@plantEventDuplicateSnackbar": {
+    "description": "Тост при дедупе (409) записи события растения"
+  },
+
+  "plantEventsLoadMore": "Показать ещё",
+  "@plantEventsLoadMore": {
+    "description": "Кнопка подзагрузки следующей страницы журнала событий"
+  },
+
+  "plantEventsLoadMoreError": "Не удалось загрузить ещё",
+  "@plantEventsLoadMoreError": {
+    "description": "Строка ошибки подзагрузки страницы журнала событий"
+  },
+
   "diseaseCatalogTitle": "Болезни и вредители",
   "@diseaseCatalogTitle": {
     "description": "Заголовок экрана справочника болезней и вредителей (issue #68)"

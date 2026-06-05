@@ -9,6 +9,8 @@ import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../care_event/presentation/log_care_event_sheet.dart';
 import '../../home/domain/plant.dart';
+import '../../plant_events/presentation/add_plant_event_sheet.dart';
+import '../../plant_events/presentation/widgets/plant_events_section.dart';
 import '../domain/care_event_kind.dart';
 import '../domain/care_history_entry.dart';
 import '../domain/streak.dart';
@@ -191,6 +193,39 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
                         plantId: widget.plantId,
                         presetType: CareEventKind.water,
                         plantName: detail.value?.name,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ЖУРНАЛ СОБЫТИЙ (issue #63) — заголовок + ссылка на полный
+                // журнал (все события).
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 24, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: SectionTitle(
+                      title: l10n.plantEventsSectionTitle,
+                      trailing: _ViewAllHistoryLink(
+                        label: l10n.plantEventsViewAll,
+                        onTap: () => context.pushNamed(
+                          'plantEvents',
+                          pathParameters: {'id': '${widget.plantId}'},
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ЖУРНАЛ СОБЫТИЙ — секция: последние 3 события (skeleton /
+                // ошибка / empty / данные). «+ Событие» открывает sheet.
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: PlantEventsSection(
+                      plantId: widget.plantId,
+                      onAdd: () => showAddPlantEventSheet(
+                        context,
+                        plantId: widget.plantId,
                       ),
                     ),
                   ),
