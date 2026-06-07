@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -27,6 +29,25 @@ ProviderContainer _containerWith(PlantEventRepository repo) {
   );
   addTearDown(container.dispose);
   return container;
+}
+
+/// Waits for a provider to enter an error state via a listener subscription
+/// (keeps AutoDispose providers alive until the error fires).
+Future<Object?> _awaitError<T>(
+  ProviderContainer container,
+  ProviderSubscription<AsyncValue<T>> Function(
+    void Function(AsyncValue<T>? prev, AsyncValue<T> next) listener,
+  ) listen,
+) {
+  final completer = Completer<Object?>();
+  late final ProviderSubscription<AsyncValue<T>> sub;
+  sub = listen((_, next) {
+    if (next.hasError && !completer.isCompleted) {
+      completer.complete(next.error);
+    }
+  });
+  addTearDown(sub.close);
+  return completer.future;
 }
 
 void main() {
@@ -133,5 +154,81 @@ void main() {
     final state = container.read(plantEventsControllerProvider(_plantId)).value!;
     expect(state.items, hasLength(1));
     expect(state.total, 1);
+  });
+
+  // ── recentPlantEventsProvider ──────────────────────────────────────────────
+
+  test('recentPlantEvents_should_return_first_three_events_for_given_plantId',
+      () async {
+    const recentPlantId = 7;
+    when(() => repo.getEvents(
+          recentPlantId,
+          limit: 3, // recentPlantEventsProvider uses limit=3
+          offset: 0,
+        )).thenAnswer((_) async => Result.success(
+          _page(
+            [
+              _event(1, PlantEventType.pruning),
+              _event(2, PlantEventType.soilChange),
+              _event(3, PlantEventType.transplant),
+            ],
+            3,
+            0,
+          ),
+        ));
+    final container = _containerWith(repo);
+
+    final events =
+        await container.read(recentPlantEventsProvider(recentPlantId).future);
+
+    expect(events, hasLength(3));
+    expect(events.first.eventType, PlantEventType.pruning);
+    verify(() => repo.getEvents(recentPlantId, limit: 3, offset: 0)).called(1);
+  });
+
+  test(
+      'recentPlantEvents_for_different_plantIds_are_independent_family_instances',
+      () async {
+    const plantIdX = 11;
+    const plantIdY = 22;
+    when(() => repo.getEvents(plantIdX,
+            limit: any(named: 'limit'), offset: 0))
+        .thenAnswer((_) async => Result.success(
+              _page([_event(1, PlantEventType.pruning)], 1, 0),
+            ));
+    when(() => repo.getEvents(plantIdY,
+            limit: any(named: 'limit'), offset: 0))
+        .thenAnswer((_) async => Result.success(
+              _page([_event(2, PlantEventType.transplant)], 1, 0),
+            ));
+    final container = _containerWith(repo);
+
+    final eventsX =
+        await container.read(recentPlantEventsProvider(plantIdX).future);
+    final eventsY =
+        await container.read(recentPlantEventsProvider(plantIdY).future);
+
+    // plantX gets pruning, plantY gets transplant — no cross-contamination.
+    expect(eventsX.first.eventType, PlantEventType.pruning);
+    expect(eventsY.first.eventType, PlantEventType.transplant);
+  });
+
+  test(
+      'recentPlantEvents_throws_ApiError_into_AsyncError_when_repo_fails',
+      () async {
+    const failingPlantId = 99;
+    when(() => repo.getEvents(failingPlantId,
+            limit: any(named: 'limit'), offset: 0))
+        .thenAnswer((_) async => const Result.failure(ApiError.network()));
+    final container = _containerWith(repo);
+
+    // Use listener-based helper to avoid autoDispose race on error.
+    final error = await _awaitError<List<PlantEvent>>(
+      container,
+      (listener) =>
+          container.listen(recentPlantEventsProvider(failingPlantId), listener),
+    );
+
+    expect(error, const ApiError.network());
   });
 }
