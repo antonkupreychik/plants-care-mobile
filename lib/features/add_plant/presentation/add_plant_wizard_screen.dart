@@ -9,15 +9,14 @@ import '../domain/species_summary.dart';
 import 'add_plant_wizard_controller.dart';
 import 'add_plant_wizard_state.dart';
 import 'species_providers.dart';
-import 'widgets/step_acclimation.dart';
-import 'widgets/step_acquired_date.dart';
+import 'widgets/step_acquired_date_acclimation.dart';
 import 'widgets/step_care_plan.dart';
 import 'widgets/step_name_room.dart';
 import 'widgets/step_photo_window.dart';
 import 'widgets/step_species.dart';
 import 'widgets/wizard_chrome.dart';
 
-/// Экран 04 «Добавление растения» — мастер из 6 шагов.
+/// Экран 04 «Добавление растения» — мастер из 5 шагов.
 ///
 /// Текущий шаг держит локально (`PageController` + индекс) — данные копятся в
 /// [addPlantWizardControllerProvider]. Полноэкранно поверх shell (см. роут
@@ -29,8 +28,7 @@ import 'widgets/wizard_chrome.dart';
 /// 2. Имя + комната.
 /// 3. План ухода (read-only превью).
 /// 4. Фото + сторона окна + заметка.
-/// 5. Дата приобретения (acquiredAt, опционально).
-/// 6. Новое растение? (isNew / акклиматизация, опционально).
+/// 5. Дата приобретения + новое ли растение (акклиматизация) — оба опционально.
 ///
 /// [initialSpeciesId] — опциональный предвыбранный вид (CTA «Добавить в мой
 /// сад» с карточки вида, экран 20). Если задан, мастер при инициализации грузит
@@ -48,10 +46,8 @@ class AddPlantWizardScreen extends ConsumerStatefulWidget {
 }
 
 class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
-  static const _totalSteps = 6;
+  static const _totalSteps = 5;
 
-  // Индекс шага 5 «Дата приобретения» (0-based, для кастомной кнопки «Далее»).
-  static const _stepAcquiredDate = 4;
   static const _pageDuration = Duration(milliseconds: 280);
   // Индекс шага 2 «Имя/комната» в [PageView] (0-based).
   static const _stepNameRoom = 1;
@@ -248,23 +244,16 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
                       ),
                     ),
                   ),
-                  // Шаг 5: Когда купили?
+                  // Шаг 5: Когда купили? + Растение новое?
                   _StepScroll(
-                    child: StepAcquiredDate(
+                    child: StepAcquiredDateAcclimation(
                       plantName: draft.trimmedName.isEmpty
                           ? draft.species?.name ?? ''
                           : draft.trimmedName,
                       selectedDate: draft.acquiredAt,
                       onDateSelected: controller.setAcquiredAt,
-                      onSkip: _next,
-                    ),
-                  ),
-                  // Шаг 6: Растение новое?
-                  _StepScroll(
-                    child: StepAcclimation(
                       isNew: draft.isNew,
                       onIsNewChanged: controller.setIsNew,
-                      onSkip: _next,
                       errorMessage: errorMessage,
                     ),
                   ),
@@ -272,8 +261,6 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
               ),
             ),
             // Панель действий: на шаге 1 скрыта (выбор вида/пропуск ведут вперёд).
-            // Шаги 5 и 6 имеют встроенный «Пропустить», поэтому кнопка «Далее»
-            // в панели не обязательна — но оставляем её для ясности навигации.
             if (_step > 0)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
@@ -290,12 +277,7 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
                     : WizardActionBar(
                         primaryLabel: l10n.addPlantNext,
                         primaryEnabled: _step != 1 || draft.isNameValid,
-                        onPrimary: _step == _stepAcquiredDate
-                            ? () {
-                                // Шаг 5: «Далее» без выбора даты → пропускаем
-                                _next();
-                              }
-                            : _next,
+                        onPrimary: _next,
                         secondaryLabel: l10n.addPlantBack,
                         onSecondary: _back,
                       ),
