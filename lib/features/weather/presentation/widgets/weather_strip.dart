@@ -28,7 +28,7 @@ class WeatherStrip extends ConsumerWidget {
     final data = snapshot.value;
     if (data == null || !data.hasData) return const SizedBox.shrink();
 
-    return _WeatherStripContent(
+    return WeatherStripContent(
       humidityPercent: data.humidityPercent!,
       recommendation: data.recommendation,
     );
@@ -36,8 +36,13 @@ class WeatherStrip extends ConsumerWidget {
 }
 
 /// Сама строка (рисуется только при наличии данных).
-class _WeatherStripContent extends StatelessWidget {
-  const _WeatherStripContent({
+///
+/// Презентационная: данные приходят аргументами, провайдер не читается. Это
+/// позволяет переиспользовать строку и из SDUI-блока `weather_strip`
+/// (`BlockRegistry`), а не только из [WeatherStrip] поверх weatherSnapshotProvider.
+class WeatherStripContent extends StatelessWidget {
+  const WeatherStripContent({
+    super.key,
     required this.humidityPercent,
     required this.recommendation,
   });
