@@ -63,6 +63,15 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
     ref.read(speciesListProvider.notifier).loadMore();
   }
 
+  Future<void> _onRefresh() async {
+    ref.invalidate(speciesListProvider);
+    try {
+      await ref.read(speciesListProvider.future);
+    } catch (_) {
+      // Ошибку обрабатывает UI через AsyncValue.error — индикатор гасим.
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
@@ -73,48 +82,52 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
       backgroundColor: c.bg,
       body: SafeArea(
         bottom: false,
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
-              sliver: SliverToBoxAdapter(
-                child: _CatalogHeader(listState: listState),
-              ),
-            ),
-
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(22, 14, 22, 0),
-              sliver: SliverToBoxAdapter(
-                child: CatalogSearchField(
-                  initialValue: query,
-                  onSubmitted: (value) =>
-                      ref.read(speciesQueryProvider.notifier).setQuery(value),
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
+                sliver: SliverToBoxAdapter(
+                  child: _CatalogHeader(listState: listState),
                 ),
               ),
-            ),
 
-            SliverPadding(
-              padding: const EdgeInsets.only(top: 12),
-              sliver: SliverToBoxAdapter(
-                child: CatalogFilterChips(total: listState.value?.total),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(22, 14, 22, 0),
+                sliver: SliverToBoxAdapter(
+                  child: CatalogSearchField(
+                    initialValue: query,
+                    onSubmitted: (value) =>
+                        ref.read(speciesQueryProvider.notifier).setQuery(value),
+                  ),
+                ),
               ),
-            ),
 
-            _CatalogBody(
-              listState: listState,
-              query: query,
-              onTapSpecies: (id) => context.push('/catalog/$id'),
-              onRetryInitial: () => ref.invalidate(speciesListProvider),
-              onRetryLoadMore: () =>
-                  ref.read(speciesListProvider.notifier).retryLoadMore(),
-              onAddPlant: () => context.go('/home/add'),
-              onSuggestionTap: (name) =>
-                  ref.read(speciesQueryProvider.notifier).setQuery(name),
-            ),
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 12),
+                sliver: SliverToBoxAdapter(
+                  child: CatalogFilterChips(total: listState.value?.total),
+                ),
+              ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 24)),
-          ],
+              _CatalogBody(
+                listState: listState,
+                query: query,
+                onTapSpecies: (id) => context.push('/catalog/$id'),
+                onRetryInitial: () => ref.invalidate(speciesListProvider),
+                onRetryLoadMore: () =>
+                    ref.read(speciesListProvider.notifier).retryLoadMore(),
+                onAddPlant: () => context.go('/home/add'),
+                onSuggestionTap: (name) =>
+                    ref.read(speciesQueryProvider.notifier).setQuery(name),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            ],
+          ),
         ),
       ),
     );

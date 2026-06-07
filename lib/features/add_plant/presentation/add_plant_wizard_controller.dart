@@ -3,10 +3,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/care/care_task_type.dart';
 import '../../../core/error/result.dart';
 // Кросс-фичевая инвалидация после успешного POST: созданное растение должно
-// появиться в саду. Импорт presentation-провайдера home — то же осознанное
-// исключение из «фича не импортит presentation другой фичи», что и в
-// log_care_event_controller (зависим от объявления провайдера, не от виджетов).
+// появиться в саду и графике. Импорт presentation-провайдеров home и schedule —
+// то же осознанное исключение из «фича не импортит presentation другой фичи»,
+// что и в log_care_event_controller (зависим от объявления провайдеров, не от
+// виджетов).
 import '../../home/presentation/home_providers.dart';
+import '../../schedule/presentation/schedule_providers.dart';
 // Кросс-фичевая зависимость на data/domain edit_schedule: выделять отдельный
 // репозиторий/use-case нецелесообразно — операция одна (PUT schedule) и уже
 // реализована в edit_schedule. Аналогичный precedent — home_providers.dart выше.
@@ -169,6 +171,8 @@ class AddPlantWizardController extends _$AddPlantWizardController {
     switch (createResult) {
       case Success(:final value):
         ref.invalidate(homePlantsProvider);
+        // Инвалидируем график: новое растение может добавить задачи в расписание.
+        ref.invalidate(scheduleWeekProvider);
         plantId = value;
       case Failure(:final error):
         state = state.copyWith(status: AddPlantSubmitStatus.failure(error));

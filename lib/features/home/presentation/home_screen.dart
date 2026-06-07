@@ -112,89 +112,108 @@ class _HomeContent extends ConsumerWidget {
     // Сад пустой = нет данных о растениях или список пуст.
     final isEmptyGarden = plants.value?.isEmpty == true;
 
+    Future<void> onRefresh() async {
+      ref.invalidate(homePlantsProvider);
+      ref.invalidate(homeTasksProvider);
+      ref.invalidate(homeLocationsProvider);
+      // Ждём перезагрузки, чтобы индикатор не пропадал мгновенно.
+      // Ошибки обрабатывает UI через AsyncValue.error.
+      try {
+        await Future.wait([
+          ref.read(homePlantsProvider.future),
+          ref.read(homeTasksProvider.future),
+        ]);
+      } catch (_) {}
+    }
+
     return SafeArea(
       bottom: false,
       child: Stack(
         children: [
-          CustomScrollView(
-            slivers: [
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
-                sliver: SliverToBoxAdapter(
-                  child: HomeHeader(
-                    now: nowLocal,
-                    onSearch: openSearch,
-                    onNotifications: openNotifications,
-                    onProfile: openProfile,
-                    isEmptyGarden: isEmptyGarden,
-                  ),
-                ),
-              ),
-
-              // WEATHER STRIP (G4) — под хедером, над карточкой «Сегодня».
-              // Свой паддинг внутри виджета; тихо сворачивается, если погода
-              // недоступна/грузится/ошибка (Home не блокируется).
-              const SliverToBoxAdapter(child: WeatherStrip()),
-
-              // GUEST BANNER — предложение привязать email для гостевых юзеров.
-              // Тихо скрывается для авторизованных (isGuest == false/null).
-              const SliverToBoxAdapter(child: GuestBanner()),
-
-              // TODAY — секция задач (своё loading/error/empty/data).
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                sliver: SliverToBoxAdapter(
-                  child: _TodaySection(
-                    todayResult: todayResult,
-                    now: nowLocal,
-                    // Тап по задаче /today → sheet ухода с предвыбранным
-                    // типом. Внутренний taskType нормализуем в публичный
-                    // CareEventKind маппером data-слоя (SOIL_CHECK/unknown →
-                    // unknown, контроллер откатит на дефолт).
-                    onTaskTap: (task) => showLogCareEventSheet(
-                      context,
-                      plantId: task.plantId,
-                      presetType: careEventKindFromTaskType(task.type),
-                      plantName: task.plantName,
+          RefreshIndicator(
+            onRefresh: onRefresh,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: HomeHeader(
+                      now: nowLocal,
+                      onSearch: openSearch,
+                      onNotifications: openNotifications,
+                      onProfile: openProfile,
+                      isEmptyGarden: isEmptyGarden,
                     ),
-                    onSeeAll: () => context.push('/home/today'),
-                    onRetry: () => ref.invalidate(homeTasksProvider),
                   ),
                 ),
-              ),
 
-              // MY GARDEN — заголовок + счётчик + аффорданс «Все →».
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(22, 20, 22, 0),
-                sliver: SliverToBoxAdapter(
-                  child: _GardenHeader(plants: plants),
-                ),
-              ),
+                // WEATHER STRIP (G4) — под хедером, над карточкой «Сегодня».
+                // Свой паддинг внутри виджета; тихо сворачивается, если погода
+                // недоступна/грузится/ошибка (Home не блокируется).
+                const SliverToBoxAdapter(child: WeatherStrip()),
 
-              // CHIPS — локации (своё loading/error/data; ошибку прячем тихо).
-              SliverPadding(
-                padding: const EdgeInsets.only(top: 8, bottom: 14),
-                sliver: SliverToBoxAdapter(
-                  child: _LocationChipsSection(
-                    locations: locations,
-                    plants: plants,
+                // GUEST BANNER — предложение привязать email для гостевых юзеров.
+                // Тихо скрывается для авторизованных (isGuest == false/null).
+                const SliverToBoxAdapter(child: GuestBanner()),
+
+                // TODAY — секция задач (своё loading/error/empty/data).
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _TodaySection(
+                      todayResult: todayResult,
+                      now: nowLocal,
+                      // Тап по задаче /today → sheet ухода с предвыбранным
+                      // типом. Внутренний taskType нормализуем в публичный
+                      // CareEventKind маппером data-слоя (SOIL_CHECK/unknown →
+                      // unknown, контроллер откатит на дефолт).
+                      onTaskTap: (task) => showLogCareEventSheet(
+                        context,
+                        plantId: task.plantId,
+                        presetType: careEventKindFromTaskType(task.type),
+                        plantName: task.plantName,
+                      ),
+                      onSeeAll: () => context.push('/home/today'),
+                      onRetry: () => ref.invalidate(homeTasksProvider),
+                    ),
                   ),
                 ),
-              ),
 
-              // GRID — растения (loading/error/empty/data).
-              _PlantGridSection(
-                plants: plants,
-                onAdd: openAddPlant,
-                onRecognizePhoto: comingSoon,
-                onOpenCatalog: () => context.go('/catalog'),
-                onPlantTap: (plant) => context.push('/home/plants/${plant.id}'),
-                onRetry: () => ref.invalidate(homePlantsProvider),
-              ),
+                // MY GARDEN — заголовок + счётчик + аффорданс «Все →».
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 20, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _GardenHeader(plants: plants),
+                  ),
+                ),
 
-              // Запас под плавающую навигацию и FAB.
-              const SliverToBoxAdapter(child: SizedBox(height: 120)),
-            ],
+                // CHIPS — локации (своё loading/error/data; ошибку прячем тихо).
+                SliverPadding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 14),
+                  sliver: SliverToBoxAdapter(
+                    child: _LocationChipsSection(
+                      locations: locations,
+                      plants: plants,
+                    ),
+                  ),
+                ),
+
+                // GRID — растения (loading/error/empty/data).
+                _PlantGridSection(
+                  plants: plants,
+                  onAdd: openAddPlant,
+                  onRecognizePhoto: comingSoon,
+                  onOpenCatalog: () => context.go('/catalog'),
+                  onPlantTap: (plant) =>
+                      context.push('/home/plants/${plant.id}'),
+                  onRetry: () => ref.invalidate(homePlantsProvider),
+                ),
+
+                // Запас под плавающую навигацию и FAB.
+                const SliverToBoxAdapter(child: SizedBox(height: 120)),
+              ],
+            ),
           ),
 
           // FAB «добавить» → мастер добавления растения (экран 04).
