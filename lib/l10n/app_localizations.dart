@@ -4480,6 +4480,78 @@ abstract class AppLocalizations {
   /// **'Режим отпуска выключен'**
   String get vacationDisabledSnack;
 
+  /// Overline в шапке экрана родословной (18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Родословная'**
+  String get plantFamilyOverline;
+
+  /// Заголовок экрана родословной (18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Семья растения'**
+  String get plantFamilyTitle;
+
+  /// Подзаголовок под заголовком экрана родословной (18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Родитель и отводки — как растёт семья'**
+  String get plantFamilySubtitle;
+
+  /// Ссылка-вход в родословную из карточки растения (02)
+  ///
+  /// In ru, this message translates to:
+  /// **'Семья'**
+  String get plantFamilyViewAll;
+
+  /// Заголовок секции родословной на карточке растения (02)
+  ///
+  /// In ru, this message translates to:
+  /// **'Родословная'**
+  String get plantFamilySectionTitle;
+
+  /// Подпись под материнским растением в визуализации родословной
+  ///
+  /// In ru, this message translates to:
+  /// **'Родитель'**
+  String get plantFamilyParentLabel;
+
+  /// Заголовок списка прямых потомков/отводков
+  ///
+  /// In ru, this message translates to:
+  /// **'Отводки'**
+  String get plantFamilyChildrenLabel;
+
+  /// Подпись под одиночным потомком в визуализации родословной
+  ///
+  /// In ru, this message translates to:
+  /// **'Росток'**
+  String get plantFamilyChildLabel;
+
+  /// Подпись под текущим растением в визуализации родословной
+  ///
+  /// In ru, this message translates to:
+  /// **'Это растение'**
+  String get plantFamilyCurrentLabel;
+
+  /// Заголовок пустого состояния родословной (нет родителя и отводков)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока нет родословной'**
+  String get plantFamilyEmptyTitle;
+
+  /// Тело пустого состояния родословной
+  ///
+  /// In ru, this message translates to:
+  /// **'У этого растения нет связанного родителя или отводков. Создавая новый отводок, укажи материнское растение — и здесь появится семья.'**
+  String get plantFamilyEmptyBody;
+
+  /// Счётчик прямых потомков/отводков растения
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет отводков} =1{1 отводок} few{{count} отводка} many{{count} отводков} other{{count} отводка}}'**
+  String plantFamilyChildrenCount(int count);
+
   /// Надзаголовок шапки мастера черенка (экран 18)
   ///
   /// In ru, this message translates to:

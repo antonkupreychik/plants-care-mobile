@@ -37,6 +37,7 @@ import '../../features/search/presentation/unified_search_screen.dart';
 import '../../features/sharing/presentation/sharing_screen.dart';
 import '../../features/edit_plant/presentation/edit_plant_screen.dart';
 import '../../features/plant_diagnosis/presentation/plant_diagnosis_screen.dart';
+import '../../features/plant_family/presentation/plant_family_screen.dart';
 import '../../features/shopping/presentation/shopping_screen.dart';
 import '../../features/take_cutting/presentation/take_cutting_screen.dart';
 import '../auth/auth_providers.dart';
@@ -291,6 +292,24 @@ GoRouter appRouter(Ref ref) {
                         final id =
                             int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
                         return EditPlantScreen(plantId: id);
+                      },
+                    ),
+                    // Экран 18 «Родословная / размножение» — полноэкранно
+                    // поверх shell (своя кнопка «назад», без таб-бара), как
+                    // история/диагноз. Вход: карточка растения 02 → секция
+                    // «Родословная». Опциональное имя растения (для overline и
+                    // узла «это растение») пробрасываем через extra.
+                    GoRoute(
+                      path: 'family',
+                      name: 'plantFamily',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final id =
+                            int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                        final name = state.extra is String
+                            ? state.extra as String
+                            : null;
+                        return PlantFamilyScreen(plantId: id, plantName: name);
                       },
                     ),
                     // Экран 18 «Взять черенок» (issue #75) — мастер создания

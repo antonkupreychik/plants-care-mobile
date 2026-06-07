@@ -3960,6 +3960,69 @@
     "description": "Снэкбар-подтверждение выключения отпуска"
   },
 
+  "plantFamilyOverline": "Родословная",
+  "@plantFamilyOverline": {
+    "description": "Overline в шапке экрана родословной (18)"
+  },
+
+  "plantFamilyTitle": "Семья растения",
+  "@plantFamilyTitle": {
+    "description": "Заголовок экрана родословной (18)"
+  },
+
+  "plantFamilySubtitle": "Родитель и отводки — как растёт семья",
+  "@plantFamilySubtitle": {
+    "description": "Подзаголовок под заголовком экрана родословной (18)"
+  },
+
+  "plantFamilyViewAll": "Семья",
+  "@plantFamilyViewAll": {
+    "description": "Ссылка-вход в родословную из карточки растения (02)"
+  },
+
+  "plantFamilySectionTitle": "Родословная",
+  "@plantFamilySectionTitle": {
+    "description": "Заголовок секции родословной на карточке растения (02)"
+  },
+
+  "plantFamilyParentLabel": "Родитель",
+  "@plantFamilyParentLabel": {
+    "description": "Подпись под материнским растением в визуализации родословной"
+  },
+
+  "plantFamilyChildrenLabel": "Отводки",
+  "@plantFamilyChildrenLabel": {
+    "description": "Заголовок списка прямых потомков/отводков"
+  },
+
+  "plantFamilyChildLabel": "Росток",
+  "@plantFamilyChildLabel": {
+    "description": "Подпись под одиночным потомком в визуализации родословной"
+  },
+
+  "plantFamilyCurrentLabel": "Это растение",
+  "@plantFamilyCurrentLabel": {
+    "description": "Подпись под текущим растением в визуализации родословной"
+  },
+
+  "plantFamilyEmptyTitle": "Пока нет родословной",
+  "@plantFamilyEmptyTitle": {
+    "description": "Заголовок пустого состояния родословной (нет родителя и отводков)"
+  },
+
+  "plantFamilyEmptyBody": "У этого растения нет связанного родителя или отводков. Создавая новый отводок, укажи материнское растение — и здесь появится семья.",
+  "@plantFamilyEmptyBody": {
+    "description": "Тело пустого состояния родословной"
+  },
+
+  "plantFamilyChildrenCount": "{count, plural, =0{Нет отводков} =1{1 отводок} few{{count} отводка} many{{count} отводков} other{{count} отводка}}",
+  "@plantFamilyChildrenCount": {
+    "description": "Счётчик прямых потомков/отводков растения",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
   "takeCuttingOverline": "Новый росток",
   "@takeCuttingOverline": {
     "description": "Надзаголовок шапки мастера черенка (экран 18)"
