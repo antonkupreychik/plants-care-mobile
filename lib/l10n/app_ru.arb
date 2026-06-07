@@ -1299,6 +1299,22 @@
   "@addPlantSubmitGarden": {
     "description": "CTA финального шага: создать растение и добавить в сад"
   },
+  "addPlantDuplicateTitle": "Такое растение уже есть",
+  "@addPlantDuplicateTitle": {
+    "description": "Заголовок диалога дедупликации при создании растения (409)"
+  },
+  "addPlantDuplicateBody": "Похоже, такое растение уже есть в вашем саду. Всё равно добавить ещё одно?",
+  "@addPlantDuplicateBody": {
+    "description": "Текст диалога дедупликации при создании растения (409)"
+  },
+  "addPlantDuplicateConfirm": "Добавить всё равно",
+  "@addPlantDuplicateConfirm": {
+    "description": "Кнопка подтверждения повторного создания растения в диалоге дедупа"
+  },
+  "addPlantDuplicateCancel": "Отмена",
+  "@addPlantDuplicateCancel": {
+    "description": "Кнопка отмены в диалоге дедупа — закрыть мастер"
+  },
   "addPlantRecognizeBadge": "ФОТО",
   "@addPlantRecognizeBadge": {
     "description": "Бейдж внутри поля поиска вида: распознать по фото (заглушка)"

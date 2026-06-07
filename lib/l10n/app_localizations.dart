@@ -1690,6 +1690,30 @@ abstract class AppLocalizations {
   /// **'Добавить в сад'**
   String get addPlantSubmitGarden;
 
+  /// Заголовок диалога дедупликации при создании растения (409)
+  ///
+  /// In ru, this message translates to:
+  /// **'Такое растение уже есть'**
+  String get addPlantDuplicateTitle;
+
+  /// Текст диалога дедупликации при создании растения (409)
+  ///
+  /// In ru, this message translates to:
+  /// **'Похоже, такое растение уже есть в вашем саду. Всё равно добавить ещё одно?'**
+  String get addPlantDuplicateBody;
+
+  /// Кнопка подтверждения повторного создания растения в диалоге дедупа
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить всё равно'**
+  String get addPlantDuplicateConfirm;
+
+  /// Кнопка отмены в диалоге дедупа — закрыть мастер
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get addPlantDuplicateCancel;
+
   /// Бейдж внутри поля поиска вида: распознать по фото (заглушка)
   ///
   /// In ru, this message translates to:

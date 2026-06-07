@@ -1089,6 +1089,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get addPlantSubmitGarden => 'Добавить в сад';
 
   @override
+  String get addPlantDuplicateTitle => 'Такое растение уже есть';
+
+  @override
+  String get addPlantDuplicateBody =>
+      'Похоже, такое растение уже есть в вашем саду. Всё равно добавить ещё одно?';
+
+  @override
+  String get addPlantDuplicateConfirm => 'Добавить всё равно';
+
+  @override
+  String get addPlantDuplicateCancel => 'Отмена';
+
+  @override
   String get addPlantRecognizeBadge => 'ФОТО';
 
   @override
