@@ -83,7 +83,10 @@ class _LogCareEventSheet extends ConsumerWidget {
       }
     });
 
-    // Запас под клавиатуру: поднимаем содержимое над инсетом ввода.
+    // Запас под клавиатуру: добавляем padding внутри scroll-области, чтобы
+    // кнопка подтверждения оставалась видна и доступна при открытой клавиатуре.
+    // Padding ставится внутри SingleChildScrollView (не снаружи), иначе sheet
+    // пытается вырасти за пределы экрана и кнопка уходит под клавиатуру.
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     final submitLabel = switch (form.type) {
@@ -93,10 +96,8 @@ class _LogCareEventSheet extends ConsumerWidget {
       _ => l10n.careSheetSubmit,
     };
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+    return SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(20, 4, 20, 20 + bottomInset),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -180,7 +181,6 @@ class _LogCareEventSheet extends ConsumerWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }
