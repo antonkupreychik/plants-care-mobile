@@ -136,5 +136,30 @@ void main() {
       expect(states.any((s) => s.isLoading), isTrue);
       expect(states.last, isA<AsyncData<void>>());
     });
+
+    test(
+        'should_emit_AsyncError_and_not_hang_in_loading_when_signOut_throws',
+        () async {
+      // Регрессионный тест: до фикса #144, если signOut() кидал исключение,
+      // state застревал в AsyncLoading — экран зависал навсегда.
+      final profileRepo = _MockProfileRepo();
+      final authRepo = _MockAuthRepo();
+
+      when(profileRepo.deleteAccount)
+          .thenAnswer((_) async => const Result.success(null));
+      when(authRepo.signOut)
+          .thenThrow(StateError('storage unavailable'));
+
+      final container = _container(profileRepo, authRepo);
+      final notifier = container.read(deleteAccountProvider.notifier);
+
+      await notifier.deleteAccount();
+
+      final state = container.read(deleteAccountProvider);
+      // Не должно быть AsyncLoading — экран обязан выйти из зависания.
+      expect(state.isLoading, isFalse);
+      // Должно быть AsyncError — UI покажет снэкбар об ошибке.
+      expect(state.hasError, isTrue);
+    });
   });
 }

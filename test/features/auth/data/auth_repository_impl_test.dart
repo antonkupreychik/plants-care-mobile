@@ -106,6 +106,20 @@ class _FakeTokenStore implements TokenStore {
   Future<void> clear() => storage.clear();
 }
 
+/// [TokenStore] симулирующий ошибку хранилища на [clear] — для тестирования
+/// поведения signOut, когда FlutterSecureStorage падает (напр. некоторые Android).
+class _ThrowingTokenStore implements TokenStore {
+  @override
+  Future<AuthTokens?> read() async => null;
+
+  @override
+  Future<void> write(AuthTokens tokens) async {}
+
+  @override
+  Future<void> clear() async =>
+      throw StateError('FlutterSecureStorage unavailable');
+}
+
 DioException _dioWith(Object? error) => DioException(
       requestOptions: RequestOptions(path: '/api/v1/auth/email/request'),
       error: error,
@@ -278,6 +292,31 @@ void main() {
       verifyNever(() => auth.logout(body: any(named: 'body')));
       expect(session.isAuthenticated, isFalse);
       expect(status.isAuthenticated, isFalse);
+    });
+
+    test(
+        'should_drop_auth_flag_even_when_session_clear_throws_storage_error',
+        () async {
+      // Симулируем ошибку secure-storage (напр. некоторые Android-версии):
+      // _session.clear() бросает, но _status.set(false) обязан произойти —
+      // иначе router-guard не сработает и logout «ничего не делает» в UI.
+      final throwingSession = JwtAuthSession(
+        _ThrowingTokenStore(),
+        initial: const AuthTokens(accessToken: 'a', refreshToken: 'r-throw'),
+      );
+      final throwingStatus = AuthStatusNotifier(true);
+      final throwingRepo = AuthRepositoryImpl(
+        api,
+        throwingSession,
+        throwingStatus,
+        social,
+        secureStorage,
+      );
+      when(() => auth.logout(body: any(named: 'body'))).thenAnswer((_) async {});
+
+      // signOut НЕ должен бросать наружу, а auth-флаг обязан быть сброшен.
+      await expectLater(throwingRepo.signOut(), completes);
+      expect(throwingStatus.isAuthenticated, isFalse);
     });
   });
 

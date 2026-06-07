@@ -62,47 +62,60 @@ class ScheduleScreen extends ConsumerWidget {
     void onMark(ScheduleTaskItem item) =>
         ref.read(scheduleMarkControllerProvider.notifier).mark(item.task);
 
+    Future<void> onRefresh() async {
+      ref.invalidate(scheduleWeekProvider(weekStart));
+      try {
+        await ref.read(scheduleWeekProvider(weekStart).future);
+      } catch (_) {
+        // Ошибку обрабатывает UI через AsyncValue.error — индикатор гасим.
+      }
+    }
+
     return Scaffold(
       backgroundColor: c.bg,
       body: SafeArea(
         bottom: false,
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: _ScheduleHeaderBar(
-                month: weekStart,
-                onToday: () => ref
-                    .read(scheduleWeekStartProvider.notifier)
-                    .resetToCurrentWeek(),
-              ),
-            ),
-            // День-селектор + тело зависят от загруженной недели.
-            SliverToBoxAdapter(
-              child: weekAsync.when(
-                loading: () => const Padding(
-                  padding: EdgeInsets.fromLTRB(16, 14, 16, 0),
-                  child: ScheduleWeekSkeleton(),
+        child: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: _ScheduleHeaderBar(
+                  month: weekStart,
+                  onToday: () => ref
+                      .read(scheduleWeekStartProvider.notifier)
+                      .resetToCurrentWeek(),
                 ),
-                error: (error, _) => Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                  child: ErrorState(
-                    message: l10n.messageForError(error),
-                    retryLabel: l10n.retry,
-                    onRetry: () =>
-                        ref.invalidate(scheduleWeekProvider(weekStart)),
+              ),
+              // День-селектор + тело зависят от загруженной недели.
+              SliverToBoxAdapter(
+                child: weekAsync.when(
+                  loading: () => const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 14, 16, 0),
+                    child: ScheduleWeekSkeleton(),
+                  ),
+                  error: (error, _) => Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    child: ErrorState(
+                      message: l10n.messageForError(error),
+                      retryLabel: l10n.retry,
+                      onRetry: () =>
+                          ref.invalidate(scheduleWeekProvider(weekStart)),
+                    ),
+                  ),
+                  data: (week) => _ScheduleBody(
+                    week: week,
+                    selectedDay: selectedDay,
+                    onSelectDay: selectDay,
+                    onMark: onMark,
                   ),
                 ),
-                data: (week) => _ScheduleBody(
-                  week: week,
-                  selectedDay: selectedDay,
-                  onSelectDay: selectDay,
-                  onMark: onMark,
-                ),
               ),
-            ),
-            // Запас под плавающую навигацию (overlay AppShell).
-            const SliverToBoxAdapter(child: SizedBox(height: 120)),
-          ],
+              // Запас под плавающую навигацию (overlay AppShell).
+              const SliverToBoxAdapter(child: SizedBox(height: 120)),
+            ],
+          ),
         ),
       ),
     );

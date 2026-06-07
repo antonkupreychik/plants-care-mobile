@@ -354,4 +354,67 @@ void main() {
           findsNothing);
     });
   });
+
+  group('keyboard visibility (issue #143)', () {
+    testWidgets(
+        'should_show_submit_button_when_keyboard_inset_is_present',
+        (tester) async {
+      // Имитируем поднятую клавиатуру: высота экрана 800px, клавиатура 300px.
+      tester.view.physicalSize = const Size(800, 800);
+      tester.view.devicePixelRatio = 1.0;
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(() => tester.view.viewInsets = FakeViewPadding.zero);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
+            careEventRepositoryProvider.overrideWithValue(repo),
+          ],
+          child: MaterialApp(
+            locale: const Locale('ru'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: AppTheme.light(),
+            home: Scaffold(
+              body: Builder(
+                builder: (context) => Center(
+                  child: ElevatedButton(
+                    onPressed: () => showLogCareEventSheet(
+                      context,
+                      plantId: _plantId,
+                      presetType: CareEventKind.spray,
+                      plantName: 'Фикус',
+                    ),
+                    child: const Text('open'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      final l10n = AppLocalizations.of(tester.element(find.text('open')));
+
+      // Кнопка подтверждения должна быть в дереве виджетов (AC issue #143).
+      expect(find.text(l10n.careSheetSpraySubmit), findsOneWidget);
+
+      // Кнопка должна быть доступна (canSubmit=true для SPRAY без обязательных полей).
+      final semantics = tester.getSemantics(
+        find
+            .ancestor(
+              of: find.text(l10n.careSheetSpraySubmit),
+              matching: find.byType(Semantics),
+            )
+            .first,
+      );
+      expect(_enabled(semantics), isTrue);
+    });
+  });
 }

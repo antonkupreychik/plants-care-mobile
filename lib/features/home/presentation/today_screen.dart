@@ -57,6 +57,15 @@ class TodayScreen extends ConsumerWidget {
     void selectFilter(TodayFilter filter) =>
         ref.read(selectedTodayFilterProvider.notifier).select(filter);
 
+    Future<void> onRefresh() async {
+      ref.invalidate(homeTasksProvider);
+      try {
+        await ref.read(homeTasksProvider.future);
+      } catch (_) {
+        // Ошибку обрабатывает UI через AsyncValue.error — индикатор гасим.
+      }
+    }
+
     return Scaffold(
       backgroundColor: c.bg,
       body: SafeArea(
@@ -67,11 +76,14 @@ class TodayScreen extends ConsumerWidget {
             message: l10n.messageForError(error),
             onRetry: () => ref.invalidate(homeTasksProvider),
           ),
-          data: (view) => _TodayContent(
-            view: view,
-            now: nowLocal,
-            onSelectFilter: selectFilter,
-            onTaskTap: openSheet,
+          data: (view) => RefreshIndicator(
+            onRefresh: onRefresh,
+            child: _TodayContent(
+              view: view,
+              now: nowLocal,
+              onSelectFilter: selectFilter,
+              onTaskTap: openSheet,
+            ),
           ),
         ),
       ),
@@ -166,6 +178,7 @@ class _TodayContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),

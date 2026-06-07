@@ -100,37 +100,55 @@ class _HomeShell extends ConsumerWidget {
     // Перейти на экран профиля (кнопка в упрощённой шапке пустого сада).
     void openProfile() => context.go('/profile');
 
+    // Pull-to-refresh (#142): для SDUI-home источник тела экрана — серверный
+    // лейаут, поэтому рефреш инвалидирует именно [homeScreenLayoutProvider]
+    // (а не homePlants/homeTasks/homeLocations — их теперь композирует сервер).
+    // Ждём перезагрузки лейаута, чтобы индикатор не пропадал мгновенно; ошибки
+    // рисует layout.when(...) в [HomeScreen] через AsyncValue.error.
+    Future<void> onRefresh() async {
+      ref.invalidate(homeScreenLayoutProvider);
+      try {
+        await ref.read(homeScreenLayoutProvider.future);
+      } catch (_) {}
+    }
+
     return SafeArea(
       bottom: false,
       child: Stack(
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
-                  child: HomeHeader(
-                    now: nowLocal,
-                    onSearch: openSearch,
-                    onNotifications: openNotifications,
-                    onProfile: openProfile,
-                    // SDUI-витрина сама решает, что показывать; шапку держим
-                    // в обычном режиме (пустой сад сервер отдаёт пустыми блоками).
-                    isEmptyGarden: false,
+          RefreshIndicator(
+            onRefresh: onRefresh,
+            // AlwaysScrollableScrollPhysics — чтобы pull-to-refresh работал и
+            // на коротком контенте (пустой сад / посекционный ErrorState).
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
+                    child: HomeHeader(
+                      now: nowLocal,
+                      onSearch: openSearch,
+                      onNotifications: openNotifications,
+                      onProfile: openProfile,
+                      // SDUI-витрина сама решает, что показывать; шапку держим
+                      // в обычном режиме (пустой сад сервер отдаёт пустыми блоками).
+                      isEmptyGarden: false,
+                    ),
                   ),
-                ),
 
-                // GUEST BANNER — предложение привязать email гостевым юзерам.
-                // Тихо скрывается для авторизованных.
-                const GuestBanner(),
+                  // GUEST BANNER — предложение привязать email гостевым юзерам.
+                  // Тихо скрывается для авторизованных.
+                  const GuestBanner(),
 
-                // Серверное тело экрана (или посекционный ErrorState).
-                body,
+                  // Серверное тело экрана (или посекционный ErrorState).
+                  body,
 
-                // Запас под плавающую навигацию и FAB.
-                const SizedBox(height: 120),
-              ],
+                  // Запас под плавающую навигацию и FAB.
+                  const SizedBox(height: 120),
+                ],
+              ),
             ),
           ),
 

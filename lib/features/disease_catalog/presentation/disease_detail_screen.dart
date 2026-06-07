@@ -34,7 +34,8 @@ class DiseaseDetailScreen extends ConsumerWidget {
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go('/profile'),
         ),
       ),
       body: SafeArea(

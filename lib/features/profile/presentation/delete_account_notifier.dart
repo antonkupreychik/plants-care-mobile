@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
 import '../../auth/data/auth_repository_provider.dart';
 import '../data/profile_repository_provider.dart';
@@ -18,21 +19,34 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
   /// Удаляет аккаунт: вызов `DELETE /api/v1/me`, затем очищает локальные
   /// данные/токены и выходит на экран Welcome через router-guard.
   ///
-  /// При сетевой ошибке переходит в [AsyncError] с [ApiError] — UI рисует
-  /// снэкбар.
+  /// При сетевой ошибке или исключении переходит в [AsyncError] с [ApiError] —
+  /// UI рисует снэкбар. Гарантированно завершается: состояние не остаётся в
+  /// [AsyncLoading] ни при каком исходе.
   Future<void> deleteAccount() async {
     state = const AsyncLoading();
 
-    final result = await ref.read(profileRepositoryProvider).deleteAccount();
-    switch (result) {
-      case Success():
-        // Очищаем локальные данные/токены; router-guard после этого уведёт на
-        // `/auth/welcome` автоматически (MADR-008).
-        await ref.read(authRepositoryProvider).signOut();
-        // Состояние после signOut не важно — роутер уже сделал redirect.
-        state = const AsyncData(null);
-      case Failure(:final error):
-        state = AsyncError(error, StackTrace.current);
+    try {
+      final result = await ref.read(profileRepositoryProvider).deleteAccount();
+      switch (result) {
+        case Success():
+          // Очищаем локальные данные/токены; router-guard после этого уведёт
+          // на `/auth/welcome` автоматически (MADR-008).
+          await ref.read(authRepositoryProvider).signOut();
+          // Состояние после signOut не важно — роутер уже сделал redirect.
+          // Устанавливаем AsyncData на случай, если notifier ещё жив.
+          if (!ref.mounted) return;
+          state = const AsyncData(null);
+        case Failure(:final error):
+          state = AsyncError(error, StackTrace.current);
+      }
+    } catch (e, st) {
+      // Непредвиденное исключение (напр. ошибка хранилища в signOut):
+      // переводим в AsyncError, чтобы экран вышел из loading-режима.
+      if (!ref.mounted) return;
+      state = AsyncError(
+        e is ApiError ? e : const ApiError.unknown(),
+        st,
+      );
     }
   }
 }

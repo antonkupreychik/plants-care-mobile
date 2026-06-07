@@ -4,6 +4,7 @@ import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
 import '../../home/domain/plant.dart';
 import '../../home/presentation/home_providers.dart';
+import '../../schedule/presentation/schedule_providers.dart';
 import '../data/plant_card_repository_provider.dart';
 import '../domain/care_history_entry.dart';
 import '../domain/plant_health.dart';
@@ -164,6 +165,9 @@ class ArchivePlant extends _$ArchivePlant {
       case Success<void>():
         ref.invalidate(plantDetailProvider(plantId));
         ref.invalidate(homePlantsProvider);
+        // Инвалидируем график: архивированное растение должно пропасть из
+        // расписания без ручного релоада.
+        ref.invalidate(scheduleWeekProvider);
         state = const AsyncData(null);
       case Failure<void>(:final error):
         state = AsyncError(error, StackTrace.current);

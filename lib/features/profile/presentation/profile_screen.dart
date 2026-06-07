@@ -14,9 +14,8 @@ import 'widgets/settings_row.dart';
 /// Экран «Я» (таб 4, branch `/profile`, экран 13).
 ///
 /// Состав сверху вниз: шапка профиля (аватар/имя/email/«С нами с …») и блок
-/// статистики из `profileSummary` (`GET /api/v1/me`); секция «Справочники»
-/// (болезни и вредители, каталог видов); секция «Ещё» (навигация по настройкам)
-/// с деструктивной строкой «Выйти».
+/// статистики из `profileSummary` (`GET /api/v1/me`); секция «Ещё»
+/// (навигация по настройкам) с деструктивной строкой «Выйти».
 ///
 /// Загрузка профиля: skeleton на время `profileSummary`; ошибка — тихая
 /// деградация (шапка/статы скрыты, навигация остаётся рабочей).
@@ -70,33 +69,28 @@ class ProfileScreen extends ConsumerWidget {
               data: (s) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ProfileHeader(summary: s),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(child: ProfileHeader(summary: s)),
+                      TextButton.icon(
+                        onPressed: () => context.push('/profile/edit'),
+                        icon: const Icon(Icons.edit_outlined, size: 16),
+                        label: Text(l10n.editProfileEditButton),
+                        style: TextButton.styleFrom(
+                          foregroundColor: c.primary,
+                          textStyle: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 20),
                   ProfileStats(summary: s),
                 ],
               ),
-            ),
-            const SizedBox(height: 24),
-
-            // Секция «Справочники».
-            _SectionLabel(text: l10n.profileSectionReferences),
-            const SizedBox(height: 10),
-            _SectionCard(
-              children: [
-                // Болезни и вредители → экран #68 (push поверх shell).
-                SettingsRow(
-                  title: l10n.profileDiseasesTitle,
-                  icon: Icons.coronavirus_outlined,
-                  onTap: () => context.push('/profile/diseases'),
-                ),
-                // Каталог видов → переключение на таб «Каталог».
-                SettingsRow(
-                  title: l10n.profileCatalogTitle,
-                  icon: Icons.eco_outlined,
-                  divider: true,
-                  onTap: () => context.go('/catalog'),
-                ),
-              ],
             ),
             const SizedBox(height: 24),
 
@@ -105,16 +99,9 @@ class ProfileScreen extends ConsumerWidget {
             const SizedBox(height: 10),
             _SectionCard(
               children: [
-                // Поиск → экран #69 (push поверх shell).
-                SettingsRow(
-                  title: l10n.profileSearchTitle,
-                  icon: Icons.search_rounded,
-                  onTap: () => context.push('/search'),
-                ),
                 SettingsRow(
                   title: l10n.profileRoomsTitle,
                   icon: Icons.home_outlined,
-                  divider: true,
                   onTap: () => context.push('/profile/rooms'),
                 ),
                 // Экран 26 «Совместный уход» → push поверх shell.
