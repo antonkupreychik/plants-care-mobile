@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'seasonal_schedule_dto.g.dart';
 
-/// Сезонные параметры расписания ухода (issue #188 backend / G20 mobile #48).
+/// Сезонные параметры расписания ухода (issue #188, mobile G20).
 /// Показывает, включена ли авто-подстройка и каким будет эффективный.
 /// интервал в каждый из двух сезонов (лето / зима).
 ///

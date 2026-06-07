@@ -7,6 +7,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../models/care_schedule_dto.dart';
 import '../models/care_schedule_update_request.dart';
+import '../models/schedule_postpone_request.dart';
 import '../models/type.dart';
 
 part 'schedules_client.g.dart';
@@ -41,6 +42,30 @@ abstract class SchedulesClient {
     @Path('id') required int id,
     @Path('type') required Type type,
     @Body() required CareScheduleUpdateRequest body,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Разово отложить ближайшее срабатывание расписания.
+  ///
+  /// Сдвигает поле `next_due_at` расписания на `days` дней вперёд от **текущего момента**,.
+  /// не изменяя базовый интервал (`every`). Это одноразовый сдвиг —.
+  /// следующий цикл рассчитывается по обычному интервалу.
+  ///
+  /// Эквивалент кнопки «Отложить на N дней» в Telegram-боте.
+  /// (`PLANT:SCHED:POSTPONE`).
+  ///
+  /// * `200` — возвращает обновлённое расписание.
+  /// * `400` — неизвестный тип расписания или `days` вне диапазона.
+  /// * `404` — растение или расписание не найдено.
+  ///
+  /// [id] - Идентификатор растения.
+  ///
+  /// [type] - Тип задачи ухода.
+  @POST('/api/v1/plants/{id}/schedules/{type}/postpone')
+  Future<CareScheduleDto> postponePlantSchedule({
+    @Path('id') required int id,
+    @Path('type') required Type type,
+    @Body() required SchedulePostponeRequest body,
     @Extras() Map<String, dynamic>? extras,
   });
 }

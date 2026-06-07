@@ -38,6 +38,7 @@ MeResponse _me({
       name: 'Test',
       plantsTotal: 0,
       tasksToday: 0,
+      totalCareEvents: 0,
       notificationsUnread: 0,
       quietHoursStart: quietStart,
       quietHoursEnd: quietEnd,
@@ -51,6 +52,7 @@ MeResponse _me({
       googleLinked: false,
       emailLinked: false,
       telegramLinked: false,
+      isGuest: false,
     );
 
 void main() {

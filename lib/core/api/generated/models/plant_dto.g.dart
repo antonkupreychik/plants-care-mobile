@@ -19,10 +19,25 @@ PlantDto _$PlantDtoFromJson(Map<String, dynamic> json) => PlantDto(
   createdAt: json['createdAt'] == null
       ? null
       : DateTime.parse(json['createdAt'] as String),
+  healthInsufficientData: json['healthInsufficientData'] as bool?,
+  healthScore: (json['healthScore'] as num?)?.toInt(),
+  healthZone: json['healthZone'] == null
+      ? null
+      : PlantDtoHealthZone.fromJson(json['healthZone'] as String),
   acquiredAt: json['acquiredAt'] == null
       ? null
       : DateTime.parse(json['acquiredAt'] as String),
   inAcclimation: json['inAcclimation'] as bool?,
+  acclimationUntil: json['acclimationUntil'] == null
+      ? null
+      : DateTime.parse(json['acclimationUntil'] as String),
+  archivedAt: json['archivedAt'] == null
+      ? null
+      : DateTime.parse(json['archivedAt'] as String),
+  gifted: json['gifted'] as bool?,
+  note: json['note'] as String?,
+  totalCareDays: (json['totalCareDays'] as num?)?.toInt(),
+  totalCareEvents: (json['totalCareEvents'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$PlantDtoToJson(PlantDto instance) => <String, dynamic>{
@@ -36,6 +51,15 @@ Map<String, dynamic> _$PlantDtoToJson(PlantDto instance) => <String, dynamic>{
   'speciesName': instance.speciesName,
   'archived': instance.archived,
   'createdAt': instance.createdAt?.toIso8601String(),
+  'healthInsufficientData': instance.healthInsufficientData,
+  'healthScore': instance.healthScore,
+  'healthZone': instance.healthZone,
   'acquiredAt': instance.acquiredAt?.toIso8601String(),
   'inAcclimation': instance.inAcclimation,
+  'acclimationUntil': instance.acclimationUntil?.toIso8601String(),
+  'archivedAt': instance.archivedAt?.toIso8601String(),
+  'gifted': instance.gifted,
+  'note': instance.note,
+  'totalCareDays': instance.totalCareDays,
+  'totalCareEvents': instance.totalCareEvents,
 };

@@ -6,12 +6,14 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../models/page_response_plant_dto.dart';
+import '../models/plant_archive_request.dart';
 import '../models/plant_create_request.dart';
 import '../models/plant_diagnosis_dto.dart';
 import '../models/plant_dto.dart';
 import '../models/plant_family_response.dart';
 import '../models/plant_health_dto.dart';
 import '../models/plant_update_request.dart';
+import '../models/status.dart';
 
 part 'plants_client.g.dart';
 
@@ -22,8 +24,13 @@ abstract class PlantsClient {
   /// Список растений пользователя.
   ///
   /// Возвращает страницу растений, принадлежащих текущему пользователю.
-  /// (`sub` из bearer-токена). Архивированные (soft-deleted) растения в.
-  /// выдачу не попадают.
+  /// (`sub` из bearer-токена).
+  ///
+  /// По умолчанию (без `status` или `status=active`) архивированные.
+  /// (soft-deleted) растения в выдачу **не** попадают. С `status=archived`.
+  /// возвращаются только архивные растения, и для них дополнительно.
+  /// заполняются поля выбытия: `archivedAt`, `gifted`, `note`,.
+  /// `totalCareDays`, `totalCareEvents` (mobile gap G15, issue #219).
   ///
   /// Можно фильтровать по локации параметром `locationId`. Пагинация —.
   /// классическая `offset/limit`.
@@ -33,6 +40,11 @@ abstract class PlantsClient {
   ///   становится 100; всё, что меньше 1 — становится 1);.
   /// * `offset` ниже нуля становится 0.
   ///
+  /// [status] - Фильтр по жизненному статусу растения. `active` (или отсутствие.
+  /// параметра) — только живые (`archived_at IS NULL`). `archived` —.
+  /// только архивные, с заполненными полями выбытия.
+  ///
+  ///
   /// [locationId] - Идентификатор локации. Если задан, возвращаются только растения из неё.
   ///
   /// [offset] - Сдвиг от начала выборки. Значения < 0 трактуются как 0.
@@ -40,9 +52,10 @@ abstract class PlantsClient {
   /// [limit] - Размер страницы. Обрезается до [1, 100] на сервере.
   @GET('/api/v1/plants')
   Future<PageResponsePlantDto> listPlants({
+    @Query('locationId') int? locationId,
+    @Query('status') Status? status = Status.active,
     @Query('offset') int? offset = 0,
     @Query('limit') int? limit = 20,
-    @Query('locationId') int? locationId,
     @Extras() Map<String, dynamic>? extras,
   });
 
@@ -89,15 +102,79 @@ abstract class PlantsClient {
     @Extras() Map<String, dynamic>? extras,
   });
 
-  /// Архивировать растение (soft-delete).
+  /// Удалить растение навсегда (hard-delete).
   ///
-  /// Помечает растение как удалённое (`archived_at = now()` в UTC). Запись.
-  /// в БД остаётся, но перестаёт появляться во всех `/api/v1/plants/*`.
-  /// выборках. Восстановления через API в этой версии нет.
+  /// Безвозвратно удаляет растение и каскадно связанные данные.
+  /// (`care_history`, `care_schedules`, `notifications_log`, годовщины,.
+  /// предложения по пересадке). Доступно **только для уже архивированных**.
+  /// растений (барьер от случайного удаления, mobile gap G15, issue #219):.
+  /// активное растение сначала архивируют через.
+  /// `PATCH /api/v1/plants/{id}/archive`.
+  ///
+  /// * `204` — растение удалено;.
+  /// * `400` — растение активно (не архивировано), hard-delete запрещён;.
+  /// * `404` — растение не найдено или принадлежит другому пользователю.
   ///
   /// [id] - Идентификатор растения.
   @DELETE('/api/v1/plants/{id}')
   Future<void> deletePlant({
+    @Path('id') required int id,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Архивировать растение (soft-delete с метаданными).
+  ///
+  /// Помечает растение как выбывшее (`archived_at = now()` в UTC) и.
+  /// сохраняет причину выбытия (mobile gap G15, issue #219). После.
+  /// архивации растение пропадает из обычного `GET /plants` и появляется.
+  /// в `GET /plants?status=archived`. Расписания ухода **не** удаляются —.
+  /// остаются для ретроспективы.
+  ///
+  /// * `200` — обновлённый `PlantDto` (`archived=true`, `archivedAt` задано);.
+  /// * `404` — растение не найдено или принадлежит другому пользователю;.
+  /// * `409` — растение уже архивировано.
+  ///
+  /// [id] - Идентификатор растения.
+  @PATCH('/api/v1/plants/{id}/archive')
+  Future<PlantDto> archivePlant({
+    @Path('id') required int id,
+    @Body() PlantArchiveRequest? body,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Восстановить растение из архива.
+  ///
+  /// Снимает архивацию (`archived_at = NULL`) и сбрасывает метаданные.
+  /// выбытия (mobile gap G15, issue #219). Растение снова появляется в.
+  /// обычном `GET /plants`. Расписания ухода автоматически **не**.
+  /// восстанавливаются — пользователь создаёт их вручную.
+  ///
+  /// * `200` — обновлённый `PlantDto` (`archived=false`, `archivedAt=null`);.
+  /// * `404` — растение не найдено или принадлежит другому пользователю;.
+  /// * `409` — растение не в архиве.
+  ///
+  /// [id] - Идентификатор растения.
+  @POST('/api/v1/plants/{id}/restore')
+  Future<PlantDto> restorePlant({
+    @Path('id') required int id,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Выключить режим акклиматизации.
+  ///
+  /// Немедленно завершает режим акклиматизации растения.
+  /// (`acclimation_until` и `acclimation_checkin_next_at` обнуляются).
+  /// Идемпотентно: повторный вызов на растении без акклиматизации возвращает.
+  /// `204` без ошибки.
+  ///
+  /// Доступ только к своему неархивированному растению.
+  ///
+  /// * `204` — режим выключен (или уже был выключен).
+  /// * `404` — растение не найдено или принадлежит другому пользователю.
+  ///
+  /// [id] - Идентификатор растения.
+  @DELETE('/api/v1/plants/{id}/acclimation')
+  Future<void> disablePlantAcclimation({
     @Path('id') required int id,
     @Extras() Map<String, dynamic>? extras,
   });

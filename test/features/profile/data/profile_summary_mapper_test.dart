@@ -18,6 +18,7 @@ MeResponse _me({
       name: name,
       plantsTotal: plantsTotal,
       tasksToday: 0,
+      totalCareEvents: 0,
       notificationsUnread: 0,
       quietHoursStart: '22:00',
       quietHoursEnd: '08:00',
@@ -31,6 +32,7 @@ MeResponse _me({
       googleLinked: false,
       emailLinked: true,
       telegramLinked: false,
+      isGuest: false,
       email: email,
       avatar: avatar,
     );

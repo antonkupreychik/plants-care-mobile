@@ -13,6 +13,8 @@ class PlantUpdateRequest {
     this.name,
     this.notes,
     this.locationId,
+    this.speciesId,
+    this.clearSpecies,
   });
   
   factory PlantUpdateRequest.fromJson(Map<String, Object?> json) => _$PlantUpdateRequestFromJson(json);
@@ -20,6 +22,17 @@ class PlantUpdateRequest {
   final String? name;
   final String? notes;
   final int? locationId;
+
+  /// Новый вид растения. Если не передан — вид не изменяется.
+  /// Для снятия привязки используй clearSpecies: true.
+  /// Если вид не найден — 404.
+  ///
+  final int? speciesId;
+
+  /// true — убрать привязку к виду (plant.species = null).
+  /// Игнорируется, если speciesId задан.
+  ///
+  final bool? clearSpecies;
 
   Map<String, Object?> toJson() => _$PlantUpdateRequestToJson(this);
 }

@@ -27,6 +27,9 @@ extension on CareEventType {
         CareEventType.water => CareEventKind.water,
         CareEventType.spray => CareEventKind.spray,
         CareEventType.fertilize => CareEventKind.fertilize,
+        // SOIL_CHECK (issue #222) — служебная отметка проверки грунта; domain
+        // отдельного типа не имеет, схлопываем в unknown (не падаем).
+        CareEventType.soilCheck => CareEventKind.unknown,
         CareEventType.$unknown => CareEventKind.unknown,
       };
 }

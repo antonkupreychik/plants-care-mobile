@@ -4,6 +4,8 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'schedule_input.dart';
+
 part 'plant_create_request.g.dart';
 
 /// Тело POST /api/v1/plants.
@@ -17,6 +19,7 @@ class PlantCreateRequest {
     this.parentPlantId,
     this.acquiredAt,
     this.isNew,
+    this.schedules,
   });
   
   factory PlantCreateRequest.fromJson(Map<String, Object?> json) => _$PlantCreateRequestFromJson(json);
@@ -43,15 +46,16 @@ class PlantCreateRequest {
   ///
   final int? parentPlantId;
 
-  /// Дата приобретения растения (ISO-8601 date). Если не задана,.
-  /// не сохраняется. Только прошлые или сегодняшняя даты.
-  ///
+  /// Дата покупки/получения растения (ISO-8601). Используется для годовщин и строки «С тобой с …».
   final DateTime? acquiredAt;
 
-  /// Если `true`, включает период акклиматизации (21 день мягкого режима ухода).
-  /// `false`/`null` — акклиматизация не включается.
-  ///
+  /// Если true — включить режим акклиматизации на 21 день после создания.
   final bool? isNew;
+
+  /// Опциональные расписания ухода. Если не передан или пуст — применяются.
+  /// дефолты вида (как при обычном создании).
+  ///
+  final List<ScheduleInput>? schedules;
 
   Map<String, Object?> toJson() => _$PlantCreateRequestToJson(this);
 }

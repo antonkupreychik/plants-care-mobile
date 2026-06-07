@@ -17,6 +17,9 @@ PlantCreateRequest _$PlantCreateRequestFromJson(Map<String, dynamic> json) =>
           ? null
           : DateTime.parse(json['acquiredAt'] as String),
       isNew: json['isNew'] as bool?,
+      schedules: (json['schedules'] as List<dynamic>?)
+          ?.map((e) => ScheduleInput.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$PlantCreateRequestToJson(PlantCreateRequest instance) =>
@@ -28,4 +31,5 @@ Map<String, dynamic> _$PlantCreateRequestToJson(PlantCreateRequest instance) =>
       'parentPlantId': instance.parentPlantId,
       'acquiredAt': instance.acquiredAt?.toIso8601String(),
       'isNew': instance.isNew,
+      'schedules': instance.schedules,
     };
