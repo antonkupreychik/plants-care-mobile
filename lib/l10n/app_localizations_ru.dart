@@ -2731,4 +2731,41 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get vacationDisabledSnack => 'Режим отпуска выключен';
+
+  @override
+  String get profileDeleteAccount => 'Удалить аккаунт';
+
+  @override
+  String get deleteAccountScreenTitle => 'Удаление аккаунта';
+
+  @override
+  String get deleteAccountWarningTitle => 'Это действие нельзя отменить';
+
+  @override
+  String get deleteAccountWarningBody =>
+      'Будут удалены все ваши данные: растения и их история ухода, расписания, список покупок, настройки и токены сессий. Telegram-привязка также удаляется — при следующем /start создаётся новый аккаунт. Восстановление невозможно.';
+
+  @override
+  String get deleteAccountConfirmLabel =>
+      'Я понимаю, что данные будут удалены безвозвратно';
+
+  @override
+  String get deleteAccountCta => 'Удалить аккаунт';
+
+  @override
+  String get deleteAccountDialogTitle => 'Удалить аккаунт?';
+
+  @override
+  String get deleteAccountDialogBody =>
+      'Аккаунт и все данные будут удалены немедленно. Это действие необратимо.';
+
+  @override
+  String get deleteAccountDialogCancel => 'Отмена';
+
+  @override
+  String get deleteAccountDialogConfirm => 'Удалить';
+
+  @override
+  String get deleteAccountErrorSnack =>
+      'Не удалось удалить аккаунт. Попробуйте ещё раз.';
 }
