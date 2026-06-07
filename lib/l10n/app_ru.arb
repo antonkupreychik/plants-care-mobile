@@ -908,6 +908,14 @@
   "@catalogHeadingAccent": {
     "description": "Серифный заголовок каталога, акцентная часть (primary, italic)"
   },
+  "catalogTabPlants": "Растения",
+  "@catalogTabPlants": {
+    "description": "Метка переключателя Растения/Болезни — вкладка «Растения» в экране каталога"
+  },
+  "catalogTabDiseases": "Болезни",
+  "@catalogTabDiseases": {
+    "description": "Метка переключателя Растения/Болезни — вкладка «Болезни» в экране каталога"
+  },
   "catalogBadgePopular": "HIT",
   "@catalogBadgePopular": {
     "description": "Бейдж популярного вида рядом с именем в списке каталога"

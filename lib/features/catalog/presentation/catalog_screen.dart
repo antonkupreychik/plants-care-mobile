@@ -7,6 +7,10 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../disease_catalog/presentation/disease_catalog_providers.dart';
+import '../../disease_catalog/presentation/widgets/disease_empty.dart';
+import '../../disease_catalog/presentation/widgets/disease_search_field.dart';
+import '../../disease_catalog/presentation/widgets/disease_tile.dart';
 import 'catalog_providers.dart';
 import 'species_list_state.dart';
 import 'widgets/catalog_empty.dart';
@@ -16,16 +20,11 @@ import 'widgets/catalog_search_empty.dart';
 import 'widgets/catalog_search_field.dart';
 import 'widgets/species_card.dart';
 
-/// Экран 12 «Каталог видов» — список + поиск + пагинация.
+/// Экран 12 «Каталог» — переключатель Растения / Болезни (issue #141) +
+/// список видов с поиском и пагинацией / справочник болезней.
 ///
-/// Потребляет [speciesQueryProvider] (committed-строка поиска) и
-/// [speciesListProvider] (`AsyncValue<SpeciesListState>`). Дебаунс ввода —
-/// в [CatalogSearchField] (Timer). Пагинация — по [ScrollController]: близко к
-/// низу при `hasMore && !isLoadingMore` зовём `loadMore()`.
-///
-/// Состояния: loading (скелетоны), error первичной (`ErrorState` + retry через
-/// invalidate), empty (пустой каталог / поиск без результатов), data. Внизу
-/// списка — индикатор дозагрузки или компактная ошибка с повтором.
+/// Вкладка сохраняется через [catalogTabSelectionProvider] (keepAlive) при
+/// уходе/возврате на таб. Состояние поиска каждой ветки живёт независимо.
 class CatalogScreen extends ConsumerStatefulWidget {
   const CatalogScreen({super.key});
 
@@ -36,7 +35,7 @@ class CatalogScreen extends ConsumerStatefulWidget {
 class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  /// Порог в пикселях до низа, при котором стартует дозагрузка.
+  /// Порог в пикселях до низа, при котором стартует дозагрузка (только виды).
   static const double _loadMoreThreshold = 400;
 
   @override
@@ -57,6 +56,9 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
     final position = _scrollController.position;
     if (position.pixels < position.maxScrollExtent - _loadMoreThreshold) return;
 
+    final tab = ref.read(catalogTabSelectionProvider);
+    if (tab != CatalogTab.plants) return;
+
     final state = ref.read(speciesListProvider).value;
     if (state == null || state.isLoadingMore || !state.hasMore) return;
     if (state.loadMoreError != null) return; // ждём ручного повтора
@@ -75,6 +77,12 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
+    final selectedTab = ref.watch(catalogTabSelectionProvider);
+
+    if (selectedTab == CatalogTab.diseases) {
+      return _DiseaseCatalogBody();
+    }
+
     final query = ref.watch(speciesQueryProvider);
     final listState = ref.watch(speciesListProvider);
 
@@ -92,6 +100,19 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                 padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
                 sliver: SliverToBoxAdapter(
                   child: _CatalogHeader(listState: listState),
+                ),
+              ),
+
+              // Переключатель Растения / Болезни
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(22, 16, 22, 0),
+                sliver: SliverToBoxAdapter(
+                  child: _CatalogSegmentSwitcher(
+                    selected: selectedTab,
+                    onSelect: (tab) => ref
+                        .read(catalogTabSelectionProvider.notifier)
+                        .select(tab),
+                  ),
                 ),
               ),
 
@@ -129,6 +150,172 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Переключатель вкладок Растения / Болезни (SegmentedButton, Material 3).
+class _CatalogSegmentSwitcher extends StatelessWidget {
+  const _CatalogSegmentSwitcher({
+    required this.selected,
+    required this.onSelect,
+  });
+
+  final CatalogTab selected;
+  final ValueChanged<CatalogTab> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return SegmentedButton<CatalogTab>(
+      segments: [
+        ButtonSegment(
+          value: CatalogTab.plants,
+          label: Text(l10n.catalogTabPlants),
+        ),
+        ButtonSegment(
+          value: CatalogTab.diseases,
+          label: Text(l10n.catalogTabDiseases),
+        ),
+      ],
+      selected: {selected},
+      onSelectionChanged: (set) {
+        if (set.isNotEmpty) onSelect(set.first);
+      },
+      showSelectedIcon: false,
+    );
+  }
+}
+
+/// Встроенное тело болезней — показывается когда выбрана вкладка «Болезни».
+///
+/// Не использует [DiseaseCatalogScreen] напрямую (тот ставит свой Scaffold и
+/// AppBar с pop-кнопкой). Повторяет его контент без Scaffold-обёртки,
+/// добавляя шапку с заголовком и переключателем.
+class _DiseaseCatalogBody extends ConsumerWidget {
+  const _DiseaseCatalogBody();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    final selectedTab = ref.watch(catalogTabSelectionProvider);
+    final query = ref.watch(diseaseQueryProvider);
+    final listState = ref.watch(diseaseListProvider);
+
+    return Scaffold(
+      backgroundColor: c.bg,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Шапка с заголовком
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
+              child: const _DiseasesHeader(),
+            ),
+            // Переключатель Растения / Болезни
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 16, 22, 0),
+              child: _CatalogSegmentSwitcher(
+                selected: selectedTab,
+                onSelect: (tab) =>
+                    ref.read(catalogTabSelectionProvider.notifier).select(tab),
+              ),
+            ),
+            const SizedBox(height: 4),
+            // Поле поиска
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 4, 22, 0),
+              child: DiseaseSearchField(
+                initialValue: query,
+                onSubmitted: (value) =>
+                    ref.read(diseaseQueryProvider.notifier).setQuery(value),
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Список болезней
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async => ref.invalidate(diseaseListProvider),
+                color: c.primary,
+                child: listState.when(
+                  loading: () => ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(22, 4, 22, 24),
+                    itemCount: 6,
+                    separatorBuilder: (_, _) => const SizedBox(height: 10),
+                    itemBuilder: (_, _) => const _DiseaseTileSkeleton(),
+                  ),
+                  error: (error, _) => ListView(
+                    padding: const EdgeInsets.fromLTRB(22, 24, 22, 24),
+                    children: [
+                      ErrorState(
+                        message: l10n.messageForError(error),
+                        retryLabel: l10n.retry,
+                        onRetry: () => ref.invalidate(diseaseListProvider),
+                      ),
+                    ],
+                  ),
+                  data: (diseases) {
+                    if (diseases.isEmpty) {
+                      return ListView(
+                        padding: const EdgeInsets.fromLTRB(22, 24, 22, 24),
+                        children: [
+                          DiseaseEmpty(title: l10n.diseaseCatalogEmpty),
+                        ],
+                      );
+                    }
+                    return ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(22, 4, 22, 24),
+                      itemCount: diseases.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 10),
+                      itemBuilder: (context, index) {
+                        final disease = diseases[index];
+                        return DiseaseTile(
+                          disease: disease,
+                          onTap: () =>
+                              context.push('/profile/diseases/${disease.id}'),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Шапка вкладки «Болезни»: серифный заголовок с акцентом.
+class _DiseasesHeader extends StatelessWidget {
+  const _DiseasesHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: l10n.catalogHeadingLead,
+            style: AppTheme.serif(fontSize: 38, color: c.ink),
+          ),
+          TextSpan(
+            text: l10n.catalogTabDiseases.toLowerCase(),
+            style: AppTheme.serif(
+              fontSize: 38,
+              color: c.primary,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -277,4 +464,22 @@ class _CatalogBody extends StatelessWidget {
 
   static Widget _skeletonBuilder(BuildContext context, int index) =>
       const SpeciesCardSkeleton();
+}
+
+/// Скелетон строки болезни во время загрузки.
+class _DiseaseTileSkeleton extends StatelessWidget {
+  const _DiseaseTileSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Container(
+      height: 78,
+      decoration: BoxDecoration(
+        color: c.surfaceWarm,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: c.line),
+      ),
+    );
+  }
 }

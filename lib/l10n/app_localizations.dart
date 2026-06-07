@@ -1168,6 +1168,18 @@ abstract class AppLocalizations {
   /// **'растений'**
   String get catalogHeadingAccent;
 
+  /// Метка переключателя Растения/Болезни — вкладка «Растения» в экране каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения'**
+  String get catalogTabPlants;
+
+  /// Метка переключателя Растения/Болезни — вкладка «Болезни» в экране каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни'**
+  String get catalogTabDiseases;
+
   /// Бейдж популярного вида рядом с именем в списке каталога
   ///
   /// In ru, this message translates to:

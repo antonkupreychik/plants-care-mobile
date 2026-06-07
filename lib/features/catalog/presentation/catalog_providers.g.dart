@@ -8,6 +8,77 @@ part of 'catalog_providers.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Текущая вкладка переключателя в таббаре «Каталог».
+///
+/// `keepAlive`: выбор переживает уход/возврат на таб, сохраняя состояние
+/// (AC: «состояние выбора сохраняется при возврате»).
+
+@ProviderFor(CatalogTabSelection)
+final catalogTabSelectionProvider = CatalogTabSelectionProvider._();
+
+/// Текущая вкладка переключателя в таббаре «Каталог».
+///
+/// `keepAlive`: выбор переживает уход/возврат на таб, сохраняя состояние
+/// (AC: «состояние выбора сохраняется при возврате»).
+final class CatalogTabSelectionProvider
+    extends $NotifierProvider<CatalogTabSelection, CatalogTab> {
+  /// Текущая вкладка переключателя в таббаре «Каталог».
+  ///
+  /// `keepAlive`: выбор переживает уход/возврат на таб, сохраняя состояние
+  /// (AC: «состояние выбора сохраняется при возврате»).
+  CatalogTabSelectionProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'catalogTabSelectionProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$catalogTabSelectionHash();
+
+  @$internal
+  @override
+  CatalogTabSelection create() => CatalogTabSelection();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CatalogTab value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CatalogTab>(value),
+    );
+  }
+}
+
+String _$catalogTabSelectionHash() =>
+    r'003ecf5b80848c16de476d5cc167dff5bbe4f0f6';
+
+/// Текущая вкладка переключателя в таббаре «Каталог».
+///
+/// `keepAlive`: выбор переживает уход/возврат на таб, сохраняя состояние
+/// (AC: «состояние выбора сохраняется при возврате»).
+
+abstract class _$CatalogTabSelection extends $Notifier<CatalogTab> {
+  CatalogTab build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<CatalogTab, CatalogTab>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<CatalogTab, CatalogTab>,
+              CatalogTab,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
 /// Текущая строка поиска по каталогу (committed-значение, не сырой ввод).
 ///
 /// Presentation-only UI-состояние (MADR-004). Дебаунс сырого ввода — забота UI

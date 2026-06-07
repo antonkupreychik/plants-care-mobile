@@ -761,6 +761,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get catalogHeadingAccent => 'растений';
 
   @override
+  String get catalogTabPlants => 'Растения';
+
+  @override
+  String get catalogTabDiseases => 'Болезни';
+
+  @override
   String get catalogBadgePopular => 'HIT';
 
   @override
