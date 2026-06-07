@@ -101,6 +101,10 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
                         'editPlant',
                         pathParameters: {'id': '${widget.plantId}'},
                       ),
+                      onTakeCutting: () => context.pushNamed(
+                        'takeCutting',
+                        pathParameters: {'id': '${widget.plantId}'},
+                      ),
                       onArchive: () => _confirmArchive(context, l10n),
                     ),
                   ),
@@ -303,11 +307,13 @@ class _TopBar extends StatelessWidget {
   const _TopBar({
     required this.isArchiving,
     required this.onEdit,
+    required this.onTakeCutting,
     required this.onArchive,
   });
 
   final bool isArchiving;
   final VoidCallback onEdit;
+  final VoidCallback onTakeCutting;
   final VoidCallback onArchive;
 
   @override
@@ -377,6 +383,14 @@ class _TopBar extends StatelessWidget {
               onTap: () {
                 Navigator.of(ctx).pop();
                 onEdit();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.content_cut_rounded),
+              title: Text(l10n.takeCuttingMenuLabel),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                onTakeCutting();
               },
             ),
             ListTile(

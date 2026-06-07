@@ -3671,6 +3671,11 @@
     "description": "Пункт меню «ещё» на карточке растения — открыть редактирование"
   },
 
+  "takeCuttingMenuLabel": "Взять черенок",
+  "@takeCuttingMenuLabel": {
+    "description": "Пункт меню «⋯» на карточке растения — открыть мастер черенка (экран 18)"
+  },
+
   "archivePlantMenuLabel": "В архив",
   "@archivePlantMenuLabel": {
     "description": "Пункт меню «ещё» на карточке растения — отправить растение в архив"
@@ -3953,5 +3958,131 @@
   "vacationDisabledSnack": "Режим отпуска выключен",
   "@vacationDisabledSnack": {
     "description": "Снэкбар-подтверждение выключения отпуска"
+  },
+
+  "takeCuttingOverline": "Новый росток",
+  "@takeCuttingOverline": {
+    "description": "Надзаголовок шапки мастера черенка (экран 18)"
+  },
+
+  "takeCuttingBack": "Назад",
+  "@takeCuttingBack": {
+    "description": "Семантический ярлык кнопки «назад» в мастере черенка"
+  },
+
+  "takeCuttingParentLabel": "Родитель",
+  "@takeCuttingParentLabel": {
+    "description": "Подпись карточки родителя в визуализации связи (экран 18)"
+  },
+
+  "takeCuttingChildLabel": "Росток",
+  "@takeCuttingChildLabel": {
+    "description": "Подпись карточки ростка в визуализации связи (экран 18)"
+  },
+
+  "takeCuttingChildNamePlaceholder": "Имя?",
+  "@takeCuttingChildNamePlaceholder": {
+    "description": "Плейсхолдер имени ростка в визуализации связи, пока имя не введено"
+  },
+
+  "takeCuttingTitle": "Черенок от {parentName}",
+  "@takeCuttingTitle": {
+    "description": "Серифный заголовок мастера черенка с именем родителя (экран 18)",
+    "placeholders": {
+      "parentName": { "type": "String", "example": "Моники" }
+    }
+  },
+
+  "takeCuttingSubtitle": "Сохраним связь — увидишь, как растёт семья",
+  "@takeCuttingSubtitle": {
+    "description": "Подзаголовок мастера черенка (экран 18)"
+  },
+
+  "takeCuttingNameSectionLabel": "Имя ростка",
+  "@takeCuttingNameSectionLabel": {
+    "description": "Лейбл секции ввода имени ростка"
+  },
+
+  "takeCuttingNameHint": "Имя ростка",
+  "@takeCuttingNameHint": {
+    "description": "Плейсхолдер поля ввода имени ростка"
+  },
+
+  "takeCuttingSuggestionDaughter": "Дочка",
+  "@takeCuttingSuggestionDaughter": {
+    "description": "Чип-предложение имени ростка «Дочка»"
+  },
+
+  "takeCuttingSuggestionSprout": "Зелёныш-2",
+  "@takeCuttingSuggestionSprout": {
+    "description": "Чип-предложение имени ростка «Зелёныш-2»"
+  },
+
+  "takeCuttingSuggestionMini": "Мини-{parentName}",
+  "@takeCuttingSuggestionMini": {
+    "description": "Чип-предложение имени ростка «Мини-{имя родителя}»",
+    "placeholders": {
+      "parentName": { "type": "String", "example": "Моника" }
+    }
+  },
+
+  "takeCuttingMethodSectionLabel": "Как размножается",
+  "@takeCuttingMethodSectionLabel": {
+    "description": "Лейбл секции выбора способа размножения"
+  },
+
+  "takeCuttingMethodWater": "В воду",
+  "@takeCuttingMethodWater": {
+    "description": "Способ размножения «в воду»"
+  },
+
+  "takeCuttingMethodWaterSub": "~3 нед.",
+  "@takeCuttingMethodWaterSub": {
+    "description": "Подпись срока для способа «в воду»"
+  },
+
+  "takeCuttingMethodSoil": "В грунт",
+  "@takeCuttingMethodSoil": {
+    "description": "Способ размножения «в грунт»"
+  },
+
+  "takeCuttingMethodSoilSub": "~5 нед.",
+  "@takeCuttingMethodSoilSub": {
+    "description": "Подпись срока для способа «в грунт»"
+  },
+
+  "takeCuttingMethodMoss": "Мох",
+  "@takeCuttingMethodMoss": {
+    "description": "Способ размножения «мох»"
+  },
+
+  "takeCuttingMethodMossSub": "долго",
+  "@takeCuttingMethodMossSub": {
+    "description": "Подпись срока для способа «мох»"
+  },
+
+  "takeCuttingDateSectionLabel": "Когда срезал(а)",
+  "@takeCuttingDateSectionLabel": {
+    "description": "Лейбл секции выбора даты среза черенка"
+  },
+
+  "takeCuttingDateTodayHint": "Сегодня · день рождения семьи",
+  "@takeCuttingDateTodayHint": {
+    "description": "Подпись под датой среза, когда выбрана сегодняшняя дата"
+  },
+
+  "takeCuttingSubmit": "Завести в семью",
+  "@takeCuttingSubmit": {
+    "description": "Основная кнопка мастера — создать росток"
+  },
+
+  "takeCuttingCancel": "Отмена",
+  "@takeCuttingCancel": {
+    "description": "Вторичная кнопка мастера — закрыть без изменений"
+  },
+
+  "takeCuttingSuccessSnack": "Росток заведён в семью",
+  "@takeCuttingSuccessSnack": {
+    "description": "Снэкбар-подтверждение успешного создания ростка"
   }
 }

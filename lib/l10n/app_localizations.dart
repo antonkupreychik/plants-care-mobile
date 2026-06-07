@@ -4162,6 +4162,12 @@ abstract class AppLocalizations {
   /// **'Редактировать'**
   String get plantCardMenuEdit;
 
+  /// Пункт меню «⋯» на карточке растения — открыть мастер черенка (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Взять черенок'**
+  String get takeCuttingMenuLabel;
+
   /// Пункт меню «ещё» на карточке растения — отправить растение в архив
   ///
   /// In ru, this message translates to:
@@ -4473,6 +4479,150 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Режим отпуска выключен'**
   String get vacationDisabledSnack;
+
+  /// Надзаголовок шапки мастера черенка (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Новый росток'**
+  String get takeCuttingOverline;
+
+  /// Семантический ярлык кнопки «назад» в мастере черенка
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get takeCuttingBack;
+
+  /// Подпись карточки родителя в визуализации связи (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Родитель'**
+  String get takeCuttingParentLabel;
+
+  /// Подпись карточки ростка в визуализации связи (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Росток'**
+  String get takeCuttingChildLabel;
+
+  /// Плейсхолдер имени ростка в визуализации связи, пока имя не введено
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя?'**
+  String get takeCuttingChildNamePlaceholder;
+
+  /// Серифный заголовок мастера черенка с именем родителя (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Черенок от {parentName}'**
+  String takeCuttingTitle(String parentName);
+
+  /// Подзаголовок мастера черенка (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохраним связь — увидишь, как растёт семья'**
+  String get takeCuttingSubtitle;
+
+  /// Лейбл секции ввода имени ростка
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя ростка'**
+  String get takeCuttingNameSectionLabel;
+
+  /// Плейсхолдер поля ввода имени ростка
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя ростка'**
+  String get takeCuttingNameHint;
+
+  /// Чип-предложение имени ростка «Дочка»
+  ///
+  /// In ru, this message translates to:
+  /// **'Дочка'**
+  String get takeCuttingSuggestionDaughter;
+
+  /// Чип-предложение имени ростка «Зелёныш-2»
+  ///
+  /// In ru, this message translates to:
+  /// **'Зелёныш-2'**
+  String get takeCuttingSuggestionSprout;
+
+  /// Чип-предложение имени ростка «Мини-{имя родителя}»
+  ///
+  /// In ru, this message translates to:
+  /// **'Мини-{parentName}'**
+  String takeCuttingSuggestionMini(String parentName);
+
+  /// Лейбл секции выбора способа размножения
+  ///
+  /// In ru, this message translates to:
+  /// **'Как размножается'**
+  String get takeCuttingMethodSectionLabel;
+
+  /// Способ размножения «в воду»
+  ///
+  /// In ru, this message translates to:
+  /// **'В воду'**
+  String get takeCuttingMethodWater;
+
+  /// Подпись срока для способа «в воду»
+  ///
+  /// In ru, this message translates to:
+  /// **'~3 нед.'**
+  String get takeCuttingMethodWaterSub;
+
+  /// Способ размножения «в грунт»
+  ///
+  /// In ru, this message translates to:
+  /// **'В грунт'**
+  String get takeCuttingMethodSoil;
+
+  /// Подпись срока для способа «в грунт»
+  ///
+  /// In ru, this message translates to:
+  /// **'~5 нед.'**
+  String get takeCuttingMethodSoilSub;
+
+  /// Способ размножения «мох»
+  ///
+  /// In ru, this message translates to:
+  /// **'Мох'**
+  String get takeCuttingMethodMoss;
+
+  /// Подпись срока для способа «мох»
+  ///
+  /// In ru, this message translates to:
+  /// **'долго'**
+  String get takeCuttingMethodMossSub;
+
+  /// Лейбл секции выбора даты среза черенка
+  ///
+  /// In ru, this message translates to:
+  /// **'Когда срезал(а)'**
+  String get takeCuttingDateSectionLabel;
+
+  /// Подпись под датой среза, когда выбрана сегодняшняя дата
+  ///
+  /// In ru, this message translates to:
+  /// **'Сегодня · день рождения семьи'**
+  String get takeCuttingDateTodayHint;
+
+  /// Основная кнопка мастера — создать росток
+  ///
+  /// In ru, this message translates to:
+  /// **'Завести в семью'**
+  String get takeCuttingSubmit;
+
+  /// Вторичная кнопка мастера — закрыть без изменений
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get takeCuttingCancel;
+
+  /// Снэкбар-подтверждение успешного создания ростка
+  ///
+  /// In ru, this message translates to:
+  /// **'Росток заведён в семью'**
+  String get takeCuttingSuccessSnack;
 }
 
 class _AppLocalizationsDelegate
