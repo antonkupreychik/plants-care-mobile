@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/error/api_error_l10n.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../home/presentation/home_providers.dart';
 import '../domain/species_summary.dart';
 import 'add_plant_wizard_controller.dart';
 import 'add_plant_wizard_state.dart';
@@ -137,11 +138,38 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
     await ref.read(addPlantWizardControllerProvider.notifier).submit();
   }
 
-  /// CTA «Новая комната» (шаг 2): уводит в управление комнатами (`/profile/rooms`).
-  /// Управление локациями живёт в фиче rooms; визард не дублирует CRUD.
-  void _openRooms() {
+  /// CTA «Новая комната» (шаг 2): открывает экран управления комнатами поверх
+  /// визарда (push, не go), чтобы состояние черновика не сбрасывалось.
+  ///
+  /// После возврата сравниваем список локаций «до» и «после»: если появилась
+  /// новая — автоматически выбираем её в черновике (AC #138).
+  Future<void> _openRooms() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    context.goNamed('rooms');
+
+    // Снимок id-комнат до перехода (список уже загружен homeLocationsProvider).
+    final locationsBefore =
+        ref.read(homeLocationsProvider).value ?? const [];
+    final idsBefore = {for (final loc in locationsBefore) loc.id};
+
+    // Push поверх мастера — мастер остаётся в стеке, провайдер не утилизируется.
+    await context.pushNamed('rooms');
+    if (!mounted) return;
+
+    // После возврата homeLocationsProvider уже инвалидирован rooms-контроллером.
+    // Ждём свежий список и ищем первую новую локацию.
+    final locationsAfter =
+        await ref.read(homeLocationsProvider.future);
+    if (!mounted) return;
+
+    final newLocation = locationsAfter
+        .where((loc) => !idsBefore.contains(loc.id))
+        .firstOrNull;
+
+    if (newLocation != null) {
+      ref
+          .read(addPlantWizardControllerProvider.notifier)
+          .setLocation(newLocation.id);
+    }
   }
 
   /// Снэкбар-заглушка для функций из бэклога (загрузка фото).
