@@ -9,9 +9,7 @@ part of 'screen_layout.dart';
 ScreenLayout _$ScreenLayoutFromJson(Map<String, dynamic> json) => ScreenLayout(
   screenId: json['screenId'] as String,
   version: (json['version'] as num).toInt(),
-  blocks: (json['blocks'] as List<dynamic>)
-      .map((e) => Block.fromJson(e as Map<String, dynamic>))
-      .toList(),
+  blocks: json['blocks'] as List<dynamic>,
 );
 
 Map<String, dynamic> _$ScreenLayoutToJson(ScreenLayout instance) =>

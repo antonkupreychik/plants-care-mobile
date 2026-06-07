@@ -1,42 +1,54 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:plantcare_mobile/core/api/generated/clients/ui_client.dart';
+import 'package:plantcare_mobile/core/api/generated/models/screen_layout.dart';
+import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/core/network/auth_scope.dart';
+import 'package:plantcare_mobile/core/network/request_extra.dart';
 import 'package:plantcare_mobile/core/sdui/data/sdui_repository_impl.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_block.dart';
+import 'package:plantcare_mobile/core/sdui/sdui_catalog_version.dart';
 
-class _MockDio extends Mock implements Dio {}
+class _MockApi extends Mock implements PlantsCareApi {}
 
-Response<Map<String, dynamic>> _ok(Map<String, dynamic> body) => Response(
-      requestOptions: RequestOptions(path: '/api/v1/ui/home'),
-      data: body,
-      statusCode: 200,
-    );
+class _MockUiClient extends Mock implements UiClient {}
 
 void main() {
-  late _MockDio dio;
+  late _MockApi api;
+  late _MockUiClient ui;
   late SduiRepositoryImpl repo;
 
   setUp(() {
-    dio = _MockDio();
-    repo = SduiRepositoryImpl(dio);
+    api = _MockApi();
+    ui = _MockUiClient();
+    when(() => api.ui).thenReturn(ui);
+    repo = SduiRepositoryImpl(api);
   });
 
-  void stub(Map<String, dynamic> body) {
-    when(() => dio.get<Map<String, dynamic>>(
-          any(),
-          options: any(named: 'options'),
-        )).thenAnswer((_) async => _ok(body));
+  void stub(ScreenLayout layout) {
+    when(() => ui.getUiScreen(
+          screen: any(named: 'screen'),
+          xUiCatalogVersion: any(named: 'xUiCatalogVersion'),
+          extras: any(named: 'extras'),
+        )).thenAnswer((_) async => layout);
   }
 
   test('parses screenId/version and all four known block types', () async {
-    stub({
-      'screenId': 'home',
-      'version': 3,
-      'blocks': [
+    stub(const ScreenLayout(
+      screenId: 'home',
+      version: 3,
+      blocks: [
         {'type': 'weather_strip', 'available': true, 'humidityPercent': 40},
-        {'type': 'today_summary', 'total': 4, 'done': 1, 'remaining': 3, 'overdue': 0},
+        {
+          'type': 'today_summary',
+          'total': 4,
+          'done': 1,
+          'remaining': 3,
+          'overdue': 0,
+        },
         {
           'type': 'location_chips',
           'locations': [
@@ -50,7 +62,7 @@ void main() {
           ],
         },
       ],
-    });
+    ));
 
     final result = await repo.getHomeLayout();
 
@@ -67,11 +79,17 @@ void main() {
 
   test('graceful degradation: unknown block type is skipped, others survive',
       () async {
-    stub({
-      'screenId': 'home',
-      'version': 1,
-      'blocks': [
-        {'type': 'today_summary', 'total': 2, 'done': 0, 'remaining': 2, 'overdue': 0},
+    stub(const ScreenLayout(
+      screenId: 'home',
+      version: 1,
+      blocks: [
+        {
+          'type': 'today_summary',
+          'total': 2,
+          'done': 0,
+          'remaining': 2,
+          'overdue': 0,
+        },
         // Тип из будущей версии каталога — клиент его не знает.
         {'type': 'super_future_block', 'payload': 'whatever'},
         {
@@ -81,7 +99,7 @@ void main() {
           ],
         },
       ],
-    });
+    ));
 
     final result = await repo.getHomeLayout();
 
@@ -92,18 +110,37 @@ void main() {
     expect(layout.blocks[1], isA<SduiPlantGridBlock>());
   });
 
-  test('empty/absent blocks yields empty layout, not error', () async {
-    stub({'screenId': 'home', 'version': 1});
+  test('empty blocks yields empty layout, not error', () async {
+    stub(const ScreenLayout(screenId: 'home', version: 1, blocks: []));
 
     final layout = ((await repo.getHomeLayout()) as Success).value;
     expect(layout.blocks, isEmpty);
   });
 
+  test('sends home screen, catalog version and chat auth scope', () async {
+    stub(const ScreenLayout(screenId: 'home', version: 1, blocks: []));
+
+    await repo.getHomeLayout();
+
+    final captured = verify(() => ui.getUiScreen(
+          screen: captureAny(named: 'screen'),
+          xUiCatalogVersion: captureAny(named: 'xUiCatalogVersion'),
+          extras: captureAny(named: 'extras'),
+        )).captured;
+    expect(captured[0], 'home');
+    expect(captured[1], kUiCatalogVersion);
+    expect(
+      (captured[2] as Map)[kAuthScopeExtraKey],
+      AuthScope.chat,
+    );
+  });
+
   test('dio error is mapped to Result.failure (ApiError), not thrown',
       () async {
-    when(() => dio.get<Map<String, dynamic>>(
-          any(),
-          options: any(named: 'options'),
+    when(() => ui.getUiScreen(
+          screen: any(named: 'screen'),
+          xUiCatalogVersion: any(named: 'xUiCatalogVersion'),
+          extras: any(named: 'extras'),
         )).thenThrow(DioException(
       requestOptions: RequestOptions(path: '/api/v1/ui/home'),
       error: const ApiError.network(),

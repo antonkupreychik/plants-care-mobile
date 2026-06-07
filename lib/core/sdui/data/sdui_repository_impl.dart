@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../api/generated/models/block.dart';
+import '../../api/generated/plants_care_api.dart';
 import '../../error/api_error.dart';
 import '../../error/result.dart';
 import '../../network/auth_scope.dart';
@@ -11,14 +11,14 @@ import '../domain/sdui_screen_layout.dart';
 import '../sdui_catalog_version.dart';
 import 'sdui_block_mapper.dart';
 
-/// Реализация [SduiRepository] (MADR-015).
+/// Реализация [SduiRepository] (MADR-015) поверх сгенерированного API-клиента
+/// (MADR-007).
 ///
-/// Намеренно ходит в backend «голым» [Dio] (`GET /api/v1/ui/home`), а не через
-/// сгенерированный `UiClient.getHomeScreen`: типизированный `ScreenLayout.fromJson`
-/// зовёт `Block.fromJson`, который на НЕИЗВЕСТНОМ дискриминаторе бросает
-/// `FormatException` и роняет разбор ВСЕГО лейаута. Нам же нужна graceful
-/// degradation: неизвестный блок — пропустить, остальные отрисовать. Поэтому
-/// блоки разбираем поэлементно с try/catch (см. [_parseBlocks]).
+/// Контракт `GET /api/v1/ui/{screen}` ОПАКОВЫЙ: backend не типизирует блоки,
+/// `ScreenLayout.blocks` приходит как `List<dynamic>` свободных JSON-объектов.
+/// Разбор делает [sduiBlockFromJson] поэлементно — блок с неизвестным/битым
+/// `type` даёт `null` и тихо выпадает (graceful degradation,
+/// forward-compatibility), остальные рисуются.
 ///
 /// Scope `chat` (как `/today`) → `Authorization: Bearer` подставит
 /// `AuthInterceptor` из текущей `AuthSession` (MADR-006/008). Заголовок
@@ -27,27 +27,26 @@ import 'sdui_block_mapper.dart';
 /// Ошибки dio ловит `ErrorInterceptor` (кладёт [ApiError] в `DioException.error`);
 /// здесь разворачивается в `Result.failure` (MADR-011), наружу не бросаем.
 class SduiRepositoryImpl implements SduiRepository {
-  const SduiRepositoryImpl(this._dio);
+  const SduiRepositoryImpl(this._api);
 
-  final Dio _dio;
+  final PlantsCareApi _api;
 
-  static const String _homePath = '/api/v1/ui/home';
+  /// Идентификатор home-экрана для path-параметра `{screen}`.
+  static const String _homeScreen = 'home';
 
   @override
   Future<Result<SduiScreenLayout>> getHomeLayout() async {
     try {
-      final response = await _dio.get<Map<String, dynamic>>(
-        _homePath,
-        options: withAuthScope(AuthScope.chat).copyWith(
-          headers: <String, dynamic>{'X-UI-Catalog-Version': kUiCatalogVersion},
-        ),
+      final layout = await _api.ui.getUiScreen(
+        screen: _homeScreen,
+        xUiCatalogVersion: kUiCatalogVersion,
+        extras: authScopeExtra(AuthScope.chat),
       );
-      final json = response.data ?? const <String, dynamic>{};
       return Result.success(
         SduiScreenLayout(
-          screenId: (json['screenId'] as String?) ?? 'home',
-          version: (json['version'] as num?)?.toInt() ?? 0,
-          blocks: _parseBlocks(json['blocks']),
+          screenId: layout.screenId,
+          version: layout.version,
+          blocks: _parseBlocks(layout.blocks),
         ),
       );
     } on DioException catch (e) {
@@ -55,24 +54,15 @@ class SduiRepositoryImpl implements SduiRepository {
     }
   }
 
-  /// Поэлементный разбор `blocks` с graceful degradation: блок с неизвестным
-  /// `type` (его `Block.fromJson` бросает `FormatException`) или замапленный в
-  /// [SduiUnknownBlock] выпадает из результата — экран рисует остальные.
-  List<SduiBlock> _parseBlocks(Object? raw) {
-    if (raw is! List) return const <SduiBlock>[];
+  /// Поэлементный разбор опаковых `blocks` с graceful degradation: блок иной
+  /// формы или с неизвестным `type` ([sduiBlockFromJson] → `null`) выпадает из
+  /// результата — экран рисует остальные.
+  List<SduiBlock> _parseBlocks(List<dynamic> raw) {
     final result = <SduiBlock>[];
     for (final entry in raw) {
-      if (entry is! Map<String, dynamic>) continue;
-      try {
-        final domain = Block.fromJson(entry).toDomain();
-        // Защитно отбрасываем нераспознанный домен-блок (на будущее, если
-        // кодген начнёт отдавать новый sealed-подтип) — рендерить нечего.
-        if (domain is SduiUnknownBlock) continue;
-        result.add(domain);
-      } on Object {
-        // Неизвестный дискриминатор / битый блок — тихо пропускаем.
-        continue;
-      }
+      if (entry is! Map) continue;
+      final block = sduiBlockFromJson(Map<String, Object?>.from(entry));
+      if (block != null) result.add(block);
     }
     return result;
   }

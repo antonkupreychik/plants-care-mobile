@@ -2,20 +2,22 @@
 # списком блоков; клиент рендерит их через registry, не зашивая структуру
 # экрана в код. Источник правды формы ответа — backend (PR #285).
 #
-# Полиморфизм блоков: oneOf 4 схем + discriminator по полю `type`.
-# Бандлер (tool/bundle_openapi.dart) переписывает `#/schemas/X` в oneOf
-# на `#/components/schemas/X`, но НЕ трогает строки в `discriminator.mapping`,
-# поэтому mapping задаём сразу в финальной форме `#/components/schemas/X`.
+# Контракт ОПАКОВЫЙ: backend не типизирует блоки (свободный JSON-объект), а
+# клиент парсит их динамически по полю `type` в data-слое (sdui_block_mapper).
+# Поэтому здесь нет типизированных block-схем (oneOf/discriminator) — есть лишь
+# обёртка ScreenLayout с массивом свободных объектов. Неизвестный `type` клиент
+# тихо пропускает (forward-compatibility).
 
 paths:
-  Home:
+  Screen:
     get:
       tags: [UI]
-      operationId: getHomeScreen
-      summary: SDUI-лейаут главного экрана
+      operationId: getUiScreen
+      summary: SDUI-лейаут экрана
       description: |
-        Возвращает декларативное описание главного экрана (Server-Driven UI,
-        MADR-015): идентификатор экрана, версию и упорядоченный список блоков.
+        Возвращает декларативное описание экрана (Server-Driven UI, MADR-015):
+        идентификатор экрана, версию и упорядоченный список блоков. Блоки —
+        свободные JSON-объекты с полем `type`; backend их не типизирует.
         Клиент рендерит блоки через registry по полю `type`; неизвестные типы
         пропускает (forward-compatibility).
 
@@ -25,6 +27,13 @@ paths:
       security:
         - bearerAuth: []
       parameters:
+        - name: screen
+          in: path
+          required: true
+          description: Идентификатор экрана (например, `home`).
+          schema:
+            type: string
+          example: home
         - name: X-UI-Catalog-Version
           in: header
           required: false
@@ -39,13 +48,15 @@ paths:
             example: 1
       responses:
         '200':
-          description: Лейаут главного экрана.
+          description: Лейаут экрана.
           content:
             application/json:
               schema:
                 $ref: '#/schemas/ScreenLayout'
         '401':
           $ref: '../_common/responses.yaml#/Unauthorized'
+        '404':
+          $ref: '../_common/responses.yaml#/NotFound'
 
 schemas:
   ScreenLayout:
@@ -53,6 +64,10 @@ schemas:
     description: |
       Декларативный лейаут одного экрана (Server-Driven UI, MADR-015).
       Список `blocks` упорядочен — клиент рендерит блоки сверху вниз.
+
+      Опаковый контракт: каждый элемент `blocks` — свободный JSON-объект с
+      полем `type`. Форму конкретного блока задаёт backend; клиент парсит её
+      динамически (см. sdui_block_mapper).
     required: [screenId, version, blocks]
     properties:
       screenId:
@@ -66,194 +81,12 @@ schemas:
         example: 1
       blocks:
         type: array
-        description: Упорядоченный список блоков экрана.
-        items:
-          $ref: '#/schemas/Block'
-
-  Block:
-    description: |
-      Полиморфный блок SDUI. Конкретный тип определяется дискриминатором
-      `type`. Клиент выбирает рендерер по `type`; неизвестные значения
-      пропускает.
-    oneOf:
-      - $ref: '#/schemas/WeatherStripBlock'
-      - $ref: '#/schemas/TodaySummaryBlock'
-      - $ref: '#/schemas/LocationChipsBlock'
-      - $ref: '#/schemas/PlantGridBlock'
-    discriminator:
-      propertyName: type
-      mapping:
-        weather_strip: '#/components/schemas/WeatherStripBlock'
-        today_summary: '#/components/schemas/TodaySummaryBlock'
-        location_chips: '#/components/schemas/LocationChipsBlock'
-        plant_grid: '#/components/schemas/PlantGridBlock'
-
-  WeatherStripBlock:
-    type: object
-    description: |
-      Блок строки погоды (влажность + рекомендация по поливу). Совпадает по
-      смыслу с `WeatherSnapshotDto`. При `available = false` остальные поля
-      равны `null`.
-    required: [type, available]
-    properties:
-      type:
-        type: string
-        description: Дискриминатор блока.
-        enum: [weather_strip]
-      available:
-        type: boolean
-        description: '`true` — данные о влажности получены; `false` — недоступно.'
-      humidityPercent:
-        type: integer
-        format: int32
-        minimum: 0
-        maximum: 100
-        nullable: true
-        description: Относительная влажность 0–100%. `null`, если `available = false`.
-      recommendation:
-        type: string
-        enum: [DEFER_OK, DO_NOT_DEFER, NEUTRAL]
-        nullable: true
         description: |
-          Рекомендация по поливу: `DEFER_OK` (можно отложить),
-          `DO_NOT_DEFER` (лучше не откладывать), `NEUTRAL`.
-          `null`, если `available = false`.
-      fetchedAt:
-        type: string
-        format: date-time
-        nullable: true
-        description: Когда значение получено из внешнего источника (UTC). `null`, если `available = false`.
-      fromCache:
-        type: boolean
-        nullable: true
-        description: '`true` — значение из серверного кеша. `null`, если `available = false`.'
-
-  TodaySummaryBlock:
-    type: object
-    description: |
-      Сводка по сегодняшним задачам ухода. Совпадает по смыслу с `TodaySummary`
-      (`done + remaining == total`).
-    required: [type, total, done, remaining, overdue]
-    properties:
-      type:
-        type: string
-        description: Дискриминатор блока.
-        enum: [today_summary]
-      total:
-        type: integer
-        format: int32
-        description: Всего задач на сегодня.
-      done:
-        type: integer
-        format: int32
-        description: Выполненные задачи.
-      remaining:
-        type: integer
-        format: int32
-        description: Невыполненные задачи (`total - done`).
-      overdue:
-        type: integer
-        format: int32
-        description: Невыполненные просроченные задачи.
-
-  LocationChipsBlock:
-    type: object
-    description: Блок горизонтальных чипов локаций (комнат) пользователя.
-    required: [type, locations]
-    properties:
-      type:
-        type: string
-        description: Дискриминатор блока.
-        enum: [location_chips]
-      locations:
-        type: array
-        description: Локации пользователя для отрисовки чипами.
+          Упорядоченный список блоков экрана. Каждый блок — свободный объект
+          с полем `type` (дискриминатор на стороне клиента).
         items:
-          $ref: '#/schemas/LocationChip'
-
-  LocationChip:
-    type: object
-    description: Один чип локации в блоке `location_chips`.
-    required: [id, name]
-    properties:
-      id:
-        type: integer
-        format: int64
-        description: Идентификатор локации.
-        example: 5
-      name:
-        type: string
-        description: Название локации.
-        example: Гостиная
-      emoji:
-        type: string
-        nullable: true
-        description: Эмодзи локации. Может быть `null`, если не задано.
-        example: 🛋️
-
-  PlantGridBlock:
-    type: object
-    description: Блок сетки растений с привязанным действием ухода.
-    required: [type, plants]
-    properties:
-      type:
-        type: string
-        description: Дискриминатор блока.
-        enum: [plant_grid]
-      plants:
-        type: array
-        description: Растения для отрисовки в сетке.
-        items:
-          $ref: '#/schemas/PlantGridItem'
-
-  PlantGridItem:
-    type: object
-    description: Один элемент сетки растений в блоке `plant_grid`.
-    required: [id, name]
-    properties:
-      id:
-        type: integer
-        format: int64
-        description: Идентификатор растения.
-        example: 10
-      name:
-        type: string
-        description: Название растения.
-        example: Монстера
-      locationName:
-        type: string
-        nullable: true
-        description: Название локации растения. Может быть `null`.
-        example: Гостиная
-      action:
-        $ref: '#/schemas/ActionDescriptor'
-
-  ActionDescriptor:
-    type: object
-    description: |
-      Декларативное описание действия (SDUI): что и как отправить на backend.
-      Клиент выполняет HTTP-запрос `method path` с телом `payloadTemplate`.
-    required: [kind, method, path]
-    properties:
-      kind:
-        type: string
-        description: Тип действия. Клиент сопоставляет его с обработчиком.
-        enum: [log_care]
-      method:
-        type: string
-        description: HTTP-метод запроса действия (например, `POST`).
-        example: POST
-      path:
-        type: string
-        description: Относительный путь запроса действия (например, `/care-events`).
-        example: /care-events
-      payloadTemplate:
-        type: object
-        additionalProperties: true
-        description: |
-          Шаблон тела запроса действия. Свободная форма (object): backend
-          задаёт набор полей. Для `log_care` содержит, например,
-          `plantId` и `type`.
-        example:
-          plantId: 10
-          type: WATER
+          type: object
+          additionalProperties: true
+          description: |
+            Свободный JSON-объект блока. Обязательное поле `type` определяет
+            рендерер на клиенте; остальные поля зависят от типа блока.

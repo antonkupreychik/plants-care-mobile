@@ -295,8 +295,8 @@ paths:
   /api/v1/sync:
     $ref: './resources/sync.yaml#/paths/Collection'
 
-  /api/v1/ui/home:
-    $ref: './resources/ui.yaml#/paths/Home'
+  /api/v1/ui/{screen}:
+    $ref: './resources/ui.yaml#/paths/Screen'
 
 components:
   securitySchemes:
@@ -537,22 +537,6 @@ components:
 
     ScreenLayout:
       $ref: './resources/ui.yaml#/schemas/ScreenLayout'
-    Block:
-      $ref: './resources/ui.yaml#/schemas/Block'
-    WeatherStripBlock:
-      $ref: './resources/ui.yaml#/schemas/WeatherStripBlock'
-    TodaySummaryBlock:
-      $ref: './resources/ui.yaml#/schemas/TodaySummaryBlock'
-    LocationChipsBlock:
-      $ref: './resources/ui.yaml#/schemas/LocationChipsBlock'
-    LocationChip:
-      $ref: './resources/ui.yaml#/schemas/LocationChip'
-    PlantGridBlock:
-      $ref: './resources/ui.yaml#/schemas/PlantGridBlock'
-    PlantGridItem:
-      $ref: './resources/ui.yaml#/schemas/PlantGridItem'
-    ActionDescriptor:
-      $ref: './resources/ui.yaml#/schemas/ActionDescriptor'
 
     ApiErrorResponse:
       $ref: './_common/errors.yaml#/schemas/ApiErrorResponse'

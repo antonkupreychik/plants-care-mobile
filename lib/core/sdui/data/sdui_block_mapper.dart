@@ -1,99 +1,100 @@
-import '../../../core/api/generated/models/action_descriptor.dart';
-import '../../../core/api/generated/models/action_descriptor_kind.dart';
-import '../../../core/api/generated/models/block.dart';
-import '../../../core/api/generated/models/location_chip.dart';
-import '../../../core/api/generated/models/plant_grid_item.dart';
-import '../../../core/api/generated/models/weather_strip_block_recommendation.dart';
 import '../../locations/garden_location.dart';
 import '../../../features/weather/domain/watering_recommendation.dart';
 import '../domain/sdui_action.dart';
 import '../domain/sdui_block.dart';
 
-/// Маппинг сгенерированных SDUI-DTO (`Block` и наследники) → domain [SduiBlock]
-/// (MADR-002/007). Делаем руками — сгенерированный код не правим.
+/// Маппинг ОПАКОВОГО SDUI-блока (свободный `Map<String, Object?>`) → domain
+/// [SduiBlock] (MADR-015). Контракт `GET /api/v1/ui/{screen}` опаковый: backend
+/// не типизирует блоки, клиент разбирает их динамически по полю `type`.
 ///
-/// Сгенерированный `Block.fromJson` бросает `FormatException` на неизвестном
-/// дискриминаторе ещё ДО этого маппера, поэтому пропуск неизвестного типа на
-/// контракте делает репозиторий (per-block try/catch). Сам `Block` — sealed из
-/// ровно 4 известных подтипов, поэтому switch ниже исчерпывающий; домен-вариант
-/// [SduiUnknownBlock] здесь не возникает (его источник — пропуск в репозитории).
-extension BlockDtoMapper on Block {
-  SduiBlock toDomain() => switch (this) {
-        final BlockWeatherStripBlock b => SduiBlock.weatherStrip(
-            available: b.available,
-            // Клампим 0..100 — кодген границы не валидирует.
-            humidityPercent: b.humidityPercent?.clamp(0, 100),
-            recommendation: b.recommendation?._toDomain(),
-          ),
-        final BlockTodaySummaryBlock b => SduiBlock.todaySummary(
-            total: b.total,
-            done: b.done,
-            remaining: b.remaining,
-            overdue: b.overdue,
-          ),
-        final BlockLocationChipsBlock b => SduiBlock.locationChips(
-            locations:
-                b.locations.map((c) => c._toDomain()).toList(growable: false),
-          ),
-        final BlockPlantGridBlock b => SduiBlock.plantGrid(
-            plants:
-                b.plants.map((p) => p._toDomain()).toList(growable: false),
-          ),
-      };
-}
-
-/// `WeatherStripBlockRecommendation` (вкл. `$unknown`) → доменная
-/// [WateringRecommendation]. `$unknown` (новая рекомендация на backend) мягко
-/// деградирует в `neutral` — экран не падает.
-extension on WeatherStripBlockRecommendation {
-  WateringRecommendation _toDomain() => switch (this) {
-        WeatherStripBlockRecommendation.deferOk =>
-          WateringRecommendation.deferOk,
-        WeatherStripBlockRecommendation.doNotDefer =>
-          WateringRecommendation.doNotDefer,
-        WeatherStripBlockRecommendation.neutral =>
-          WateringRecommendation.neutral,
-        WeatherStripBlockRecommendation.$unknown =>
-          WateringRecommendation.neutral,
-      };
-}
-
-/// `LocationChip` → доменная [GardenLocation]. SDUI-чип не несёт `isDefault`
-/// (для рендера чипа он не нужен) — ставим `false`.
-extension on LocationChip {
-  GardenLocation _toDomain() => GardenLocation(
-        id: id,
-        name: name,
-        emoji: emoji,
-        isDefault: false,
+/// Неизвестный/отсутствующий `type` → `null` (блок пропускается на уровне
+/// репозитория — graceful degradation, forward-compatibility). Поля читаются
+/// мягко: недостающие/иного типа значения берутся с дефолтом, разбор не падает.
+SduiBlock? sduiBlockFromJson(Map<String, Object?> json) {
+  switch (json['type']) {
+    case 'weather_strip':
+      return SduiBlock.weatherStrip(
+        available: _asBool(json['available']),
+        // Клампим 0..100 — контракт опаковый, границы не валидируются.
+        humidityPercent: _asInt(json['humidityPercent'])?.clamp(0, 100),
+        recommendation: _recommendation(json['recommendation']),
       );
-}
-
-/// `PlantGridItem` → доменный [SduiPlantGridItem] (+ опциональное действие).
-extension on PlantGridItem {
-  SduiPlantGridItem _toDomain() => SduiPlantGridItem(
-        id: id,
-        name: name,
-        locationName: locationName,
-        action: action?._toDomain(),
+    case 'today_summary':
+      return SduiBlock.todaySummary(
+        total: _asInt(json['total']) ?? 0,
+        done: _asInt(json['done']) ?? 0,
+        remaining: _asInt(json['remaining']) ?? 0,
+        overdue: _asInt(json['overdue']) ?? 0,
       );
-}
-
-/// `ActionDescriptor` → доменный [SduiAction]. `kind` нормализуем через
-/// [SduiActionKind.fromApi]: нераспознанный/`$unknown` → [SduiActionKind.unknown]
-/// (`ActionRunner` такое действие не исполняет, но и не падает).
-extension on ActionDescriptor {
-  SduiAction _toDomain() => SduiAction(
-        kind: SduiActionKind.fromApi(_kindJson(kind)),
-        method: method,
-        path: path,
-        payload: payloadTemplate is Map
-            ? Map<String, dynamic>.from(payloadTemplate as Map)
-            : null,
+    case 'location_chips':
+      return SduiBlock.locationChips(
+        locations: _asMapList(json['locations'])
+            .map(_locationFromJson)
+            .toList(growable: false),
       );
+    case 'plant_grid':
+      return SduiBlock.plantGrid(
+        plants: _asMapList(json['plants'])
+            .map(_plantFromJson)
+            .toList(growable: false),
+      );
+    default:
+      // Неизвестный/новый `type` — клиент его не рендерит.
+      return null;
+  }
 }
 
-/// Достаёт строковое представление `kind` из сгенерированного enum, не бросая
-/// на `$unknown` (его `toJson` кидает StateError).
-String? _kindJson(ActionDescriptorKind kind) =>
-    kind == ActionDescriptorKind.$unknown ? null : kind.json;
+/// `recommendation` строкой backend (`DEFER_OK`/`DO_NOT_DEFER`/`NEUTRAL`) →
+/// доменная [WateringRecommendation]. `null`/неизвестное → мягко в `neutral`
+/// (см. [WateringRecommendation.fromApi]) — экран не падает.
+WateringRecommendation? _recommendation(Object? raw) =>
+    raw is String ? WateringRecommendation.fromApi(raw) : null;
+
+/// Чип локации (`location_chips.locations[]`) → доменная [GardenLocation].
+/// SDUI-чип не несёт `isDefault` (для рендера чипа он не нужен) — ставим `false`.
+GardenLocation _locationFromJson(Map<String, Object?> json) => GardenLocation(
+      id: _asInt(json['id']) ?? 0,
+      name: _asString(json['name']) ?? '',
+      emoji: _asString(json['emoji']),
+      isDefault: false,
+    );
+
+/// Элемент сетки (`plant_grid.plants[]`) → доменный [SduiPlantGridItem]
+/// (+ опциональное действие).
+SduiPlantGridItem _plantFromJson(Map<String, Object?> json) => SduiPlantGridItem(
+      id: _asInt(json['id']) ?? 0,
+      name: _asString(json['name']) ?? '',
+      locationName: _asString(json['locationName']),
+      action: _actionFromJson(json['action']),
+    );
+
+/// `action` элемента сетки → доменный [SduiAction]. `kind` нормализуем через
+/// [SduiActionKind.fromApi]: нераспознанный → [SduiActionKind.unknown]
+/// (`ActionRunner` такое действие не исполняет, но и не падает). Без `action`
+/// или с битой формой → `null`.
+SduiAction? _actionFromJson(Object? raw) {
+  if (raw is! Map) return null;
+  final json = Map<String, Object?>.from(raw);
+  final payload = json['payloadTemplate'];
+  return SduiAction(
+    kind: SduiActionKind.fromApi(_asString(json['kind'])),
+    method: _asString(json['method']) ?? '',
+    path: _asString(json['path']) ?? '',
+    payload: payload is Map ? Map<String, dynamic>.from(payload) : null,
+  );
+}
+
+/// `blocks`/`locations`/`plants` → список мап, пропуская элементы иной формы.
+List<Map<String, Object?>> _asMapList(Object? raw) {
+  if (raw is! List) return const <Map<String, Object?>>[];
+  return [
+    for (final e in raw)
+      if (e is Map) Map<String, Object?>.from(e),
+  ];
+}
+
+bool _asBool(Object? v) => v is bool ? v : false;
+
+int? _asInt(Object? v) => v is num ? v.toInt() : null;
+
+String? _asString(Object? v) => v is String ? v : null;

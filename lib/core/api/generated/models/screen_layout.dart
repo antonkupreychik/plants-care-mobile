@@ -4,12 +4,14 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-import 'block.dart';
-
 part 'screen_layout.g.dart';
 
 /// Декларативный лейаут одного экрана (Server-Driven UI, MADR-015).
 /// Список `blocks` упорядочен — клиент рендерит блоки сверху вниз.
+///
+/// Опаковый контракт: каждый элемент `blocks` — свободный JSON-объект с.
+/// полем `type`. Форму конкретного блока задаёт backend; клиент парсит её.
+/// динамически (см. sdui_block_mapper).
 ///
 @JsonSerializable()
 class ScreenLayout {
@@ -27,8 +29,10 @@ class ScreenLayout {
   /// Версия структуры лейаута для данного экрана.
   final int version;
 
-  /// Упорядоченный список блоков экрана.
-  final List<Block> blocks;
+  /// Упорядоченный список блоков экрана. Каждый блок — свободный объект.
+  /// с полем `type` (дискриминатор на стороне клиента).
+  ///
+  final List<dynamic> blocks;
 
   Map<String, Object?> toJson() => _$ScreenLayoutToJson(this);
 }

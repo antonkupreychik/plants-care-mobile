@@ -20,7 +20,8 @@ class _UiClient implements UiClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ScreenLayout> getHomeScreen({
+  Future<ScreenLayout> getUiScreen({
+    required String screen,
     int? xUiCatalogVersion,
     Map<String, dynamic>? extras,
   }) async {
@@ -37,7 +38,7 @@ class _UiClient implements UiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/ui/home',
+            '/api/v1/ui/${screen}',
             queryParameters: queryParameters,
             data: _data,
           )

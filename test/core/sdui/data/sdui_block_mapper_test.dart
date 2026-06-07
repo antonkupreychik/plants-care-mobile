@@ -1,32 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plantcare_mobile/core/api/generated/models/action_descriptor.dart';
-import 'package:plantcare_mobile/core/api/generated/models/action_descriptor_kind.dart';
-import 'package:plantcare_mobile/core/api/generated/models/block.dart';
-import 'package:plantcare_mobile/core/api/generated/models/location_chip.dart';
-import 'package:plantcare_mobile/core/api/generated/models/location_chips_block_type.dart';
-import 'package:plantcare_mobile/core/api/generated/models/plant_grid_block_type.dart';
-import 'package:plantcare_mobile/core/api/generated/models/plant_grid_item.dart';
-import 'package:plantcare_mobile/core/api/generated/models/today_summary_block_type.dart';
-import 'package:plantcare_mobile/core/api/generated/models/weather_strip_block_recommendation.dart';
-import 'package:plantcare_mobile/core/api/generated/models/weather_strip_block_type.dart';
 import 'package:plantcare_mobile/core/sdui/data/sdui_block_mapper.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_action.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_block.dart';
 import 'package:plantcare_mobile/features/weather/domain/watering_recommendation.dart';
 
 void main() {
-  group('BlockDtoMapper.toDomain', () {
+  group('sduiBlockFromJson (opaque Map → domain)', () {
     test('weather_strip maps available + humidity + recommendation', () {
-      const dto = BlockWeatherStripBlock(
-        type: WeatherStripBlockType.weatherStrip,
-        available: true,
-        humidityPercent: 55,
-        recommendation: WeatherStripBlockRecommendation.deferOk,
-        fetchedAt: null,
-        fromCache: null,
-      );
-
-      final block = dto.toDomain();
+      final block = sduiBlockFromJson({
+        'type': 'weather_strip',
+        'available': true,
+        'humidityPercent': 55,
+        'recommendation': 'DEFER_OK',
+        'fetchedAt': '2026-05-28T12:00:00Z',
+        'fromCache': false,
+      });
 
       expect(
         block,
@@ -39,34 +27,42 @@ void main() {
     });
 
     test('weather_strip clamps out-of-range humidity and maps unavailable', () {
-      const dto = BlockWeatherStripBlock(
-        type: WeatherStripBlockType.weatherStrip,
-        available: false,
-        humidityPercent: 250,
-        recommendation: WeatherStripBlockRecommendation.$unknown,
-        fetchedAt: null,
-        fromCache: null,
-      );
-
-      final block = dto.toDomain() as SduiWeatherStripBlock;
+      final block = sduiBlockFromJson({
+        'type': 'weather_strip',
+        'available': false,
+        'humidityPercent': 250,
+        // Неизвестная рекомендация деградирует в neutral, не падает.
+        'recommendation': 'SOMETHING_NEW',
+      }) as SduiWeatherStripBlock;
 
       expect(block.available, isFalse);
       expect(block.humidityPercent, 100);
-      // $unknown рекомендация деградирует в neutral, не падает.
       expect(block.recommendation, WateringRecommendation.neutral);
     });
 
+    test('weather_strip missing optional fields → null humidity/recommendation',
+        () {
+      final block = sduiBlockFromJson({
+        'type': 'weather_strip',
+        'available': false,
+      }) as SduiWeatherStripBlock;
+
+      expect(block.available, isFalse);
+      expect(block.humidityPercent, isNull);
+      expect(block.recommendation, isNull);
+    });
+
     test('today_summary maps counters', () {
-      const dto = BlockTodaySummaryBlock(
-        type: TodaySummaryBlockType.todaySummary,
-        total: 5,
-        done: 2,
-        remaining: 3,
-        overdue: 1,
-      );
+      final block = sduiBlockFromJson({
+        'type': 'today_summary',
+        'total': 5,
+        'done': 2,
+        'remaining': 3,
+        'overdue': 1,
+      });
 
       expect(
-        dto.toDomain(),
+        block,
         const SduiBlock.todaySummary(
           total: 5,
           done: 2,
@@ -77,15 +73,13 @@ void main() {
     });
 
     test('location_chips maps each chip to GardenLocation', () {
-      const dto = BlockLocationChipsBlock(
-        type: LocationChipsBlockType.locationChips,
-        locations: [
-          LocationChip(id: 1, name: 'Кухня', emoji: '🍳'),
-          LocationChip(id: 2, name: 'Спальня'),
+      final block = sduiBlockFromJson({
+        'type': 'location_chips',
+        'locations': [
+          {'id': 1, 'name': 'Кухня', 'emoji': '🍳'},
+          {'id': 2, 'name': 'Спальня'},
         ],
-      );
-
-      final block = dto.toDomain() as SduiLocationChipsBlock;
+      }) as SduiLocationChipsBlock;
 
       expect(block.locations, hasLength(2));
       expect(block.locations.first.id, 1);
@@ -95,25 +89,23 @@ void main() {
     });
 
     test('plant_grid maps items with log_care action', () {
-      const dto = BlockPlantGridBlock(
-        type: PlantGridBlockType.plantGrid,
-        plants: [
-          PlantGridItem(
-            id: 7,
-            name: 'Монстера',
-            locationName: 'Кухня',
-            action: ActionDescriptor(
-              kind: ActionDescriptorKind.logCare,
-              method: 'POST',
-              path: '/care-events',
-              payloadTemplate: {'plantId': 7, 'type': 'WATER'},
-            ),
-          ),
-          PlantGridItem(id: 8, name: 'Кактус'),
+      final block = sduiBlockFromJson({
+        'type': 'plant_grid',
+        'plants': [
+          {
+            'id': 7,
+            'name': 'Монстера',
+            'locationName': 'Кухня',
+            'action': {
+              'kind': 'log_care',
+              'method': 'POST',
+              'path': '/care-events',
+              'payloadTemplate': {'plantId': 7, 'type': 'WATER'},
+            },
+          },
+          {'id': 8, 'name': 'Кактус'},
         ],
-      );
-
-      final block = dto.toDomain() as SduiPlantGridBlock;
+      }) as SduiPlantGridBlock;
 
       expect(block.plants, hasLength(2));
       final first = block.plants.first;
@@ -122,29 +114,43 @@ void main() {
       expect(first.locationName, 'Кухня');
       expect(first.action, isNotNull);
       expect(first.action!.kind, SduiActionKind.logCare);
+      expect(first.action!.method, 'POST');
+      expect(first.action!.path, '/care-events');
       expect(first.action!.payload, {'plantId': 7, 'type': 'WATER'});
       // Второй элемент без действия.
       expect(block.plants[1].action, isNull);
     });
 
-    test(r'plant_grid action with $unknown kind degrades to unknown', () {
-      const dto = BlockPlantGridBlock(
-        type: PlantGridBlockType.plantGrid,
-        plants: [
-          PlantGridItem(
-            id: 1,
-            name: 'X',
-            action: ActionDescriptor(
-              kind: ActionDescriptorKind.$unknown,
-              method: 'POST',
-              path: '/whatever',
-            ),
-          ),
+    test('plant_grid action with unknown kind degrades to unknown', () {
+      final block = sduiBlockFromJson({
+        'type': 'plant_grid',
+        'plants': [
+          {
+            'id': 1,
+            'name': 'X',
+            'action': {
+              'kind': 'teleport_plant',
+              'method': 'POST',
+              'path': '/whatever',
+            },
+          },
         ],
-      );
+      }) as SduiPlantGridBlock;
 
-      final block = dto.toDomain() as SduiPlantGridBlock;
       expect(block.plants.first.action!.kind, SduiActionKind.unknown);
+    });
+
+    test('unknown type → null (skipped by repository)', () {
+      final block = sduiBlockFromJson({
+        'type': 'super_future_block',
+        'payload': 'whatever',
+      });
+
+      expect(block, isNull);
+    });
+
+    test('missing type → null', () {
+      expect(sduiBlockFromJson({'available': true}), isNull);
     });
   });
 }
