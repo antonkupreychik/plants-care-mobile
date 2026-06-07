@@ -10,6 +10,7 @@ import '../../features/auth/presentation/auth_email_screen.dart';
 import '../../features/auth/presentation/auth_verify_screen.dart';
 import '../../features/auth/presentation/auth_welcome_back_screen.dart';
 import '../../features/auth/presentation/auth_welcome_screen.dart';
+import '../../features/auth/presentation/convert_guest_screen.dart';
 import '../../features/care_event/presentation/first_care_success_screen.dart';
 import '../../features/care_history/presentation/care_history_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
@@ -344,6 +345,14 @@ GoRouter appRouter(Ref ref) {
                   name: 'rooms',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const RoomsScreen(),
+                ),
+                // Экран конвертации гостевого аккаунта (issue #74).
+                // Доступен только когда isGuest == true (баннер на Home).
+                GoRoute(
+                  path: 'convert-guest',
+                  name: 'convertGuest',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const ConvertGuestScreen(),
                 ),
                 // Экран 26 «Совместный уход» (sharing) — полноэкранно поверх
                 // shell (своя кнопка «назад», без таб-бара), как rooms.

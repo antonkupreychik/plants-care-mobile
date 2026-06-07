@@ -1,8 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/api/generated/clients/auth_client.dart';
 import 'package:plantcare_mobile/core/api/generated/models/email_request.dart';
+import 'package:plantcare_mobile/core/api/generated/models/guest_login_request.dart';
+import 'package:plantcare_mobile/core/api/generated/models/guest_login_response.dart';
 import 'package:plantcare_mobile/core/api/generated/models/logout_request.dart';
 import 'package:plantcare_mobile/core/api/generated/models/magic_link_verify_request.dart';
 import 'package:plantcare_mobile/core/api/generated/models/token_pair_response.dart';
@@ -20,6 +23,56 @@ class _MockApi extends Mock implements PlantsCareApi {}
 class _MockAuthClient extends Mock implements AuthClient {}
 
 class _MockSocialSignIn extends Mock implements SocialSignIn {}
+
+/// In-memory fake для FlutterSecureStorage (нет Keychain/Keystore в unit-тестах).
+class _FakeSecureStorage extends Fake implements FlutterSecureStorage {
+  final Map<String, String> _data = {};
+
+  @override
+  Future<String?> read({
+    required String key,
+    AppleOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async =>
+      _data[key];
+
+  @override
+  Future<void> write({
+    required String key,
+    required String? value,
+    AppleOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async {
+    if (value == null) {
+      _data.remove(key);
+    } else {
+      _data[key] = value;
+    }
+  }
+
+  @override
+  Future<void> delete({
+    required String key,
+    AppleOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async =>
+      _data.remove(key);
+
+  bool hasKey(String key) => _data.containsKey(key);
+  String? operator [](String key) => _data[key];
+}
 
 /// Учётная in-memory реализация [TokenStore] — пишем/читаем честно (не мок БД),
 /// чтобы проверить, что сессия реально персистит пару.
@@ -65,17 +118,27 @@ const _pair = TokenPairResponse(
   tokenType: 'Bearer',
 );
 
+const _guestPair = GuestLoginResponse(
+  accessToken: 'guest-access-123',
+  refreshToken: 'guest-refresh-456',
+  expiresIn: 3600,
+  tokenType: 'Bearer',
+  isNewUser: true,
+);
+
 void main() {
   setUpAll(() {
     registerFallbackValue(const EmailRequest(email: 'x@y.z'));
     registerFallbackValue(const MagicLinkVerifyRequest(token: 't'));
     registerFallbackValue(const LogoutRequest(refreshToken: 'r'));
+    registerFallbackValue(const GuestLoginRequest(deviceId: 'test-device-id'));
   });
 
   late _MockApi api;
   late _MockAuthClient auth;
   late _MockSocialSignIn social;
   late _FakeStorage storage;
+  late _FakeSecureStorage secureStorage;
   late JwtAuthSession session;
   late AuthStatusNotifier status;
   late AuthRepositoryImpl repo;
@@ -85,10 +148,11 @@ void main() {
     auth = _MockAuthClient();
     social = _MockSocialSignIn();
     storage = _FakeStorage();
+    secureStorage = _FakeSecureStorage();
     session = JwtAuthSession(_FakeTokenStore(storage));
     status = AuthStatusNotifier(false);
     when(() => api.auth).thenReturn(auth);
-    repo = AuthRepositoryImpl(api, session, status, social);
+    repo = AuthRepositoryImpl(api, session, status, social, secureStorage);
   });
 
   group('requestMagicLink', () {
@@ -214,6 +278,68 @@ void main() {
       verifyNever(() => auth.logout(body: any(named: 'body')));
       expect(session.isAuthenticated, isFalse);
       expect(status.isAuthenticated, isFalse);
+    });
+  });
+
+  group('signInAsGuest', () {
+    test(
+        'should_generate_deviceId_save_to_storage_call_endpoint_and_raise_session',
+        () async {
+      when(() => auth.guestLogin(body: any(named: 'body')))
+          .thenAnswer((_) async => _guestPair);
+
+      final result = await repo.signInAsGuest();
+
+      expect(result, isA<Success<void>>());
+      // deviceId был сохранён в secure storage.
+      expect(secureStorage.hasKey('guest_device_id'), isTrue);
+      final savedDeviceId = secureStorage['guest_device_id']!;
+      // UUID v4 формат: 8-4-4-4-12 hex-символов.
+      expect(savedDeviceId, matches(r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'));
+      // Сессия поднята.
+      expect(session.isAuthenticated, isTrue);
+      expect(status.isAuthenticated, isTrue);
+      // deviceId уйдёт в запрос.
+      final body = verify(() => auth.guestLogin(
+            body: captureAny(named: 'body'),
+          )).captured.single as GuestLoginRequest;
+      expect(body.deviceId, savedDeviceId);
+    });
+
+    test(
+        'should_reuse_existing_deviceId_on_repeated_call_and_not_generate_new',
+        () async {
+      when(() => auth.guestLogin(body: any(named: 'body')))
+          .thenAnswer((_) async => _guestPair);
+
+      // Первый вызов генерирует deviceId.
+      await repo.signInAsGuest();
+      final firstDeviceId = secureStorage['guest_device_id'];
+
+      // Второй вызов должен использовать тот же deviceId.
+      await repo.signInAsGuest();
+      final secondDeviceId = secureStorage['guest_device_id'];
+
+      expect(firstDeviceId, isNotNull);
+      expect(secondDeviceId, equals(firstDeviceId));
+      // Эндпоинт вызывался дважды с одинаковым deviceId.
+      final captured = verify(() => auth.guestLogin(
+            body: captureAny(named: 'body'),
+          )).captured;
+      expect(captured.length, 2);
+      final first = (captured[0] as GuestLoginRequest).deviceId;
+      final second = (captured[1] as GuestLoginRequest).deviceId;
+      expect(first, equals(second));
+    });
+
+    test('should_return_failure_when_backend_returns_error', () async {
+      when(() => auth.guestLogin(body: any(named: 'body')))
+          .thenThrow(_dioWith(const ApiError.network()));
+
+      final result = await repo.signInAsGuest();
+
+      expect((result as Failure).error, const ApiError.network());
+      expect(session.isAuthenticated, isFalse);
     });
   });
 }

@@ -2224,10 +2224,10 @@ abstract class AppLocalizations {
   /// **'или'**
   String get authOr;
 
-  /// Кнопка входа как гость (coming soon)
+  /// Кнопка гостевого входа на экране приветствия
   ///
   /// In ru, this message translates to:
-  /// **'Зайти как гость'**
+  /// **'Продолжить без аккаунта'**
   String get authContinueGuest;
 
   /// Дисклеймер об условиях и политике на экране входа
@@ -4473,6 +4473,36 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Режим отпуска выключен'**
   String get vacationDisabledSnack;
+
+  /// Заголовок баннера конвертации гостевого аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Привяжите email, чтобы не потерять сад'**
+  String get guestBannerTitle;
+
+  /// Подзаголовок баннера конвертации
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные гостя удаляются при переустановке'**
+  String get guestBannerSubtitle;
+
+  /// Действие в баннере конвертации
+  ///
+  /// In ru, this message translates to:
+  /// **'Привязать'**
+  String get guestBannerAction;
+
+  /// Заголовок экрана конвертации гостевого аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохраните свой сад'**
+  String get convertGuestScreenTitle;
+
+  /// Подзаголовок экрана конвертации гостевого аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите способ входа — все ваши растения останутся'**
+  String get convertGuestScreenSubtitle;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/api/generated/clients/auth_client.dart';
@@ -19,6 +20,53 @@ class _MockApi extends Mock implements PlantsCareApi {}
 class _MockAuthClient extends Mock implements AuthClient {}
 
 class _MockSocialSignIn extends Mock implements SocialSignIn {}
+
+/// In-memory fake для FlutterSecureStorage (нет Keychain/Keystore в unit-тестах).
+class _FakeSecureStorage extends Fake implements FlutterSecureStorage {
+  final Map<String, String> _data = {};
+
+  @override
+  Future<String?> read({
+    required String key,
+    AppleOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async =>
+      _data[key];
+
+  @override
+  Future<void> write({
+    required String key,
+    required String? value,
+    AppleOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async {
+    if (value == null) {
+      _data.remove(key);
+    } else {
+      _data[key] = value;
+    }
+  }
+
+  @override
+  Future<void> delete({
+    required String key,
+    AppleOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    AppleOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async =>
+      _data.remove(key);
+}
 
 /// In-memory персист пары: пишем/читаем честно (не мок БД), чтобы проверить,
 /// что соц-вход реально поднимает сессию.
@@ -72,6 +120,7 @@ void main() {
   late _MockAuthClient auth;
   late _MockSocialSignIn social;
   late _FakeStorage storage;
+  late _FakeSecureStorage secureStorage;
   late JwtAuthSession session;
   late AuthStatusNotifier status;
   late AuthRepositoryImpl repo;
@@ -81,10 +130,11 @@ void main() {
     auth = _MockAuthClient();
     social = _MockSocialSignIn();
     storage = _FakeStorage();
+    secureStorage = _FakeSecureStorage();
     session = JwtAuthSession(_FakeTokenStore(storage));
     status = AuthStatusNotifier(false);
     when(() => api.auth).thenReturn(auth);
-    repo = AuthRepositoryImpl(api, session, status, social);
+    repo = AuthRepositoryImpl(api, session, status, social, secureStorage);
   });
 
   group('signInWithGoogle', () {

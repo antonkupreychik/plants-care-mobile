@@ -20,6 +20,7 @@ import 'home_filter.dart';
 import 'home_providers.dart';
 import 'home_view_state.dart';
 import 'widgets/garden_empty.dart';
+import 'widgets/guest_banner.dart';
 import 'widgets/home_header.dart';
 import 'widgets/home_loading_skeleton.dart';
 import 'widgets/location_chips.dart';
@@ -134,6 +135,10 @@ class _HomeContent extends ConsumerWidget {
               // Свой паддинг внутри виджета; тихо сворачивается, если погода
               // недоступна/грузится/ошибка (Home не блокируется).
               const SliverToBoxAdapter(child: WeatherStrip()),
+
+              // GUEST BANNER — предложение привязать email для гостевых юзеров.
+              // Тихо скрывается для авторизованных (isGuest == false/null).
+              const SliverToBoxAdapter(child: GuestBanner()),
 
               // TODAY — секция задач (своё loading/error/empty/data).
               SliverPadding(

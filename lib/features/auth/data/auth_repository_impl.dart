@@ -1,8 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/api/generated/models/apple_auth_request.dart';
 import '../../../core/api/generated/models/email_request.dart';
 import '../../../core/api/generated/models/google_auth_request.dart';
+import '../../../core/api/generated/models/guest_convert_request.dart';
+import '../../../core/api/generated/models/guest_convert_request_provider.dart';
+import '../../../core/api/generated/models/guest_convert_response_status.dart';
+import '../../../core/api/generated/models/guest_login_request.dart';
 import '../../../core/api/generated/models/logout_request.dart';
 import '../../../core/api/generated/models/magic_link_verify_request.dart';
 import '../../../core/api/generated/models/token_pair_response.dart';
@@ -15,6 +21,9 @@ import '../../../core/error/result.dart';
 import '../domain/auth_repository.dart';
 import '../domain/social_auth_outcome.dart';
 import '../domain/social_sign_in.dart';
+
+/// Ключ в [FlutterSecureStorage] для хранения гостевого deviceId.
+const _guestDeviceIdKey = 'guest_device_id';
 
 /// Реализация [AuthRepository] поверх сгенерированного API-клиента (MADR-007),
 /// [JwtAuthSession] (персист пары токенов) и [AuthStatusNotifier] (реактивный
@@ -34,12 +43,14 @@ class AuthRepositoryImpl implements AuthRepository {
     this._session,
     this._status,
     this._social,
+    this._secureStorage,
   );
 
   final PlantsCareApi _api;
   final JwtAuthSession _session;
   final AuthStatusNotifier _status;
   final SocialSignIn _social;
+  final FlutterSecureStorage _secureStorage;
 
   @override
   Future<Result<void>> requestMagicLink(String email) async {
@@ -110,6 +121,145 @@ class AuthRepositoryImpl implements AuthRepository {
     } on DioException catch (e) {
       return SocialAuthFailure(_toApiError(e));
     }
+  }
+
+  @override
+  Future<Result<void>> signInAsGuest() async {
+    try {
+      final deviceId = await _getOrCreateDeviceId();
+      final response = await _api.auth.guestLogin(
+        body: GuestLoginRequest(deviceId: deviceId),
+      );
+      await _session.updateTokens(
+        AuthTokens(
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+        ),
+      );
+      _status.set(true);
+      return const Result.success(null);
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
+  @override
+  Future<bool> tryRestoreGuestSession() async {
+    // Если уже аутентифицированы — ничего делать не нужно.
+    if (_session.isAuthenticated) return false;
+
+    final deviceId = await _secureStorage.read(key: _guestDeviceIdKey);
+    if (deviceId == null) return false;
+
+    try {
+      final response = await _api.auth.guestLogin(
+        body: GuestLoginRequest(deviceId: deviceId),
+      );
+      await _session.updateTokens(
+        AuthTokens(
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+        ),
+      );
+      _status.set(true);
+      return true;
+    } on DioException catch (_) {
+      // Восстановление best-effort: при ошибке просто не восстанавливаем.
+      return false;
+    }
+  }
+
+  @override
+  Future<Result<void>> convertGuestWithEmail(String email) async {
+    try {
+      await _api.auth.guestConvert(
+        body: GuestConvertRequest(
+          provider: GuestConvertRequestProvider.email,
+          email: email,
+        ),
+      );
+      return const Result.success(null);
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
+  @override
+  Future<SocialAuthOutcome> convertGuestWithGoogle() async {
+    final String? idToken;
+    try {
+      idToken = await _social.googleIdToken();
+    } catch (_) {
+      return SocialAuthFailure(const ApiError.unknown());
+    }
+    if (idToken == null) return const SocialAuthOutcome.cancelled();
+
+    try {
+      final response = await _api.auth.guestConvert(
+        body: GuestConvertRequest(
+          provider: GuestConvertRequestProvider.google,
+          idToken: idToken,
+        ),
+      );
+      if (response.status == GuestConvertResponseStatus.converted &&
+          response.accessToken != null &&
+          response.refreshToken != null) {
+        await _session.updateTokens(
+          AuthTokens(
+            accessToken: response.accessToken!,
+            refreshToken: response.refreshToken!,
+          ),
+        );
+        _status.set(true);
+      }
+      return const SocialAuthOutcome.success();
+    } on DioException catch (e) {
+      return SocialAuthFailure(_toApiError(e));
+    }
+  }
+
+  @override
+  Future<SocialAuthOutcome> convertGuestWithApple() async {
+    final String? identityToken;
+    try {
+      identityToken = await _social.appleIdentityToken();
+    } catch (_) {
+      return SocialAuthFailure(const ApiError.unknown());
+    }
+    if (identityToken == null) return const SocialAuthOutcome.cancelled();
+
+    try {
+      final response = await _api.auth.guestConvert(
+        body: GuestConvertRequest(
+          provider: GuestConvertRequestProvider.apple,
+          idToken: identityToken,
+        ),
+      );
+      if (response.status == GuestConvertResponseStatus.converted &&
+          response.accessToken != null &&
+          response.refreshToken != null) {
+        await _session.updateTokens(
+          AuthTokens(
+            accessToken: response.accessToken!,
+            refreshToken: response.refreshToken!,
+          ),
+        );
+        _status.set(true);
+      }
+      return const SocialAuthOutcome.success();
+    } on DioException catch (e) {
+      return SocialAuthFailure(_toApiError(e));
+    }
+  }
+
+  /// Возвращает существующий `deviceId` из secure storage или генерирует новый
+  /// UUID v4, сохраняет и возвращает его. Гарантирует идемпотентность.
+  Future<String> _getOrCreateDeviceId() async {
+    final existing = await _secureStorage.read(key: _guestDeviceIdKey);
+    if (existing != null) return existing;
+    final newId = const Uuid().v4();
+    await _secureStorage.write(key: _guestDeviceIdKey, value: newId);
+    return newId;
   }
 
   /// Поднимает сессию по полученной паре: персист токенов + реактивный auth-флаг

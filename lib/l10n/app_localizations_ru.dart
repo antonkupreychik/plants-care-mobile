@@ -1380,7 +1380,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authOr => 'или';
 
   @override
-  String get authContinueGuest => 'Зайти как гость';
+  String get authContinueGuest => 'Продолжить без аккаунта';
 
   @override
   String get authTerms =>
@@ -2731,4 +2731,20 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get vacationDisabledSnack => 'Режим отпуска выключен';
+
+  @override
+  String get guestBannerTitle => 'Привяжите email, чтобы не потерять сад';
+
+  @override
+  String get guestBannerSubtitle => 'Данные гостя удаляются при переустановке';
+
+  @override
+  String get guestBannerAction => 'Привязать';
+
+  @override
+  String get convertGuestScreenTitle => 'Сохраните свой сад';
+
+  @override
+  String get convertGuestScreenSubtitle =>
+      'Выберите способ входа — все ваши растения останутся';
 }
