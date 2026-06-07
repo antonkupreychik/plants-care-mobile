@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/core/sdui/data/sdui_block_mapper.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_action.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_block.dart';
@@ -70,6 +71,86 @@ void main() {
           overdue: 1,
         ),
       );
+    });
+
+    test('today_tasks maps counters + tasks with normalized type → CareTaskType',
+        () {
+      final block = sduiBlockFromJson({
+        'type': 'today_tasks',
+        'completedCount': 1,
+        'totalCount': 3,
+        'tasks': [
+          {
+            'scheduleId': 1,
+            'plantId': 42,
+            'plantName': 'Фикус',
+            'type': 'FERTILIZE',
+            'dueAt': '2026-05-27T09:00:00Z',
+          },
+          {
+            'scheduleId': 2,
+            'plantId': 7,
+            'plantName': 'Монстера',
+            'type': 'WATER',
+            'dueAt': '2026-05-27T18:30:00Z',
+          },
+        ],
+      }) as SduiTodayTasksBlock;
+
+      expect(block.completedCount, 1);
+      expect(block.totalCount, 3);
+      expect(block.tasks, hasLength(2));
+
+      final first = block.tasks.first;
+      expect(first.scheduleId, 1);
+      expect(first.plantId, 42);
+      expect(first.plantName, 'Фикус');
+      // FERTILIZE (нормализованная форма) → fertilizing (доменный тип).
+      expect(first.type, CareTaskType.fertilizing);
+      expect(first.dueAt, DateTime.utc(2026, 5, 27, 9));
+      expect(first.dueAt.isUtc, isTrue);
+
+      expect(block.tasks[1].type, CareTaskType.watering);
+    });
+
+    test('today_tasks soft-handles unknown task type and missing dueAt', () {
+      final block = sduiBlockFromJson({
+        'type': 'today_tasks',
+        'completedCount': 0,
+        'totalCount': 1,
+        'tasks': [
+          {
+            'scheduleId': 9,
+            'plantId': 1,
+            'plantName': 'X',
+            // Новый/неизвестный тип не роняет разбор (forward-compat).
+            'type': 'TELEPORT',
+          },
+        ],
+      }) as SduiTodayTasksBlock;
+
+      expect(block.tasks.first.type, CareTaskType.unknown);
+      // Без dueAt разбор не падает — задача всё равно создаётся.
+      expect(block.tasks, hasLength(1));
+    });
+
+    test('today_tasks SOIL_CHECK maps to soilCheck', () {
+      final block = sduiBlockFromJson({
+        'type': 'today_tasks',
+        'completedCount': 0,
+        'totalCount': 1,
+        'tasks': [
+          {
+            'scheduleId': 1,
+            'plantId': 1,
+            'plantName': 'X',
+            'type': 'SOIL_CHECK',
+            'dueAt': '2026-05-27T09:00:00Z',
+          },
+        ],
+      }) as SduiTodayTasksBlock;
+
+      expect(block.tasks.first.type, CareTaskType.soilCheck);
     });
 
     test('location_chips maps each chip to GardenLocation', () {

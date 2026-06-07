@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../features/care_event/data/mappers/task_type_mapper.dart';
+import '../../../features/care_event/presentation/log_care_event_sheet.dart';
 import '../../../features/home/domain/plant.dart';
 import '../../../features/home/presentation/widgets/location_chips.dart';
 import '../../../features/home/presentation/widgets/plant_card.dart';
 import '../../../features/home/presentation/widgets/today_card.dart';
 import '../../../features/weather/presentation/widgets/weather_strip.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../care/care_task.dart';
+import '../../clock/clock_provider.dart';
 import '../domain/sdui_action.dart';
 import '../domain/sdui_block.dart';
 import 'action_runner.dart';
@@ -47,6 +51,12 @@ class BlockRegistry {
             totalCount: total,
           ),
         ),
+      SduiTodayTasksBlock(:final tasks, :final completedCount, :final totalCount) =>
+        _TodayTasks(
+          tasks: tasks,
+          completedCount: completedCount,
+          totalCount: totalCount,
+        ),
       SduiLocationChipsBlock(:final locations) => Padding(
           padding: const EdgeInsets.only(top: 8, bottom: 14),
           child: LocationChips(
@@ -61,6 +71,49 @@ class BlockRegistry {
       SduiPlantGridBlock(:final plants) => _PlantGrid(items: plants),
       SduiUnknownBlock() => const SizedBox.shrink(),
     };
+  }
+}
+
+/// Тапабельный список задач «Сегодня» из SDUI-блока `today_tasks`.
+///
+/// Переиспользует нативный [TodayCard] и нативный care-sheet-флоу: тап по
+/// задаче открывает существующий [showLogCareEventSheet] с `presetType`,
+/// выведенным из [CareTask.type] тем же маппером [careEventKindFromTaskType],
+/// что использовал home до перехода на SDUI. Это интерактив — он нативный, НЕ
+/// через [ActionRunner]. `now` берём из [clockProvider] (тестируемость, MADR
+/// «Время»).
+class _TodayTasks extends ConsumerWidget {
+  const _TodayTasks({
+    required this.tasks,
+    required this.completedCount,
+    required this.totalCount,
+  });
+
+  final List<CareTask> tasks;
+  final int completedCount;
+  final int totalCount;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final nowLocal = ref.watch(clockProvider).nowUtc().toLocal();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+      child: TodayCard(
+        tasks: tasks,
+        now: nowLocal,
+        // Тап по задаче → нативный sheet ухода с предвыбранным типом
+        // (FERTILIZING → fertilize и т.д.). SOIL_CHECK/unknown дают unknown —
+        // контроллер sheet откатит на дефолтный тип.
+        onTaskTap: (task) => showLogCareEventSheet(
+          context,
+          plantId: task.plantId,
+          presetType: careEventKindFromTaskType(task.type),
+          plantName: task.plantName,
+        ),
+        completedCount: completedCount,
+        totalCount: totalCount,
+      ),
+    );
   }
 }
 

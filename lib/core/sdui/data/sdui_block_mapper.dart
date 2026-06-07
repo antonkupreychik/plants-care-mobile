@@ -1,3 +1,5 @@
+import '../../care/care_task.dart';
+import '../../care/care_task_type.dart';
 import '../../locations/garden_location.dart';
 import '../../../features/weather/domain/watering_recommendation.dart';
 import '../domain/sdui_action.dart';
@@ -25,6 +27,14 @@ SduiBlock? sduiBlockFromJson(Map<String, Object?> json) {
         done: _asInt(json['done']) ?? 0,
         remaining: _asInt(json['remaining']) ?? 0,
         overdue: _asInt(json['overdue']) ?? 0,
+      );
+    case 'today_tasks':
+      return SduiBlock.todayTasks(
+        completedCount: _asInt(json['completedCount']) ?? 0,
+        totalCount: _asInt(json['totalCount']) ?? 0,
+        tasks: _asMapList(json['tasks'])
+            .map(_taskFromJson)
+            .toList(growable: false),
       );
     case 'location_chips':
       return SduiBlock.locationChips(
@@ -82,6 +92,43 @@ SduiAction? _actionFromJson(Object? raw) {
     path: _asString(json['path']) ?? '',
     payload: payload is Map ? Map<String, dynamic>.from(payload) : null,
   );
+}
+
+/// Задача (`today_tasks.tasks[]`) → доменная [CareTask].
+///
+/// `type` в этом блоке уже НОРМАЛИЗОВАН backend в форму care-event
+/// (`WATER`/`SPRAY`/`FERTILIZE` + возможный `SOIL_CHECK`) — не путать со
+/// строками `/today` (`WATERING/MISTING/FERTILIZING`). Нормализуем её в
+/// доменный [CareTaskType] через [_taskTypeFromNormalized]. `dueAt` —
+/// ISO-8601 UTC; непарсимое → «сейчас» (UTC), чтобы не падать.
+CareTask _taskFromJson(Map<String, Object?> json) => CareTask(
+      scheduleId: _asInt(json['scheduleId']) ?? 0,
+      plantId: _asInt(json['plantId']) ?? 0,
+      plantName: _asString(json['plantName']) ?? '',
+      type: _taskTypeFromNormalized(_asString(json['type'])),
+      dueAt: _asUtcDateTime(json['dueAt']),
+    );
+
+/// Нормализованный backend-тип задачи (`WATER`/`SPRAY`/`FERTILIZE`/`SOIL_CHECK`)
+/// → доменный [CareTaskType]. Неизвестное/`null` → [CareTaskType.unknown]
+/// (forward-compat: новый тип не роняет рендер, sheet откатится на дефолт).
+CareTaskType _taskTypeFromNormalized(String? raw) =>
+    switch (raw?.toUpperCase()) {
+      'WATER' => CareTaskType.watering,
+      'SPRAY' => CareTaskType.misting,
+      'FERTILIZE' => CareTaskType.fertilizing,
+      'SOIL_CHECK' => CareTaskType.soilCheck,
+      _ => CareTaskType.unknown,
+    };
+
+/// ISO-8601 строка → UTC [DateTime]. `null`/непарсимое → текущий момент UTC
+/// (мягко, без исключения — контракт опаковый).
+DateTime _asUtcDateTime(Object? v) {
+  if (v is String) {
+    final parsed = DateTime.tryParse(v);
+    if (parsed != null) return parsed.toUtc();
+  }
+  return DateTime.now().toUtc();
 }
 
 /// `blocks`/`locations`/`plants` → список мап, пропуская элементы иной формы.

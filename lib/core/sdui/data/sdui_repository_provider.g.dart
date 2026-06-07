@@ -55,4 +55,4 @@ final class SduiRepositoryProvider
   }
 }
 
-String _$sduiRepositoryHash() => r'1c9b3a5fa2197cce4294a782558e4c751b7fbd91';
+String _$sduiRepositoryHash() => r'31a71f1eebdf9c99242e7b59f795f5aa6473fa96';

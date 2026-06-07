@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../care/care_task.dart';
 import '../../locations/garden_location.dart';
 import '../../../features/weather/domain/watering_recommendation.dart';
 import 'sdui_action.dart';
@@ -34,6 +35,18 @@ sealed class SduiBlock with _$SduiBlock {
     required int remaining,
     required int overdue,
   }) = SduiTodaySummaryBlock;
+
+  /// Тапабельный список задач «Сегодня» (`today_tasks`).
+  ///
+  /// Несёт реальные задачи ([CareTask]) — в отличие от [SduiTodaySummaryBlock]
+  /// (только счётчики). Рендерер ([BlockRegistry]) рисует `TodayCard` со списком
+  /// и навешивает тап → нативный care-sheet с `presetType`, выведенным из
+  /// [CareTask.type] (тот же интерактив, что был на home до перехода на SDUI).
+  const factory SduiBlock.todayTasks({
+    required int completedCount,
+    required int totalCount,
+    required List<CareTask> tasks,
+  }) = SduiTodayTasksBlock;
 
   /// Чипы локаций (`location_chips`).
   const factory SduiBlock.locationChips({

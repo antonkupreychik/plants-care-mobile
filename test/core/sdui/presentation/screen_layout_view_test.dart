@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plantcare_mobile/core/care/care_task.dart';
+import 'package:plantcare_mobile/core/care/care_task_type.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_block.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_screen_layout.dart';
@@ -61,6 +63,34 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(TodayCard), findsOneWidget);
+    });
+
+    testWidgets('today_tasks renders TodayCard with the task', (tester) async {
+      await tester.pumpWidget(_wrap(_layout([
+        SduiBlock.todayTasks(
+          completedCount: 1,
+          totalCount: 3,
+          tasks: [
+            CareTask(
+              scheduleId: 1,
+              plantId: 42,
+              plantName: 'Фикус',
+              type: CareTaskType.fertilizing,
+              dueAt: DateTime.utc(2026, 5, 27, 9),
+            ),
+          ],
+        ),
+      ])));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TodayCard), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(TodayCard),
+          matching: find.text('Фикус'),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('location_chips renders LocationChips', (tester) async {

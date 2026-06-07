@@ -7,6 +7,10 @@ import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/core/sdui/data/sdui_repository_provider.dart';
+import 'package:plantcare_mobile/core/sdui/domain/sdui_block.dart';
+import 'package:plantcare_mobile/core/sdui/domain/sdui_repository.dart';
+import 'package:plantcare_mobile/core/sdui/domain/sdui_screen_layout.dart';
 import 'package:plantcare_mobile/features/care_event/data/care_event_repository_provider.dart';
 import 'package:plantcare_mobile/features/care_event/domain/care_event_draft.dart';
 import 'package:plantcare_mobile/features/care_event/domain/care_event_repository.dart';
@@ -14,15 +18,13 @@ import 'package:plantcare_mobile/features/care_event/domain/logged_care_event.da
 import 'package:plantcare_mobile/features/plant_card/domain/care_event_kind.dart';
 import 'package:plantcare_mobile/core/care/care_task.dart';
 import 'package:plantcare_mobile/core/care/care_task_type.dart';
-import 'package:plantcare_mobile/core/locations/garden_location.dart';
-import 'package:plantcare_mobile/features/home/domain/plant.dart';
-import 'package:plantcare_mobile/features/home/domain/today_tasks_result.dart';
-import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';
 import 'package:plantcare_mobile/features/home/presentation/widgets/today_card.dart';
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 class _MockCareEventRepo extends Mock implements CareEventRepository {}
+
+class _MockSduiRepo extends Mock implements SduiRepository {}
 
 class _FixedClock implements Clock {
   const _FixedClock(this._now);
@@ -34,8 +36,15 @@ class _FixedClock implements Clock {
 const _plantId = 42;
 final _fixedNow = DateTime.utc(2026, 5, 27, 9);
 
-/// Интеграция экрана 01 (Home) → sheet 06: тап по задаче `/today` открывает
-/// sheet ухода с `presetType`, выведенным из `task.type` через маппер-ловушку.
+/// Интеграция экрана 01 (Home, теперь Server-Driven, MADR-015) → sheet 06:
+/// тап по задаче в SDUI-блоке `today_tasks` открывает sheet ухода с
+/// `presetType`, выведенным из `task.type` через маппер-ловушку.
+///
+/// Это ВОССТАНОВЛЕННЫЙ интерактив: пилот переключил home на SDUI и временно
+/// потерял список задач (блок `today_summary` несёт только счётчики). Backend
+/// теперь шлёт `today_tasks` со списком — мобайл рендерит его тапабельным
+/// `TodayCard`. Замоканный seam — SDUI-репозиторий ([SduiRepository]), а не
+/// старые `homeTasksProvider`/`homePlantsProvider`/`homeLocationsProvider`.
 void main() {
   setUpAll(() {
     registerFallbackValue(
@@ -66,6 +75,23 @@ void main() {
       dueAt: _fixedNow,
     );
 
+    // SDUI-лейаут home несёт ровно один блок today_tasks с задачей 'Фикус'.
+    final layout = SduiScreenLayout(
+      screenId: 'home',
+      version: 1,
+      blocks: [
+        SduiBlock.todayTasks(
+          completedCount: 0,
+          totalCount: 1,
+          tasks: [task],
+        ),
+      ],
+    );
+
+    final sduiRepo = _MockSduiRepo();
+    when(() => sduiRepo.getHomeLayout())
+        .thenAnswer((_) async => Result.success(layout));
+
     final repo = _MockCareEventRepo();
     // submit() зовёт детекцию «первого ухода» ДО POST — стабим, иначе мок кинет
     // на незастабленном вызове. Этот флоу-тест про проводку presetType, не про
@@ -91,15 +117,7 @@ void main() {
           clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
           connectivityProvider.overrideWith((_) => Stream.value(true)),
           careEventRepositoryProvider.overrideWithValue(repo),
-          homeTasksProvider.overrideWith(
-            (ref) async => TodayTasksResult(tasks: [task], completedCount: 0, totalCount: 1),
-          ),
-          homePlantsProvider.overrideWith(
-            (ref) async => const <Plant>[Plant(id: _plantId, name: 'Фикус')],
-          ),
-          homeLocationsProvider.overrideWith(
-            (ref) async => const <GardenLocation>[],
-          ),
+          sduiRepositoryProvider.overrideWithValue(sduiRepo),
         ],
         child: MaterialApp(
           locale: const Locale('ru'),

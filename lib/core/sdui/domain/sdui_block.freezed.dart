@@ -55,12 +55,13 @@ extension SduiBlockPatterns on SduiBlock {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SduiWeatherStripBlock value)?  weatherStrip,TResult Function( SduiTodaySummaryBlock value)?  todaySummary,TResult Function( SduiLocationChipsBlock value)?  locationChips,TResult Function( SduiPlantGridBlock value)?  plantGrid,TResult Function( SduiUnknownBlock value)?  unknown,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SduiWeatherStripBlock value)?  weatherStrip,TResult Function( SduiTodaySummaryBlock value)?  todaySummary,TResult Function( SduiTodayTasksBlock value)?  todayTasks,TResult Function( SduiLocationChipsBlock value)?  locationChips,TResult Function( SduiPlantGridBlock value)?  plantGrid,TResult Function( SduiUnknownBlock value)?  unknown,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case SduiWeatherStripBlock() when weatherStrip != null:
 return weatherStrip(_that);case SduiTodaySummaryBlock() when todaySummary != null:
-return todaySummary(_that);case SduiLocationChipsBlock() when locationChips != null:
+return todaySummary(_that);case SduiTodayTasksBlock() when todayTasks != null:
+return todayTasks(_that);case SduiLocationChipsBlock() when locationChips != null:
 return locationChips(_that);case SduiPlantGridBlock() when plantGrid != null:
 return plantGrid(_that);case SduiUnknownBlock() when unknown != null:
 return unknown(_that);case _:
@@ -81,12 +82,13 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SduiWeatherStripBlock value)  weatherStrip,required TResult Function( SduiTodaySummaryBlock value)  todaySummary,required TResult Function( SduiLocationChipsBlock value)  locationChips,required TResult Function( SduiPlantGridBlock value)  plantGrid,required TResult Function( SduiUnknownBlock value)  unknown,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SduiWeatherStripBlock value)  weatherStrip,required TResult Function( SduiTodaySummaryBlock value)  todaySummary,required TResult Function( SduiTodayTasksBlock value)  todayTasks,required TResult Function( SduiLocationChipsBlock value)  locationChips,required TResult Function( SduiPlantGridBlock value)  plantGrid,required TResult Function( SduiUnknownBlock value)  unknown,}){
 final _that = this;
 switch (_that) {
 case SduiWeatherStripBlock():
 return weatherStrip(_that);case SduiTodaySummaryBlock():
-return todaySummary(_that);case SduiLocationChipsBlock():
+return todaySummary(_that);case SduiTodayTasksBlock():
+return todayTasks(_that);case SduiLocationChipsBlock():
 return locationChips(_that);case SduiPlantGridBlock():
 return plantGrid(_that);case SduiUnknownBlock():
 return unknown(_that);}
@@ -103,12 +105,13 @@ return unknown(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SduiWeatherStripBlock value)?  weatherStrip,TResult? Function( SduiTodaySummaryBlock value)?  todaySummary,TResult? Function( SduiLocationChipsBlock value)?  locationChips,TResult? Function( SduiPlantGridBlock value)?  plantGrid,TResult? Function( SduiUnknownBlock value)?  unknown,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SduiWeatherStripBlock value)?  weatherStrip,TResult? Function( SduiTodaySummaryBlock value)?  todaySummary,TResult? Function( SduiTodayTasksBlock value)?  todayTasks,TResult? Function( SduiLocationChipsBlock value)?  locationChips,TResult? Function( SduiPlantGridBlock value)?  plantGrid,TResult? Function( SduiUnknownBlock value)?  unknown,}){
 final _that = this;
 switch (_that) {
 case SduiWeatherStripBlock() when weatherStrip != null:
 return weatherStrip(_that);case SduiTodaySummaryBlock() when todaySummary != null:
-return todaySummary(_that);case SduiLocationChipsBlock() when locationChips != null:
+return todaySummary(_that);case SduiTodayTasksBlock() when todayTasks != null:
+return todayTasks(_that);case SduiLocationChipsBlock() when locationChips != null:
 return locationChips(_that);case SduiPlantGridBlock() when plantGrid != null:
 return plantGrid(_that);case SduiUnknownBlock() when unknown != null:
 return unknown(_that);case _:
@@ -128,11 +131,12 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)?  weatherStrip,TResult Function( int total,  int done,  int remaining,  int overdue)?  todaySummary,TResult Function( List<GardenLocation> locations)?  locationChips,TResult Function( List<SduiPlantGridItem> plants)?  plantGrid,TResult Function()?  unknown,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)?  weatherStrip,TResult Function( int total,  int done,  int remaining,  int overdue)?  todaySummary,TResult Function( int completedCount,  int totalCount,  List<CareTask> tasks)?  todayTasks,TResult Function( List<GardenLocation> locations)?  locationChips,TResult Function( List<SduiPlantGridItem> plants)?  plantGrid,TResult Function()?  unknown,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SduiWeatherStripBlock() when weatherStrip != null:
 return weatherStrip(_that.available,_that.humidityPercent,_that.recommendation);case SduiTodaySummaryBlock() when todaySummary != null:
-return todaySummary(_that.total,_that.done,_that.remaining,_that.overdue);case SduiLocationChipsBlock() when locationChips != null:
+return todaySummary(_that.total,_that.done,_that.remaining,_that.overdue);case SduiTodayTasksBlock() when todayTasks != null:
+return todayTasks(_that.completedCount,_that.totalCount,_that.tasks);case SduiLocationChipsBlock() when locationChips != null:
 return locationChips(_that.locations);case SduiPlantGridBlock() when plantGrid != null:
 return plantGrid(_that.plants);case SduiUnknownBlock() when unknown != null:
 return unknown();case _:
@@ -153,11 +157,12 @@ return unknown();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)  weatherStrip,required TResult Function( int total,  int done,  int remaining,  int overdue)  todaySummary,required TResult Function( List<GardenLocation> locations)  locationChips,required TResult Function( List<SduiPlantGridItem> plants)  plantGrid,required TResult Function()  unknown,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)  weatherStrip,required TResult Function( int total,  int done,  int remaining,  int overdue)  todaySummary,required TResult Function( int completedCount,  int totalCount,  List<CareTask> tasks)  todayTasks,required TResult Function( List<GardenLocation> locations)  locationChips,required TResult Function( List<SduiPlantGridItem> plants)  plantGrid,required TResult Function()  unknown,}) {final _that = this;
 switch (_that) {
 case SduiWeatherStripBlock():
 return weatherStrip(_that.available,_that.humidityPercent,_that.recommendation);case SduiTodaySummaryBlock():
-return todaySummary(_that.total,_that.done,_that.remaining,_that.overdue);case SduiLocationChipsBlock():
+return todaySummary(_that.total,_that.done,_that.remaining,_that.overdue);case SduiTodayTasksBlock():
+return todayTasks(_that.completedCount,_that.totalCount,_that.tasks);case SduiLocationChipsBlock():
 return locationChips(_that.locations);case SduiPlantGridBlock():
 return plantGrid(_that.plants);case SduiUnknownBlock():
 return unknown();}
@@ -174,11 +179,12 @@ return unknown();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)?  weatherStrip,TResult? Function( int total,  int done,  int remaining,  int overdue)?  todaySummary,TResult? Function( List<GardenLocation> locations)?  locationChips,TResult? Function( List<SduiPlantGridItem> plants)?  plantGrid,TResult? Function()?  unknown,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)?  weatherStrip,TResult? Function( int total,  int done,  int remaining,  int overdue)?  todaySummary,TResult? Function( int completedCount,  int totalCount,  List<CareTask> tasks)?  todayTasks,TResult? Function( List<GardenLocation> locations)?  locationChips,TResult? Function( List<SduiPlantGridItem> plants)?  plantGrid,TResult? Function()?  unknown,}) {final _that = this;
 switch (_that) {
 case SduiWeatherStripBlock() when weatherStrip != null:
 return weatherStrip(_that.available,_that.humidityPercent,_that.recommendation);case SduiTodaySummaryBlock() when todaySummary != null:
-return todaySummary(_that.total,_that.done,_that.remaining,_that.overdue);case SduiLocationChipsBlock() when locationChips != null:
+return todaySummary(_that.total,_that.done,_that.remaining,_that.overdue);case SduiTodayTasksBlock() when todayTasks != null:
+return todayTasks(_that.completedCount,_that.totalCount,_that.tasks);case SduiLocationChipsBlock() when locationChips != null:
 return locationChips(_that.locations);case SduiPlantGridBlock() when plantGrid != null:
 return plantGrid(_that.plants);case SduiUnknownBlock() when unknown != null:
 return unknown();case _:
@@ -325,6 +331,82 @@ as int,done: null == done ? _self.done : done // ignore: cast_nullable_to_non_nu
 as int,remaining: null == remaining ? _self.remaining : remaining // ignore: cast_nullable_to_non_nullable
 as int,overdue: null == overdue ? _self.overdue : overdue // ignore: cast_nullable_to_non_nullable
 as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SduiTodayTasksBlock implements SduiBlock {
+  const SduiTodayTasksBlock({required this.completedCount, required this.totalCount, required final  List<CareTask> tasks}): _tasks = tasks;
+  
+
+ final  int completedCount;
+ final  int totalCount;
+ final  List<CareTask> _tasks;
+ List<CareTask> get tasks {
+  if (_tasks is EqualUnmodifiableListView) return _tasks;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_tasks);
+}
+
+
+/// Create a copy of SduiBlock
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SduiTodayTasksBlockCopyWith<SduiTodayTasksBlock> get copyWith => _$SduiTodayTasksBlockCopyWithImpl<SduiTodayTasksBlock>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SduiTodayTasksBlock&&(identical(other.completedCount, completedCount) || other.completedCount == completedCount)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other._tasks, _tasks));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,completedCount,totalCount,const DeepCollectionEquality().hash(_tasks));
+
+@override
+String toString() {
+  return 'SduiBlock.todayTasks(completedCount: $completedCount, totalCount: $totalCount, tasks: $tasks)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SduiTodayTasksBlockCopyWith<$Res> implements $SduiBlockCopyWith<$Res> {
+  factory $SduiTodayTasksBlockCopyWith(SduiTodayTasksBlock value, $Res Function(SduiTodayTasksBlock) _then) = _$SduiTodayTasksBlockCopyWithImpl;
+@useResult
+$Res call({
+ int completedCount, int totalCount, List<CareTask> tasks
+});
+
+
+
+
+}
+/// @nodoc
+class _$SduiTodayTasksBlockCopyWithImpl<$Res>
+    implements $SduiTodayTasksBlockCopyWith<$Res> {
+  _$SduiTodayTasksBlockCopyWithImpl(this._self, this._then);
+
+  final SduiTodayTasksBlock _self;
+  final $Res Function(SduiTodayTasksBlock) _then;
+
+/// Create a copy of SduiBlock
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? completedCount = null,Object? totalCount = null,Object? tasks = null,}) {
+  return _then(SduiTodayTasksBlock(
+completedCount: null == completedCount ? _self.completedCount : completedCount // ignore: cast_nullable_to_non_nullable
+as int,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
+as int,tasks: null == tasks ? _self._tasks : tasks // ignore: cast_nullable_to_non_nullable
+as List<CareTask>,
   ));
 }
 
