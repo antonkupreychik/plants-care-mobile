@@ -2544,6 +2544,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get plantCardMenuEdit => 'Редактировать';
 
   @override
+  String get takeCuttingMenuLabel => 'Взять черенок';
+
+  @override
   String get archivePlantMenuLabel => 'В архив';
 
   @override
@@ -2779,4 +2782,118 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get takeCuttingOverline => 'Новый росток';
+
+  @override
+  String get takeCuttingBack => 'Назад';
+
+  @override
+  String get takeCuttingParentLabel => 'Родитель';
+
+  @override
+  String get takeCuttingChildLabel => 'Росток';
+
+  @override
+  String get takeCuttingChildNamePlaceholder => 'Имя?';
+
+  @override
+  String takeCuttingTitle(String parentName) {
+    return 'Черенок от $parentName';
+  }
+
+  @override
+  String get takeCuttingSubtitle =>
+      'Сохраним связь — увидишь, как растёт семья';
+
+  @override
+  String get takeCuttingNameSectionLabel => 'Имя ростка';
+
+  @override
+  String get takeCuttingNameHint => 'Имя ростка';
+
+  @override
+  String get takeCuttingSuggestionDaughter => 'Дочка';
+
+  @override
+  String get takeCuttingSuggestionSprout => 'Зелёныш-2';
+
+  @override
+  String takeCuttingSuggestionMini(String parentName) {
+    return 'Мини-$parentName';
+  }
+
+  @override
+  String get takeCuttingMethodSectionLabel => 'Как размножается';
+
+  @override
+  String get takeCuttingMethodWater => 'В воду';
+
+  @override
+  String get takeCuttingMethodWaterSub => '~3 нед.';
+
+  @override
+  String get takeCuttingMethodSoil => 'В грунт';
+
+  @override
+  String get takeCuttingMethodSoilSub => '~5 нед.';
+
+  @override
+  String get takeCuttingMethodMoss => 'Мох';
+
+  @override
+  String get takeCuttingMethodMossSub => 'долго';
+
+  @override
+  String get takeCuttingDateSectionLabel => 'Когда срезал(а)';
+
+  @override
+  String get takeCuttingDateTodayHint => 'Сегодня · день рождения семьи';
+
+  @override
+  String get takeCuttingSubmit => 'Завести в семью';
+
+  @override
+  String get takeCuttingCancel => 'Отмена';
+
+  @override
+  String get takeCuttingSuccessSnack => 'Росток заведён в семью';
+
+  @override
+  String get profileDeleteAccount => 'Удалить аккаунт';
+
+  @override
+  String get deleteAccountScreenTitle => 'Удаление аккаунта';
+
+  @override
+  String get deleteAccountWarningTitle => 'Это действие нельзя отменить';
+
+  @override
+  String get deleteAccountWarningBody =>
+      'Будут удалены все ваши данные: растения и их история ухода, расписания, список покупок, настройки и токены сессий. Telegram-привязка также удаляется — при следующем /start создаётся новый аккаунт. Восстановление невозможно.';
+
+  @override
+  String get deleteAccountConfirmLabel =>
+      'Я понимаю, что данные будут удалены безвозвратно';
+
+  @override
+  String get deleteAccountCta => 'Удалить аккаунт';
+
+  @override
+  String get deleteAccountDialogTitle => 'Удалить аккаунт?';
+
+  @override
+  String get deleteAccountDialogBody =>
+      'Аккаунт и все данные будут удалены немедленно. Это действие необратимо.';
+
+  @override
+  String get deleteAccountDialogCancel => 'Отмена';
+
+  @override
+  String get deleteAccountDialogConfirm => 'Удалить';
+
+  @override
+  String get deleteAccountErrorSnack =>
+      'Не удалось удалить аккаунт. Попробуйте ещё раз.';
 }

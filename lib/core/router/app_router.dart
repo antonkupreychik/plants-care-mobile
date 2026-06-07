@@ -23,6 +23,7 @@ import '../../features/home/presentation/today_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/plant_events/presentation/plant_events_screen.dart';
+import '../../features/profile/presentation/delete_account_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/push_priming/presentation/push_permission_screen.dart';
 import '../../features/language/presentation/language_screen.dart';
@@ -38,6 +39,7 @@ import '../../features/edit_plant/presentation/edit_plant_screen.dart';
 import '../../features/plant_diagnosis/presentation/plant_diagnosis_screen.dart';
 import '../../features/plant_family/presentation/plant_family_screen.dart';
 import '../../features/shopping/presentation/shopping_screen.dart';
+import '../../features/take_cutting/presentation/take_cutting_screen.dart';
 import '../auth/auth_providers.dart';
 import 'app_shell.dart';
 
@@ -310,6 +312,20 @@ GoRouter appRouter(Ref ref) {
                         return PlantFamilyScreen(plantId: id, plantName: name);
                       },
                     ),
+                    // Экран 18 «Взять черенок» (issue #75) — мастер создания
+                    // ростка-потомка. Полноэкранно поверх shell (своя шапка с
+                    // «назад», без таб-бара). Вход: карточка растения 02 →
+                    // меню «⋯» → «Взять черенок». `id` пути — растение-родитель.
+                    GoRoute(
+                      path: 'cutting',
+                      name: 'takeCutting',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final id =
+                            int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                        return TakeCuttingScreen(parentPlantId: id);
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -461,6 +477,15 @@ GoRouter appRouter(Ref ref) {
                       },
                     ),
                   ],
+                ),
+                // Экран удаления аккаунта (issue #129 — Apple/Google Store
+                // requirement). Полноэкранно поверх shell (своя кнопка «назад»,
+                // без таб-бара), как language/shopping.
+                GoRoute(
+                  path: 'delete-account',
+                  name: 'deleteAccount',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const DeleteAccountScreen(),
                 ),
               ],
             ),
