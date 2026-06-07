@@ -8,7 +8,8 @@
 > pubspec, базовые классы, flavors, CI — см. «План каркаса» в конце). Три развилки SPRINT-1
 > §0.5 решены владельцем 2026-05-27: **MADR-007 — кодген dart-dio из OpenAPI**, **MADR-012 —
 > ru-only (но всё через AppLocalizations)**, **MADR-013 — GitHub Actions → Codemagic** —
-> все **Accepted**. Остальные MADR (001–006, 008–011, 014) — **Proposed**.
+> все **Accepted**. **MADR-015 — гибридный Server-Driven UI (SDUI)** — **Accepted** (2026-06-07,
+> первая реализация — пилот home). Остальные MADR (001–006, 008–011, 014) — **Proposed**.
 
 Мобильный клиент к существующему Spring Boot бэкенду (`antonkupreychik/plants-care`).
 Второй клиент рядом с Telegram-ботом. Backend, доменная модель, шедулер — переиспользуются
@@ -24,6 +25,7 @@
 | **State / DI**        | Riverpod 3 (`flutter_riverpod` 3.3.1, `riverpod_annotation` 4.0.2) + codegen. Отдельный DI-контейнер не используется (MADR-004). |
 | **Архитектура**       | Clean Architecture + MVVM: data → domain → presentation (MADR-002) |
 | **Структура**         | feature-first (MADR-003)                                      |
+| **Server-Driven UI**  | Гибридный block-SDUI: read-heavy экраны собирает сервер из нативных блоков, интерактив остаётся нативным (MADR-015) |
 | **Навигация**         | `go_router` 17.2.3, StatefulShellRoute для табов (MADR-005)   |
 | **Сеть**              | `dio` 5.9.2 + `dio_smart_retry` 7.0.1; две «головы» заголовков, ApiError (MADR-006) |
 | **API-клиент**        | **Кодген dart-dio из OpenAPI** (`swagger_parser`, bundle `$ref`) — MADR-007 |
@@ -132,6 +134,39 @@ branch 3 `/profile` — таб «Профиль» активен, не coming-so
 - Списки — ленивые (`ListView.builder`), не `Column` в `SingleChildScrollView` для длинных.
 - Все UI-строки — через `AppLocalizations` (MADR-012), не строковые литералы в виджетах.
 - Sheet'ы ухода (water/spray/fert) — `showModalBottomSheet`, не роуты go_router (MADR-005).
+
+---
+
+## Server-Driven UI (MADR-015) — учитывать при разработке экранов
+
+Приложение переходит на **гибридный block-SDUI**. При нарезке/реализации любой фичи
+определи, к какому классу относится экран, и следуй правилу:
+
+- **Read-heavy витрины** (списки карточек, деталки, ленты, отчёты: home, today, каталог,
+  отчёт, уведомления, справочники) — композицию задаёт сервер. Экран рендерится из
+  **`ScreenLayout`** (`GET /ui/<screen>`) через **`BlockRegistry`** (`core/sdui/`):
+  `Map<String type, Widget Function(BlockData, WidgetRef)>`, где значения — обёртки над
+  существующими виджетами. Не хардкодь композицию (порядок/видимость блоков) в экране, если
+  экран уже переведён на SDUI.
+- **Интерактивные флоу** (мастер добавления 04, sheet'ы ухода 06, auth 07/09, поиск 69,
+  редакторы расписаний/настроек 22/23/25/35) — **остаются нативными**, через SDUI НЕ гонятся.
+  Признак: локальный многошаговый state, валидация форм, идемпотентные мутации, модалки.
+
+**Жёсткие правила SDUI:**
+- **Новый блок-тип — contract-first.** Сперва схема в `api/openapi/resources/ui.yaml`
+  (`Block` через `oneOf`+discriminator по `type`), бамп версии каталога, регенерация клиента;
+  только потом backend начинает слать. За словарём блоков следит `contract-keeper`. Никаких
+  клиентских блоков под тип, которого нет в спеке.
+- **Forward-compatibility.** `screenLayoutProvider` шлёт `X-UI-Catalog-Version` текущего
+  релиза; сервер не отдаёт типы выше неё. **Неизвестный `type` → блок скипается** без краша
+  (graceful degradation, покрыть тестом).
+- **Действия — декларативно.** `ActionDescriptor` (`{ kind, method, path, payloadTemplate }`)
+  исполняет `ActionRunner` через существующий репозиторий/флоу. Идемпотентность care-events по
+  `clientId` (MADR-006) остаётся клиентской — не дублировать сетевой путь.
+- **Никакой логики в JSON.** Блоки только параметризуются данными; ветвления/циклы — признак,
+  что фича должна быть нативной, а не SDUI.
+- SDUI-ответ — обычный DTO (кодген, MADR-007) → domain `List<Block>` ручным маппером
+  (MADR-002), под тест. Сеть/state/тема/ошибки — без изменений.
 
 ---
 
@@ -246,6 +281,8 @@ branch 3 `/profile` — таб «Профиль» активен, не coming-so
 - Не генерить care-event `clientId` на каждый build — один на действие.
 - Не тащить пакеты без обоснования; проверять, что пакет живой и поддерживает текущий SDK.
 - Не смешивать слои (Flutter-импорт в domain = отказ ревью); domain/data не бросают исключения наружу.
+- Не гнать интерактивные флоу (мастер/sheet'ы/auth/поиск/редакторы) через SDUI — только нативно (MADR-015).
+- Не вводить клиентский блок-тип под тип, которого нет в `ui.yaml`; не класть логику (if/loop) в JSON-блоки.
 - Не апать мажорные версии пакетов без отдельной задачи.
 - Не использовать deprecated-виджеты и Skia-специфичные хаки (Impeller дефолтный).
 
@@ -253,7 +290,7 @@ branch 3 `/profile` — таб «Профиль» активен, не coming-so
 
 ## Источники правды
 
-- `docs/adr/` — MADR-001…014 (архитектурные решения мобилки).
+- `docs/adr/` — MADR-001…014 + **MADR-015 (гибридный SDUI)** — архитектурные решения мобилки.
 - `design_handoff_plantcare/api-contract.md` — REST-контракт backend (§1–11) + gaps (§12).
 - `design_handoff_plantcare/README.md` — продукт, 24 экрана, дизайн-токены.
 - `design_handoff_plantcare/SPRINT-1-flutter.md` — план первого спринта.
