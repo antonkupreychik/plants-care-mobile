@@ -185,7 +185,13 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(TextButton));
+      // Нажимаем кнопку «Повторить» внутри CatalogLoadMoreError, а не на
+      // сегментированный переключатель (тот тоже рендерит TextButton-ы).
+      final retryFinder = find.descendant(
+        of: find.byType(CatalogLoadMoreError),
+        matching: find.byType(TextButton),
+      );
+      await tester.tap(retryFinder);
       await tester.pump();
 
       expect(retried, isTrue);

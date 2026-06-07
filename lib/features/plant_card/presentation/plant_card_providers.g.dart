@@ -575,7 +575,7 @@ final class ArchivePlantProvider
   }
 }
 
-String _$archivePlantHash() => r'4e6692f8c7bed8b8f4533307111a7f0af5c861b2';
+String _$archivePlantHash() => r'260e9ed707a9f6ff002262c1fb6b53efe7f75252';
 
 /// Нотифайер архивации растения (`DELETE /api/v1/plants/{id}`).
 ///

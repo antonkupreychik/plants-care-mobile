@@ -54,7 +54,7 @@ final class DeleteAccountNotifierProvider
 }
 
 String _$deleteAccountNotifierHash() =>
-    r'5f174e02401aa19f7e51e3a98d16aacfe0ee80ad';
+    r'd504c7f078ea8d63c499709ebe3839dc07e9778c';
 
 /// Состояние процесса удаления аккаунта.
 ///
