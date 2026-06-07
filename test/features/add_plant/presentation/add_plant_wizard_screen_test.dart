@@ -288,7 +288,7 @@ void main() {
   });
 
   group('step 4 (photo + window + submit)', () {
-    /// Доводит мастер до шага 6 (акклиматизация, кнопка «Добавить в сад»)
+    /// Доводит мастер до шага 5 (дата + акклиматизация, кнопка «Добавить в сад»)
     /// с валидным именем «Алоэ» (без вида).
     Future<void> goToConfirm(WidgetTester tester) async {
       await _skipToNameStep(tester);
@@ -299,9 +299,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4 (photo/window)
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 5 (acquired date)
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 6 (acclimation)
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 5 (date + acclimation)
       await tester.pumpAndSettle();
     }
 
