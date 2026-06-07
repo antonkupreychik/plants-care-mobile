@@ -123,7 +123,7 @@ class PlantCardRepositoryImpl implements PlantCardRepository {
   @override
   Future<Result<void>> archivePlant(int plantId) async {
     try {
-      await _api.plants.deletePlant(
+      await _api.plants.archivePlant(
         id: plantId,
         extras: authScopeExtra(AuthScope.user),
       );

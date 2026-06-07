@@ -220,7 +220,7 @@ void main() {
       completer.complete(const Result.success(null));
       await firstFuture;
 
-      // deletePlant called exactly once despite two archive() invocations.
+      // archivePlant called exactly once despite two archive() invocations.
       verify(() => repo.archivePlant(_plantId)).called(1);
     });
   });
