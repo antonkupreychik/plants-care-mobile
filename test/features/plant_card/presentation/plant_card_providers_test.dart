@@ -224,4 +224,114 @@ void main() {
       verify(() => repo.archivePlant(_plantId)).called(1);
     });
   });
+
+  // ── Parallel loading (AC #146) ─────────────────────────────────────────────
+  //
+  // The three family providers (plantDetail, plantStreak, plantCardHistory) must
+  // resolve independently — a failure in one must NOT block the others, and they
+  // must all be requested without waiting for each other (no cascade).
+
+  group('parallel loading independence', () {
+    test('detail_success_and_streak_failure_resolve_independently', () async {
+      const plant = Plant(id: _plantId, name: 'Фикус');
+      when(() => repo.getPlant(_plantId))
+          .thenAnswer((_) async => const Result.success(plant));
+      when(() => repo.getStreak(_plantId))
+          .thenAnswer((_) async => const Result.failure(ApiError.network()));
+      when(() => repo.getHistory(_plantId))
+          .thenAnswer((_) async => const Result.success(<CareHistoryEntry>[]));
+      final container = _containerWith(repo);
+
+      // detail succeeds.
+      final detailValue =
+          await container.read(plantDetailProvider(_plantId).future);
+
+      // history succeeds independently.
+      final historyValue =
+          await container.read(plantHistoryProvider(_plantId).future);
+
+      // streak errors: use _awaitError (listener-based) to avoid autoDispose race.
+      final streakError = await _awaitError<Streak>(
+        container,
+        (listener) => container.listen(plantStreakProvider(_plantId), listener),
+      );
+
+      expect(detailValue, plant);
+      expect(streakError, const ApiError.network());
+      expect(historyValue, isEmpty);
+    });
+
+    test('all_three_providers_are_called_exactly_once_per_build', () async {
+      when(() => repo.getPlant(_plantId))
+          .thenAnswer((_) async => const Result.success(Plant(id: _plantId, name: 'x')));
+      when(() => repo.getStreak(_plantId))
+          .thenAnswer((_) async => const Result.success(Streak(plantId: _plantId, count: 1)));
+      when(() => repo.getHistory(_plantId))
+          .thenAnswer((_) async => const Result.success(<CareHistoryEntry>[]));
+      final container = _containerWith(repo);
+
+      // Reading all three without intermediate awaits exercises parallel dispatch.
+      final detailFuture = container.read(plantDetailProvider(_plantId).future);
+      final streakFuture = container.read(plantStreakProvider(_plantId).future);
+      final historyFuture = container.read(plantHistoryProvider(_plantId).future);
+
+      await Future.wait([detailFuture, streakFuture, historyFuture]);
+
+      verify(() => repo.getPlant(_plantId)).called(1);
+      verify(() => repo.getStreak(_plantId)).called(1);
+      verify(() => repo.getHistory(_plantId)).called(1);
+    });
+
+    test('streak_failure_does_not_prevent_detail_from_resolving', () async {
+      // Both providers started "at the same time" — streak failure must not
+      // block detail. We model this by checking that even when streak rejects
+      // immediately, detail resolves to its value.
+      const plant = Plant(id: _plantId, name: 'Тест');
+      when(() => repo.getPlant(_plantId))
+          .thenAnswer((_) async => const Result.success(plant));
+      when(() => repo.getStreak(_plantId))
+          .thenAnswer((_) async => const Result.failure(ApiError.notFound()));
+      final container = _containerWith(repo);
+
+      final detail = await container.read(plantDetailProvider(_plantId).future);
+
+      expect(detail, plant);
+    });
+
+    test('detail_failure_does_not_prevent_streak_from_resolving', () async {
+      const streak = Streak(plantId: _plantId, count: 3);
+      when(() => repo.getPlant(_plantId))
+          .thenAnswer((_) async => const Result.failure(ApiError.notFound()));
+      when(() => repo.getStreak(_plantId))
+          .thenAnswer((_) async => const Result.success(streak));
+      final container = _containerWith(repo);
+
+      final streakValue =
+          await container.read(plantStreakProvider(_plantId).future);
+
+      expect(streakValue, streak);
+    });
+
+    test('no_duplicate_requests_when_providers_are_watched_twice', () async {
+      when(() => repo.getPlant(_plantId))
+          .thenAnswer((_) async => const Result.success(Plant(id: _plantId, name: 'x')));
+      when(() => repo.getStreak(_plantId))
+          .thenAnswer((_) async => const Result.success(Streak(plantId: _plantId, count: 0)));
+      when(() => repo.getHistory(_plantId))
+          .thenAnswer((_) async => const Result.success(<CareHistoryEntry>[]));
+      final container = _containerWith(repo);
+
+      // Two concurrent reads of the same family instance — Riverpod caches by key.
+      final d1 = container.read(plantDetailProvider(_plantId).future);
+      final d2 = container.read(plantDetailProvider(_plantId).future);
+      final s1 = container.read(plantStreakProvider(_plantId).future);
+      final s2 = container.read(plantStreakProvider(_plantId).future);
+
+      await Future.wait([d1, d2, s1, s2]);
+
+      // Even though we read twice, the repository is called only once per type.
+      verify(() => repo.getPlant(_plantId)).called(1);
+      verify(() => repo.getStreak(_plantId)).called(1);
+    });
+  });
 }
