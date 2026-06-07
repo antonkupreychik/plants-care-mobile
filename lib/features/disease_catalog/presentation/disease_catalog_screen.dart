@@ -35,7 +35,8 @@ class DiseaseCatalogScreen extends ConsumerWidget {
         title: Text(l10n.diseaseCatalogTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go('/profile'),
         ),
       ),
       body: SafeArea(
