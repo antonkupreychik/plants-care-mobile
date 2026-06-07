@@ -4162,6 +4162,12 @@ abstract class AppLocalizations {
   /// **'Редактировать'**
   String get plantCardMenuEdit;
 
+  /// Пункт меню «⋯» на карточке растения — открыть мастер черенка (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Взять черенок'**
+  String get takeCuttingMenuLabel;
+
   /// Пункт меню «ещё» на карточке растения — отправить растение в архив
   ///
   /// In ru, this message translates to:
@@ -4503,6 +4509,288 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Выберите способ входа — все ваши растения останутся'**
   String get convertGuestScreenSubtitle;
+
+  /// Overline в шапке экрана родословной (18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Родословная'**
+  String get plantFamilyOverline;
+
+  /// Заголовок экрана родословной (18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Семья растения'**
+  String get plantFamilyTitle;
+
+  /// Подзаголовок под заголовком экрана родословной (18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Родитель и отводки — как растёт семья'**
+  String get plantFamilySubtitle;
+
+  /// Ссылка-вход в родословную из карточки растения (02)
+  ///
+  /// In ru, this message translates to:
+  /// **'Семья'**
+  String get plantFamilyViewAll;
+
+  /// Заголовок секции родословной на карточке растения (02)
+  ///
+  /// In ru, this message translates to:
+  /// **'Родословная'**
+  String get plantFamilySectionTitle;
+
+  /// Подпись под материнским растением в визуализации родословной
+  ///
+  /// In ru, this message translates to:
+  /// **'Родитель'**
+  String get plantFamilyParentLabel;
+
+  /// Заголовок списка прямых потомков/отводков
+  ///
+  /// In ru, this message translates to:
+  /// **'Отводки'**
+  String get plantFamilyChildrenLabel;
+
+  /// Подпись под одиночным потомком в визуализации родословной
+  ///
+  /// In ru, this message translates to:
+  /// **'Росток'**
+  String get plantFamilyChildLabel;
+
+  /// Подпись под текущим растением в визуализации родословной
+  ///
+  /// In ru, this message translates to:
+  /// **'Это растение'**
+  String get plantFamilyCurrentLabel;
+
+  /// Заголовок пустого состояния родословной (нет родителя и отводков)
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока нет родословной'**
+  String get plantFamilyEmptyTitle;
+
+  /// Тело пустого состояния родословной
+  ///
+  /// In ru, this message translates to:
+  /// **'У этого растения нет связанного родителя или отводков. Создавая новый отводок, укажи материнское растение — и здесь появится семья.'**
+  String get plantFamilyEmptyBody;
+
+  /// Счётчик прямых потомков/отводков растения
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет отводков} =1{1 отводок} few{{count} отводка} many{{count} отводков} other{{count} отводка}}'**
+  String plantFamilyChildrenCount(int count);
+
+  /// Надзаголовок шапки мастера черенка (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Новый росток'**
+  String get takeCuttingOverline;
+
+  /// Семантический ярлык кнопки «назад» в мастере черенка
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get takeCuttingBack;
+
+  /// Подпись карточки родителя в визуализации связи (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Родитель'**
+  String get takeCuttingParentLabel;
+
+  /// Подпись карточки ростка в визуализации связи (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Росток'**
+  String get takeCuttingChildLabel;
+
+  /// Плейсхолдер имени ростка в визуализации связи, пока имя не введено
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя?'**
+  String get takeCuttingChildNamePlaceholder;
+
+  /// Серифный заголовок мастера черенка с именем родителя (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Черенок от {parentName}'**
+  String takeCuttingTitle(String parentName);
+
+  /// Подзаголовок мастера черенка (экран 18)
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохраним связь — увидишь, как растёт семья'**
+  String get takeCuttingSubtitle;
+
+  /// Лейбл секции ввода имени ростка
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя ростка'**
+  String get takeCuttingNameSectionLabel;
+
+  /// Плейсхолдер поля ввода имени ростка
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя ростка'**
+  String get takeCuttingNameHint;
+
+  /// Чип-предложение имени ростка «Дочка»
+  ///
+  /// In ru, this message translates to:
+  /// **'Дочка'**
+  String get takeCuttingSuggestionDaughter;
+
+  /// Чип-предложение имени ростка «Зелёныш-2»
+  ///
+  /// In ru, this message translates to:
+  /// **'Зелёныш-2'**
+  String get takeCuttingSuggestionSprout;
+
+  /// Чип-предложение имени ростка «Мини-{имя родителя}»
+  ///
+  /// In ru, this message translates to:
+  /// **'Мини-{parentName}'**
+  String takeCuttingSuggestionMini(String parentName);
+
+  /// Лейбл секции выбора способа размножения
+  ///
+  /// In ru, this message translates to:
+  /// **'Как размножается'**
+  String get takeCuttingMethodSectionLabel;
+
+  /// Способ размножения «в воду»
+  ///
+  /// In ru, this message translates to:
+  /// **'В воду'**
+  String get takeCuttingMethodWater;
+
+  /// Подпись срока для способа «в воду»
+  ///
+  /// In ru, this message translates to:
+  /// **'~3 нед.'**
+  String get takeCuttingMethodWaterSub;
+
+  /// Способ размножения «в грунт»
+  ///
+  /// In ru, this message translates to:
+  /// **'В грунт'**
+  String get takeCuttingMethodSoil;
+
+  /// Подпись срока для способа «в грунт»
+  ///
+  /// In ru, this message translates to:
+  /// **'~5 нед.'**
+  String get takeCuttingMethodSoilSub;
+
+  /// Способ размножения «мох»
+  ///
+  /// In ru, this message translates to:
+  /// **'Мох'**
+  String get takeCuttingMethodMoss;
+
+  /// Подпись срока для способа «мох»
+  ///
+  /// In ru, this message translates to:
+  /// **'долго'**
+  String get takeCuttingMethodMossSub;
+
+  /// Лейбл секции выбора даты среза черенка
+  ///
+  /// In ru, this message translates to:
+  /// **'Когда срезал(а)'**
+  String get takeCuttingDateSectionLabel;
+
+  /// Подпись под датой среза, когда выбрана сегодняшняя дата
+  ///
+  /// In ru, this message translates to:
+  /// **'Сегодня · день рождения семьи'**
+  String get takeCuttingDateTodayHint;
+
+  /// Основная кнопка мастера — создать росток
+  ///
+  /// In ru, this message translates to:
+  /// **'Завести в семью'**
+  String get takeCuttingSubmit;
+
+  /// Вторичная кнопка мастера — закрыть без изменений
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get takeCuttingCancel;
+
+  /// Снэкбар-подтверждение успешного создания ростка
+  ///
+  /// In ru, this message translates to:
+  /// **'Росток заведён в семью'**
+  String get takeCuttingSuccessSnack;
+
+  /// Строка «Удалить аккаунт» в секции настроек профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить аккаунт'**
+  String get profileDeleteAccount;
+
+  /// Заголовок экрана удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Удаление аккаунта'**
+  String get deleteAccountScreenTitle;
+
+  /// Заголовок предупреждения о необратимости удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Это действие нельзя отменить'**
+  String get deleteAccountWarningTitle;
+
+  /// Подробное описание того, что будет удалено при удалении аккаунта (требование App Store)
+  ///
+  /// In ru, this message translates to:
+  /// **'Будут удалены все ваши данные: растения и их история ухода, расписания, список покупок, настройки и токены сессий. Telegram-привязка также удаляется — при следующем /start создаётся новый аккаунт. Восстановление невозможно.'**
+  String get deleteAccountWarningBody;
+
+  /// Метка чекбокса подтверждения удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Я понимаю, что данные будут удалены безвозвратно'**
+  String get deleteAccountConfirmLabel;
+
+  /// Кнопка подтверждения удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить аккаунт'**
+  String get deleteAccountCta;
+
+  /// Заголовок финального диалога подтверждения удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить аккаунт?'**
+  String get deleteAccountDialogTitle;
+
+  /// Тело финального диалога подтверждения удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Аккаунт и все данные будут удалены немедленно. Это действие необратимо.'**
+  String get deleteAccountDialogBody;
+
+  /// Кнопка отмены в диалоге удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get deleteAccountDialogCancel;
+
+  /// Кнопка подтверждения удаления в диалоге удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get deleteAccountDialogConfirm;
+
+  /// Снэкбар ошибки при удалении аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось удалить аккаунт. Попробуйте ещё раз.'**
+  String get deleteAccountErrorSnack;
 }
 
 class _AppLocalizationsDelegate

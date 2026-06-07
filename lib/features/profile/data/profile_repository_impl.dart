@@ -32,6 +32,16 @@ class ProfileRepositoryImpl implements ProfileRepository {
     }
   }
 
+  @override
+  Future<Result<void>> deleteAccount() async {
+    try {
+      await _api.me.deleteMe(extras: authScopeExtra(AuthScope.user));
+      return const Result.success(null);
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
   ApiError _toApiError(DioException e) =>
       e.error is ApiError ? e.error! as ApiError : const ApiError.unknown();
 }

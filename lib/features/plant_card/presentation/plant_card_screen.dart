@@ -101,6 +101,10 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
                         'editPlant',
                         pathParameters: {'id': '${widget.plantId}'},
                       ),
+                      onTakeCutting: () => context.pushNamed(
+                        'takeCutting',
+                        pathParameters: {'id': '${widget.plantId}'},
+                      ),
                       onArchive: () => _confirmArchive(context, l10n),
                     ),
                   ),
@@ -240,6 +244,26 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
                   ),
                 ),
 
+                // РОДОСЛОВНАЯ (экран 18) — заголовок + ссылка-вход в обход
+                // семьи растения (родитель → отводки). Имя растения (если
+                // деталь загружена) пробрасываем для overline через extra.
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 24, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: SectionTitle(
+                      title: l10n.plantFamilySectionTitle,
+                      trailing: _ViewAllHistoryLink(
+                        label: l10n.plantFamilyViewAll,
+                        onTap: () => context.pushNamed(
+                          'plantFamily',
+                          pathParameters: {'id': '${widget.plantId}'},
+                          extra: detail.value?.name,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
                 // Запас под плавающую кнопку действия.
                 const SliverToBoxAdapter(child: SizedBox(height: 120)),
               ],
@@ -303,11 +327,13 @@ class _TopBar extends StatelessWidget {
   const _TopBar({
     required this.isArchiving,
     required this.onEdit,
+    required this.onTakeCutting,
     required this.onArchive,
   });
 
   final bool isArchiving;
   final VoidCallback onEdit;
+  final VoidCallback onTakeCutting;
   final VoidCallback onArchive;
 
   @override
@@ -377,6 +403,14 @@ class _TopBar extends StatelessWidget {
               onTap: () {
                 Navigator.of(ctx).pop();
                 onEdit();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.content_cut_rounded),
+              title: Text(l10n.takeCuttingMenuLabel),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                onTakeCutting();
               },
             ),
             ListTile(
