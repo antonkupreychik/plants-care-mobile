@@ -6,7 +6,14 @@ import 'package:json_annotation/json_annotation.dart';
 
 /// Публичный тип ухода. **Намеренно не совпадает** один-к-одному с.
 /// внутренним `TaskType`: API-контракт стабилен и не зависит от.
-/// эволюции доменной модели. Тип `SOIL_CHECK` через REST не доступен.
+/// эволюции доменной модели.
+///
+/// `SOIL_CHECK` — отметка «проверил почву». Доступна в `POST /care-events`.
+/// (issue #222), чтобы пользователь мог записать ручную проверку, как это.
+/// умеет Telegram-бот. Записи `SOIL_CHECK` **возвращаются** в.
+/// `GET /plants/{id}/history` (мобильный дневник их показывает), но.
+/// **исключаются** из агрегата `GET /plants/{id}/history/summary.byType` —.
+/// сводка считает только полив/опрыскивание/удобрение.
 ///
 @JsonEnum()
 enum CareEventType {
@@ -16,6 +23,8 @@ enum CareEventType {
   spray('SPRAY'),
   @JsonValue('FERTILIZE')
   fertilize('FERTILIZE'),
+  @JsonValue('SOIL_CHECK')
+  soilCheck('SOIL_CHECK'),
   /// Default value for all unparsed values, allows backward compatibility when adding new values on the backend.
   $unknown(null);
 

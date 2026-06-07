@@ -8,6 +8,10 @@ import 'package:retrofit/retrofit.dart';
 import '../models/apple_auth_request.dart';
 import '../models/email_request.dart';
 import '../models/google_auth_request.dart';
+import '../models/guest_convert_request.dart';
+import '../models/guest_convert_response.dart';
+import '../models/guest_login_request.dart';
+import '../models/guest_login_response.dart';
 import '../models/logout_request.dart';
 import '../models/magic_link_verify_request.dart';
 import '../models/refresh_request.dart';
@@ -95,6 +99,45 @@ abstract class AuthClient {
   /// ротации старый refresh получит `401 TOKEN_REVOKED`.
   @POST('/api/v1/auth/logout-all')
   Future<void> logoutAll({
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Гостевой вход / восстановление сессии.
+  ///
+  /// Принимает `deviceId` (UUID4, генерируется устройством один раз).
+  /// - Если гость с таким `deviceId` уже существует — восстанавливает сессию.
+  ///   (`isNewUser: false`).
+  /// - Иначе — создаёт нового гостевого пользователя (`isNewUser: true`).
+  ///
+  /// Гость получает стандартную пару access+refresh токенов и имеет полный.
+  /// доступ ко всем REST-эндпоинтам (в V1 ограничений нет).
+  ///
+  /// Rate-limit: не более 3 **новых** гостей с одного IP за час.
+  /// Restore (существующий deviceId) от лимита не зависит.
+  @POST('/api/v1/auth/guest')
+  Future<GuestLoginResponse> guestLogin({
+    @Body() required GuestLoginRequest body,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Конвертировать гостевой аккаунт в реальный.
+  ///
+  /// Привязывает email/Apple/Google к гостевому аккаунту. Данные пользователя.
+  /// (растения, история) сохраняются. Требует валидный bearer-токен гостя.
+  ///
+  /// Поддерживаемые провайдеры:.
+  /// - `EMAIL` — отправляет magic-link на указанный email. `status="EMAIL_SENT"`;.
+  ///   токены обновятся после верификации через `POST /auth/email/verify`.
+  ///   `accessToken`/`refreshToken` в ответе — `null`.
+  /// - `GOOGLE` — привязывает Google-аккаунт. `status="CONVERTED"`, новая пара.
+  ///   токенов в ответе.
+  /// - `APPLE` — привязывает Apple-аккаунт. `status="CONVERTED"`, новая пара.
+  ///   токенов в ответе.
+  ///
+  /// После конвертации `deviceId` очищается, `isGuest` становится `false`.
+  @POST('/api/v1/auth/guest/convert')
+  Future<GuestConvertResponse> guestConvert({
+    @Body() required GuestConvertRequest body,
     @Extras() Map<String, dynamic>? extras,
   });
 }

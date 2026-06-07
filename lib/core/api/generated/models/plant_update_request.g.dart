@@ -11,6 +11,8 @@ PlantUpdateRequest _$PlantUpdateRequestFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       notes: json['notes'] as String?,
       locationId: (json['locationId'] as num?)?.toInt(),
+      speciesId: (json['speciesId'] as num?)?.toInt(),
+      clearSpecies: json['clearSpecies'] as bool?,
     );
 
 Map<String, dynamic> _$PlantUpdateRequestToJson(PlantUpdateRequest instance) =>
@@ -18,4 +20,6 @@ Map<String, dynamic> _$PlantUpdateRequestToJson(PlantUpdateRequest instance) =>
       'name': instance.name,
       'notes': instance.notes,
       'locationId': instance.locationId,
+      'speciesId': instance.speciesId,
+      'clearSpecies': instance.clearSpecies,
     };

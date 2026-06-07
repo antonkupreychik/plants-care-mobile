@@ -16,6 +16,7 @@ MeResponse _me({
       name: 'Test',
       plantsTotal: 3,
       tasksToday: 0,
+      totalCareEvents: 0,
       notificationsUnread: 0,
       quietHoursStart: '22:00',
       quietHoursEnd: '08:00',
@@ -29,6 +30,7 @@ MeResponse _me({
       googleLinked: false,
       emailLinked: false,
       telegramLinked: true,
+      isGuest: false,
     );
 
 void main() {

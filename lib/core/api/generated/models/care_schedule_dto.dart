@@ -39,6 +39,8 @@ class CareScheduleDto {
 
   /// Ближайшее срабатывание (UTC). Заполнено только если enabled=true.
   final DateTime? nextDueAt;
+
+  /// Сезонные параметры расписания (mobile G20, issue
   final SeasonalScheduleDto seasonal;
 
   Map<String, Object?> toJson() => _$CareScheduleDtoToJson(this);

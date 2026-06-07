@@ -4,6 +4,8 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'plant_dto_health_zone.dart';
+
 part 'plant_dto.g.dart';
 
 /// Растение в формате REST API. Поля `locationName` / `speciesName`.
@@ -22,8 +24,17 @@ class PlantDto {
     this.speciesId,
     this.speciesName,
     this.createdAt,
+    this.healthInsufficientData,
+    this.healthScore,
+    this.healthZone,
     this.acquiredAt,
     this.inAcclimation,
+    this.acclimationUntil,
+    this.archivedAt,
+    this.gifted,
+    this.note,
+    this.totalCareDays,
+    this.totalCareEvents,
   });
   
   factory PlantDto.fromJson(Map<String, Object?> json) => _$PlantDtoFromJson(json);
@@ -58,13 +69,52 @@ class PlantDto {
   /// Момент создания записи в БД (UTC).
   final DateTime? createdAt;
 
-  /// Дата приобретения растения (ISO-8601 date). Задаётся при создании, null — не указана.
+  /// true — данных мало (< 3 активных записей ухода), score/zone равны null.
+  final bool? healthInsufficientData;
+
+  /// Балл здоровья 0–100 (mobile gap G16). null если insufficientData.
+  final int? healthScore;
+
+  /// Цветовая зона. null если insufficientData.
+  final PlantDtoHealthZone? healthZone;
+
+  /// Дата покупки/получения растения (ISO-8601). null если не указана.
   final DateTime? acquiredAt;
 
-  /// `true` — растение находится в периоде акклиматизации (21 день мягкого.
-  /// режима ухода). Включается при создании с `isNew = true`.
-  ///
+  /// true пока acclimation_until > now(). Вычисляемое поле, в БД не хранится.
   final bool? inAcclimation;
+
+  /// Конец периода акклиматизации (UTC). null если акклиматизация не активна.
+  final DateTime? acclimationUntil;
+
+  /// Момент архивации (UTC). Заполняется только в выдаче.
+  /// `GET /plants?status=archived` и в ответах archive/restore.
+  /// (mobile gap G15, issue #219). null для активных растений.
+  ///
+  final DateTime? archivedAt;
+
+  /// Причина выбытия (issue #219): true — растение подарили, false —.
+  /// погибло. null если не указано или растение активно. Заполняется.
+  /// только в архивной выдаче и ответах archive/restore.
+  ///
+  final bool? gifted;
+
+  /// Заметка о выбытии растения (issue #219), напр. «Залила соседка».
+  /// null если не задана. Заполняется только в архивной выдаче и ответах.
+  /// archive/restore. Это отдельное от `notes` поле.
+  ///
+  final String? note;
+
+  /// Сколько дней растение было с пользователем: `archivedAt - acquiredAt`.
+  /// (или `createdAt`, если `acquiredAt` не задан). Заполняется только в.
+  /// архивной выдаче (issue #219).
+  ///
+  final int? totalCareDays;
+
+  /// Сколько раз пользователь отмечал уход за этим растением (COUNT из.
+  /// `care_history`). Заполняется только в архивной выдаче (issue #219).
+  ///
+  final int? totalCareEvents;
 
   Map<String, Object?> toJson() => _$PlantDtoToJson(this);
 }

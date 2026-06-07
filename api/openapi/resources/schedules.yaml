@@ -112,30 +112,7 @@ schemas:
         # (tool/bundle_openapi.dart), а allOf с единственным $ref семантически
         # эквивалентен прямому $ref — поэтому ссылаемся напрямую.
         $ref: '#/schemas/SeasonalScheduleDto'
-
-  SeasonalScheduleDto:
-    type: object
-    description: |
-      Сезонные параметры расписания ухода (issue #188 backend / G20 mobile #48).
-      Показывает, включена ли авто-подстройка и каким будет эффективный
-      интервал в каждый из двух сезонов (лето / зима).
-    required: [active, summerIntervalDays, winterIntervalDays]
-    properties:
-      active:
-        type: boolean
-        description: Активна ли авто-подстройка по сезонам для этого растения.
-      summerIntervalDays:
-        type: integer
-        format: int32
-        minimum: 1
-        maximum: 60
-        description: Эффективный интервал ухода в летний период (дней).
-      winterIntervalDays:
-        type: integer
-        format: int32
-        minimum: 1
-        maximum: 60
-        description: Эффективный интервал ухода в зимний период (дней).
+        description: Сезонные параметры расписания (mobile G20, issue #188).
 
   CareScheduleUpdateRequest:
     type: object
@@ -171,3 +148,54 @@ schemas:
           ON — включить только для этого растения;
           OFF — выключить только для этого растения.
           Отсутствие поля — текущее значение не меняется.
+
+  SeasonalScheduleDto:
+    type: object
+    description: |
+      Сезонные параметры расписания ухода (issue #188, mobile G20).
+      Показывает, включена ли авто-подстройка и каким будет эффективный
+      интервал в каждый из двух сезонов (лето / зима).
+    required: [active, summerIntervalDays, winterIntervalDays]
+    properties:
+      active:
+        type: boolean
+        description: Активна ли авто-подстройка по сезонам для этого растения.
+      summerIntervalDays:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 60
+        description: Эффективный интервал ухода в летний период (дней).
+      winterIntervalDays:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 60
+        description: Эффективный интервал ухода в зимний период (дней).
+
+  ScheduleInput:
+    type: object
+    description: Расписание ухода при создании растения.
+    required: [type, every, unit]
+    properties:
+      type:
+        type: string
+        enum: [WATERING, MISTING, FERTILIZING, SOIL_CHECK]
+        example: WATERING
+      every:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 365
+        example: 7
+      unit:
+        type: string
+        enum: [DAY]
+        example: DAY
+      amountMl:
+        type: integer
+        format: int32
+        nullable: true
+        minimum: 1
+        description: Объём полива в мл. Только для WATERING.
+        example: 200

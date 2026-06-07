@@ -13,6 +13,7 @@ MeResponse _$MeResponseFromJson(Map<String, dynamic> json) => MeResponse(
   name: json['name'] as String?,
   plantsTotal: (json['plantsTotal'] as num).toInt(),
   tasksToday: (json['tasksToday'] as num).toInt(),
+  totalCareEvents: (json['totalCareEvents'] as num).toInt(),
   notificationsUnread: (json['notificationsUnread'] as num).toInt(),
   quietHoursStart: json['quietHoursStart'] as String,
   quietHoursEnd: json['quietHoursEnd'] as String,
@@ -26,8 +27,10 @@ MeResponse _$MeResponseFromJson(Map<String, dynamic> json) => MeResponse(
   googleLinked: json['googleLinked'] as bool,
   emailLinked: json['emailLinked'] as bool,
   telegramLinked: json['telegramLinked'] as bool,
+  isGuest: json['isGuest'] as bool,
   email: json['email'] as String?,
   avatar: json['avatar'] as String?,
+  calendarSubscriptionUrl: json['calendarSubscriptionUrl'] as String?,
 );
 
 Map<String, dynamic> _$MeResponseToJson(MeResponse instance) =>
@@ -40,6 +43,7 @@ Map<String, dynamic> _$MeResponseToJson(MeResponse instance) =>
       'avatar': instance.avatar,
       'plantsTotal': instance.plantsTotal,
       'tasksToday': instance.tasksToday,
+      'totalCareEvents': instance.totalCareEvents,
       'notificationsUnread': instance.notificationsUnread,
       'quietHoursStart': instance.quietHoursStart,
       'quietHoursEnd': instance.quietHoursEnd,
@@ -53,4 +57,6 @@ Map<String, dynamic> _$MeResponseToJson(MeResponse instance) =>
       'googleLinked': instance.googleLinked,
       'emailLinked': instance.emailLinked,
       'telegramLinked': instance.telegramLinked,
+      'isGuest': instance.isGuest,
+      'calendarSubscriptionUrl': instance.calendarSubscriptionUrl,
     };

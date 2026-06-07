@@ -19,6 +19,7 @@ class MeResponse {
     required this.name,
     required this.plantsTotal,
     required this.tasksToday,
+    required this.totalCareEvents,
     required this.notificationsUnread,
     required this.quietHoursStart,
     required this.quietHoursEnd,
@@ -32,8 +33,10 @@ class MeResponse {
     required this.googleLinked,
     required this.emailLinked,
     required this.telegramLinked,
+    required this.isGuest,
     this.email,
     this.avatar,
+    this.calendarSubscriptionUrl,
   });
   
   factory MeResponse.fromJson(Map<String, Object?> json) => _$MeResponseFromJson(json);
@@ -66,6 +69,11 @@ class MeResponse {
   /// ещё не проставлена. Это pending-подмножество `GET /api/v1/today`.
   ///
   final int tasksToday;
+
+  /// Суммарное число уходов за всё время пользователя (включая архивированные.
+  /// растения). Компенсирующие (отменённые) записи не учитываются.
+  ///
+  final int totalCareEvents;
 
   /// Плейсхолдер: фид уведомлений (issue #183) ещё не влит, поэтому поле.
   /// всегда `0`. Будет считаться по-настоящему после появления фида.
@@ -109,6 +117,17 @@ class MeResponse {
 
   /// Привязан ли Telegram-аккаунт.
   final bool telegramLinked;
+
+  /// `true` для гостевых аккаунтов (зарегистрированных через `POST /auth/guest`).
+  /// Мобилка использует это поле для показа баннера «Сохраните данные» (issue #227).
+  ///
+  final bool isGuest;
+
+  /// Готовый URL подписки на .ics-календарь вида `https://.../calendar/{token}.ics`.
+  /// `null`, если токен ещё не создан — он генерируется лениво при первом запросе.
+  /// к эндпоинту `GET /calendar/{token}.ics` (issue #79, #208).
+  ///
+  final String? calendarSubscriptionUrl;
 
   Map<String, Object?> toJson() => _$MeResponseToJson(this);
 }

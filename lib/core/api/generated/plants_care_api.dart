@@ -8,6 +8,7 @@ import 'clients/auth_client.dart';
 import 'clients/health_client.dart';
 import 'clients/plants_client.dart';
 import 'clients/plant_history_client.dart';
+import 'clients/plant_events_client.dart';
 import 'clients/schedules_client.dart';
 import 'clients/locations_client.dart';
 import 'clients/care_events_client.dart';
@@ -18,11 +19,14 @@ import 'clients/stats_client.dart';
 import 'clients/reports_client.dart';
 import 'clients/species_client.dart';
 import 'clients/care_types_client.dart';
+import 'clients/diseases_client.dart';
 import 'clients/shopping_client.dart';
 import 'clients/notifications_client.dart';
-import 'clients/me_client.dart';
 import 'clients/vacation_client.dart';
+import 'clients/me_client.dart';
 import 'clients/sharing_client.dart';
+import 'clients/devices_client.dart';
+import 'clients/sync_client.dart';
 
 /// Plants Care API `v0.1.0`.
 ///
@@ -67,6 +71,7 @@ class PlantsCareApi {
   HealthClient? _health;
   PlantsClient? _plants;
   PlantHistoryClient? _plantHistory;
+  PlantEventsClient? _plantEvents;
   SchedulesClient? _schedules;
   LocationsClient? _locations;
   CareEventsClient? _careEvents;
@@ -77,11 +82,14 @@ class PlantsCareApi {
   ReportsClient? _reports;
   SpeciesClient? _species;
   CareTypesClient? _careTypes;
+  DiseasesClient? _diseases;
   ShoppingClient? _shopping;
   NotificationsClient? _notifications;
-  MeClient? _me;
   VacationClient? _vacation;
+  MeClient? _me;
   SharingClient? _sharing;
+  DevicesClient? _devices;
+  SyncClient? _sync;
 
   AuthClient get auth => _auth ??= AuthClient(_dio, baseUrl: _baseUrl);
 
@@ -90,6 +98,8 @@ class PlantsCareApi {
   PlantsClient get plants => _plants ??= PlantsClient(_dio, baseUrl: _baseUrl);
 
   PlantHistoryClient get plantHistory => _plantHistory ??= PlantHistoryClient(_dio, baseUrl: _baseUrl);
+
+  PlantEventsClient get plantEvents => _plantEvents ??= PlantEventsClient(_dio, baseUrl: _baseUrl);
 
   SchedulesClient get schedules => _schedules ??= SchedulesClient(_dio, baseUrl: _baseUrl);
 
@@ -111,13 +121,19 @@ class PlantsCareApi {
 
   CareTypesClient get careTypes => _careTypes ??= CareTypesClient(_dio, baseUrl: _baseUrl);
 
+  DiseasesClient get diseases => _diseases ??= DiseasesClient(_dio, baseUrl: _baseUrl);
+
   ShoppingClient get shopping => _shopping ??= ShoppingClient(_dio, baseUrl: _baseUrl);
 
   NotificationsClient get notifications => _notifications ??= NotificationsClient(_dio, baseUrl: _baseUrl);
 
-  MeClient get me => _me ??= MeClient(_dio, baseUrl: _baseUrl);
-
   VacationClient get vacation => _vacation ??= VacationClient(_dio, baseUrl: _baseUrl);
 
+  MeClient get me => _me ??= MeClient(_dio, baseUrl: _baseUrl);
+
   SharingClient get sharing => _sharing ??= SharingClient(_dio, baseUrl: _baseUrl);
+
+  DevicesClient get devices => _devices ??= DevicesClient(_dio, baseUrl: _baseUrl);
+
+  SyncClient get sync => _sync ??= SyncClient(_dio, baseUrl: _baseUrl);
 }

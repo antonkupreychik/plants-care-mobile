@@ -40,6 +40,10 @@
       "description": "История событий ухода для конкретного растения с пагинацией."
     },
     {
+      "name": "Plant Events",
+      "description": "Журнал редких разовых событий растения (пересадка, замена грунта,\nобрезка, обработка от вредителей) с пагинацией и дедупом повторных нажатий.\n"
+    },
+    {
       "name": "Locations",
       "description": "Локации (комнаты/места) пользователя, в которых стоят растения. Каждый\nпользователь имеет «дефолтную» локацию, создаваемую автоматически.\n"
     },
@@ -72,6 +76,14 @@
       "description": "Публичный справочник типов ухода (полив, опрыскивание, и т.п.). Без авторизации."
     },
     {
+      "name": "Diseases",
+      "description": "Публичный справочник болезней и вредителей комнатных растений. Без авторизации."
+    },
+    {
+      "name": "Weather",
+      "description": "Текущий снимок погоды для рекомендаций по уходу."
+    },
+    {
       "name": "Schedules",
       "description": "Расписания ухода конкретного растения (полив, опрыскивание, удобрение,\nпроверка почвы). Чтение всех четырёх и редактирование одного по типу.\n"
     },
@@ -89,11 +101,19 @@
     },
     {
       "name": "Vacation",
-      "description": "Режим отпуска (issue #189, mobile G21, экран 25): включение/выключение\nпаузы напоминаний на диапазон дат. Дедлайны не переносятся.\n"
+      "description": "Режим отпуска (issue #189, mobile G21, экран 25): пользователь задаёт\nдиапазон дат отъезда; на этот период напоминания приостанавливаются.\nДедлайны не переносятся — просроченные задачи показываются в сводке\n«С возвращением!» после окончания отпуска.\n"
     },
     {
       "name": "Sharing",
-      "description": "Совместный уход (issue #191, mobile G22, экран 26): приглашение\nсоухаживающих на набор растений с правом отмечать уход.\n"
+      "description": "Совместный уход (gap G22, экран 26): владелец приглашает соухаживающего\nпо контакту (@username / телефон), выбирает растения и даёт право\nотмечать уход.\n"
+    },
+    {
+      "name": "Devices",
+      "description": "Регистрация и отвязка мобильных устройств для push-уведомлений\n(issue #175, ADR-014). Хранит push-токены (FCM / APNs) для будущей\nотправки уведомлений.\n"
+    },
+    {
+      "name": "Sync",
+      "description": "Офлайн-синхронизация (issue #91): инкрементальная выдача изменений для\nмобильного приложения. Клиент передаёт `since` (серверное время из предыдущего\nответа) и получает все сущности, изменённые после этого момента, а также\nсписок удалений. Server timestamp wins при конфликтах.\n"
     }
   ],
   "paths": {
@@ -339,6 +359,93 @@
         }
       }
     },
+    "/api/v1/auth/guest": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "guestLogin",
+        "summary": "Гостевой вход / восстановление сессии",
+        "description": "Принимает `deviceId` (UUID4, генерируется устройством один раз).\n- Если гость с таким `deviceId` уже существует — восстанавливает сессию\n  (`isNewUser: false`).\n- Иначе — создаёт нового гостевого пользователя (`isNewUser: true`).\n\nГость получает стандартную пару access+refresh токенов и имеет полный\nдоступ ко всем REST-эндпоинтам (в V1 ограничений нет).\n\nRate-limit: не более 3 **новых** гостей с одного IP за час.\nRestore (существующий deviceId) от лимита не зависит.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuestLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Пара токенов выдана (новый гость или восстановление).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuestLoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/guest/convert": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "guestConvert",
+        "summary": "Конвертировать гостевой аккаунт в реальный",
+        "description": "Привязывает email/Apple/Google к гостевому аккаунту. Данные пользователя\n(растения, история) сохраняются. Требует валидный bearer-токен гостя.\n\nПоддерживаемые провайдеры:\n- `EMAIL` — отправляет magic-link на указанный email. `status=\"EMAIL_SENT\"`;\n  токены обновятся после верификации через `POST /auth/email/verify`.\n  `accessToken`/`refreshToken` в ответе — `null`.\n- `GOOGLE` — привязывает Google-аккаунт. `status=\"CONVERTED\"`, новая пара\n  токенов в ответе.\n- `APPLE` — привязывает Apple-аккаунт. `status=\"CONVERTED\"`, новая пара\n  токенов в ответе.\n\nПосле конвертации `deviceId` очищается, `isGuest` становится `false`.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuestConvertRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Конвертация запущена или завершена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuestConvertResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      }
+    },
     "/api/v1/health": {
       "get": {
         "tags": [
@@ -371,13 +478,28 @@
         ],
         "operationId": "listPlants",
         "summary": "Список растений пользователя",
-        "description": "Возвращает страницу растений, принадлежащих текущему пользователю\n(`sub` из bearer-токена). Архивированные (soft-deleted) растения в\nвыдачу не попадают.\n\nМожно фильтровать по локации параметром `locationId`. Пагинация —\nклассическая `offset/limit`.\n\nПараметры приводятся к безопасным границам:\n* `limit` обрезается до диапазона **[1, 100]** (всё, что больше 100,\n  становится 100; всё, что меньше 1 — становится 1);\n* `offset` ниже нуля становится 0.\n",
+        "description": "Возвращает страницу растений, принадлежащих текущему пользователю\n(`sub` из bearer-токена).\n\nПо умолчанию (без `status` или `status=active`) архивированные\n(soft-deleted) растения в выдачу **не** попадают. С `status=archived`\nвозвращаются только архивные растения, и для них дополнительно\nзаполняются поля выбытия: `archivedAt`, `gifted`, `note`,\n`totalCareDays`, `totalCareEvents` (mobile gap G15, issue #219).\n\nМожно фильтровать по локации параметром `locationId`. Пагинация —\nклассическая `offset/limit`.\n\nПараметры приводятся к безопасным границам:\n* `limit` обрезается до диапазона **[1, 100]** (всё, что больше 100,\n  становится 100; всё, что меньше 1 — становится 1);\n* `offset` ниже нуля становится 0.\n",
         "security": [
           {
             "bearerAuth": []
           }
         ],
         "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Фильтр по жизненному статусу растения. `active` (или отсутствие\nпараметра) — только живые (`archived_at IS NULL`). `archived` —\nтолько архивные, с заполненными полями выбытия.\n",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "archived"
+              ],
+              "default": "active",
+              "example": "archived"
+            }
+          },
           {
             "name": "locationId",
             "in": "query",
@@ -574,8 +696,8 @@
           "Plants"
         ],
         "operationId": "deletePlant",
-        "summary": "Архивировать растение (soft-delete)",
-        "description": "Помечает растение как удалённое (`archived_at = now()` в UTC). Запись\nв БД остаётся, но перестаёт появляться во всех `/api/v1/plants/*`\nвыборках. Восстановления через API в этой версии нет.\n",
+        "summary": "Удалить растение навсегда (hard-delete)",
+        "description": "Безвозвратно удаляет растение и каскадно связанные данные\n(`care_history`, `care_schedules`, `notifications_log`, годовщины,\nпредложения по пересадке). Доступно **только для уже архивированных**\nрастений (барьер от случайного удаления, mobile gap G15, issue #219):\nактивное растение сначала архивируют через\n`PATCH /api/v1/plants/{id}/archive`.\n\n* `204` — растение удалено;\n* `400` — растение активно (не архивировано), hard-delete запрещён;\n* `404` — растение не найдено или принадлежит другому пользователю.\n",
         "security": [
           {
             "bearerAuth": []
@@ -588,13 +710,112 @@
         ],
         "responses": {
           "204": {
-            "description": "Растение архивировано. Тело ответа отсутствует."
+            "description": "Растение удалено навсегда. Тело ответа отсутствует."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/plants/{id}/archive": {
+      "patch": {
+        "tags": [
+          "Plants"
+        ],
+        "operationId": "archivePlant",
+        "summary": "Архивировать растение (soft-delete с метаданными)",
+        "description": "Помечает растение как выбывшее (`archived_at = now()` в UTC) и\nсохраняет причину выбытия (mobile gap G15, issue #219). После\nархивации растение пропадает из обычного `GET /plants` и появляется\nв `GET /plants?status=archived`. Расписания ухода **не** удаляются —\nостаются для ретроспективы.\n\n* `200` — обновлённый `PlantDto` (`archived=true`, `archivedAt` задано);\n* `404` — растение не найдено или принадлежит другому пользователю;\n* `409` — растение уже архивировано.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlantArchiveRequest"
+              },
+              "example": {
+                "gifted": false,
+                "note": "Залила соседка"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Растение архивировано.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlantDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      }
+    },
+    "/api/v1/plants/{id}/restore": {
+      "post": {
+        "tags": [
+          "Plants"
+        ],
+        "operationId": "restorePlant",
+        "summary": "Восстановить растение из архива",
+        "description": "Снимает архивацию (`archived_at = NULL`) и сбрасывает метаданные\nвыбытия (mobile gap G15, issue #219). Растение снова появляется в\nобычном `GET /plants`. Расписания ухода автоматически **не**\nвосстанавливаются — пользователь создаёт их вручную.\n\n* `200` — обновлённый `PlantDto` (`archived=false`, `archivedAt=null`);\n* `404` — растение не найдено или принадлежит другому пользователю;\n* `409` — растение не в архиве.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Растение восстановлено.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlantDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         }
       }
@@ -606,7 +827,7 @@
         ],
         "operationId": "getPlantHistory",
         "summary": "История событий ухода за растением",
-        "description": "Возвращает страницу истории ухода за растением, принадлежащим\nтекущему пользователю (`sub` из bearer-токена).\n\nВ выдачу попадают только активные (не отменённые) записи всех типов\nухода **кроме `SOIL_CHECK`** — это служебный тип, который наружу не\nвыставляется.\n\nПагинация — `limit/offset`. `limit` строго в диапазоне [1, 100]\n(значения вне диапазона отдаются как 400). `offset` < 0 нормализуется\nв 0.\n",
+        "description": "Возвращает страницу истории ухода за растением, принадлежащим\nтекущему пользователю (`sub` из bearer-токена).\n\nВ выдачу попадают все активные (не отменённые) записи ухода, включая\n`SOIL_CHECK` (issue #222) — мобильный дневник показывает проверки\nгрунта наравне с остальными типами.\n\nПагинация — `limit/offset`. `limit` строго в диапазоне [1, 100]\n(значения вне диапазона отдаются как 400). `offset` < 0 нормализуется\nв 0.\n\nОпциональный параметр `type` позволяет фильтровать историю по типу\nухода. Допустимые значения: `WATER`, `SPRAY`, `FERTILIZE`, `SOIL_CHECK`.\nЕсли не задан — возвращаются все типы.\n",
         "security": [
           {
             "bearerAuth": []
@@ -640,6 +861,15 @@
               "default": 0,
               "minimum": 0
             }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Фильтр по типу ухода. Допустимые значения: `WATER`, `SPRAY`, `FERTILIZE`, `SOIL_CHECK`.\nЕсли не задан — возвращаются все типы.\n",
+            "schema": {
+              "$ref": "#/components/schemas/CareEventType"
+            }
           }
         ],
         "responses": {
@@ -658,6 +888,156 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/plants/{id}/history/summary": {
+      "get": {
+        "tags": [
+          "Plant History"
+        ],
+        "operationId": "getPlantHistorySummary",
+        "summary": "Сводная статистика по всей истории растения",
+        "description": "Возвращает агрегированную статистику по **всей** истории ухода за\nрастением (не по странице). Учитываются только активные (не отменённые)\nзаписи. Тип `SOIL_CHECK` из выдачи исключён.\n\nДоступ только к неархивированному растению текущего пользователя\n(`sub` из bearer-токена). Если растение не найдено или принадлежит\nдругому пользователю — 404.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Сводная статистика посчитана.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlantHistorySummaryDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/plants/{id}/events": {
+      "get": {
+        "tags": [
+          "Plant Events"
+        ],
+        "operationId": "getPlantEvents",
+        "summary": "Журнал событий растения",
+        "description": "Возвращает страницу журнала событий растения, принадлежащего текущему\nпользователю (`sub` из bearer-токена). Сортировка — по дате события\n(`eventDate`) по убыванию (свежие сверху).\n\nДоступ только к неархивированному растению текущего пользователя.\nЕсли растение не найдено, архивировано или принадлежит другому\nпользователю — 404.\n\nПагинация — `limit/offset`. `limit` нормализуется в диапазон [1, 100]\n(по умолчанию 5 — совпадает с размером страницы журнала). `offset` < 0\nнормализуется в 0.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantIdPath"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Размер страницы. Нормализуется в [1, 100]. По умолчанию 5.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 5,
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Сдвиг от начала журнала. Значения < 0 нормализуются в 0.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Страница журнала событий.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlantEventPageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Plant Events"
+        ],
+        "operationId": "createPlantEvent",
+        "summary": "Добавить событие в журнал растения",
+        "description": "Создаёт событие журнала текущей датой (UTC) для растения текущего\nпользователя. Одно нажатие = одно событие; `comment` в v1 не принимается.\n\n## Дедуп\n\nПовторный запрос того же `eventType` для того же растения в окне 60\nсекунд считается двойным нажатием и возвращает 409 без повторной вставки.\n\nДоступ только к неархивированному растению текущего пользователя —\nиначе 404. Неизвестный `eventType` — 422.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlantEventRequest"
+              },
+              "example": {
+                "eventType": "TRANSPLANT"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Событие создано.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlantEventDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
           }
         }
       }
@@ -1567,6 +1947,82 @@
         }
       }
     },
+    "/api/v1/diseases": {
+      "get": {
+        "tags": [
+          "Diseases"
+        ],
+        "operationId": "listDiseases",
+        "summary": "Список болезней / полнотекстовый поиск",
+        "description": "Публичный справочник болезней и вредителей комнатных растений.\nБез авторизации.\n\nБез параметра `q` — полный список в алфавитном порядке.\nС параметром `q` — полнотекстовый поиск (делегирует `DiseaseService.search(q, 20)`).\n",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Поисковая строка. Если пустая — возвращаются все болезни.",
+            "schema": {
+              "type": "string",
+              "default": "",
+              "example": "клещ"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список болезней.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiseaseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/diseases/{id}": {
+      "get": {
+        "tags": [
+          "Diseases"
+        ],
+        "operationId": "getDiseaseById",
+        "summary": "Карточка болезни по id",
+        "description": "Полная карточка болезни/вредителя. 404 если не найдена.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Идентификатор болезни.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Болезнь найдена.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiseaseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/api/v1/shopping": {
       "get": {
         "tags": [
@@ -1820,77 +2276,6 @@
         }
       }
     },
-    "/api/v1/me": {
-      "get": {
-        "tags": [
-          "Me"
-        ],
-        "operationId": "getMe",
-        "summary": "Профиль и настройки пользователя",
-        "description": "Возвращает профиль текущего пользователя: имя, аватар, счётчики для\nхедера (растения, задачи на сегодня, непрочитанные уведомления) и\nнастройки (тихие часы, таймзона, язык).\n\n`tasksToday` считается в **таймзоне пользователя** (`users.timezone`) —\nчисло **невыполненных** (pending) задач ухода, дедлайн которых наступает\nдо конца сегодняшнего дня. Уже отмеченные сегодня задачи не учитываются.\n",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Профиль пользователя.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MeResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Me"
-        ],
-        "operationId": "updateMe",
-        "summary": "Частичное обновление настроек пользователя",
-        "description": "PATCH-семантика: обновляются только переданные поля, остальные остаются\nбез изменений. Имя и аватар через этот эндпоинт не меняются.\n\nСмена `timezone` пересчитывает активные расписания так, чтобы локальное\nвремя дня сохранилось (полить в 9:00 остаётся 9:00 в новой зоне).\nНевалидный IANA-идентификатор → `400`. Совпадение тихих часов\n(`quietHoursStart == quietHoursEnd`, в т.ч. с учётом текущего значения,\nесли передано только одно поле) → `400`.\n",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MeUpdateRequest"
-              },
-              "example": {
-                "quietHoursStart": "23:00",
-                "quietHoursEnd": "07:30",
-                "timezone": "Europe/Belgrade",
-                "locale": "en"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Профиль обновлён.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MeResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        }
-      }
-    },
     "/api/v1/vacation": {
       "get": {
         "tags": [
@@ -1987,6 +2372,98 @@
         }
       }
     },
+    "/api/v1/me": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "operationId": "getMe",
+        "summary": "Профиль и настройки пользователя",
+        "description": "Возвращает профиль текущего пользователя: имя, аватар, счётчики для\nхедера (растения, задачи на сегодня, непрочитанные уведомления) и\nнастройки (тихие часы, таймзона, язык).\n\n`tasksToday` считается в **таймзоне пользователя** (`users.timezone`) —\nчисло **невыполненных** (pending) задач ухода, дедлайн которых наступает\nдо конца сегодняшнего дня. Уже отмеченные сегодня задачи не учитываются.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Профиль пользователя.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Me"
+        ],
+        "operationId": "deleteMe",
+        "summary": "Удаление аккаунта (GDPR / App Store)",
+        "description": "Необратимо удаляет аккаунт текущего пользователя и все связанные данные\n(растения, расписания, история ухода, локации, список покупок и т.д.) через\nFK `ON DELETE CASCADE` на уровне БД.\n\n**Поведение Telegram-связки**: поле `telegram_chat_id` удаляется вместе\nсо строкой пользователя. При следующем `/start` в боте для того же\nchat\\_id создаётся **новый** пользователь с нуля — история не восстанавливается.\n\n**Идемпотентность**: повторный вызов с токеном удалённого пользователя\nвернёт `204` (tolerant-delete), а не `500` или `404`.\n\nОперация необратима. Требует действующего Bearer-токена.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Аккаунт удалён. Тело ответа отсутствует."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Me"
+        ],
+        "operationId": "updateMe",
+        "summary": "Частичное обновление настроек пользователя",
+        "description": "PATCH-семантика: обновляются только переданные поля, остальные остаются\nбез изменений. Имя и аватар через этот эндпоинт не меняются.\n\nСмена `timezone` пересчитывает активные расписания так, чтобы локальное\nвремя дня сохранилось (полить в 9:00 остаётся 9:00 в новой зоне).\nНевалидный IANA-идентификатор → `400`. Совпадение тихих часов\n(`quietHoursStart == quietHoursEnd`, в т.ч. с учётом текущего значения,\nесли передано только одно поле) → `400`.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeUpdateRequest"
+              },
+              "example": {
+                "quietHoursStart": "23:00",
+                "quietHoursEnd": "07:30",
+                "timezone": "Europe/Belgrade",
+                "locale": "en"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Профиль обновлён.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
     "/api/v1/sharing": {
       "get": {
         "tags": [
@@ -2067,6 +2544,134 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/devices": {
+      "post": {
+        "tags": [
+          "Devices"
+        ],
+        "operationId": "registerDevice",
+        "summary": "Зарегистрировать устройство",
+        "description": "Регистрирует push-токен устройства для текущего пользователя (из bearer-токена).\nИдемпотентно: повторный вызов с тем же `pushToken` обновляет `lastSeenAt`\nи возвращает 201. FCM-отправка — отдельная задача.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceRegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Устройство зарегистрировано (или обновлён lastSeenAt).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v1/devices/{id}": {
+      "delete": {
+        "tags": [
+          "Devices"
+        ],
+        "operationId": "unregisterDevice",
+        "summary": "Отвязать устройство",
+        "description": "Удаляет push-токен устройства текущего пользователя. Чужое или\nнесуществующее устройство → 404.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Идентификатор устройства.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 7
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Устройство отвязано."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/sync": {
+      "get": {
+        "tags": [
+          "Sync"
+        ],
+        "operationId": "getSync",
+        "summary": "Инкрементальный офлайн-синк",
+        "description": "Возвращает все изменения, произошедшие после `since`.\n\nЕсли `since` не передан — возвращает все активные данные пользователя\n(full sync при первом запуске или восстановлении).\n\n## Как использовать\n\nКлиент сохраняет `serverTime` из ответа и использует его как `since`\nпри следующем вызове. Это защищает от ошибок clock drift.\n\n## Конфликт-резолюция\n\nServer timestamp wins. Локальные изменения, не отправленные через\nPOST-эндпоинты, могут быть перезаписаны.\n\n## Идемпотентность POST\n\nПеред синком клиент должен отправить все локальные изменения через\nPOST /api/v1/care-events с `clientId`. Повторный POST с тем же `clientId`\nвозвращает существующую запись без дублирования.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "description": "Момент, начиная с которого вернуть изменения (UTC, ISO-8601).\nЕсли не передан — full sync (все данные пользователя).\nКлиент использует `serverTime` из предыдущего ответа.\n",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2026-06-01T12:00:00Z"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Инкрементальная выдача изменений.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -2213,142 +2818,25 @@
             }
           }
         }
+      },
+      "UnprocessableEntity": {
+        "description": "Тело запроса синтаксически корректно, но семантически невалидно — например,\nзначение enum вне допустимого набора. Код `VALIDATION_ERROR`.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiErrorResponse"
+            },
+            "example": {
+              "error": {
+                "code": "VALIDATION_ERROR",
+                "message": "Validation failed"
+              }
+            }
+          }
+        }
       }
     },
     "schemas": {
-      "PlantHealthResponse": {
-        "type": "object",
-        "description": "Индекс здоровья растения, посчитанный backend.",
-        "required": [
-          "insufficientData"
-        ],
-        "properties": {
-          "insufficientData": {
-            "type": "boolean",
-            "description": "`true`, если данных для достоверной оценки недостаточно (< 3 записей\nухода). В этом случае `score`/`zone` приходят `null`, UI рисует\nнейтральное состояние.\n",
-            "example": false
-          },
-          "score": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 0,
-            "maximum": 100,
-            "nullable": true,
-            "description": "Индекс здоровья [0, 100]. `null`, если `insufficientData`.\n",
-            "example": 69
-          },
-          "zone": {
-            "type": "string",
-            "enum": [
-              "GREEN",
-              "YELLOW",
-              "RED"
-            ],
-            "nullable": true,
-            "description": "Зона здоровья, производная от `score`. `null`, если `insufficientData`.\n",
-            "example": "YELLOW"
-          }
-        }
-      },
-      "CareScheduleDto": {
-        "type": "object",
-        "description": "Расписание ухода растения одного типа.",
-        "required": [
-          "type",
-          "every",
-          "unit",
-          "enabled",
-          "seasonal"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "WATERING",
-              "MISTING",
-              "FERTILIZING",
-              "SOIL_CHECK"
-            ],
-            "example": "WATERING"
-          },
-          "every": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Интервал в днях.",
-            "example": 7
-          },
-          "unit": {
-            "type": "string",
-            "enum": [
-              "DAY"
-            ],
-            "description": "Единица интервала. Сейчас всегда DAY.",
-            "example": "DAY"
-          },
-          "amountMl": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true,
-            "description": "Объём полива в миллилитрах. Только для type=WATERING.",
-            "example": 250
-          },
-          "enabled": {
-            "type": "boolean",
-            "example": true
-          },
-          "nextDueAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true,
-            "description": "Ближайшее срабатывание (UTC). Заполнено только если enabled=true."
-          },
-          "seasonal": {
-            "$ref": "#/components/schemas/SeasonalScheduleDto"
-          }
-        }
-      },
-      "CareScheduleUpdateRequest": {
-        "type": "object",
-        "required": [
-          "every",
-          "unit",
-          "enabled"
-        ],
-        "properties": {
-          "every": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 1,
-            "maximum": 365,
-            "example": 7
-          },
-          "unit": {
-            "type": "string",
-            "enum": [
-              "DAY"
-            ],
-            "example": "DAY"
-          },
-          "amountMl": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true,
-            "minimum": 1,
-            "description": "Объём полива в миллилитрах. Только для type=WATERING.",
-            "example": 250
-          },
-          "enabled": {
-            "type": "boolean",
-            "example": true
-          },
-          "seasonalOverride": {
-            "type": "string",
-            "pattern": "^(INHERIT|ON|OFF)$",
-            "nullable": true,
-            "description": "Per-plant переопределение авто-подстройки по сезонам.\nINHERIT — следовать глобальной настройке пользователя;\nON — включить только для этого растения;\nOFF — выключить только для этого растения.\nОтсутствие поля — текущее значение не меняется.\n"
-          }
-        }
-      },
       "LocationDto": {
         "type": "object",
         "description": "Локация (комната/место), в которой пользователь держит растения.",
@@ -2702,17 +3190,100 @@
             "description": "Момент создания записи в БД (UTC).",
             "example": "2026-05-24T10:15:30Z"
           },
+          "healthInsufficientData": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "true — данных мало (< 3 активных записей ухода), score/zone равны null."
+          },
+          "healthScore": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 100,
+            "nullable": true,
+            "description": "Балл здоровья 0–100 (mobile gap G16). null если insufficientData."
+          },
+          "healthZone": {
+            "type": "string",
+            "enum": [
+              "GREEN",
+              "YELLOW",
+              "RED"
+            ],
+            "nullable": true,
+            "description": "Цветовая зона. null если insufficientData."
+          },
           "acquiredAt": {
             "type": "string",
             "format": "date",
             "nullable": true,
-            "description": "Дата приобретения растения (ISO-8601 date). Задаётся при создании, null — не указана.",
+            "description": "Дата покупки/получения растения (ISO-8601). null если не указана.",
             "example": "2026-05-20"
           },
           "inAcclimation": {
             "type": "boolean",
             "nullable": true,
-            "description": "`true` — растение находится в периоде акклиматизации (21 день мягкого\nрежима ухода). Включается при создании с `isNew = true`.\n"
+            "description": "true пока acclimation_until > now(). Вычисляемое поле, в БД не хранится.",
+            "example": true
+          },
+          "acclimationUntil": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Конец периода акклиматизации (UTC). null если акклиматизация не активна.",
+            "example": "2026-06-10T12:00:00Z"
+          },
+          "archivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Момент архивации (UTC). Заполняется только в выдаче\n`GET /plants?status=archived` и в ответах archive/restore\n(mobile gap G15, issue #219). null для активных растений.\n",
+            "example": "2026-03-15T10:00:00Z"
+          },
+          "gifted": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Причина выбытия (issue #219): true — растение подарили, false —\nпогибло. null если не указано или растение активно. Заполняется\nтолько в архивной выдаче и ответах archive/restore.\n",
+            "example": false
+          },
+          "note": {
+            "type": "string",
+            "nullable": true,
+            "description": "Заметка о выбытии растения (issue #219), напр. «Залила соседка».\nnull если не задана. Заполняется только в архивной выдаче и ответах\narchive/restore. Это отдельное от `notes` поле.\n",
+            "example": "Залила соседка"
+          },
+          "totalCareDays": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "description": "Сколько дней растение было с пользователем: `archivedAt - acquiredAt`\n(или `createdAt`, если `acquiredAt` не задан). Заполняется только в\nархивной выдаче (issue #219).\n",
+            "example": 227
+          },
+          "totalCareEvents": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "description": "Сколько раз пользователь отмечал уход за этим растением (COUNT из\n`care_history`). Заполняется только в архивной выдаче (issue #219).\n",
+            "example": 42
+          }
+        }
+      },
+      "PlantArchiveRequest": {
+        "type": "object",
+        "description": "Тело PATCH /api/v1/plants/{id}/archive (issue #219). Оба поля\nопциональны; само тело тоже опционально (можно архивировать без причины).\n",
+        "properties": {
+          "gifted": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "true — растение подарили, false — погибло. null — не указано.",
+            "example": false
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true,
+            "description": "Свободная заметка о выбытии.",
+            "example": "Залила соседка"
           }
         }
       },
@@ -2759,13 +3330,22 @@
             "type": "string",
             "format": "date",
             "nullable": true,
-            "description": "Дата приобретения растения (ISO-8601 date). Если не задана,\nне сохраняется. Только прошлые или сегодняшняя даты.\n",
+            "description": "Дата покупки/получения растения (ISO-8601). Используется для годовщин и строки «С тобой с …».",
             "example": "2026-05-20"
           },
           "isNew": {
             "type": "boolean",
             "nullable": true,
-            "description": "Если `true`, включает период акклиматизации (21 день мягкого режима ухода).\n`false`/`null` — акклиматизация не включается.\n"
+            "description": "Если true — включить режим акклиматизации на 21 день после создания.",
+            "example": true
+          },
+          "schedules": {
+            "type": "array",
+            "nullable": true,
+            "description": "Опциональные расписания ухода. Если не передан или пуст — применяются\nдефолты вида (как при обычном создании).\n",
+            "items": {
+              "$ref": "#/components/schemas/ScheduleInput"
+            }
           }
         }
       },
@@ -2788,6 +3368,17 @@
             "type": "integer",
             "format": "int64",
             "nullable": true
+          },
+          "speciesId": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true,
+            "description": "Новый вид растения. Если не передан — вид не изменяется.\nДля снятия привязки используй clearSpecies: true.\nЕсли вид не найден — 404.\n"
+          },
+          "clearSpecies": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "true — убрать привязку к виду (plant.species = null).\nИгнорируется, если speciesId задан.\n"
           }
         }
       },
@@ -3038,6 +3629,44 @@
           }
         }
       },
+      "DiseaseDto": {
+        "type": "object",
+        "description": "Карточка болезни/вредителя комнатных растений.",
+        "required": [
+          "id",
+          "name",
+          "symptoms",
+          "treatment",
+          "prevention"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "example": "Паутинный клещ"
+          },
+          "latinName": {
+            "type": "string",
+            "nullable": true,
+            "example": "Tetranychus urticae"
+          },
+          "symptoms": {
+            "type": "string",
+            "example": "Мелкая белёсая крапчатость на листьях…"
+          },
+          "treatment": {
+            "type": "string",
+            "example": "Промыть тёплым душем, обработать акарицидом…"
+          },
+          "prevention": {
+            "type": "string",
+            "example": "Поддерживать влажность воздуха…"
+          }
+        }
+      },
       "TodayResponse": {
         "type": "object",
         "description": "Ответ `GET /api/v1/today`.",
@@ -3095,6 +3724,230 @@
           }
         }
       },
+      "SyncResponse": {
+        "type": "object",
+        "description": "Ответ `GET /api/v1/sync`. Содержит все изменения с момента `since`.\n`serverTime` — клиент обязан использовать это значение как `since`\nпри следующем вызове (защита от clock drift).\n",
+        "required": [
+          "plants",
+          "locations",
+          "careEvents",
+          "deletions",
+          "serverTime"
+        ],
+        "properties": {
+          "plants": {
+            "type": "array",
+            "description": "Растения, изменённые после `since` (active, not deleted).",
+            "items": {
+              "$ref": "#/components/schemas/SyncPlantDto"
+            }
+          },
+          "locations": {
+            "type": "array",
+            "description": "Локации, изменённые после `since` (active, not deleted).",
+            "items": {
+              "$ref": "#/components/schemas/SyncLocationDto"
+            }
+          },
+          "careEvents": {
+            "type": "array",
+            "description": "Активные события ухода, изменённые после `since`.",
+            "items": {
+              "$ref": "#/components/schemas/SyncCareEventDto"
+            }
+          },
+          "deletions": {
+            "type": "array",
+            "description": "Удалённые сущности. Клиент удаляет их из локальной БД по `entityType` + `id`.\nСортировка по `deletedAt` ASC.\n",
+            "items": {
+              "$ref": "#/components/schemas/SyncDeletionDto"
+            }
+          },
+          "serverTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Серверное время на момент обработки запроса.\nКлиент сохраняет это значение и передаёт как `since` при следующем вызове.\n",
+            "example": "2026-06-05T14:30:00Z"
+          }
+        }
+      },
+      "SyncPlantDto": {
+        "type": "object",
+        "description": "Снапшот растения для офлайн-синка.",
+        "required": [
+          "id",
+          "name",
+          "locationId",
+          "archived",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "name": {
+            "type": "string",
+            "example": "Монстера"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "locationId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "locationName": {
+            "type": "string",
+            "nullable": true,
+            "example": "Гостиная"
+          },
+          "speciesId": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "speciesName": {
+            "type": "string",
+            "nullable": true
+          },
+          "archived": {
+            "type": "boolean",
+            "description": "Признак архивации (soft-delete на стороне бизнес-логики)."
+          },
+          "clientId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID, сгенерированный клиентом при создании. Null для записей из бота."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Момент последнего изменения (UTC)."
+          }
+        }
+      },
+      "SyncLocationDto": {
+        "type": "object",
+        "description": "Снапшот локации для офлайн-синка.",
+        "required": [
+          "id",
+          "name",
+          "isDefault",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Гостиная"
+          },
+          "emoji": {
+            "type": "string",
+            "nullable": true,
+            "example": "🌿"
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "clientId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID, сгенерированный клиентом при создании. Null для записей из бота."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Момент последнего изменения (UTC)."
+          }
+        }
+      },
+      "SyncCareEventDto": {
+        "type": "object",
+        "description": "Снапшот события ухода для офлайн-синка.",
+        "required": [
+          "id",
+          "plantId",
+          "type",
+          "performedAt",
+          "onTime",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "plantId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "$ref": "#/components/schemas/CareEventType"
+          },
+          "performedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Момент выполнения ухода (UTC)."
+          },
+          "onTime": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID от клиента при создании. Null для событий из бота."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Момент последнего изменения (UTC)."
+          }
+        }
+      },
+      "SyncDeletionDto": {
+        "type": "object",
+        "description": "Запись об удалённой сущности. Клиент удаляет её из локальной БД\nпо сочетанию `entityType` + `id`.\n",
+        "required": [
+          "entityType",
+          "id",
+          "deletedAt"
+        ],
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "description": "Тип сущности.",
+            "enum": [
+              "plant",
+              "location"
+            ],
+            "example": "plant"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Идентификатор удалённой сущности.",
+            "example": 42
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Момент удаления (UTC).",
+            "example": "2026-06-01T09:00:00Z"
+          }
+        }
+      },
       "HealthResponse": {
         "type": "object",
         "description": "Ответ liveness-эндпоинта.",
@@ -3106,6 +3959,93 @@
             "type": "string",
             "description": "Фиксированное значение `UP`, когда приложение принимает HTTP-запросы.",
             "example": "UP"
+          }
+        }
+      },
+      "PlantEventType": {
+        "type": "string",
+        "description": "Тип события в журнале растения. Редкие разовые события (не регулярный\nуход): пересадка, замена грунта, обрезка, обработка от вредителей.\n",
+        "enum": [
+          "TRANSPLANT",
+          "SOIL_CHANGE",
+          "PRUNING",
+          "PEST_TREATMENT"
+        ],
+        "example": "TRANSPLANT"
+      },
+      "PlantEventDto": {
+        "type": "object",
+        "description": "Запись журнала событий растения.",
+        "required": [
+          "id",
+          "eventType",
+          "eventDate"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 7
+          },
+          "eventType": {
+            "$ref": "#/components/schemas/PlantEventType"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Момент события в UTC.",
+            "example": "2026-05-10T14:30:00Z"
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true,
+            "description": "Необязательный комментарий. В v1 всегда null."
+          }
+        }
+      },
+      "PlantEventRequest": {
+        "type": "object",
+        "description": "Тело POST /api/v1/plants/{id}/events.",
+        "required": [
+          "eventType"
+        ],
+        "properties": {
+          "eventType": {
+            "$ref": "#/components/schemas/PlantEventType"
+          }
+        }
+      },
+      "PlantEventPageResponse": {
+        "type": "object",
+        "description": "Страница журнала событий растения с метаданными пагинации.",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlantEventDto"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Общее количество событий растения.",
+            "example": 5
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32",
+            "example": 0
           }
         }
       },
@@ -3364,6 +4304,125 @@
           }
         }
       },
+      "GuestLoginRequest": {
+        "type": "object",
+        "description": "Тело POST /api/v1/auth/guest.",
+        "required": [
+          "deviceId"
+        ],
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "UUID4 устройства (lowercase). Генерируется клиентом один раз и не меняется.",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        }
+      },
+      "GuestLoginResponse": {
+        "type": "object",
+        "description": "Ответ на гостевой вход (issue",
+        "required": [
+          "accessToken",
+          "refreshToken",
+          "expiresIn",
+          "tokenType",
+          "isNewUser"
+        ],
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Access-JWT для авторизации запросов."
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh-JWT для получения новой пары."
+          },
+          "expiresIn": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Время жизни access-токена в секундах.",
+            "example": 3600
+          },
+          "tokenType": {
+            "type": "string",
+            "description": "Тип токена.",
+            "example": "Bearer"
+          },
+          "isNewUser": {
+            "type": "boolean",
+            "description": "`true` — создан новый гость; `false` — восстановление по deviceId."
+          }
+        }
+      },
+      "GuestConvertRequest": {
+        "type": "object",
+        "description": "Тело POST /api/v1/auth/guest/convert.",
+        "required": [
+          "provider"
+        ],
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "GOOGLE",
+              "APPLE"
+            ],
+            "description": "Провайдер для конвертации."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 320,
+            "description": "Обязателен для `provider=EMAIL`.",
+            "example": "user@example.com"
+          },
+          "idToken": {
+            "type": "string",
+            "description": "Google или Apple id-token. Обязателен для `provider=GOOGLE`/`APPLE`."
+          }
+        }
+      },
+      "GuestConvertResponse": {
+        "type": "object",
+        "description": "Ответ на конвертацию гостевого аккаунта.",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "CONVERTED",
+              "EMAIL_SENT"
+            ],
+            "description": "`CONVERTED` — аккаунт конвертирован немедленно (GOOGLE/APPLE), токены в ответе.\n`EMAIL_SENT` — magic-link отправлен (EMAIL), токены обновятся после верификации.\n"
+          },
+          "accessToken": {
+            "type": "string",
+            "nullable": true,
+            "description": "Новый access-JWT. Только при `status=CONVERTED`."
+          },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true,
+            "description": "Новый refresh-JWT. Только при `status=CONVERTED`."
+          },
+          "expiresIn": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true,
+            "description": "Время жизни access-токена в секундах. Только при `status=CONVERTED`."
+          },
+          "tokenType": {
+            "type": "string",
+            "nullable": true,
+            "description": "Тип токена. Только при `status=CONVERTED`.",
+            "example": "Bearer"
+          }
+        }
+      },
       "CareTypeDto": {
         "type": "object",
         "description": "Локализованная карточка типа ухода.",
@@ -3475,9 +4534,109 @@
           }
         }
       },
+      "CareScheduleDto": {
+        "type": "object",
+        "description": "Расписание ухода растения одного типа.",
+        "required": [
+          "type",
+          "every",
+          "unit",
+          "enabled",
+          "seasonal"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "WATERING",
+              "MISTING",
+              "FERTILIZING",
+              "SOIL_CHECK"
+            ],
+            "example": "WATERING"
+          },
+          "every": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Интервал в днях.",
+            "example": 7
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "DAY"
+            ],
+            "description": "Единица интервала. Сейчас всегда DAY.",
+            "example": "DAY"
+          },
+          "amountMl": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "description": "Объём полива в миллилитрах. Только для type=WATERING.",
+            "example": 250
+          },
+          "enabled": {
+            "type": "boolean",
+            "example": true
+          },
+          "nextDueAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Ближайшее срабатывание (UTC). Заполнено только если enabled=true."
+          },
+          "seasonal": {
+            "$ref": "#/components/schemas/SeasonalScheduleDto",
+            "description": "Сезонные параметры расписания (mobile G20, issue"
+          }
+        }
+      },
+      "CareScheduleUpdateRequest": {
+        "type": "object",
+        "required": [
+          "every",
+          "unit",
+          "enabled"
+        ],
+        "properties": {
+          "every": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 365,
+            "example": 7
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "DAY"
+            ],
+            "example": "DAY"
+          },
+          "amountMl": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "minimum": 1,
+            "description": "Объём полива в миллилитрах. Только для type=WATERING.",
+            "example": 250
+          },
+          "enabled": {
+            "type": "boolean",
+            "example": true
+          },
+          "seasonalOverride": {
+            "type": "string",
+            "pattern": "^(INHERIT|ON|OFF)$",
+            "nullable": true,
+            "description": "Per-plant переопределение авто-подстройки по сезонам.\nINHERIT — следовать глобальной настройке пользователя;\nON — включить только для этого растения;\nOFF — выключить только для этого растения.\nОтсутствие поля — текущее значение не меняется.\n"
+          }
+        }
+      },
       "SeasonalScheduleDto": {
         "type": "object",
-        "description": "Сезонные параметры расписания ухода (issue #188 backend / G20 mobile #48).\nПоказывает, включена ли авто-подстройка и каким будет эффективный\nинтервал в каждый из двух сезонов (лето / зима).\n",
+        "description": "Сезонные параметры расписания ухода (issue #188, mobile G20).\nПоказывает, включена ли авто-подстройка и каким будет эффективный\nинтервал в каждый из двух сезонов (лето / зима).\n",
         "required": [
           "active",
           "summerIntervalDays",
@@ -3504,13 +4663,57 @@
           }
         }
       },
+      "ScheduleInput": {
+        "type": "object",
+        "description": "Расписание ухода при создании растения.",
+        "required": [
+          "type",
+          "every",
+          "unit"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "WATERING",
+              "MISTING",
+              "FERTILIZING",
+              "SOIL_CHECK"
+            ],
+            "example": "WATERING"
+          },
+          "every": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 365,
+            "example": 7
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "DAY"
+            ],
+            "example": "DAY"
+          },
+          "amountMl": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "minimum": 1,
+            "description": "Объём полива в мл. Только для WATERING.",
+            "example": 200
+          }
+        }
+      },
       "CareEventType": {
         "type": "string",
-        "description": "Публичный тип ухода. **Намеренно не совпадает** один-к-одному с\nвнутренним `TaskType`: API-контракт стабилен и не зависит от\nэволюции доменной модели. Тип `SOIL_CHECK` через REST не доступен.\n",
+        "description": "Публичный тип ухода. **Намеренно не совпадает** один-к-одному с\nвнутренним `TaskType`: API-контракт стабилен и не зависит от\nэволюции доменной модели.\n\n`SOIL_CHECK` — отметка «проверил почву». Доступна в `POST /care-events`\n(issue #222), чтобы пользователь мог записать ручную проверку, как это\nумеет Telegram-бот. Записи `SOIL_CHECK` **возвращаются** в\n`GET /plants/{id}/history` (мобильный дневник их показывает), но\n**исключаются** из агрегата `GET /plants/{id}/history/summary.byType` —\nсводка считает только полив/опрыскивание/удобрение.\n",
         "enum": [
           "WATER",
           "SPRAY",
-          "FERTILIZE"
+          "FERTILIZE",
+          "SOIL_CHECK"
         ],
         "example": "WATER"
       },
@@ -3625,6 +4828,117 @@
             "type": "integer",
             "format": "int32",
             "example": 0
+          }
+        }
+      },
+      "PlantHistorySummaryDto": {
+        "type": "object",
+        "description": "Агрегированная статистика по всей истории ухода за растением.",
+        "required": [
+          "total",
+          "onTimeCount",
+          "onTimePercent",
+          "byType"
+        ],
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Всего активных (не отменённых) записей истории.",
+            "example": 47
+          },
+          "onTimeCount": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Из них выполненных вовремя (`was_on_time = true`).",
+            "example": 38
+          },
+          "onTimePercent": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Процент вовремя выполненных. 0 если `total = 0`.",
+            "example": 81
+          },
+          "byType": {
+            "type": "object",
+            "description": "Разбивка по типам ухода. Только типы с `count > 0`, `SOIL_CHECK` исключён.\nКлючи — значения `CareEventType` (`WATER`, `SPRAY`, `FERTILIZE`).\n",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": {
+              "WATER": 20,
+              "SPRAY": 15,
+              "FERTILIZE": 12
+            }
+          }
+        }
+      },
+      "DeviceRegisterRequest": {
+        "type": "object",
+        "description": "Запрос на регистрацию устройства.",
+        "required": [
+          "platform",
+          "pushToken"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Мобильная платформа.",
+            "enum": [
+              "IOS",
+              "ANDROID"
+            ],
+            "example": "ANDROID"
+          },
+          "pushToken": {
+            "type": "string",
+            "description": "Push-токен устройства (FCM / APNs).",
+            "minLength": 1,
+            "maxLength": 512,
+            "example": "fZd9kQ..."
+          }
+        }
+      },
+      "DeviceDto": {
+        "type": "object",
+        "description": "Зарегистрированное устройство.",
+        "required": [
+          "id",
+          "platform",
+          "pushToken",
+          "createdAt",
+          "lastSeenAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 7
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "IOS",
+              "ANDROID"
+            ],
+            "example": "ANDROID"
+          },
+          "pushToken": {
+            "type": "string",
+            "example": "fZd9kQ..."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Момент регистрации в UTC.",
+            "example": "2026-06-01T10:00:00Z"
+          },
+          "lastSeenAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Последнее обновление токена в UTC.",
+            "example": "2026-06-04T08:00:00Z"
           }
         }
       },
@@ -3775,6 +5089,7 @@
           "name",
           "plantsTotal",
           "tasksToday",
+          "totalCareEvents",
           "notificationsUnread",
           "quietHoursStart",
           "quietHoursEnd",
@@ -3787,7 +5102,8 @@
           "appleLinked",
           "googleLinked",
           "emailLinked",
-          "telegramLinked"
+          "telegramLinked",
+          "isGuest"
         ],
         "properties": {
           "id": {
@@ -3837,6 +5153,13 @@
             "minimum": 0,
             "description": "Число невыполненных (pending) задач ухода на сегодня в таймзоне\nпользователя: дедлайн до конца сегодняшнего дня, отметка «сделано»\nещё не проставлена. Это pending-подмножество `GET /api/v1/today`.\n",
             "example": 3
+          },
+          "totalCareEvents": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "Суммарное число уходов за всё время пользователя (включая архивированные\nрастения). Компенсирующие (отменённые) записи не учитываются.\n",
+            "example": 348
           },
           "notificationsUnread": {
             "type": "integer",
@@ -3917,6 +5240,17 @@
             "type": "boolean",
             "description": "Привязан ли Telegram-аккаунт.",
             "example": true
+          },
+          "isGuest": {
+            "type": "boolean",
+            "description": "`true` для гостевых аккаунтов (зарегистрированных через `POST /auth/guest`).\nМобилка использует это поле для показа баннера «Сохраните данные» (issue #227).\n",
+            "example": false
+          },
+          "calendarSubscriptionUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Готовый URL подписки на .ics-календарь вида `https://.../calendar/{token}.ics`.\n`null`, если токен ещё не создан — он генерируется лениво при первом запросе\nк эндпоинту `GET /calendar/{token}.ics` (issue #79, #208).\n",
+            "example": "https://plants-care.up.railway.app/calendar/abc123.ics"
           }
         }
       },

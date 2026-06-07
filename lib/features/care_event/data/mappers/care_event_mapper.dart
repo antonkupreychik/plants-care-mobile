@@ -26,6 +26,9 @@ CareEventKind careEventKindFromType(CareEventType type) => switch (type) {
       CareEventType.water => CareEventKind.water,
       CareEventType.spray => CareEventKind.spray,
       CareEventType.fertilize => CareEventKind.fertilize,
+      // SOIL_CHECK (issue #222) — служебная отметка проверки грунта; в domain
+      // отдельного типа нет, схлопываем в unknown (UI рисует нейтрально).
+      CareEventType.soilCheck => CareEventKind.unknown,
       CareEventType.$unknown => CareEventKind.unknown,
     };
 
