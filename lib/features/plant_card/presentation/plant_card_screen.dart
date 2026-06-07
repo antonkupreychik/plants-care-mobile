@@ -240,6 +240,26 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
                   ),
                 ),
 
+                // РОДОСЛОВНАЯ (экран 18) — заголовок + ссылка-вход в обход
+                // семьи растения (родитель → отводки). Имя растения (если
+                // деталь загружена) пробрасываем для overline через extra.
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(22, 24, 22, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: SectionTitle(
+                      title: l10n.plantFamilySectionTitle,
+                      trailing: _ViewAllHistoryLink(
+                        label: l10n.plantFamilyViewAll,
+                        onTap: () => context.pushNamed(
+                          'plantFamily',
+                          pathParameters: {'id': '${widget.plantId}'},
+                          extra: detail.value?.name,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
                 // Запас под плавающую кнопку действия.
                 const SliverToBoxAdapter(child: SizedBox(height: 120)),
               ],

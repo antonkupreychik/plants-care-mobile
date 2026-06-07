@@ -2731,4 +2731,52 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get vacationDisabledSnack => 'Режим отпуска выключен';
+
+  @override
+  String get plantFamilyOverline => 'Родословная';
+
+  @override
+  String get plantFamilyTitle => 'Семья растения';
+
+  @override
+  String get plantFamilySubtitle => 'Родитель и отводки — как растёт семья';
+
+  @override
+  String get plantFamilyViewAll => 'Семья';
+
+  @override
+  String get plantFamilySectionTitle => 'Родословная';
+
+  @override
+  String get plantFamilyParentLabel => 'Родитель';
+
+  @override
+  String get plantFamilyChildrenLabel => 'Отводки';
+
+  @override
+  String get plantFamilyChildLabel => 'Росток';
+
+  @override
+  String get plantFamilyCurrentLabel => 'Это растение';
+
+  @override
+  String get plantFamilyEmptyTitle => 'Пока нет родословной';
+
+  @override
+  String get plantFamilyEmptyBody =>
+      'У этого растения нет связанного родителя или отводков. Создавая новый отводок, укажи материнское растение — и здесь появится семья.';
+
+  @override
+  String plantFamilyChildrenCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count отводка',
+      many: '$count отводков',
+      few: '$count отводка',
+      one: '1 отводок',
+      zero: 'Нет отводков',
+    );
+    return '$_temp0';
+  }
 }
