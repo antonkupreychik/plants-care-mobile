@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/presentation/plant_illustration.dart';
+import 'auth_guest_controller.dart';
 import 'auth_social_controller.dart';
 import 'auth_social_state.dart';
 import 'widgets/auth_brand_bar.dart';
@@ -19,7 +20,8 @@ import 'widgets/auth_social_button.dart';
 /// Социальный вход (Google — обе платформы, Apple — только iOS) проводится
 /// через `authSocialControllerProvider`: по нажатию — `google()` / `apple()`,
 /// по успеху навигацию делает router-guard (сессия поднята), отмена ошибку не
-/// ставит. Email-кнопка ведёт на `/auth/email`, «гость» — coming-soon.
+/// ставит. Email-кнопка ведёт на `/auth/email`, «гость» — через
+/// [authGuestControllerProvider] запускает `POST /auth/guest`.
 class AuthWelcomeScreen extends ConsumerWidget {
   const AuthWelcomeScreen({super.key});
 
@@ -28,15 +30,24 @@ class AuthWelcomeScreen extends ConsumerWidget {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
 
-    final state = ref.watch(authSocialControllerProvider);
-    final controller = ref.read(authSocialControllerProvider.notifier);
-    final isBusy = state.isBusy;
+    final socialState = ref.watch(authSocialControllerProvider);
+    final socialController = ref.read(authSocialControllerProvider.notifier);
+    final guestState = ref.watch(authGuestControllerProvider);
+    final guestController = ref.read(authGuestControllerProvider.notifier);
 
-    void comingSoon() {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
-    }
+    // Кнопки заблокированы, если идёт любой запрос (social или guest).
+    final isBusy = socialState.isBusy || guestState.isLoading;
+
+    // Показываем ошибку гостевого входа через snackbar.
+    ref.listen(authGuestControllerProvider, (prev, next) {
+      if (next.error != null && prev?.error != next.error) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text(l10n.messageForError(next.error))),
+          );
+      }
+    });
 
     return Scaffold(
       backgroundColor: c.bg,
@@ -78,33 +89,39 @@ class AuthWelcomeScreen extends ConsumerWidget {
                   AuthSocialButton(
                     label: l10n.authContinueGoogle,
                     icon: Icons.account_circle_outlined,
-                    loading: state.inProgress == SocialProvider.google,
-                    onTap: isBusy ? null : controller.google,
+                    loading: socialState.inProgress == SocialProvider.google,
+                    onTap: isBusy ? null : socialController.google,
                   ),
                   if (Platform.isIOS) ...[
                     const SizedBox(height: 10),
                     AuthSocialButton(
                       label: l10n.authContinueApple,
                       icon: Icons.apple,
-                      loading: state.inProgress == SocialProvider.apple,
-                      onTap: isBusy ? null : controller.apple,
+                      loading: socialState.inProgress == SocialProvider.apple,
+                      onTap: isBusy ? null : socialController.apple,
                     ),
                   ],
-                  if (state.error != null) ...[
+                  if (socialState.error != null) ...[
                     const SizedBox(height: 10),
-                    _SocialErrorText(text: l10n.messageForError(state.error)),
+                    _SocialErrorText(
+                      text: l10n.messageForError(socialState.error),
+                    ),
                   ],
                   const SizedBox(height: 10),
                   AuthSocialButton(
                     label: l10n.authEmailTitle,
                     icon: Icons.mail_outline_rounded,
                     accent: true,
-                    onTap: () => context.push('/auth/email'),
+                    onTap: isBusy ? null : () => context.push('/auth/email'),
                   ),
                   const SizedBox(height: 6),
                   const _OrDivider(),
                   const SizedBox(height: 6),
-                  _GuestButton(label: l10n.authContinueGuest, onTap: comingSoon),
+                  _GuestButton(
+                    label: l10n.authContinueGuest,
+                    loading: guestState.isLoading,
+                    onTap: isBusy ? null : guestController.signInAsGuest,
+                  ),
                   const SizedBox(height: 12),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -199,12 +216,20 @@ class _OrDivider extends StatelessWidget {
   }
 }
 
-/// Текстовая кнопка «Зайти как гость» (без фона).
+/// Текстовая кнопка «Продолжить без аккаунта» (без фона).
+///
+/// При [loading] = true показывает индикатор загрузки вместо текста.
+/// При [onTap] = null (любой запрос в полёте) — некликабельна.
 class _GuestButton extends StatelessWidget {
-  const _GuestButton({required this.label, required this.onTap});
+  const _GuestButton({
+    required this.label,
+    required this.onTap,
+    this.loading = false,
+  });
 
   final String label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -221,14 +246,23 @@ class _GuestButton extends StatelessWidget {
           child: Container(
             height: 48,
             alignment: Alignment.center,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: c.ink,
-              ),
-            ),
+            child: loading
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: c.ink,
+                    ),
+                  )
+                : Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: c.ink,
+                    ),
+                  ),
           ),
         ),
       ),

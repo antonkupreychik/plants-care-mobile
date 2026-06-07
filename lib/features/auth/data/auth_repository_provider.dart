@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/api/api_provider.dart';
@@ -16,4 +17,5 @@ AuthRepository authRepository(Ref ref) => AuthRepositoryImpl(
       ref.watch(jwtAuthSessionProvider),
       ref.watch(authStatusProvider),
       ref.watch(socialSignInProvider),
+      const FlutterSecureStorage(),
     );
