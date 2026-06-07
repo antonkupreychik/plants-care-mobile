@@ -4791,6 +4791,72 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Не удалось удалить аккаунт. Попробуйте ещё раз.'**
   String get deleteAccountErrorSnack;
+
+  /// Заголовок экрана редактирования профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактировать профиль'**
+  String get editProfileTitle;
+
+  /// Кнопка сохранения изменений профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить'**
+  String get editProfileSave;
+
+  /// Заголовок поля имени на экране редактирования профиля (read-only)
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя'**
+  String get editProfileNameLabel;
+
+  /// Заголовок поля начала тихих часов на экране редактирования профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Начало тихих часов'**
+  String get editProfileQuietHoursStartLabel;
+
+  /// Заголовок поля конца тихих часов на экране редактирования профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Конец тихих часов'**
+  String get editProfileQuietHoursEndLabel;
+
+  /// Заголовок поля таймзоны на экране редактирования профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Таймзона'**
+  String get editProfileTimezoneLabel;
+
+  /// Снэкбар об успешном обновлении профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Профиль обновлён'**
+  String get editProfileSuccessSnackbar;
+
+  /// Подсказка для поля таймзоны (IANA-идентификатор)
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Europe/Moscow'**
+  String get editProfileTimezoneHint;
+
+  /// Подсказка формата времени для полей тихих часов
+  ///
+  /// In ru, this message translates to:
+  /// **'ЧЧ:ММ'**
+  String get editProfileTimeHint;
+
+  /// Подсказка под read-only полем имени пользователя
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя задаётся при регистрации'**
+  String get editProfileNameReadOnlyHint;
+
+  /// Кнопка «Редактировать» в шапке профиля (перейти на экран редактирования)
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактировать'**
+  String get editProfileEditButton;
 }
 
 class _AppLocalizationsDelegate
