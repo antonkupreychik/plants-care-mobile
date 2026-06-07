@@ -287,7 +287,16 @@ class AuthRepositoryImpl implements AuthRepository {
         // Игнорируем: logout идемпотентен, локальный clear ниже обязателен.
       }
     }
-    await _session.clear();
+    // Используем try/catch чтобы гарантировать сброс auth-флага даже при
+    // ошибке хранилища (напр. FlutterSecureStorage на некоторых Android).
+    // Без этого _status.set(false) не вызвался бы и router-guard не сработал —
+    // logout «ничего не делал» в UI.
+    try {
+      await _session.clear();
+    } catch (_) {
+      // Игнорируем: токены уже инвалидны (сессия в памяти очищена в
+      // JwtAuthSession.clear до броска), persist-сторадж best-effort.
+    }
     _status.set(false);
   }
 
