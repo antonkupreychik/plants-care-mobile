@@ -182,6 +182,15 @@ class ProfileScreen extends ConsumerWidget {
                   destructive: true,
                   onTap: () => _confirmAndSignOut(context, ref),
                 ),
+                // Удаление аккаунта (issue #129 — Apple/Google Store req.).
+                // Необратимо удаляет все данные. Деструктивная строка.
+                SettingsRow(
+                  title: l10n.profileDeleteAccount,
+                  icon: Icons.delete_forever_outlined,
+                  divider: true,
+                  destructive: true,
+                  onTap: () => context.push('/profile/delete-account'),
+                ),
               ],
             ),
           ],
