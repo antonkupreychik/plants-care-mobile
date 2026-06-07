@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../models/disease_dto.dart';
+import '../models/page_response_disease_dto.dart';
 
 part 'diseases_client.g.dart';
 
@@ -18,13 +19,21 @@ abstract class DiseasesClient {
   /// Публичный справочник болезней и вредителей комнатных растений.
   /// Без авторизации.
   ///
-  /// Без параметра `q` — полный список в алфавитном порядке.
-  /// С параметром `q` — полнотекстовый поиск (делегирует `DiseaseService.search(q, 20)`).
+  /// Без параметра `q` — полный список в алфавитном порядке постранично.
+  /// С параметром `q` — полнотекстовый поиск (GIN-индекс `idx_diseases_search`).
+  ///
+  /// `limit` обрезается до 100.
   ///
   /// [q] - Поисковая строка. Если пустая — возвращаются все болезни.
+  ///
+  /// [offset] - Сдвиг от начала.
+  ///
+  /// [limit] - Размер страницы. Обрезается до 100.
   @GET('/api/v1/diseases')
-  Future<List<DiseaseDto>> listDiseases({
+  Future<PageResponseDiseaseDto> listDiseases({
     @Query('q') String? q = '',
+    @Query('offset') int? offset = 0,
+    @Query('limit') int? limit = 20,
     @Extras() Map<String, dynamic>? extras,
   });
 

@@ -36,11 +36,13 @@ abstract interface class RoomsRepository {
 
   /// Удалить локацию (`DELETE /locations/{id}`).
   ///
-  /// Если в локации есть растения — backend требует [targetLocationId] (куда
-  /// перенести), иначе вернёт 400 `LOCATION_NOT_EMPTY`
-  /// ([ApiError.locationNotEmpty]). UI ловит этот случай, показывает пикер
-  /// целевой локации и повторяет вызов с [targetLocationId]. Если растений
-  /// нет — [targetLocationId] игнорируется backend'ом.
+  /// Issue #250: каскадного переноса растений больше нет. Если в локации есть
+  /// активные растения — backend возвращает 409 `LOCATION_NOT_EMPTY`
+  /// ([ApiError.locationNotEmpty]). Растения нужно перенести заранее
+  /// (`PATCH /plants/{id}` с новым `locationId`), затем удалять пустую локацию.
+  ///
+  /// [targetLocationId] оставлен для обратной совместимости UI-флоу переноса,
+  /// но backend его больше не принимает и значение игнорируется.
   Future<Result<void>> deleteLocation({
     required int id,
     int? targetLocationId,

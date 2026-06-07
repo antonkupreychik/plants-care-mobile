@@ -197,7 +197,12 @@ void main() {
             extras: any(named: 'extras'),
           )).thenAnswer(
         (_) async => const [
-          LocationDto(id: 1, name: 'Кухня', defaultLocation: true),
+          LocationDto(
+            id: 1,
+            name: 'Кухня',
+            defaultLocation: true,
+            isActive: true,
+          ),
         ],
       );
 

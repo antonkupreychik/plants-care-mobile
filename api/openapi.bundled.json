@@ -108,12 +108,20 @@
       "description": "Совместный уход (gap G22, экран 26): владелец приглашает соухаживающего\nпо контакту (@username / телефон), выбирает растения и даёт право\nотмечать уход.\n"
     },
     {
+      "name": "LocationSharing",
+      "description": "REST API совместного ухода по локации (issue #251): OWNER создаёт одноразовый\nинвайт, CARETAKER принимает его по токену. Оба видят растения/задачи локации;\nотметка ухода одним участником закрывает задачу для всех.\n"
+    },
+    {
       "name": "Devices",
       "description": "Регистрация и отвязка мобильных устройств для push-уведомлений\n(issue #175, ADR-014). Хранит push-токены (FCM / APNs) для будущей\nотправки уведомлений.\n"
     },
     {
       "name": "Sync",
       "description": "Офлайн-синхронизация (issue #91): инкрементальная выдача изменений для\nмобильного приложения. Клиент передаёт `since` (серверное время из предыдущего\nответа) и получает все сущности, изменённые после этого момента, а также\nсписок удалений. Server timestamp wins при конфликтах.\n"
+    },
+    {
+      "name": "PlantTemplates",
+      "description": "Пользовательские шаблоны растений (issue #254): сохранение набора интервалов\nухода из существующего растения, быстрое создание нового растения по шаблону.\nМаксимум 30 шаблонов на пользователя.\n"
     }
   ],
   "paths": {
@@ -1042,6 +1050,34 @@
         }
       }
     },
+    "/api/v1/plants/{id}/acclimation": {
+      "delete": {
+        "tags": [
+          "Plants"
+        ],
+        "operationId": "disablePlantAcclimation",
+        "summary": "Выключить режим акклиматизации",
+        "description": "Немедленно завершает режим акклиматизации растения\n(`acclimation_until` и `acclimation_checkin_next_at` обнуляются).\nИдемпотентно: повторный вызов на растении без акклиматизации возвращает\n`204` без ошибки.\n\nДоступ только к своему неархивированному растению.\n\n* `204` — режим выключен (или уже был выключен).\n* `404` — растение не найдено или принадлежит другому пользователю.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Акклиматизация отключена. Тело ответа отсутствует."
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/api/v1/plants/{id}/health": {
       "get": {
         "tags": [
@@ -1276,6 +1312,250 @@
         }
       }
     },
+    "/api/v1/plants/{id}/schedules/{type}/postpone": {
+      "post": {
+        "tags": [
+          "Schedules"
+        ],
+        "operationId": "postponePlantSchedule",
+        "summary": "Разово отложить ближайшее срабатывание расписания",
+        "description": "Сдвигает поле `next_due_at` расписания на `days` дней вперёд от **текущего момента**,\nне изменяя базовый интервал (`every`). Это одноразовый сдвиг —\nследующий цикл рассчитывается по обычному интервалу.\n\nЭквивалент кнопки «Отложить на N дней» в Telegram-боте\n(`PLANT:SCHED:POSTPONE`).\n\n* `200` — возвращает обновлённое расписание.\n* `400` — неизвестный тип расписания или `days` вне диапазона.\n* `404` — растение или расписание не найдено.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantIdPath"
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "description": "Тип задачи ухода.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "WATERING",
+                "MISTING",
+                "FERTILIZING",
+                "SOIL_CHECK"
+              ],
+              "example": "WATERING"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchedulePostponeRequest"
+              },
+              "example": {
+                "days": 3
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Расписание перенесено.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CareScheduleDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/plant-templates": {
+      "get": {
+        "tags": [
+          "PlantTemplates"
+        ],
+        "operationId": "listPlantTemplates",
+        "summary": "Список шаблонов пользователя",
+        "description": "Возвращает все шаблоны растений, созданные текущим пользователем,\nотсортированные по дате создания (новые первыми).\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список шаблонов.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlantTemplateDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PlantTemplates"
+        ],
+        "operationId": "createPlantTemplate",
+        "summary": "Создать шаблон",
+        "description": "Создаёт шаблон растения для текущего пользователя.\n\nЕсли передан `fromPlantId`, копирует активные расписания ухода\n(WATERING, MISTING, FERTILIZING) из существующего растения пользователя.\n\nОграничения:\n- Максимум 30 шаблонов на пользователя.\n- Имя 1–40 символов, без дублей (case-insensitive) в пределах пользователя.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlantTemplateCreateRequest"
+              },
+              "examples": {
+                "fromPlant": {
+                  "summary": "Шаблон из существующего растения",
+                  "value": {
+                    "name": "Монстера 7д",
+                    "fromPlantId": 42
+                  }
+                },
+                "custom": {
+                  "summary": "Шаблон без источника",
+                  "value": {
+                    "name": "Кактус 14д"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Шаблон создан.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlantTemplateDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      }
+    },
+    "/api/v1/plant-templates/{id}": {
+      "delete": {
+        "tags": [
+          "PlantTemplates"
+        ],
+        "operationId": "deletePlantTemplate",
+        "summary": "Удалить шаблон",
+        "description": "Удаляет шаблон пользователя. Растения, созданные из этого шаблона,\nне затрагиваются (связи FK на plants нет).\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantTemplateIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Шаблон удалён."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/plant-templates/{id}/instantiate": {
+      "post": {
+        "tags": [
+          "PlantTemplates"
+        ],
+        "operationId": "instantiatePlantTemplate",
+        "summary": "Создать растение из шаблона",
+        "description": "Создаёт новое растение, копируя интервалы ухода из указанного шаблона.\nСезонная корректировка применяется согласно глобальной настройке\nпользователя (`seasonal_mode`). Локация — дефолтная для пользователя.\n\nРасписания (WATERING + другие из шаблона) получают статус active.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PlantTemplateIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlantTemplateInstantiateRequest"
+              },
+              "example": {
+                "name": "Монстера 2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Растение создано.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlantDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/api/v1/locations": {
       "get": {
         "tags": [
@@ -1283,7 +1563,7 @@
         ],
         "operationId": "listLocations",
         "summary": "Список локаций пользователя",
-        "description": "Возвращает все локации, принадлежащие текущему пользователю\n(`sub` из bearer-токена). Без пагинации — у пользователя обычно\nменьше десятка локаций.\n",
+        "description": "Возвращает все незаархивированные локации, принадлежащие текущему пользователю\n(`sub` из bearer-токена). Без пагинации — у пользователя обычно\nменьше десятка локаций.\n",
         "security": [
           {
             "bearerAuth": []
@@ -1382,7 +1662,7 @@
           }
         }
       },
-      "put": {
+      "patch": {
         "tags": [
           "Locations"
         ],
@@ -1433,8 +1713,8 @@
           "Locations"
         ],
         "operationId": "deleteLocation",
-        "summary": "Удалить локацию",
-        "description": "Удаляет локацию. Если в локации есть растения — обязательно передать\n`targetLocationId`, чтобы переместить их в другую локацию того же\nпользователя.\n\nЕсли растений нет — `targetLocationId` игнорируется.\n\nОсобый код ошибки `LOCATION_NOT_EMPTY` возвращается, когда в локации\nесть растения, а `targetLocationId` не задан.\n",
+        "summary": "Архивировать локацию",
+        "description": "Архивирует (soft-delete) локацию. Если в локации есть активные растения —\nвозвращает 409 с `code=LOCATION_NOT_EMPTY`. Перенос растений перед удалением\nвыполняется отдельным вызовом (`PATCH /plants/{id}` с новым `locationId`),\nкаскадного переноса нет.\n",
         "security": [
           {
             "bearerAuth": []
@@ -1443,25 +1723,14 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/LocationIdPath"
-          },
-          {
-            "name": "targetLocationId",
-            "in": "query",
-            "required": false,
-            "description": "Локация, куда переместить растения. Обязателен, если в удаляемой локации есть растения.",
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 2
-            }
           }
         ],
         "responses": {
           "204": {
-            "description": "Локация удалена."
+            "description": "Локация архивирована."
           },
-          "400": {
-            "description": "Невалидный запрос или попытка удалить непустую локацию без\n`targetLocationId`. В последнем случае `code=LOCATION_NOT_EMPTY`.\n",
+          "409": {
+            "description": "В локации есть активные растения. Перенесите их перед удалением.\n`code=LOCATION_NOT_EMPTY`.\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -1473,10 +1742,131 @@
                     "value": {
                       "error": {
                         "code": "LOCATION_NOT_EMPTY",
-                        "message": "Provide targetLocationId to move plants"
+                        "message": "Локация содержит активные растения. Перенесите их перед удалением."
                       }
                     }
                   }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/locations/{id}/activate": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "operationId": "activateLocation",
+        "summary": "Сделать локацию активной",
+        "description": "Устанавливает данную локацию как активную для пользователя\n(`users.active_location_id`). Предыдущая активная локация теряет флаг `isActive`.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Локация стала активной.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/locations/{id}/pause": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "operationId": "pauseLocation",
+        "summary": "Поставить локацию на паузу",
+        "description": "Ставит локацию на паузу на указанное количество дней (1–180).\nНа время паузы растения этой локации исключаются из шедулера уведомлений\nи из «сегодняшних дел». Глобальная пауза пользователя (`users.paused_until`)\nимеет приоритет.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationPauseRequest"
+              },
+              "example": {
+                "days": 7
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Локация на паузе.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/locations/{id}/resume": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "operationId": "resumeLocation",
+        "summary": "Снять паузу с локации",
+        "description": "Снимает паузу (`paused_until = null`). После этого растения локации\nснова попадают в шедулер и «сегодняшние дела».\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пауза снята.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationDto"
                 }
               }
             }
@@ -1954,7 +2344,7 @@
         ],
         "operationId": "listDiseases",
         "summary": "Список болезней / полнотекстовый поиск",
-        "description": "Публичный справочник болезней и вредителей комнатных растений.\nБез авторизации.\n\nБез параметра `q` — полный список в алфавитном порядке.\nС параметром `q` — полнотекстовый поиск (делегирует `DiseaseService.search(q, 20)`).\n",
+        "description": "Публичный справочник болезней и вредителей комнатных растений.\nБез авторизации.\n\nБез параметра `q` — полный список в алфавитном порядке постранично.\nС параметром `q` — полнотекстовый поиск (GIN-индекс `idx_diseases_search`).\n\n`limit` обрезается до 100.\n",
         "parameters": [
           {
             "name": "q",
@@ -1966,18 +2356,40 @@
               "default": "",
               "example": "клещ"
             }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Сдвиг от начала.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Размер страницы. Обрезается до 100.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20,
+              "minimum": 1,
+              "maximum": 100
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Список болезней.",
+            "description": "Страница болезней.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiseaseDto"
-                  }
+                  "$ref": "#/components/schemas/PageResponseDiseaseDto"
                 }
               }
             }
@@ -2084,6 +2496,40 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/v1/shopping/clear": {
+      "delete": {
+        "tags": [
+          "Shopping"
+        ],
+        "operationId": "clearCheckedShoppingItems",
+        "summary": "Очистить отмеченные позиции (bulk)",
+        "description": "Удаляет все позиции списка покупок текущего пользователя, у которых\n`checked = true`. Позиции с `checked = false` не затрагиваются.\n\nВызов на пустом или полностью непроверенном списке возвращает `204`\n(идемпотентен — ничего не делает, не ошибка).\n\n* `204` — отмеченные позиции удалены (или список и так пуст).\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "checked",
+            "in": "query",
+            "required": true,
+            "description": "Фильтр. Единственное допустимое значение — `true` (удалить только отмеченные).",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Отмеченные позиции удалены."
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -2464,6 +2910,162 @@
         }
       }
     },
+    "/api/v1/me/weather-location": {
+      "put": {
+        "tags": [
+          "Me"
+        ],
+        "operationId": "updateWeatherLocation",
+        "summary": "Установить координаты для погодного виджета",
+        "description": "Сохраняет широту и долготу пользователя (`weather_lat` / `weather_lon`),\nнеобходимые для получения данных о влажности через\n`GET /api/v1/weather/snapshot`.\n\nБез координат `weatherEnabled=true` в `PATCH /me` бесполезен — погодные\nэвристики не запустятся. После успешного вызова этого эндпоинта\n`WeatherService.isWeatherUsable()` начнёт возвращать `true` при включённом\n`weatherEnabled`.\n\nОтвет `204 No Content` — нет тела, обновление применено.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WeatherLocationRequest"
+              },
+              "example": {
+                "lat": 55.7558,
+                "lon": 37.6176
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Координаты сохранены."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/v1/me/seasonal": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "operationId": "getSeasonalSettings",
+        "summary": "Per-season настройки сезонности",
+        "description": "Возвращает тонкие per-season настройки сезонности текущего пользователя:\nмножитель (`multiplier`) и фиксированный интервал (`intervalDays`) для\nкаждого сезона (`SUMMER`, `WINTER`), а также глобальный флаг `enabled`\nи `mode`.\n\nКакое поле реально применяется к расчёту — зависит от `mode`:\nв режиме `MULTIPLIER` используется `multiplier`, в режиме `FIXED` —\n`intervalDays` (а если он `null`, fallback на базовый интервал растения).\n\nГлобальный флаг включения (`seasonalEnabled`) и режим (`seasonalMode`)\nменяются через `PATCH /api/v1/me`; здесь они отдаются только для контекста.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Per-season настройки сезонности.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonalSettingsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Me"
+        ],
+        "operationId": "updateSeasonalSettings",
+        "summary": "Задать множитель/интервал для сезона",
+        "description": "Устанавливает множитель и/или фиксированный интервал для одного сезона.\n`season` обязателен. Переданные поля (`multiplier`, `intervalDays`)\nприменяются, отсутствующие (`null`) остаются без изменений.\n\n- `multiplier` — коэффициент к базовому интервалу (диапазон `0.50..1.50`,\n  округляется до сотых). Используется в режиме `MULTIPLIER`.\n- `intervalDays` — фиксированный интервал в днях (`1..60`). Используется\n  в режиме `FIXED`. Чтобы вернуть сезон к дефолту (использовать базовый\n  интервал растения), используйте `DELETE /api/v1/me/seasonal/{season}`.\n\nИзменение влияет на ленивый пересчёт `next_due_at` так же, как в боте.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeasonalSettingsUpdateRequest"
+              },
+              "example": {
+                "season": "SUMMER",
+                "multiplier": 0.7
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Настройки сезона обновлены.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonalSettingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v1/me/seasonal/{season}": {
+      "delete": {
+        "tags": [
+          "Me"
+        ],
+        "operationId": "clearSeasonalInterval",
+        "summary": "Очистить фиксированный интервал сезона",
+        "description": "Сбрасывает фиксированный интервал (`intervalDays`) указанного сезона в\n`null` — сезон возвращается к дефолтному поведению (в режиме `FIXED`\nиспользуется базовый интервал растения). Множитель сезона не затрагивается.\n\nИдемпотентно: повторный вызов для уже очищенного сезона тоже вернёт `200`.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "season",
+            "in": "path",
+            "required": true,
+            "description": "Сезон, чей фиксированный интервал нужно очистить.",
+            "schema": {
+              "$ref": "#/components/schemas/Season"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Интервал сезона очищен; возвращены актуальные настройки.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonalSettingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
     "/api/v1/sharing": {
       "get": {
         "tags": [
@@ -2544,6 +3146,243 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/locations/{id}/invites": {
+      "post": {
+        "tags": [
+          "LocationSharing"
+        ],
+        "operationId": "createLocationInvite",
+        "summary": "Создать приглашение к локации",
+        "description": "Генерирует одноразовый токен приглашения к локации. Только OWNER локации\n(`locations.user_id = current user`) может создавать приглашения.\nТокен действует 7 дней. Повторная попытка принять использованный токен → 410.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Идентификатор локации.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Приглашение создано.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationInviteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/locations/{id}/members": {
+      "get": {
+        "tags": [
+          "LocationSharing"
+        ],
+        "operationId": "listLocationMembers",
+        "summary": "Список участников локации",
+        "description": "Возвращает всех участников локации (OWNER + CARETAKER) с ролями.\nДоступно OWNER'у и CARETAKER'ам локации.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Идентификатор локации.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список участников.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationMembersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/locations/{id}/members/{userId}": {
+      "delete": {
+        "tags": [
+          "LocationSharing"
+        ],
+        "operationId": "revokeLocationAccess",
+        "summary": "Отозвать доступ участника",
+        "description": "Удаляет доступ пользователя к локации. Только OWNER может отзывать доступ.\nНельзя удалить последнего OWNER'а локации → 409.\nOWNER не может удалить себя (нельзя удалить последнего OWNER) → 409.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Идентификатор локации.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "Идентификатор пользователя, у которого отзывается доступ.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Доступ отозван."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      }
+    },
+    "/api/v1/invites/{token}/accept": {
+      "post": {
+        "tags": [
+          "LocationSharing"
+        ],
+        "operationId": "acceptLocationInvite",
+        "summary": "Принять приглашение к локации",
+        "description": "Принимает одноразовый токен приглашения и выдаёт роль CARETAKER текущему пользователю.\nИдемпотентно: повторный accept тем же пользователем возвращает 200.\nТокен просрочен → 410. Токен уже использован другим пользователем → 410.\nВладелец не может принять собственное приглашение → 403.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "description": "Одноразовый токен приглашения.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Приглашение принято, доступ выдан.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptInviteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "description": "Токен уже использован или просрочен.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/shared-locations": {
+      "get": {
+        "tags": [
+          "LocationSharing"
+        ],
+        "operationId": "listSharedLocations",
+        "summary": "Локации с доступом CARETAKER",
+        "description": "Возвращает локации, к которым у текущего пользователя есть доступ\nкак CARETAKER (т.е. не его собственные, а те, куда его пригласили).\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список расшаренных локаций.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharedLocationsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -2700,6 +3539,17 @@
           "format": "int64",
           "example": 1
         }
+      },
+      "PlantTemplateIdPath": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID шаблона растения.",
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1
+        }
       }
     },
     "responses": {
@@ -2843,7 +3693,8 @@
         "required": [
           "id",
           "name",
-          "defaultLocation"
+          "defaultLocation",
+          "isActive"
         ],
         "properties": {
           "id": {
@@ -2863,6 +3714,17 @@
             "type": "boolean",
             "description": "Является ли локация дефолтной для пользователя.",
             "example": false
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Является ли локация текущей активной локацией пользователя\n(`users.active_location_id`).\n",
+            "example": false
+          },
+          "pausedUntil": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Если задано — уведомления и задачи по растениям этой локации\nприостановлены до указанного момента (UTC).\n"
           },
           "createdAt": {
             "type": "string",
@@ -2905,6 +3767,22 @@
             "type": "string",
             "maxLength": 16,
             "nullable": true
+          }
+        }
+      },
+      "LocationPauseRequest": {
+        "type": "object",
+        "required": [
+          "days"
+        ],
+        "description": "Запрос на паузу локации.",
+        "properties": {
+          "days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 180,
+            "description": "Количество дней паузы (1–180).",
+            "example": 7
           }
         }
       },
@@ -3664,6 +4542,37 @@
           "prevention": {
             "type": "string",
             "example": "Поддерживать влажность воздуха…"
+          }
+        }
+      },
+      "PageResponseDiseaseDto": {
+        "type": "object",
+        "description": "Постраничный ответ со списком болезней/вредителей.",
+        "required": [
+          "items",
+          "total",
+          "offset",
+          "limit"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiseaseDto"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Общее количество болезней (с учётом фильтра `q`)."
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -4706,6 +5615,23 @@
           }
         }
       },
+      "SchedulePostponeRequest": {
+        "type": "object",
+        "description": "Тело `POST /plants/{id}/schedules/{type}/postpone`.",
+        "required": [
+          "days"
+        ],
+        "properties": {
+          "days": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 365,
+            "description": "На сколько дней перенести ближайшее срабатывание.",
+            "example": 3
+          }
+        }
+      },
       "CareEventType": {
         "type": "string",
         "description": "Публичный тип ухода. **Намеренно не совпадает** один-к-одному с\nвнутренним `TaskType`: API-контракт стабилен и не зависит от\nэволюции доменной модели.\n\n`SOIL_CHECK` — отметка «проверил почву». Доступна в `POST /care-events`\n(issue #222), чтобы пользователь мог записать ручную проверку, как это\nумеет Telegram-бот. Записи `SOIL_CHECK` **возвращаются** в\n`GET /plants/{id}/history` (мобильный дневник их показывает), но\n**исключаются** из агрегата `GET /plants/{id}/history/summary.byType` —\nсводка считает только полив/опрыскивание/удобрение.\n",
@@ -4794,6 +5720,166 @@
           "onTime": {
             "type": "boolean",
             "description": "Признак выполнения «в срок» — выполнено до дедлайна расписания.\nИспользуется для расчёта стрика.\n"
+          }
+        }
+      },
+      "LocationAccessRole": {
+        "type": "string",
+        "description": "Роль участника в локации.",
+        "enum": [
+          "OWNER",
+          "CARETAKER"
+        ],
+        "example": "CARETAKER"
+      },
+      "LocationMemberDto": {
+        "type": "object",
+        "description": "Участник локации (Subject + role).",
+        "required": [
+          "userId",
+          "role",
+          "joinedAt"
+        ],
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Идентификатор пользователя.",
+            "example": 42
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Отображаемое имя пользователя (username или email).",
+            "example": "@anna"
+          },
+          "role": {
+            "$ref": "#/components/schemas/LocationAccessRole"
+          },
+          "joinedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда появился доступ (UTC).",
+            "example": "2025-01-15T10:00:00Z"
+          }
+        }
+      },
+      "LocationMembersResponse": {
+        "type": "object",
+        "required": [
+          "members"
+        ],
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocationMemberDto"
+            }
+          }
+        }
+      },
+      "LocationInviteResponse": {
+        "type": "object",
+        "description": "Результат создания приглашения.",
+        "required": [
+          "token",
+          "expiresAt"
+        ],
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Одноразовый токен приглашения.",
+            "example": "abc123xyz"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда токен истекает (UTC).",
+            "example": "2025-01-22T10:00:00Z"
+          }
+        }
+      },
+      "AcceptInviteResponse": {
+        "type": "object",
+        "description": "Результат принятия приглашения.",
+        "required": [
+          "locationId",
+          "locationName",
+          "role"
+        ],
+        "properties": {
+          "locationId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Идентификатор локации, к которой выдан доступ.",
+            "example": 7
+          },
+          "locationName": {
+            "type": "string",
+            "description": "Отображаемое имя локации.",
+            "example": "🪴 Гостиная"
+          },
+          "role": {
+            "$ref": "#/components/schemas/LocationAccessRole"
+          }
+        }
+      },
+      "SharedLocationDto": {
+        "type": "object",
+        "description": "Локация, к которой у пользователя есть доступ CARETAKER.",
+        "required": [
+          "id",
+          "name",
+          "ownerUserId",
+          "role",
+          "joinedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Идентификатор локации.",
+            "example": 7
+          },
+          "name": {
+            "type": "string",
+            "description": "Название локации.",
+            "example": "Гостиная"
+          },
+          "emoji": {
+            "type": "string",
+            "nullable": true,
+            "description": "Emoji локации.",
+            "example": "🪴"
+          },
+          "ownerUserId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Идентификатор владельца локации.",
+            "example": 5
+          },
+          "role": {
+            "$ref": "#/components/schemas/LocationAccessRole"
+          },
+          "joinedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда появился доступ (UTC).",
+            "example": "2025-01-15T10:00:00Z"
+          }
+        }
+      },
+      "SharedLocationsResponse": {
+        "type": "object",
+        "required": [
+          "locations"
+        ],
+        "properties": {
+          "locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SharedLocationDto"
+            }
           }
         }
       },
@@ -5079,6 +6165,127 @@
           }
         }
       },
+      "PlantTemplateDto": {
+        "type": "object",
+        "description": "Шаблон растения пользователя.",
+        "required": [
+          "id",
+          "name",
+          "careRules",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 40,
+            "example": "Монстера 7д"
+          },
+          "careRules": {
+            "type": "array",
+            "description": "Правила ухода, сохранённые в шаблоне.",
+            "items": {
+              "$ref": "#/components/schemas/PlantTemplateCareRuleDto"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-15T10:30:00Z"
+          }
+        }
+      },
+      "PlantTemplateCareRuleDto": {
+        "type": "object",
+        "description": "Одно правило ухода в шаблоне.",
+        "required": [
+          "careType",
+          "intervalDays"
+        ],
+        "properties": {
+          "careType": {
+            "type": "string",
+            "enum": [
+              "WATERING",
+              "MISTING",
+              "FERTILIZING",
+              "SOIL_CHECK"
+            ],
+            "example": "WATERING"
+          },
+          "intervalDays": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 7
+          }
+        }
+      },
+      "PlantTemplateCreateRequest": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40,
+            "example": "Монстера 7д"
+          },
+          "fromPlantId": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true,
+            "description": "ID существующего растения пользователя, из которого копировать\nактивные расписания ухода. Если не указан — шаблон создаётся\nбез правил (пустой каркас).\n",
+            "example": 42
+          }
+        }
+      },
+      "PlantTemplateInstantiateRequest": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Имя нового растения.",
+            "example": "Монстера 2"
+          }
+        }
+      },
+      "WeatherLocationRequest": {
+        "type": "object",
+        "description": "Тело `PUT /api/v1/me/weather-location`. Оба поля обязательны.\n",
+        "required": [
+          "lat",
+          "lon"
+        ],
+        "properties": {
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "Широта в градусах (WGS-84).",
+            "example": 55.7558
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Долгота в градусах (WGS-84).",
+            "example": 37.6176
+          }
+        }
+      },
       "MeResponse": {
         "type": "object",
         "description": "Профиль и настройки текущего пользователя (`GET /api/v1/me`).",
@@ -5303,6 +6510,106 @@
             "nullable": true,
             "description": "Учитывать погоду в рекомендациях.",
             "example": true
+          }
+        }
+      },
+      "Season": {
+        "type": "string",
+        "enum": [
+          "SUMMER",
+          "WINTER"
+        ],
+        "description": "Сезон. Первая итерация сезонности оперирует только летом и зимой\n(всё, что не лето — зима); границы настраиваются отдельно.\n"
+      },
+      "SeasonSettings": {
+        "type": "object",
+        "description": "Настройки одного сезона (множитель и фиксированный интервал).",
+        "required": [
+          "season",
+          "multiplier"
+        ],
+        "properties": {
+          "season": {
+            "$ref": "#/components/schemas/Season"
+          },
+          "multiplier": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0.5,
+            "maximum": 1.5,
+            "description": "Коэффициент к базовому интервалу растения. Применяется в режиме\n`MULTIPLIER`. Например, базовый 10 дней × 0.8 = полив каждые 8 дней.\n",
+            "example": 0.8
+          },
+          "intervalDays": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 60,
+            "nullable": true,
+            "description": "Фиксированный интервал в днях для этого сезона. Применяется в режиме\n`FIXED`. `null` — интервал не задан, используется базовый интервал\nрастения.\n",
+            "example": 5
+          }
+        }
+      },
+      "SeasonalSettingsResponse": {
+        "type": "object",
+        "description": "Per-season настройки сезонности пользователя (`GET /api/v1/me/seasonal`).\n`enabled`/`mode` отдаются для контекста; меняются через `PATCH /api/v1/me`.\n",
+        "required": [
+          "enabled",
+          "mode",
+          "seasons"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Глобальный флаг учёта сезонов (зеркало `seasonalEnabled`).",
+            "example": true
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "MULTIPLIER",
+              "FIXED"
+            ],
+            "description": "Активный режим сезонности (зеркало `seasonalMode`).",
+            "example": "MULTIPLIER"
+          },
+          "seasons": {
+            "type": "array",
+            "description": "Настройки по каждому сезону (`SUMMER`, `WINTER`).",
+            "items": {
+              "$ref": "#/components/schemas/SeasonSettings"
+            }
+          }
+        }
+      },
+      "SeasonalSettingsUpdateRequest": {
+        "type": "object",
+        "description": "Задать множитель и/или фиксированный интервал одного сезона. `season`\nобязателен; `multiplier`/`intervalDays` опциональны (отсутствующие не меняются).\n",
+        "required": [
+          "season"
+        ],
+        "properties": {
+          "season": {
+            "$ref": "#/components/schemas/Season"
+          },
+          "multiplier": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0.5,
+            "maximum": 1.5,
+            "nullable": true,
+            "description": "Коэффициент к базовому интервалу (`0.50..1.50`).",
+            "example": 0.7
+          },
+          "intervalDays": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 60,
+            "nullable": true,
+            "description": "Фиксированный интервал в днях (`1..60`). Для сброса в дефолт используйте\n`DELETE /api/v1/me/seasonal/{season}`.\n",
+            "example": 5
           }
         }
       },

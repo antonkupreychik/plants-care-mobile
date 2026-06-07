@@ -17,7 +17,8 @@ sealed class ApiError with _$ApiError implements Exception {
   /// 400 BAD_REQUEST — прочие плохие запросы.
   const factory ApiError.badRequest({String? message}) = BadRequestError;
 
-  /// 400 LOCATION_NOT_EMPTY — удаление непустой локации без targetLocationId.
+  /// 409 LOCATION_NOT_EMPTY — удаление локации с активными растениями
+  /// (issue #250: каскадного переноса нет, локацию нужно сперва опустошить).
   const factory ApiError.locationNotEmpty() = LocationNotEmptyError;
 
   /// 401 — нет/просрочен токен и refresh не помог (`TOKEN_REVOKED` и пр.).

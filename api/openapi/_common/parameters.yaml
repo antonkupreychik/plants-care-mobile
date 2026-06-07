@@ -21,3 +21,17 @@ LocationIdPath:
     type: integer
     format: int64
     example: 1
+
+# Backend задаёт этот параметр локально в resources/plant-templates.yaml
+# (#/parameters/PlantTemplateIdPath). Бандлер мобилки (tool/bundle_openapi.dart)
+# собирает parameters только из этого файла, поэтому дублируем сюда и ссылаемся
+# через ../_common/parameters.yaml. Семантика идентична backend.
+PlantTemplateIdPath:
+  name: id
+  in: path
+  required: true
+  description: ID шаблона растения.
+  schema:
+    type: integer
+    format: int64
+    example: 1

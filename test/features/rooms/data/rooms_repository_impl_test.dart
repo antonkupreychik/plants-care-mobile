@@ -45,8 +45,19 @@ void main() {
             extras: any(named: 'extras'),
           )).thenAnswer(
         (_) async => const [
-          LocationDto(id: 1, name: 'Кухня', defaultLocation: true, emoji: '🍳'),
-          LocationDto(id: 2, name: 'Балкон', defaultLocation: false),
+          LocationDto(
+            id: 1,
+            name: 'Кухня',
+            defaultLocation: true,
+            isActive: true,
+            emoji: '🍳',
+          ),
+          LocationDto(
+            id: 2,
+            name: 'Балкон',
+            defaultLocation: false,
+            isActive: false,
+          ),
         ],
       );
 
@@ -103,7 +114,13 @@ void main() {
             extras: any(named: 'extras'),
           )).thenAnswer(
         (_) async =>
-            const LocationDto(id: 9, name: 'Спальня', defaultLocation: false, emoji: '🛏️'),
+            const LocationDto(
+              id: 9,
+              name: 'Спальня',
+              defaultLocation: false,
+              isActive: false,
+              emoji: '🛏️',
+            ),
       );
 
       final result = await repo.createLocation(name: 'Спальня', emoji: '🛏️');
@@ -126,7 +143,12 @@ void main() {
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer(
-        (_) async => const LocationDto(id: 1, name: 'x', defaultLocation: false),
+        (_) async => const LocationDto(
+              id: 1,
+              name: 'x',
+              defaultLocation: false,
+              isActive: false,
+            ),
       );
 
       await repo.createLocation(name: 'x');
@@ -159,7 +181,12 @@ void main() {
             extras: any(named: 'extras'),
           )).thenAnswer(
         (_) async =>
-            const LocationDto(id: 3, name: 'Кабинет', defaultLocation: false),
+            const LocationDto(
+              id: 3,
+              name: 'Кабинет',
+              defaultLocation: false,
+              isActive: false,
+            ),
       );
 
       final result = await repo.updateLocation(id: 3, name: 'Кабинет');
@@ -184,7 +211,12 @@ void main() {
             body: any(named: 'body'),
             extras: any(named: 'extras'),
           )).thenAnswer(
-        (_) async => const LocationDto(id: 3, name: 'x', defaultLocation: false),
+        (_) async => const LocationDto(
+              id: 3,
+              name: 'x',
+              defaultLocation: false,
+              isActive: false,
+            ),
       );
 
       await repo.updateLocation(id: 3, name: 'x');
@@ -215,7 +247,6 @@ void main() {
     test('should_return_success_when_client_completes', () async {
       when(() => locations.deleteLocation(
             id: any(named: 'id'),
-            targetLocationId: any(named: 'targetLocationId'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async {});
 
@@ -224,10 +255,11 @@ void main() {
       expect(result, isA<Success<void>>());
     });
 
-    test('should_forward_targetLocationId_to_client', () async {
+    test('should_not_forward_targetLocationId_to_client', () async {
+      // Issue #250: backend убрал каскадный перенос — targetLocationId в запрос
+      // не уходит, даже если передан в репозиторий (оставлен для совместимости).
       when(() => locations.deleteLocation(
             id: any(named: 'id'),
-            targetLocationId: any(named: 'targetLocationId'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async {});
 
@@ -235,17 +267,14 @@ void main() {
 
       final captured = verify(() => locations.deleteLocation(
             id: captureAny(named: 'id'),
-            targetLocationId: captureAny(named: 'targetLocationId'),
             extras: any(named: 'extras'),
           )).captured;
-      expect(captured[0], 5);
-      expect(captured[1], 7);
+      expect(captured.single, 5);
     });
 
     test('should_send_user_authScope_in_extras', () async {
       when(() => locations.deleteLocation(
             id: any(named: 'id'),
-            targetLocationId: any(named: 'targetLocationId'),
             extras: any(named: 'extras'),
           )).thenAnswer((_) async {});
 
@@ -253,7 +282,6 @@ void main() {
 
       final captured = verify(() => locations.deleteLocation(
             id: any(named: 'id'),
-            targetLocationId: any(named: 'targetLocationId'),
             extras: captureAny(named: 'extras'),
           )).captured.single as Map<String, dynamic>;
       expect(captured[kAuthScopeExtraKey], AuthScope.user);
@@ -261,12 +289,10 @@ void main() {
 
     test('should_return_failure_locationNotEmpty_when_backend_rejects_delete',
         () async {
-      // Спец-кейс LOCATION_NOT_EMPTY: ErrorInterceptor положил типизированную
-      // ошибку — репозиторий обязан вернуть именно её (UI на ней показывает
-      // пикер переноса).
+      // Спец-кейс LOCATION_NOT_EMPTY (теперь 409): ErrorInterceptor положил
+      // типизированную ошибку — репозиторий обязан вернуть именно её.
       when(() => locations.deleteLocation(
             id: any(named: 'id'),
-            targetLocationId: any(named: 'targetLocationId'),
             extras: any(named: 'extras'),
           )).thenThrow(_dioWith(const ApiError.locationNotEmpty()));
 

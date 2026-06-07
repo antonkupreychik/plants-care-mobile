@@ -79,12 +79,14 @@ class RoomsRepositoryImpl implements RoomsRepository {
   @override
   Future<Result<void>> deleteLocation({
     required int id,
+    // Issue #250: backend больше не принимает targetLocationId (каскадного
+    // переноса нет). Параметр сохранён в сигнатуре для совместимости UI-флоу,
+    // но в запрос не передаётся; непустая локация → 409 LOCATION_NOT_EMPTY.
     int? targetLocationId,
   }) async {
     try {
       await _api.locations.deleteLocation(
         id: id,
-        targetLocationId: targetLocationId,
         extras: authScopeExtra(AuthScope.user),
       );
       return const Result.success(null);

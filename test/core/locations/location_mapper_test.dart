@@ -10,6 +10,7 @@ void main() {
         id: 8,
         name: 'Спальня',
         defaultLocation: true,
+        isActive: false,
         emoji: '🛏️',
         createdAt: created,
       );
@@ -24,7 +25,12 @@ void main() {
     });
 
     test('should_keep_optionals_null_and_isDefault_false_when_minimal', () {
-      const dto = LocationDto(id: 1, name: 'Балкон', defaultLocation: false);
+      const dto = LocationDto(
+        id: 1,
+        name: 'Балкон',
+        defaultLocation: false,
+        isActive: false,
+      );
 
       final loc = dto.toDomain();
 

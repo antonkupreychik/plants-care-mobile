@@ -20,17 +20,23 @@ class _DiseasesClient implements DiseasesClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<DiseaseDto>> listDiseases({
+  Future<PageResponseDiseaseDto> listDiseases({
     String? q = '',
+    int? offset = 0,
+    int? limit = 20,
     Map<String, dynamic>? extras,
   }) async {
     final _extra = <String, dynamic>{};
     _extra.addAll(extras ?? <String, dynamic>{});
-    final queryParameters = <String, dynamic>{r'q': q};
+    final queryParameters = <String, dynamic>{
+      r'q': q,
+      r'offset': offset,
+      r'limit': limit,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<DiseaseDto>>(
+    final _options = _setStreamType<PageResponseDiseaseDto>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -40,12 +46,10 @@ class _DiseasesClient implements DiseasesClient {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<DiseaseDto> _value;
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late PageResponseDiseaseDto _value;
     try {
-      _value = _result.data!
-          .map((dynamic i) => DiseaseDto.fromJson(i as Map<String, dynamic>))
-          .toList();
+      _value = PageResponseDiseaseDto.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

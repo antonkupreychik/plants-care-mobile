@@ -13,7 +13,9 @@ class LocationDto {
     required this.id,
     required this.name,
     required this.defaultLocation,
+    required this.isActive,
     this.emoji,
+    this.pausedUntil,
     this.createdAt,
   });
   
@@ -25,6 +27,16 @@ class LocationDto {
 
   /// Является ли локация дефолтной для пользователя.
   final bool defaultLocation;
+
+  /// Является ли локация текущей активной локацией пользователя.
+  /// (`users.active_location_id`).
+  ///
+  final bool isActive;
+
+  /// Если задано — уведомления и задачи по растениям этой локации.
+  /// приостановлены до указанного момента (UTC).
+  ///
+  final DateTime? pausedUntil;
   final DateTime? createdAt;
 
   Map<String, Object?> toJson() => _$LocationDtoToJson(this);

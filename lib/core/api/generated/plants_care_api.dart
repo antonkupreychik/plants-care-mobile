@@ -10,6 +10,7 @@ import 'clients/plants_client.dart';
 import 'clients/plant_history_client.dart';
 import 'clients/plant_events_client.dart';
 import 'clients/schedules_client.dart';
+import 'clients/plant_templates_client.dart';
 import 'clients/locations_client.dart';
 import 'clients/care_events_client.dart';
 import 'clients/calendar_client.dart';
@@ -25,6 +26,7 @@ import 'clients/notifications_client.dart';
 import 'clients/vacation_client.dart';
 import 'clients/me_client.dart';
 import 'clients/sharing_client.dart';
+import 'clients/location_sharing_client.dart';
 import 'clients/devices_client.dart';
 import 'clients/sync_client.dart';
 
@@ -73,6 +75,7 @@ class PlantsCareApi {
   PlantHistoryClient? _plantHistory;
   PlantEventsClient? _plantEvents;
   SchedulesClient? _schedules;
+  PlantTemplatesClient? _plantTemplates;
   LocationsClient? _locations;
   CareEventsClient? _careEvents;
   CalendarClient? _calendar;
@@ -88,6 +91,7 @@ class PlantsCareApi {
   VacationClient? _vacation;
   MeClient? _me;
   SharingClient? _sharing;
+  LocationSharingClient? _locationSharing;
   DevicesClient? _devices;
   SyncClient? _sync;
 
@@ -102,6 +106,8 @@ class PlantsCareApi {
   PlantEventsClient get plantEvents => _plantEvents ??= PlantEventsClient(_dio, baseUrl: _baseUrl);
 
   SchedulesClient get schedules => _schedules ??= SchedulesClient(_dio, baseUrl: _baseUrl);
+
+  PlantTemplatesClient get plantTemplates => _plantTemplates ??= PlantTemplatesClient(_dio, baseUrl: _baseUrl);
 
   LocationsClient get locations => _locations ??= LocationsClient(_dio, baseUrl: _baseUrl);
 
@@ -132,6 +138,8 @@ class PlantsCareApi {
   MeClient get me => _me ??= MeClient(_dio, baseUrl: _baseUrl);
 
   SharingClient get sharing => _sharing ??= SharingClient(_dio, baseUrl: _baseUrl);
+
+  LocationSharingClient get locationSharing => _locationSharing ??= LocationSharingClient(_dio, baseUrl: _baseUrl);
 
   DevicesClient get devices => _devices ??= DevicesClient(_dio, baseUrl: _baseUrl);
 
