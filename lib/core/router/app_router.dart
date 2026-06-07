@@ -25,6 +25,7 @@ import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/plant_events/presentation/plant_events_screen.dart';
 import '../../features/profile/presentation/delete_account_screen.dart';
+import '../../features/profile/presentation/edit_profile_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/push_priming/presentation/push_permission_screen.dart';
 import '../../features/language/presentation/language_screen.dart';
@@ -495,6 +496,15 @@ GoRouter appRouter(Ref ref) {
                   name: 'deleteAccount',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const DeleteAccountScreen(),
+                ),
+                // Экран редактирования профиля (issue #148) — PATCH /me:
+                // тихие часы, таймзона. Полноэкранно поверх shell (своя кнопка
+                // «назад», без таб-бара), как delete-account.
+                GoRoute(
+                  path: 'edit',
+                  name: 'editProfile',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const EditProfileScreen(),
                 ),
               ],
             ),

@@ -2912,4 +2912,37 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get deleteAccountErrorSnack =>
       'Не удалось удалить аккаунт. Попробуйте ещё раз.';
+
+  @override
+  String get editProfileTitle => 'Редактировать профиль';
+
+  @override
+  String get editProfileSave => 'Сохранить';
+
+  @override
+  String get editProfileNameLabel => 'Имя';
+
+  @override
+  String get editProfileQuietHoursStartLabel => 'Начало тихих часов';
+
+  @override
+  String get editProfileQuietHoursEndLabel => 'Конец тихих часов';
+
+  @override
+  String get editProfileTimezoneLabel => 'Таймзона';
+
+  @override
+  String get editProfileSuccessSnackbar => 'Профиль обновлён';
+
+  @override
+  String get editProfileTimezoneHint => 'Например: Europe/Moscow';
+
+  @override
+  String get editProfileTimeHint => 'ЧЧ:ММ';
+
+  @override
+  String get editProfileNameReadOnlyHint => 'Имя задаётся при регистрации';
+
+  @override
+  String get editProfileEditButton => 'Редактировать';
 }

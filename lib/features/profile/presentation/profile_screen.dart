@@ -70,7 +70,24 @@ class ProfileScreen extends ConsumerWidget {
               data: (s) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ProfileHeader(summary: s),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(child: ProfileHeader(summary: s)),
+                      TextButton.icon(
+                        onPressed: () => context.push('/profile/edit'),
+                        icon: const Icon(Icons.edit_outlined, size: 16),
+                        label: Text(l10n.editProfileEditButton),
+                        style: TextButton.styleFrom(
+                          foregroundColor: c.primary,
+                          textStyle: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 20),
                   ProfileStats(summary: s),
                 ],

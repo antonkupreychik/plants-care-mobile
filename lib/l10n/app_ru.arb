@@ -3704,5 +3704,60 @@
   "deleteAccountErrorSnack": "Не удалось удалить аккаунт. Попробуйте ещё раз.",
   "@deleteAccountErrorSnack": {
     "description": "Снэкбар ошибки при удалении аккаунта"
+  },
+
+  "editProfileTitle": "Редактировать профиль",
+  "@editProfileTitle": {
+    "description": "Заголовок экрана редактирования профиля"
+  },
+
+  "editProfileSave": "Сохранить",
+  "@editProfileSave": {
+    "description": "Кнопка сохранения изменений профиля"
+  },
+
+  "editProfileNameLabel": "Имя",
+  "@editProfileNameLabel": {
+    "description": "Заголовок поля имени на экране редактирования профиля (read-only)"
+  },
+
+  "editProfileQuietHoursStartLabel": "Начало тихих часов",
+  "@editProfileQuietHoursStartLabel": {
+    "description": "Заголовок поля начала тихих часов на экране редактирования профиля"
+  },
+
+  "editProfileQuietHoursEndLabel": "Конец тихих часов",
+  "@editProfileQuietHoursEndLabel": {
+    "description": "Заголовок поля конца тихих часов на экране редактирования профиля"
+  },
+
+  "editProfileTimezoneLabel": "Таймзона",
+  "@editProfileTimezoneLabel": {
+    "description": "Заголовок поля таймзоны на экране редактирования профиля"
+  },
+
+  "editProfileSuccessSnackbar": "Профиль обновлён",
+  "@editProfileSuccessSnackbar": {
+    "description": "Снэкбар об успешном обновлении профиля"
+  },
+
+  "editProfileTimezoneHint": "Например: Europe/Moscow",
+  "@editProfileTimezoneHint": {
+    "description": "Подсказка для поля таймзоны (IANA-идентификатор)"
+  },
+
+  "editProfileTimeHint": "ЧЧ:ММ",
+  "@editProfileTimeHint": {
+    "description": "Подсказка формата времени для полей тихих часов"
+  },
+
+  "editProfileNameReadOnlyHint": "Имя задаётся при регистрации",
+  "@editProfileNameReadOnlyHint": {
+    "description": "Подсказка под read-only полем имени пользователя"
+  },
+
+  "editProfileEditButton": "Редактировать",
+  "@editProfileEditButton": {
+    "description": "Кнопка «Редактировать» в шапке профиля (перейти на экран редактирования)"
   }
 }
