@@ -81,7 +81,11 @@ class _EditPlantScreenState extends ConsumerState<EditPlantScreen> {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(SnackBar(content: Text(l10n.editPlantSuccessSnackbar)));
-        if (context.canPop()) context.pop();
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go('/home');
+        }
       } else if (s.submitStatus == SubmitStatus.failure &&
           s.submitError != null) {
         ScaffoldMessenger.of(context)
@@ -251,7 +255,11 @@ class _AppBar extends StatelessWidget {
             icon: Icon(Icons.arrow_back_rounded, color: c.ink),
             tooltip: l10n.editPlantTitle,
             onPressed: () {
-              if (context.canPop()) context.pop();
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/home');
+              }
             },
           ),
           Expanded(

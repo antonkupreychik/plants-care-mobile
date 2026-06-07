@@ -45,7 +45,8 @@ class UnifiedSearchScreen extends ConsumerWidget {
                     icon: const Icon(Icons.arrow_back_rounded),
                     color: c.ink,
                     tooltip: l10n.searchBack,
-                    onPressed: () => context.pop(),
+                    onPressed: () =>
+                        context.canPop() ? context.pop() : context.go('/home'),
                   ),
                   Expanded(
                     child: SearchField(
