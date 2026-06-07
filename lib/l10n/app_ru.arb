@@ -4084,5 +4084,60 @@
   "takeCuttingSuccessSnack": "Росток заведён в семью",
   "@takeCuttingSuccessSnack": {
     "description": "Снэкбар-подтверждение успешного создания ростка"
+  },
+
+  "profileDeleteAccount": "Удалить аккаунт",
+  "@profileDeleteAccount": {
+    "description": "Строка «Удалить аккаунт» в секции настроек профиля"
+  },
+
+  "deleteAccountScreenTitle": "Удаление аккаунта",
+  "@deleteAccountScreenTitle": {
+    "description": "Заголовок экрана удаления аккаунта"
+  },
+
+  "deleteAccountWarningTitle": "Это действие нельзя отменить",
+  "@deleteAccountWarningTitle": {
+    "description": "Заголовок предупреждения о необратимости удаления аккаунта"
+  },
+
+  "deleteAccountWarningBody": "Будут удалены все ваши данные: растения и их история ухода, расписания, список покупок, настройки и токены сессий. Telegram-привязка также удаляется — при следующем /start создаётся новый аккаунт. Восстановление невозможно.",
+  "@deleteAccountWarningBody": {
+    "description": "Подробное описание того, что будет удалено при удалении аккаунта (требование App Store)"
+  },
+
+  "deleteAccountConfirmLabel": "Я понимаю, что данные будут удалены безвозвратно",
+  "@deleteAccountConfirmLabel": {
+    "description": "Метка чекбокса подтверждения удаления аккаунта"
+  },
+
+  "deleteAccountCta": "Удалить аккаунт",
+  "@deleteAccountCta": {
+    "description": "Кнопка подтверждения удаления аккаунта"
+  },
+
+  "deleteAccountDialogTitle": "Удалить аккаунт?",
+  "@deleteAccountDialogTitle": {
+    "description": "Заголовок финального диалога подтверждения удаления аккаунта"
+  },
+
+  "deleteAccountDialogBody": "Аккаунт и все данные будут удалены немедленно. Это действие необратимо.",
+  "@deleteAccountDialogBody": {
+    "description": "Тело финального диалога подтверждения удаления аккаунта"
+  },
+
+  "deleteAccountDialogCancel": "Отмена",
+  "@deleteAccountDialogCancel": {
+    "description": "Кнопка отмены в диалоге удаления аккаунта"
+  },
+
+  "deleteAccountDialogConfirm": "Удалить",
+  "@deleteAccountDialogConfirm": {
+    "description": "Кнопка подтверждения удаления в диалоге удаления аккаунта"
+  },
+
+  "deleteAccountErrorSnack": "Не удалось удалить аккаунт. Попробуйте ещё раз.",
+  "@deleteAccountErrorSnack": {
+    "description": "Снэкбар ошибки при удалении аккаунта"
   }
 }

@@ -23,6 +23,7 @@ import '../../features/home/presentation/today_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/plant_card/presentation/plant_card_screen.dart';
 import '../../features/plant_events/presentation/plant_events_screen.dart';
+import '../../features/profile/presentation/delete_account_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/push_priming/presentation/push_permission_screen.dart';
 import '../../features/language/presentation/language_screen.dart';
@@ -457,6 +458,15 @@ GoRouter appRouter(Ref ref) {
                       },
                     ),
                   ],
+                ),
+                // Экран удаления аккаунта (issue #129 — Apple/Google Store
+                // requirement). Полноэкранно поверх shell (своя кнопка «назад»,
+                // без таб-бара), как language/shopping.
+                GoRoute(
+                  path: 'delete-account',
+                  name: 'deleteAccount',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const DeleteAccountScreen(),
                 ),
               ],
             ),

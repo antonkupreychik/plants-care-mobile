@@ -4623,6 +4623,72 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Росток заведён в семью'**
   String get takeCuttingSuccessSnack;
+
+  /// Строка «Удалить аккаунт» в секции настроек профиля
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить аккаунт'**
+  String get profileDeleteAccount;
+
+  /// Заголовок экрана удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Удаление аккаунта'**
+  String get deleteAccountScreenTitle;
+
+  /// Заголовок предупреждения о необратимости удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Это действие нельзя отменить'**
+  String get deleteAccountWarningTitle;
+
+  /// Подробное описание того, что будет удалено при удалении аккаунта (требование App Store)
+  ///
+  /// In ru, this message translates to:
+  /// **'Будут удалены все ваши данные: растения и их история ухода, расписания, список покупок, настройки и токены сессий. Telegram-привязка также удаляется — при следующем /start создаётся новый аккаунт. Восстановление невозможно.'**
+  String get deleteAccountWarningBody;
+
+  /// Метка чекбокса подтверждения удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Я понимаю, что данные будут удалены безвозвратно'**
+  String get deleteAccountConfirmLabel;
+
+  /// Кнопка подтверждения удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить аккаунт'**
+  String get deleteAccountCta;
+
+  /// Заголовок финального диалога подтверждения удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить аккаунт?'**
+  String get deleteAccountDialogTitle;
+
+  /// Тело финального диалога подтверждения удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Аккаунт и все данные будут удалены немедленно. Это действие необратимо.'**
+  String get deleteAccountDialogBody;
+
+  /// Кнопка отмены в диалоге удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get deleteAccountDialogCancel;
+
+  /// Кнопка подтверждения удаления в диалоге удаления аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get deleteAccountDialogConfirm;
+
+  /// Снэкбар ошибки при удалении аккаунта
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось удалить аккаунт. Попробуйте ещё раз.'**
+  String get deleteAccountErrorSnack;
 }
 
 class _AppLocalizationsDelegate
