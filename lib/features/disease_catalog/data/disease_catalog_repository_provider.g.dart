@@ -10,10 +10,8 @@ part of 'disease_catalog_repository_provider.dart';
 // ignore_for_file: type=lint, type=warning
 /// DI-точка для [DiseaseCatalogRepository] (MADR-004: граф провайдеров = DI).
 ///
-/// Пока backend-эндпоинты не готовы (`plants-care#225`) — отдаёт
-/// [FakeDiseaseCatalogRepositoryImpl]. После регена OpenAPI-клиента здесь
-/// меняется только реализация (`DiseaseCatalogRepositoryImpl`), контракт
-/// провайдера и presentation не трогаются. В тестах подменяется через
+/// Использует реальную реализацию [DiseaseCatalogRepositoryImpl] поверх
+/// `DiseasesClient` (issue #150). В тестах подменяется через
 /// `diseaseCatalogRepositoryProvider.overrideWith(...)`.
 
 @ProviderFor(diseaseCatalogRepository)
@@ -21,10 +19,8 @@ final diseaseCatalogRepositoryProvider = DiseaseCatalogRepositoryProvider._();
 
 /// DI-точка для [DiseaseCatalogRepository] (MADR-004: граф провайдеров = DI).
 ///
-/// Пока backend-эндпоинты не готовы (`plants-care#225`) — отдаёт
-/// [FakeDiseaseCatalogRepositoryImpl]. После регена OpenAPI-клиента здесь
-/// меняется только реализация (`DiseaseCatalogRepositoryImpl`), контракт
-/// провайдера и presentation не трогаются. В тестах подменяется через
+/// Использует реальную реализацию [DiseaseCatalogRepositoryImpl] поверх
+/// `DiseasesClient` (issue #150). В тестах подменяется через
 /// `diseaseCatalogRepositoryProvider.overrideWith(...)`.
 
 final class DiseaseCatalogRepositoryProvider
@@ -37,10 +33,8 @@ final class DiseaseCatalogRepositoryProvider
     with $Provider<DiseaseCatalogRepository> {
   /// DI-точка для [DiseaseCatalogRepository] (MADR-004: граф провайдеров = DI).
   ///
-  /// Пока backend-эндпоинты не готовы (`plants-care#225`) — отдаёт
-  /// [FakeDiseaseCatalogRepositoryImpl]. После регена OpenAPI-клиента здесь
-  /// меняется только реализация (`DiseaseCatalogRepositoryImpl`), контракт
-  /// провайдера и presentation не трогаются. В тестах подменяется через
+  /// Использует реальную реализацию [DiseaseCatalogRepositoryImpl] поверх
+  /// `DiseasesClient` (issue #150). В тестах подменяется через
   /// `diseaseCatalogRepositoryProvider.overrideWith(...)`.
   DiseaseCatalogRepositoryProvider._()
     : super(
@@ -77,4 +71,4 @@ final class DiseaseCatalogRepositoryProvider
 }
 
 String _$diseaseCatalogRepositoryHash() =>
-    r'8c6d05071bcadeba7071470b55082590c014351b';
+    r'd024d8c59c3d7496e5a91a66ad7ee6ec44b8f397';
