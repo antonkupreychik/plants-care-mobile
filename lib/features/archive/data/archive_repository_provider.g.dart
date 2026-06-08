@@ -10,22 +10,18 @@ part of 'archive_repository_provider.dart';
 // ignore_for_file: type=lint, type=warning
 /// DI-точка для [ArchiveRepository] (MADR-004: граф провайдеров = DI).
 ///
-/// Сейчас отдаёт [FakeArchiveRepositoryImpl] (статичный мок, BACKEND-GAPS #117).
-/// Когда backend отдаст эндпоинт архива — здесь подставится реальная
-/// dio/codegen-реализация (`ref.watch(plantsCareApiProvider)`), как в
-/// `roomsRepositoryProvider`. В тестах подменяется через
-/// `archiveRepositoryProvider.overrideWith(...)`.
+/// Отдаёт [ArchiveRepositoryImpl] поверх сгенерированного dio/codegen-клиента
+/// (`GET /api/v1/plants?status=archived`, MADR-007, issue #149).
+/// В тестах подменяется через `archiveRepositoryProvider.overrideWith(...)`.
 
 @ProviderFor(archiveRepository)
 final archiveRepositoryProvider = ArchiveRepositoryProvider._();
 
 /// DI-точка для [ArchiveRepository] (MADR-004: граф провайдеров = DI).
 ///
-/// Сейчас отдаёт [FakeArchiveRepositoryImpl] (статичный мок, BACKEND-GAPS #117).
-/// Когда backend отдаст эндпоинт архива — здесь подставится реальная
-/// dio/codegen-реализация (`ref.watch(plantsCareApiProvider)`), как в
-/// `roomsRepositoryProvider`. В тестах подменяется через
-/// `archiveRepositoryProvider.overrideWith(...)`.
+/// Отдаёт [ArchiveRepositoryImpl] поверх сгенерированного dio/codegen-клиента
+/// (`GET /api/v1/plants?status=archived`, MADR-007, issue #149).
+/// В тестах подменяется через `archiveRepositoryProvider.overrideWith(...)`.
 
 final class ArchiveRepositoryProvider
     extends
@@ -37,11 +33,9 @@ final class ArchiveRepositoryProvider
     with $Provider<ArchiveRepository> {
   /// DI-точка для [ArchiveRepository] (MADR-004: граф провайдеров = DI).
   ///
-  /// Сейчас отдаёт [FakeArchiveRepositoryImpl] (статичный мок, BACKEND-GAPS #117).
-  /// Когда backend отдаст эндпоинт архива — здесь подставится реальная
-  /// dio/codegen-реализация (`ref.watch(plantsCareApiProvider)`), как в
-  /// `roomsRepositoryProvider`. В тестах подменяется через
-  /// `archiveRepositoryProvider.overrideWith(...)`.
+  /// Отдаёт [ArchiveRepositoryImpl] поверх сгенерированного dio/codegen-клиента
+  /// (`GET /api/v1/plants?status=archived`, MADR-007, issue #149).
+  /// В тестах подменяется через `archiveRepositoryProvider.overrideWith(...)`.
   ArchiveRepositoryProvider._()
     : super(
         from: null,
@@ -76,4 +70,4 @@ final class ArchiveRepositoryProvider
   }
 }
 
-String _$archiveRepositoryHash() => r'1bf49910f3cb339805aa8010e3b0266b4787dd51';
+String _$archiveRepositoryHash() => r'2bc28a965250aaf28bc7932cd326a682cf193b46';
