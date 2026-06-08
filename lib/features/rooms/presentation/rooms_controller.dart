@@ -2,10 +2,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/error/result.dart';
 import '../../../core/locations/garden_location.dart';
-// Кросс-фичевая инвалидация после успешной мутации: чипы комнат на главной
-// (home) должны обновиться. Импорт presentation-провайдера home — осознанное
-// исключение из границы слоёв (как в log_care_event_controller): иного канала
-// «данные устарели» в Riverpod нет, зависим только от объявления провайдера.
+// Кросс-фичевая инвалидация после успешной мутации: серверная витрина главного
+// экрана (SDUI-лейаут home) и не-SDUI чипы комнат должны обновиться. Импорт
+// presentation-провайдеров home/sdui — осознанное исключение из границы слоёв
+// (как в action_runner / log_care_event_controller): иного канала «данные
+// устарели» в Riverpod нет, зависим только от объявления провайдера.
+import '../../../core/sdui/presentation/screen_layout_provider.dart';
 import '../../home/presentation/home_providers.dart';
 import '../data/rooms_repository_provider.dart';
 
@@ -31,8 +33,9 @@ part 'rooms_controller.g.dart';
 /// `result case Failure(error: LocationNotEmptyError())`, показывает пикер
 /// целевой локации и повторяет [delete] с заданным [targetLocationId].
 ///
-/// После любой успешной мутации список рефетчится и инвалидируется
-/// [homeLocationsProvider] (чипы комнат на главной).
+/// После любой успешной мутации список рефетчится и инвалидируются
+/// [homeScreenLayoutProvider] (серверная SDUI-витрина главной, MADR-015) и
+/// [homeLocationsProvider] (не-SDUI чипы комнат для add_plant/edit_plant).
 @riverpod
 class RoomsController extends _$RoomsController {
   @override
@@ -109,12 +112,17 @@ class RoomsController extends _$RoomsController {
     return result;
   }
 
-  /// Перечитать список комнат и обновить чипы на главной (home).
+  /// Перечитать список комнат и обновить главный экран (home).
   ///
   /// Список здесь — источник правды фичи: рефетчим через
-  /// `AsyncValue.guard` (loading → data/error). Параллельно инвалидируем
-  /// [homeLocationsProvider], т.к. главная держит свой кеш локаций.
+  /// `AsyncValue.guard` (loading → data/error). Параллельно инвалидируем:
+  /// - [homeScreenLayoutProvider] — серверную SDUI-витрину главной (MADR-015):
+  ///   Home watch'ит именно её, без этого удалённая/созданная/переименованная
+  ///   комната висит до ручного pull-to-refresh (issue #193);
+  /// - [homeLocationsProvider] — не-SDUI кеш локаций (его всё ещё читают
+  ///   add_plant / edit_plant).
   Future<void> _refreshAll() async {
+    ref.invalidate(homeScreenLayoutProvider);
     ref.invalidate(homeLocationsProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
