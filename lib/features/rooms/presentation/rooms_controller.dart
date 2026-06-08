@@ -73,10 +73,12 @@ class RoomsController extends _$RoomsController {
 
   /// Удалить комнату.
   ///
-  /// При непустой локации без [targetLocationId] вернёт
-  /// `Failure(LocationNotEmptyError())` — UI должен показать пикер переноса и
-  /// повторить с [targetLocationId]. На успех — рефетч списка + инвалидация
-  /// home-чипов.
+  /// При непустой локации вернёт `Failure(LocationNotEmptyError())` — UI должен
+  /// показать пикер переноса и вызвать [moveAndDelete] (клиентский каскад,
+  /// issue #183). На успех — рефетч списка + инвалидация home-чипов.
+  ///
+  /// [targetLocationId] backend больше не принимает (issue #250) — параметр
+  /// сохранён для совместимости сигнатуры, в перенос не участвует.
   Future<Result<void>> delete({
     required int id,
     int? targetLocationId,
@@ -84,6 +86,25 @@ class RoomsController extends _$RoomsController {
     final result = await ref
         .read(roomsRepositoryProvider)
         .deleteLocation(id: id, targetLocationId: targetLocationId);
+    if (result is Success<void>) await _refreshAll();
+    return result;
+  }
+
+  /// Перенести растения в [targetLocationId] и удалить комнату [id]
+  /// (клиентский каскад, issue #183: серверного переноса больше нет).
+  ///
+  /// Вызывается из UI после выбора целевой комнаты в пикере (delete вернул
+  /// `LocationNotEmptyError`). На успех — рефетч списка + инвалидация
+  /// home-чипов. При ошибке переноса репозиторий не удаляет комнату и вернёт
+  /// `Failure` — UI покажет тост, список не трогаем.
+  Future<Result<void>> moveAndDelete({
+    required int id,
+    required int targetLocationId,
+  }) async {
+    final result = await ref.read(roomsRepositoryProvider).movePlantsAndDelete(
+          fromLocationId: id,
+          targetLocationId: targetLocationId,
+        );
     if (result is Success<void>) await _refreshAll();
     return result;
   }

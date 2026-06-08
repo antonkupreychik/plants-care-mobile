@@ -135,8 +135,11 @@ class _RoomsScreenState extends ConsumerState<RoomsScreen> {
     );
     if (targetId == null || !context.mounted) return;
 
+    // Клиентский каскад (issue #183): переносим растения в выбранную комнату,
+    // затем удаляем исходную. Старый delete(id, targetLocationId) переноса не
+    // делал (backend убрал его в #250) → снова 409.
     final second =
-        await notifier.delete(id: room.id, targetLocationId: targetId);
+        await notifier.moveAndDelete(id: room.id, targetLocationId: targetId);
     if (!context.mounted) return;
 
     switch (second) {

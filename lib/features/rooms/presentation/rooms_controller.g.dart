@@ -99,7 +99,7 @@ final class RoomsControllerProvider
   RoomsController create() => RoomsController();
 }
 
-String _$roomsControllerHash() => r'7ad7b64a1a6affa3bfaf0b2c5dffe6c75b585525';
+String _$roomsControllerHash() => r'367520629a54085d9ddaa7e249538fc8008e5f3e';
 
 /// State-слой фичи «Управление комнатами» (CRUD локаций).
 ///

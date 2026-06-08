@@ -1,7 +1,10 @@
+import 'dart:developer' as developer;
+
 import 'package:dio/dio.dart';
 
 import '../../../core/api/generated/models/location_create_request.dart';
 import '../../../core/api/generated/models/location_update_request.dart';
+import '../../../core/api/generated/models/plant_update_request.dart';
 import '../../../core/api/generated/plants_care_api.dart';
 import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
@@ -92,6 +95,59 @@ class RoomsRepositoryImpl implements RoomsRepository {
       return const Result.success(null);
     } on DioException catch (e) {
       return Result.failure(_toApiError(e));
+    }
+  }
+
+  @override
+  Future<Result<void>> movePlantsAndDelete({
+    required int fromLocationId,
+    required int targetLocationId,
+  }) async {
+    try {
+      // 1. Постранично собираем ВСЕ id растений исходной локации. Backend
+      // обрезает limit до [1,100]; идём offset/limit, пока не выберем total.
+      const pageSize = 100;
+      final plantIds = <int>[];
+      var offset = 0;
+      while (true) {
+        final page = await _api.plants.listPlants(
+          locationId: fromLocationId,
+          offset: offset,
+          limit: pageSize,
+          extras: authScopeExtra(AuthScope.user),
+        );
+        plantIds.addAll(page.items.map((p) => p.id));
+        offset += page.items.length;
+        // Стоп: дошли до total ИЛИ страница пустая (защита от зацикливания).
+        if (page.items.isEmpty || offset >= page.total) break;
+      }
+
+      // 2. Переносим каждое растение в целевую локацию (PATCH locationId).
+      // Любая ошибка переноса → НЕ удаляем локацию, возвращаем Failure;
+      // уже перенесённые остаются у target (данные не теряем).
+      for (final plantId in plantIds) {
+        await _api.plants.updatePlant(
+          id: plantId,
+          body: PlantUpdateRequest(locationId: targetLocationId),
+          extras: authScopeExtra(AuthScope.user),
+        );
+      }
+
+      // 3. Все растения перенесены (или их не было) → удаляем пустую локацию.
+      await _api.locations.deleteLocation(
+        id: fromLocationId,
+        extras: authScopeExtra(AuthScope.user),
+      );
+      return const Result.success(null);
+    } on DioException catch (e) {
+      final error = _toApiError(e);
+      developer.log(
+        'movePlantsAndDelete failed: from=$fromLocationId '
+        'target=$targetLocationId error=$error',
+        name: 'RoomsRepository',
+        error: e,
+      );
+      return Result.failure(error);
     }
   }
 

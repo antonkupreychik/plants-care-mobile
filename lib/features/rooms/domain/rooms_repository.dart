@@ -47,4 +47,21 @@ abstract interface class RoomsRepository {
     required int id,
     int? targetLocationId,
   });
+
+  /// Перенести все растения из [fromLocationId] в [targetLocationId] и удалить
+  /// исходную локацию — клиентский каскад вместо убранного серверного
+  /// (issue #183/#250).
+  ///
+  /// Шаги: (1) постранично собрать ВСЕ растения локации
+  /// (`GET /plants?locationId=`, offset/limit до конца); (2) каждому
+  /// `PATCH /plants/{id}` с новым `locationId`; (3) только если ВСЕ перенесены —
+  /// `DELETE /locations/{fromLocationId}`.
+  ///
+  /// При любой ошибке переноса локация НЕ удаляется и возвращается `Failure`
+  /// (уже перенесённые растения остаются у target — приемлемо: данные не
+  /// теряются, непустая локация не удаляется).
+  Future<Result<void>> movePlantsAndDelete({
+    required int fromLocationId,
+    required int targetLocationId,
+  });
 }
