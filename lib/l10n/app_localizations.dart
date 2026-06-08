@@ -4072,6 +4072,60 @@ abstract class AppLocalizations {
   /// **'Точные интервалы по сезонам считаются для каждого растения индивидуально на основе его расписания ухода.'**
   String get seasonalNote;
 
+  /// Заголовок секции per-season настроек на экране 35
+  ///
+  /// In ru, this message translates to:
+  /// **'Коэффициенты по сезонам'**
+  String get seasonalSettingsSection;
+
+  /// Метка сезона Лето в карточке per-season настроек
+  ///
+  /// In ru, this message translates to:
+  /// **'Лето ☀️'**
+  String get seasonalSummerLabel;
+
+  /// Метка сезона Зима в карточке per-season настроек
+  ///
+  /// In ru, this message translates to:
+  /// **'Зима ❄️'**
+  String get seasonalWinterLabel;
+
+  /// Метка поля множителя в карточке сезона (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'Множитель'**
+  String get seasonalMultiplierLabel;
+
+  /// Метка поля фиксированного интервала в карточке сезона (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'Фикс. интервал'**
+  String get seasonalIntervalLabel;
+
+  /// Значение фиксированного интервала в днях
+  ///
+  /// In ru, this message translates to:
+  /// **'{days} дн.'**
+  String seasonalIntervalDays(int days);
+
+  /// Значение когда фиксированный интервал не задан (null)
+  ///
+  /// In ru, this message translates to:
+  /// **'не задан'**
+  String get seasonalIntervalNotSet;
+
+  /// Кнопка сброса фиксированного интервала сезона
+  ///
+  /// In ru, this message translates to:
+  /// **'Сбросить'**
+  String get seasonalResetButton;
+
+  /// Tooltip кнопки сброса сезона (экран 35)
+  ///
+  /// In ru, this message translates to:
+  /// **'Сбросить фиксированный интервал сезона к дефолту'**
+  String get seasonalResetTooltip;
+
   /// Тип события журнала растения: пересадка (TRANSPLANT)
   ///
   /// In ru, this message translates to:

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 
-import '../../../core/api/generated/models/me_update_request.dart';
 import '../../../core/api/generated/plants_care_api.dart';
 import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
@@ -16,10 +15,15 @@ import 'mappers/seasonal_settings_mapper.dart';
 /// `AuthInterceptor` из текущей `AuthSession` (MADR-006/008). Идентичность здесь
 /// НЕ хардкодится.
 ///
-/// PATCH собирает [MeUpdateRequest] ТОЛЬКО из изменённого поля `seasonalEnabled`
-/// (остальные — `null`, backend оставляет без изменений). Ошибки dio ловит
-/// `ErrorInterceptor` и кладёт [ApiError] в `DioException.error`; здесь это
-/// разворачивается в `Result.failure` (MADR-011), наружу не бросаем.
+/// - `GET /api/v1/me/seasonal` → [getSettings].
+/// - `PATCH /api/v1/me` (только `seasonalEnabled`) → [setEnabled]. После успешного
+///   PATCH делаем `GET /me/seasonal` чтобы вернуть полный [SeasonalSettings].
+/// - `PATCH /api/v1/me/seasonal` → [updateSeason].
+/// - `DELETE /api/v1/me/seasonal/{season}` → [resetSeason].
+///
+/// Ошибки dio ловит `ErrorInterceptor` и кладёт [ApiError] в
+/// `DioException.error`; здесь это разворачивается в `Result.failure`
+/// (MADR-011), наружу не бросаем.
 class SeasonalSettingsRepositoryImpl implements SeasonalSettingsRepository {
   const SeasonalSettingsRepositoryImpl(this._api);
 
@@ -28,8 +32,10 @@ class SeasonalSettingsRepositoryImpl implements SeasonalSettingsRepository {
   @override
   Future<Result<SeasonalSettings>> getSettings() async {
     try {
-      final me = await _api.me.getMe(extras: authScopeExtra(AuthScope.user));
-      return Result.success(me.toSeasonalSettings());
+      final response = await _api.me.getSeasonalSettings(
+        extras: authScopeExtra(AuthScope.user),
+      );
+      return Result.success(response.toDomain());
     } on DioException catch (e) {
       return Result.failure(_toApiError(e));
     }
@@ -38,11 +44,52 @@ class SeasonalSettingsRepositoryImpl implements SeasonalSettingsRepository {
   @override
   Future<Result<SeasonalSettings>> setEnabled(bool enabled) async {
     try {
-      final me = await _api.me.updateMe(
-        body: MeUpdateRequest(seasonalEnabled: enabled),
+      // PATCH /me только меняет seasonalEnabled; после успеха берём актуальное
+      // состояние из GET /me/seasonal (включая per-season данные).
+      await _api.me.updateMe(
+        body: buildEnabledRequest(enabled),
         extras: authScopeExtra(AuthScope.user),
       );
-      return Result.success(me.toSeasonalSettings());
+      final response = await _api.me.getSeasonalSettings(
+        extras: authScopeExtra(AuthScope.user),
+      );
+      return Result.success(response.toDomain());
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
+  @override
+  Future<Result<SeasonalSettings>> updateSeason({
+    required String seasonApiValue,
+    double? multiplier,
+    int? intervalDays,
+  }) async {
+    try {
+      final response = await _api.me.updateSeasonalSettings(
+        body: buildUpdateRequest(
+          seasonApiValue: seasonApiValue,
+          multiplier: multiplier,
+          intervalDays: intervalDays,
+        ),
+        extras: authScopeExtra(AuthScope.user),
+      );
+      return Result.success(response.toDomain());
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
+  @override
+  Future<Result<SeasonalSettings>> resetSeason({
+    required String seasonApiValue,
+  }) async {
+    try {
+      final response = await _api.me.clearSeasonalInterval(
+        season: buildUpdateRequest(seasonApiValue: seasonApiValue).season,
+        extras: authScopeExtra(AuthScope.user),
+      );
+      return Result.success(response.toDomain());
     } on DioException catch (e) {
       return Result.failure(_toApiError(e));
     }

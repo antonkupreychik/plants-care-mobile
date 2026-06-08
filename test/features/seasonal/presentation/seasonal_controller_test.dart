@@ -125,4 +125,69 @@ void main() {
       verifyNever(() => repo.setEnabled(any()));
     });
   });
+
+  group('resetSeason', () {
+    test('should_commit_server_state_on_success', () async {
+      final repo = _MockRepo();
+      stubLoad(repo, _settings(enabled: true));
+      when(() => repo.resetSeason(seasonApiValue: 'SUMMER'))
+          .thenAnswer((_) async => Result.success(_settings(enabled: true)));
+      final container = _container(repo);
+      await container.read(seasonalControllerProvider.future);
+
+      final error = await container
+          .read(seasonalControllerProvider.notifier)
+          .resetSeason('SUMMER');
+
+      expect(error, isNull);
+      final state = container.read(seasonalControllerProvider).requireValue;
+      expect(state.saving, isFalse);
+      expect(state.saveError, isNull);
+      verify(() => repo.resetSeason(seasonApiValue: 'SUMMER')).called(1);
+    });
+
+    test('should_rollback_and_set_error_on_failure', () async {
+      final repo = _MockRepo();
+      stubLoad(repo, _settings(enabled: true));
+      when(() => repo.resetSeason(seasonApiValue: 'WINTER'))
+          .thenAnswer((_) async => const Result.failure(ApiError.network()));
+      final container = _container(repo);
+      await container.read(seasonalControllerProvider.future);
+
+      final error = await container
+          .read(seasonalControllerProvider.notifier)
+          .resetSeason('WINTER');
+
+      expect(error, isA<ApiError>());
+      final state = container.read(seasonalControllerProvider).requireValue;
+      expect(state.saving, isFalse);
+      expect(state.saveError, isA<ApiError>());
+    });
+
+    test('should_be_noop_when_saving', () async {
+      final repo = _MockRepo();
+      stubLoad(repo, _settings(enabled: true));
+      final container = _container(repo);
+      // Manually set saving=true via toggle (block with a never-completing future).
+      when(() => repo.setEnabled(false))
+          .thenAnswer((_) async {
+        await Future<void>.delayed(const Duration(seconds: 10));
+        return const Result.failure(ApiError.network());
+      });
+      await container.read(seasonalControllerProvider.future);
+
+      // Start toggle (sets saving=true).
+      unawaited(
+        container.read(seasonalControllerProvider.notifier).toggle(false),
+      );
+
+      // resetSeason should be no-op while saving.
+      final error = await container
+          .read(seasonalControllerProvider.notifier)
+          .resetSeason('SUMMER');
+
+      expect(error, isNull);
+      verifyNever(() => repo.resetSeason(seasonApiValue: any(named: 'seasonApiValue')));
+    });
+  });
 }
