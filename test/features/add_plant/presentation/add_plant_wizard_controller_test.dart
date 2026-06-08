@@ -324,6 +324,45 @@ void main() {
     });
   });
 
+  group('resetStatus', () {
+    test('should_reset_conflict_failure_to_idle_and_reenable_submit', () async {
+      final addRepo = _MockAddPlantRepo();
+      when(() => addRepo.createPlant(
+            name: any(named: 'name'),
+            locationId: any(named: 'locationId'),
+            notes: any(named: 'notes'),
+          )).thenAnswer(
+        (_) async => const Result.failure(ApiError.conflict()),
+      );
+      final container = _makeContainer(addPlantRepo: addRepo);
+      final notifier =
+          container.read(addPlantWizardControllerProvider.notifier);
+      notifier.setName('Фикус');
+
+      await notifier.submit();
+
+      // После ConflictError — failure-статус, canSubmit true (обычная ошибка
+      // не блокирует кнопку: пользователь может изменить данные и повторить).
+      expect(
+        container.read(addPlantWizardControllerProvider).status,
+        const AddPlantSubmitStatus.failure(ApiError.conflict()),
+      );
+      expect(
+          container.read(addPlantWizardControllerProvider).canSubmit, isTrue);
+
+      // Вызываем resetStatus (из диалога дедупа).
+      notifier.resetStatus();
+
+      // Статус сброшен в idle.
+      expect(
+        container.read(addPlantWizardControllerProvider).status,
+        const AddPlantSubmitStatus.idle(),
+      );
+      expect(
+          container.read(addPlantWizardControllerProvider).canSubmit, isTrue);
+    });
+  });
+
   group('submit failure', () {
     test('should_set_failure_status_and_allow_retry', () async {
       final addRepo = _MockAddPlantRepo();

@@ -1198,6 +1198,18 @@ abstract class AppLocalizations {
   /// **'растений'**
   String get catalogHeadingAccent;
 
+  /// Метка переключателя Растения/Болезни — вкладка «Растения» в экране каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения'**
+  String get catalogTabPlants;
+
+  /// Метка переключателя Растения/Болезни — вкладка «Болезни» в экране каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни'**
+  String get catalogTabDiseases;
+
   /// Бейдж популярного вида рядом с именем в списке каталога
   ///
   /// In ru, this message translates to:
@@ -1707,6 +1719,30 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Добавить в сад'**
   String get addPlantSubmitGarden;
+
+  /// Заголовок диалога дедупликации при создании растения (409)
+  ///
+  /// In ru, this message translates to:
+  /// **'Такое растение уже есть'**
+  String get addPlantDuplicateTitle;
+
+  /// Текст диалога дедупликации при создании растения (409)
+  ///
+  /// In ru, this message translates to:
+  /// **'Похоже, такое растение уже есть в вашем саду. Всё равно добавить ещё одно?'**
+  String get addPlantDuplicateBody;
+
+  /// Кнопка подтверждения повторного создания растения в диалоге дедупа
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить всё равно'**
+  String get addPlantDuplicateConfirm;
+
+  /// Кнопка отмены в диалоге дедупа — закрыть мастер
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get addPlantDuplicateCancel;
 
   /// Бейдж внутри поля поиска вида: распознать по фото (заглушка)
   ///

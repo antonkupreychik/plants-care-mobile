@@ -777,6 +777,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get catalogHeadingAccent => 'растений';
 
   @override
+  String get catalogTabPlants => 'Растения';
+
+  @override
+  String get catalogTabDiseases => 'Болезни';
+
+  @override
   String get catalogBadgePopular => 'HIT';
 
   @override
@@ -1097,6 +1103,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get addPlantSubmitGarden => 'Добавить в сад';
+
+  @override
+  String get addPlantDuplicateTitle => 'Такое растение уже есть';
+
+  @override
+  String get addPlantDuplicateBody =>
+      'Похоже, такое растение уже есть в вашем саду. Всё равно добавить ещё одно?';
+
+  @override
+  String get addPlantDuplicateConfirm => 'Добавить всё равно';
+
+  @override
+  String get addPlantDuplicateCancel => 'Отмена';
 
   @override
   String get addPlantRecognizeBadge => 'ФОТО';

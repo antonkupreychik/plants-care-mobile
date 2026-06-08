@@ -56,7 +56,7 @@ class _RoomsStubState extends ConsumerState<_RoomsStub> {
 }
 
 /// Фейковый контроллер: стартует в idle, позволяет эмитировать
-/// [AddPlantScheduleFailure] без реального сетевого вызова.
+/// [AddPlantScheduleFailure] и [AddPlantFailure] без реального сетевого вызова.
 class _FakeWizardController extends AddPlantWizardController {
   @override
   AddPlantWizardState build() => const AddPlantWizardState();
@@ -67,6 +67,12 @@ class _FakeWizardController extends AddPlantWizardController {
         plantId: plantId,
         error: const ApiError.network(),
       ),
+    );
+  }
+
+  void emitConflict() {
+    state = state.copyWith(
+      status: const AddPlantSubmitStatus.failure(ApiError.conflict()),
     );
   }
 }
@@ -769,6 +775,105 @@ void main() {
       // Assert: ref.listen поймал переход и навигировал на editSchedule.
       expect(find.byType(AddPlantWizardScreen), findsNothing);
       expect(find.byKey(_scheduleMarker), findsOneWidget);
+    });
+
+    testWidgets(
+        'should_show_duplicate_dialog_when_ConflictError_on_submit',
+        (tester) async {
+      final container = await pumpWithFakeController(tester);
+
+      final notifier = container
+          .read(addPlantWizardControllerProvider.notifier)
+          as _FakeWizardController;
+      notifier.emitConflict();
+      await tester.pumpAndSettle();
+
+      // Диалог дедупа появился — мастер остаётся в дереве.
+      final l10n = _l10n(tester);
+      expect(find.text(l10n.addPlantDuplicateTitle), findsOneWidget);
+      expect(find.text(l10n.addPlantDuplicateBody), findsOneWidget);
+      expect(find.byType(AddPlantWizardScreen), findsOneWidget);
+    });
+
+    testWidgets(
+        'should_reset_status_to_idle_when_duplicate_dialog_cancel_tapped',
+        (tester) async {
+      final container = await pumpWithFakeController(tester);
+
+      final notifier = container
+          .read(addPlantWizardControllerProvider.notifier)
+          as _FakeWizardController;
+      notifier.emitConflict();
+      await tester.pumpAndSettle();
+
+      final l10n = _l10n(tester);
+      await tester.tap(find.text(l10n.addPlantDuplicateCancel));
+      await tester.pumpAndSettle();
+
+      // Диалог закрыт, статус сброшен в idle.
+      expect(find.text(l10n.addPlantDuplicateTitle), findsNothing);
+      final status = container.read(addPlantWizardControllerProvider).status;
+      expect(status, const AddPlantSubmitStatus.idle());
+    });
+
+    testWidgets(
+        'should_reset_status_to_idle_when_duplicate_dialog_confirm_tapped',
+        (tester) async {
+      final container = await pumpWithFakeController(tester);
+
+      final notifier = container
+          .read(addPlantWizardControllerProvider.notifier)
+          as _FakeWizardController;
+      notifier.emitConflict();
+      await tester.pumpAndSettle();
+
+      final l10n = _l10n(tester);
+      await tester.tap(find.text(l10n.addPlantDuplicateConfirm));
+      await tester.pumpAndSettle();
+
+      // Диалог закрыт, статус сброшен — пользователь может повторить сабмит.
+      expect(find.text(l10n.addPlantDuplicateTitle), findsNothing);
+      final status = container.read(addPlantWizardControllerProvider).status;
+      expect(status, const AddPlantSubmitStatus.idle());
+    });
+
+    testWidgets(
+        'should_not_show_inline_error_for_conflict_only_dialog',
+        (tester) async {
+      final repo = _MockRepo();
+      when(() => repo.createPlant(
+            name: any(named: 'name'),
+            locationId: any(named: 'locationId'),
+            notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+            acquiredAt: any(named: 'acquiredAt'),
+            isNew: any(named: 'isNew'),
+          )).thenAnswer(
+        (_) async => const Result.failure(ApiError.conflict()),
+      );
+
+      await _pump(tester, species: const [], repo: repo);
+      await tester.pumpAndSettle();
+
+      // Доводим до последнего шага и нажимаем «Добавить в сад».
+      await _skipToNameStep(tester);
+      final l10n = _l10n(tester);
+      await tester.enterText(find.byType(TextField).first, 'Дубликат');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 3 (care plan)
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4 (photo/window)
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 5 (date + acclimation)
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(l10n.addPlantSubmitGarden));
+      await tester.pumpAndSettle();
+
+      // Диалог дедупа показан (не инлайн-ошибка в форме).
+      expect(find.text(l10n.addPlantDuplicateTitle), findsOneWidget);
+      // Инлайн-ошибка типа «Данные изменились» НЕ отображается.
+      expect(find.text(l10n.errorConflict), findsNothing);
     });
   });
 }
