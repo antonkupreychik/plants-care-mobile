@@ -100,6 +100,15 @@ class AddPlantWizardController extends _$AddPlantWizardController {
     );
   }
 
+  /// Сбросить статус сабмита в [AddPlantSubmitStatus.idle].
+  ///
+  /// Используется UI после показа диалога дедупликации: пользователь прочитал
+  /// сообщение и принял решение — разблокируем кнопку для повторной попытки
+  /// или редактирования черновика.
+  void resetStatus() {
+    state = state.copyWith(status: const AddPlantSubmitStatus.idle());
+  }
+
   /// Задать признак нового растения (шаг 6). null → пропустить шаг.
   void setIsNew(bool? isNew) {
     state = state.copyWith(

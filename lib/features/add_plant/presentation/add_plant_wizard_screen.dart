@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/error/api_error.dart';
 import '../../../core/error/api_error_l10n.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
@@ -134,6 +135,48 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
     await ref.read(addPlantWizardControllerProvider.notifier).submit();
   }
 
+  /// Показывает диалог при 409 Conflict (возможный дубликат растения).
+  ///
+  /// «Отмена» — сбрасывает статус в idle, пользователь остаётся в мастере
+  /// (может изменить имя/локацию и повторить). «Добавить всё равно» — тоже
+  /// сбрасывает ошибку, разблокируя кнопку сабмита: пользователь сам решает,
+  /// нажать ли «Добавить в сад» снова. Принудительный повторный POST без
+  /// изменений здесь не делаем: если backend дедуплицирует по ключу, повторный
+  /// запрос с теми же данными снова вернёт 409.
+  void _showDuplicateDialog(BuildContext context, AppLocalizations l10n) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.addPlantDuplicateTitle),
+        content: Text(l10n.addPlantDuplicateBody),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              // Сбрасываем ошибку → пользователь может редактировать и повторить.
+              ref
+                  .read(addPlantWizardControllerProvider.notifier)
+                  .resetStatus();
+            },
+            child: Text(l10n.addPlantDuplicateCancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              // Сброс ошибки — пользователь осознанно нажмёт «Добавить в сад»
+              // снова, если захочет. Принудительного re-submit нет: backend
+              // дедуплицирует и повторный POST с теми же данными вернёт 409.
+              ref
+                  .read(addPlantWizardControllerProvider.notifier)
+                  .resetStatus();
+            },
+            child: Text(l10n.addPlantDuplicateConfirm),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// CTA «Новая комната» (шаг 2): открывает экран управления комнатами поверх
   /// визарда (push, не go), чтобы состояние черновика не сбрасывалось.
   ///
@@ -187,6 +230,9 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
     // - AddPlantSuccess → карточка растения (интервалы уже применены на шаге 3).
     // - AddPlantScheduleFailure → editSchedule, чтобы пользователь мог повторить
     //   PUT (растение создано, но сохранить расписание не удалось).
+    // - AddPlantFailure(ConflictError) → диалог дедупликации: пользователь видит
+    //   сообщение о дубликате и выбирает «Отмена» (вернуться к редактированию)
+    //   или «Добавить всё равно» (сбросить ошибку → пользователь может повторить).
     ref.listen(
       addPlantWizardControllerProvider.select((s) => s.status),
       (prev, next) {
@@ -199,6 +245,8 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
               pathParameters: {'id': plantId.toString()},
               extra: state.draft.trimmedName,
             );
+          case AddPlantFailure(:final error) when error is ConflictError:
+            _showDuplicateDialog(context, l10n);
           default:
             break;
         }
@@ -208,8 +256,10 @@ class _AddPlantWizardScreenState extends ConsumerState<AddPlantWizardScreen> {
     final submitting = state.status is AddPlantSubmitting ||
         state.status is AddPlantSavingSchedules;
     final draft = state.draft;
+    // ConflictError показывается отдельным диалогом — из инлайн-ошибки исключаем.
     final errorMessage = switch (state.status) {
-      AddPlantFailure(:final error) => l10n.messageForError(error),
+      AddPlantFailure(:final error) when error is! ConflictError =>
+        l10n.messageForError(error),
       _ => null,
     };
 
