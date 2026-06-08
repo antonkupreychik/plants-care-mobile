@@ -2975,4 +2975,117 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get editProfileEditButton => 'Редактировать';
+
+  @override
+  String get plantTemplatesTitle => 'Шаблоны растений';
+
+  @override
+  String get plantTemplatesOverline => 'МОИ ШАБЛОНЫ';
+
+  @override
+  String get plantTemplatesBack => 'Назад';
+
+  @override
+  String plantTemplatesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count шаблона',
+      many: '$count шаблонов',
+      few: '$count шаблона',
+      one: '$count шаблон',
+      zero: 'Нет шаблонов',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get plantTemplatesEmptyTitle => 'Шаблонов пока нет';
+
+  @override
+  String get plantTemplatesEmptyHint =>
+      'Сохраните растение как шаблон, чтобы быстро добавлять похожие';
+
+  @override
+  String get plantTemplatesAdd => 'Новый шаблон';
+
+  @override
+  String get plantTemplatesCreateSheetTitle => 'Создать шаблон';
+
+  @override
+  String get plantTemplatesCreateNameLabel => 'Название шаблона';
+
+  @override
+  String get plantTemplatesCreateNameHint => 'Например: Суккулент базовый';
+
+  @override
+  String get plantTemplatesCreateAction => 'Создать';
+
+  @override
+  String get plantTemplatesDeleteConfirmTitle => 'Удалить шаблон?';
+
+  @override
+  String plantTemplatesDeleteConfirmMessage(String name) {
+    return 'Шаблон «$name» будет удалён. Растения, созданные из него, не изменятся.';
+  }
+
+  @override
+  String get plantTemplatesDeleteConfirmCancel => 'Отмена';
+
+  @override
+  String get plantTemplatesDeleteConfirmDelete => 'Удалить';
+
+  @override
+  String get plantTemplatesDeleted => 'Шаблон удалён';
+
+  @override
+  String get plantTemplatesInstantiateSheetTitle => 'Новое растение из шаблона';
+
+  @override
+  String get plantTemplatesInstantiateNameLabel => 'Имя растения';
+
+  @override
+  String get plantTemplatesInstantiateNameHint => 'Например: Монстера';
+
+  @override
+  String get plantTemplatesInstantiateAction => 'Создать растение';
+
+  @override
+  String plantTemplatesInstantiateSuccess(String name) {
+    return 'Растение «$name» создано';
+  }
+
+  @override
+  String plantTemplatesCareRule(String careType, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days дней',
+      many: '$days дней',
+      few: '$days дня',
+      one: '$days день',
+    );
+    return '$careType — каждые $_temp0';
+  }
+
+  @override
+  String get plantTemplatesSaveFromPlant => 'Сохранить как шаблон';
+
+  @override
+  String get plantTemplatesActionInstantiate => 'Создать растение';
+
+  @override
+  String get plantTemplatesActionDelete => 'Удалить шаблон';
+
+  @override
+  String get plantTemplatesCareTypeWatering => 'Полив';
+
+  @override
+  String get plantTemplatesCareTypeMisting => 'Опрыскивание';
+
+  @override
+  String get plantTemplatesCareTypeFertilizing => 'Удобрение';
+
+  @override
+  String get plantTemplatesCareTypeSoilCheck => 'Проверка почвы';
 }

@@ -32,6 +32,7 @@ import '../../features/language/presentation/language_screen.dart';
 import '../../features/quiet_hours/presentation/quiet_hours_screen.dart';
 import '../../features/quiet_hours/presentation/timezone_screen.dart';
 import '../../features/vacation/presentation/vacation_screen.dart';
+import '../../features/plant_templates/presentation/plant_templates_screen.dart';
 import '../../features/rooms/presentation/rooms_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
 import '../../features/seasonal/presentation/seasonal_screen.dart';
@@ -381,6 +382,15 @@ GoRouter appRouter(Ref ref) {
                   name: 'rooms',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const RoomsScreen(),
+                ),
+                // Экран шаблонов растений (issue #191) — список шаблонов,
+                // создание/удаление/инстанцирование. Полноэкранно поверх shell
+                // (своя кнопка «назад», без таб-бара), как rooms/archive.
+                GoRoute(
+                  path: 'templates',
+                  name: 'plantTemplates',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => const PlantTemplatesScreen(),
                 ),
                 // Экран конвертации гостевого аккаунта (issue #74).
                 // Доступен только когда isGuest == true (баннер на Home).

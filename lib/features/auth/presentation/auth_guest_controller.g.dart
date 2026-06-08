@@ -66,7 +66,7 @@ final class AuthGuestControllerProvider
 }
 
 String _$authGuestControllerHash() =>
-    r'82d5bab0f85bd6a66176a343ee95596e3889996b';
+    r'cb3ad53afb9410384d7e8d976f4bdf7e1b7d549c';
 
 /// Контроллер кнопки «Продолжить без аккаунта».
 ///
