@@ -9,6 +9,24 @@ import 'species_list_state.dart';
 
 part 'catalog_providers.g.dart';
 
+/// Вкладки переключателя Растения / Болезни внутри таба «Каталог» (issue #141).
+enum CatalogTab { plants, diseases }
+
+/// Текущая вкладка переключателя в таббаре «Каталог».
+///
+/// `keepAlive`: выбор переживает уход/возврат на таб, сохраняя состояние
+/// (AC: «состояние выбора сохраняется при возврате»).
+@Riverpod(keepAlive: true)
+class CatalogTabSelection extends _$CatalogTabSelection {
+  @override
+  CatalogTab build() => CatalogTab.plants;
+
+  void select(CatalogTab tab) {
+    if (tab == state) return;
+    state = tab;
+  }
+}
+
 /// State-слой каталога видов (экраны 12 «Список» и 13 «Деталь»).
 ///
 /// Контракт для ui-builder:

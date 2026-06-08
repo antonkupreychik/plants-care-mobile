@@ -17,6 +17,7 @@ class AppConfig {
     this.refreshToken,
     this.googleServerClientId,
     this.googleIosClientId,
+    this.sentryDsn,
   });
 
   final Flavor flavor;
@@ -37,7 +38,15 @@ class AppConfig {
   /// в `Info.plist`. Публичный, env-specific. `null` — если не задан.
   final String? googleIosClientId;
 
+  /// Sentry DSN (`SENTRY_DSN`). Передаётся через `--dart-define=SENTRY_DSN=…`.
+  /// В CI — из secrets. Не коммитится в репозиторий.
+  /// `null` — Sentry не инициализируется (dev без DSN, unit-тесты).
+  final String? sentryDsn;
+
   bool get isDev => flavor == Flavor.dev;
+
+  /// Sentry включён: DSN задан.
+  bool get isSentryEnabled => sentryDsn != null;
 
   static const String _apiUrl = String.fromEnvironment(
     'API_URL',
@@ -49,6 +58,7 @@ class AppConfig {
       String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID');
   static const String _googleIosClientId =
       String.fromEnvironment('GOOGLE_IOS_CLIENT_ID');
+  static const String _sentryDsn = String.fromEnvironment('SENTRY_DSN');
 
   factory AppConfig.fromEnv(Flavor flavor) {
     return AppConfig(
@@ -60,6 +70,7 @@ class AppConfig {
           _googleServerClientId.isEmpty ? null : _googleServerClientId,
       googleIosClientId:
           _googleIosClientId.isEmpty ? null : _googleIosClientId,
+      sentryDsn: _sentryDsn.isEmpty ? null : _sentryDsn,
     );
   }
 }

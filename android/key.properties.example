@@ -1,0 +1,8 @@
+# Copy this file to android/key.properties and fill in your real values.
+# android/key.properties is gitignored and must NEVER be committed.
+# In CI, these values are injected from GitHub Secrets (see .github/workflows/cd.yml).
+
+storePassword=<keystore_password>
+keyPassword=<key_password>
+keyAlias=<key_alias>
+storeFile=<absolute_or_relative_path_to_jks_file>

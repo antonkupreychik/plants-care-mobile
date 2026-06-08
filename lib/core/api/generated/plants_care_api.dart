@@ -31,6 +31,7 @@ import 'clients/location_sharing_client.dart';
 import 'clients/devices_client.dart';
 import 'clients/sync_client.dart';
 import 'clients/photos_client.dart';
+import 'clients/ui_client.dart';
 
 /// Plants Care API `v0.1.0`.
 ///
@@ -98,6 +99,7 @@ class PlantsCareApi {
   DevicesClient? _devices;
   SyncClient? _sync;
   PhotosClient? _photos;
+  UiClient? _ui;
 
   AuthClient get auth => _auth ??= AuthClient(_dio, baseUrl: _baseUrl);
 
@@ -152,4 +154,6 @@ class PlantsCareApi {
   SyncClient get sync => _sync ??= SyncClient(_dio, baseUrl: _baseUrl);
 
   PhotosClient get photos => _photos ??= PhotosClient(_dio, baseUrl: _baseUrl);
+
+  UiClient get ui => _ui ??= UiClient(_dio, baseUrl: _baseUrl);
 }

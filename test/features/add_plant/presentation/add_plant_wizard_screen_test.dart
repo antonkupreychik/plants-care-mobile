@@ -24,8 +24,39 @@ import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 class _MockRepo extends Mock implements AddPlantRepository {}
 
+/// Заглушка экрана комнат для тестов: при монтировании вызывает [onCreated]
+/// (имитирует создание комнаты через rooms_controller → invalidate),
+/// показывает маркер [_roomsMarker].
+class _RoomsStub extends ConsumerStatefulWidget {
+  const _RoomsStub({required this.onCreated});
+
+  /// Вызывается один раз после первого кадра (post-frame).
+  final VoidCallback onCreated;
+
+  @override
+  ConsumerState<_RoomsStub> createState() => _RoomsStubState();
+}
+
+class _RoomsStubState extends ConsumerState<_RoomsStub> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      widget.onCreated();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: Text('комнаты', key: _roomsMarker)),
+    );
+  }
+}
+
 /// Фейковый контроллер: стартует в idle, позволяет эмитировать
-/// [AddPlantScheduleFailure] без реального сетевого вызова.
+/// [AddPlantScheduleFailure] и [AddPlantFailure] без реального сетевого вызова.
 class _FakeWizardController extends AddPlantWizardController {
   @override
   AddPlantWizardState build() => const AddPlantWizardState();
@@ -36,6 +67,12 @@ class _FakeWizardController extends AddPlantWizardController {
         plantId: plantId,
         error: const ApiError.network(),
       ),
+    );
+  }
+
+  void emitConflict() {
+    state = state.copyWith(
+      status: const AddPlantSubmitStatus.failure(ApiError.conflict()),
     );
   }
 }
@@ -65,10 +102,15 @@ const _plantCardMarker = Key('plant-card-screen');
 /// Маркер экрана расписания — при AddPlantScheduleFailure мастер переходит сюда.
 const _scheduleMarker = Key('edit-schedule-screen');
 
+/// Маркер экрана управления комнатами — заглушка для тестов навигации.
+const _roomsMarker = Key('rooms-screen');
+
 /// Монтирует мастер на отдельном маршруте `/add` поверх хост-экрана через
 /// настоящий GoRouter — так `context.pop()`/`context.go()` внутри мастера
 /// работают, как в проде (мастер на root-навигаторе поверх shell).
 /// [species]/[speciesError] управляют шагом 1, [repo] (необязателен) — сабмитом.
+/// [locationsAfterRooms] — список, который вернёт homeLocationsProvider после
+/// возврата из экрана комнат (для тестов автовыбора новой комнаты).
 Future<void> _pump(
   WidgetTester tester, {
   List<SpeciesSummary>? species,
@@ -88,6 +130,21 @@ Future<void> _pump(
           GoRoute(
             path: 'add',
             builder: (_, _) => const AddPlantWizardScreen(),
+          ),
+          GoRoute(
+            path: 'profile',
+            builder: (_, _) => const SizedBox(),
+            routes: [
+              GoRoute(
+                path: 'rooms',
+                name: 'rooms',
+                builder: (_, _) => const Scaffold(
+                  body: Center(
+                    child: Text('комнаты', key: _roomsMarker),
+                  ),
+                ),
+              ),
+            ],
           ),
           GoRoute(
             path: 'home',
@@ -288,7 +345,7 @@ void main() {
   });
 
   group('step 4 (photo + window + submit)', () {
-    /// Доводит мастер до шага 6 (акклиматизация, кнопка «Добавить в сад»)
+    /// Доводит мастер до шага 5 (дата + акклиматизация, кнопка «Добавить в сад»)
     /// с валидным именем «Алоэ» (без вида).
     Future<void> goToConfirm(WidgetTester tester) async {
       await _skipToNameStep(tester);
@@ -299,9 +356,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4 (photo/window)
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 5 (acquired date)
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 6 (acclimation)
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 5 (date + acclimation)
       await tester.pumpAndSettle();
     }
 
@@ -421,16 +476,157 @@ void main() {
   });
 
   group('step 2 extras (new room CTA)', () {
-    testWidgets('should_navigate_to_rooms_when_new_room_tapped',
+    testWidgets('should_show_new_room_cta_on_step_2', (tester) async {
+      await _pump(tester, species: const []);
+      await tester.pumpAndSettle();
+      await _skipToNameStep(tester);
+      final l10n = _l10n(tester);
+
+      expect(find.text(l10n.addPlantNewRoom), findsOneWidget);
+    });
+
+    testWidgets(
+        'should_push_rooms_without_unmounting_wizard_when_new_room_tapped',
         (tester) async {
       await _pump(tester, species: const []);
       await tester.pumpAndSettle();
       await _skipToNameStep(tester);
       final l10n = _l10n(tester);
 
-      // CTA «Новая комната» уводит из мастера (на маршрут rooms — в тестовом
-      // роутере его нет, но факт навигации = мастер закрылся / попытка перехода).
-      expect(find.text(l10n.addPlantNewRoom), findsOneWidget);
+      // Тап «Новая комната» открывает экран комнат поверх мастера (push).
+      await tester.tap(find.text(l10n.addPlantNewRoom));
+      await tester.pumpAndSettle();
+
+      // Экран комнат открыт поверх.
+      expect(find.byKey(_roomsMarker), findsOneWidget);
+      // Wizard присутствует в дереве (не размонтирован) — состояние черновика
+      // сохранено (autoDispose провайдера не срабатывает).
+      // skipOffstage: false — мастер ниже rooms в стеке и может быть offstage.
+      expect(
+        find.byType(AddPlantWizardScreen, skipOffstage: false),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets(
+        'should_restore_wizard_state_after_returning_from_rooms',
+        (tester) async {
+      await _pump(tester, species: const []);
+      await tester.pumpAndSettle();
+      await _skipToNameStep(tester);
+      final l10n = _l10n(tester);
+
+      // Вводим имя — визард должен помнить его после возврата из комнат.
+      await tester.enterText(find.byType(TextField).first, 'Монстера');
+      await tester.pumpAndSettle();
+
+      // Переходим в экран комнат (push, не go).
+      await tester.tap(find.text(l10n.addPlantNewRoom));
+      await tester.pumpAndSettle();
+      expect(find.byKey(_roomsMarker), findsOneWidget);
+
+      // Возвращаемся назад.
+      final NavigatorState navigator =
+          tester.state(find.byType(Navigator).first);
+      navigator.pop();
+      await tester.pumpAndSettle();
+
+      // Мастер снова на переднем плане, введённое имя сохранено.
+      expect(find.byType(AddPlantWizardScreen), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Монстера'), findsOneWidget);
+    });
+
+    testWidgets(
+        'should_autoselect_new_room_when_returning_from_rooms_after_creation',
+        (tester) async {
+      // Начальный список — только «Спальня».
+      const existingRoom =
+          GardenLocation(id: 1, name: 'Спальня', isDefault: true);
+      const newRoom = GardenLocation(id: 3, name: 'Балкон', isDefault: false);
+
+      // Мутабельная ссылка: stub обновляет её и инвалидирует провайдер.
+      // Провайдер перечитывает список при следующем build (после инвалидации).
+      var currentLocations = <GardenLocation>[existingRoom];
+
+      late ProviderContainer container;
+      container = ProviderContainer(
+        overrides: [
+          speciesSearchProvider('').overrideWith(
+            (ref) => Future.value(const <SpeciesSummary>[]),
+          ),
+          homeLocationsProvider.overrideWith(
+            (ref) async => List<GardenLocation>.unmodifiable(currentLocations),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final router = GoRouter(
+        initialLocation: '/add',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, _) => const Scaffold(
+              body: Center(child: Text('хост', key: _hostMarker)),
+            ),
+            routes: [
+              GoRoute(
+                path: 'add',
+                builder: (_, _) => const AddPlantWizardScreen(),
+              ),
+              GoRoute(
+                path: 'profile',
+                builder: (_, _) => const SizedBox(),
+                routes: [
+                  GoRoute(
+                    path: 'rooms',
+                    name: 'rooms',
+                    builder: (_, _) => _RoomsStub(
+                      onCreated: () {
+                        // Имитируем создание комнаты: rooms_controller обновляет
+                        // список и инвалидирует homeLocationsProvider.
+                        currentLocations = [existingRoom, newRoom];
+                        container.invalidate(homeLocationsProvider);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            locale: const Locale('ru'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: AppTheme.light(),
+            routerConfig: router,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await _skipToNameStep(tester);
+      final l10n = _l10n(tester);
+
+      // Переходим в экран комнат (stub «создаёт» Балкон и инвалидирует провайдер).
+      await tester.tap(find.text(l10n.addPlantNewRoom));
+      await tester.pumpAndSettle();
+      expect(find.byKey(_roomsMarker), findsOneWidget);
+
+      // Возвращаемся назад.
+      final NavigatorState navigator =
+          tester.state(find.byType(Navigator).first);
+      navigator.pop();
+      await tester.pumpAndSettle();
+
+      // Новая комната «Балкон» отображается в списке.
+      expect(find.text('Балкон'), findsOneWidget);
     });
   });
 
@@ -579,6 +775,105 @@ void main() {
       // Assert: ref.listen поймал переход и навигировал на editSchedule.
       expect(find.byType(AddPlantWizardScreen), findsNothing);
       expect(find.byKey(_scheduleMarker), findsOneWidget);
+    });
+
+    testWidgets(
+        'should_show_duplicate_dialog_when_ConflictError_on_submit',
+        (tester) async {
+      final container = await pumpWithFakeController(tester);
+
+      final notifier = container
+          .read(addPlantWizardControllerProvider.notifier)
+          as _FakeWizardController;
+      notifier.emitConflict();
+      await tester.pumpAndSettle();
+
+      // Диалог дедупа появился — мастер остаётся в дереве.
+      final l10n = _l10n(tester);
+      expect(find.text(l10n.addPlantDuplicateTitle), findsOneWidget);
+      expect(find.text(l10n.addPlantDuplicateBody), findsOneWidget);
+      expect(find.byType(AddPlantWizardScreen), findsOneWidget);
+    });
+
+    testWidgets(
+        'should_reset_status_to_idle_when_duplicate_dialog_cancel_tapped',
+        (tester) async {
+      final container = await pumpWithFakeController(tester);
+
+      final notifier = container
+          .read(addPlantWizardControllerProvider.notifier)
+          as _FakeWizardController;
+      notifier.emitConflict();
+      await tester.pumpAndSettle();
+
+      final l10n = _l10n(tester);
+      await tester.tap(find.text(l10n.addPlantDuplicateCancel));
+      await tester.pumpAndSettle();
+
+      // Диалог закрыт, статус сброшен в idle.
+      expect(find.text(l10n.addPlantDuplicateTitle), findsNothing);
+      final status = container.read(addPlantWizardControllerProvider).status;
+      expect(status, const AddPlantSubmitStatus.idle());
+    });
+
+    testWidgets(
+        'should_reset_status_to_idle_when_duplicate_dialog_confirm_tapped',
+        (tester) async {
+      final container = await pumpWithFakeController(tester);
+
+      final notifier = container
+          .read(addPlantWizardControllerProvider.notifier)
+          as _FakeWizardController;
+      notifier.emitConflict();
+      await tester.pumpAndSettle();
+
+      final l10n = _l10n(tester);
+      await tester.tap(find.text(l10n.addPlantDuplicateConfirm));
+      await tester.pumpAndSettle();
+
+      // Диалог закрыт, статус сброшен — пользователь может повторить сабмит.
+      expect(find.text(l10n.addPlantDuplicateTitle), findsNothing);
+      final status = container.read(addPlantWizardControllerProvider).status;
+      expect(status, const AddPlantSubmitStatus.idle());
+    });
+
+    testWidgets(
+        'should_not_show_inline_error_for_conflict_only_dialog',
+        (tester) async {
+      final repo = _MockRepo();
+      when(() => repo.createPlant(
+            name: any(named: 'name'),
+            locationId: any(named: 'locationId'),
+            notes: any(named: 'notes'),
+            speciesId: any(named: 'speciesId'),
+            acquiredAt: any(named: 'acquiredAt'),
+            isNew: any(named: 'isNew'),
+          )).thenAnswer(
+        (_) async => const Result.failure(ApiError.conflict()),
+      );
+
+      await _pump(tester, species: const [], repo: repo);
+      await tester.pumpAndSettle();
+
+      // Доводим до последнего шага и нажимаем «Добавить в сад».
+      await _skipToNameStep(tester);
+      final l10n = _l10n(tester);
+      await tester.enterText(find.byType(TextField).first, 'Дубликат');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 3 (care plan)
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 4 (photo/window)
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.addPlantNext)); // → шаг 5 (date + acclimation)
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(l10n.addPlantSubmitGarden));
+      await tester.pumpAndSettle();
+
+      // Диалог дедупа показан (не инлайн-ошибка в форме).
+      expect(find.text(l10n.addPlantDuplicateTitle), findsOneWidget);
+      // Инлайн-ошибка типа «Данные изменились» НЕ отображается.
+      expect(find.text(l10n.errorConflict), findsNothing);
     });
   });
 }

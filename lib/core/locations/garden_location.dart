@@ -18,6 +18,13 @@ abstract class GardenLocation with _$GardenLocation {
     /// Является ли локация дефолтной у пользователя.
     required bool isDefault,
 
+    /// Является ли локация текущей активной («основной») локацией
+    /// пользователя (`users.active_location_id`). Источник мультидомности
+    /// (issue #92 Part 2): отдельной сущности «дом» на backend нет, поэтому
+    /// «основной дом» = активная локация. `@Default(false)` сохраняет
+    /// обратную совместимость существующих конструкторов/тестов.
+    @Default(false) bool isActive,
+
     /// Эмодзи-иконка локации (если задана).
     String? emoji,
     DateTime? createdAt,

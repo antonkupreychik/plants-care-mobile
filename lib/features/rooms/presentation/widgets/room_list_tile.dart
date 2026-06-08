@@ -43,15 +43,27 @@ class RoomListTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  room.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: c.ink,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        room.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: c.ink,
+                        ),
+                      ),
+                    ),
+                    // «Основная» (активная) локация — мультидомность #92 Part 2:
+                    // отдельной сущности «дом» нет, активная локация = основной дом.
+                    if (room.isActive) ...[
+                      const SizedBox(width: 8),
+                      _ActiveBadge(label: l10n.roomsActiveBadge),
+                    ],
+                  ],
                 ),
                 if (room.isDefault) ...[
                   const SizedBox(height: 2),
@@ -77,6 +89,35 @@ class RoomListTile extends StatelessWidget {
               danger: true,
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Пилюля «ОСНОВНОЙ» на активной (основной) локации — primary-акцент, как в
+/// дизайне (RoomsHomesScreen, бейдж активного дома).
+class _ActiveBadge extends StatelessWidget {
+  const _ActiveBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: c.primarySoft,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Text(
+        label.toUpperCase(),
+        style: TextStyle(
+          fontSize: 9,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.4,
+          color: c.leafDark,
+        ),
       ),
     );
   }

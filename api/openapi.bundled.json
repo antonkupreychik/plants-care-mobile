@@ -130,6 +130,10 @@
     {
       "name": "PhotoProgress",
       "description": "Фото-дневник развития растения (issue #253): загрузка снимков прогресса\n(multipart в S3), история с датами и presigned URL, сравнение двух\nснимков «до/после» и частота напоминаний о фото. REST поверх\n`PhotoProgressService`; растение должно принадлежать пользователю.\n"
+    },
+    {
+      "name": "UI",
+      "description": "Server-Driven UI (MADR-015): backend отдаёт декларативный лейаут экрана\nсписком полиморфных блоков. Клиент рендерит блоки через registry по полю\n`type`, не зашивая структуру экрана в код.\n"
     }
   ],
   "paths": {
@@ -3930,6 +3934,63 @@
           }
         }
       }
+    },
+    "/api/v1/ui/{screen}": {
+      "get": {
+        "tags": [
+          "UI"
+        ],
+        "operationId": "getUiScreen",
+        "summary": "SDUI-лейаут экрана",
+        "description": "Возвращает декларативное описание экрана (Server-Driven UI, MADR-015):\nидентификатор экрана, версию и упорядоченный список блоков. Блоки —\nсвободные JSON-объекты с полем `type`; backend их не типизирует.\nКлиент рендерит блоки через registry по полю `type`; неизвестные типы\nпропускает (forward-compatibility).\n\nЗаголовок `X-UI-Catalog-Version` (опционально) сообщает серверу версию\nкаталога блоков, которую понимает клиент, — сервер может отдать\nсовместимый набор блоков.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "screen",
+            "in": "path",
+            "required": true,
+            "description": "Идентификатор экрана (например, `home`).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "home"
+          },
+          {
+            "name": "X-UI-Catalog-Version",
+            "in": "header",
+            "required": false,
+            "description": "Версия каталога SDUI-блоков, поддерживаемая клиентом. Сервер\nиспользует её для выдачи совместимого набора блоков. Если не\nпередана — сервер отдаёт актуальную версию.\n",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1,
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Лейаут экрана.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScreenLayout"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5919,6 +5980,37 @@
             "type": "string",
             "description": "Локализованное русское имя для UI.",
             "example": "Полив"
+          }
+        }
+      },
+      "ScreenLayout": {
+        "type": "object",
+        "description": "Декларативный лейаут одного экрана (Server-Driven UI, MADR-015).\nСписок `blocks` упорядочен — клиент рендерит блоки сверху вниз.\n\nОпаковый контракт: каждый элемент `blocks` — свободный JSON-объект с\nполем `type`. Форму конкретного блока задаёт backend; клиент парсит её\nдинамически (см. sdui_block_mapper).\n",
+        "required": [
+          "screenId",
+          "version",
+          "blocks"
+        ],
+        "properties": {
+          "screenId": {
+            "type": "string",
+            "description": "Идентификатор экрана (например, `home`).",
+            "example": "home"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Версия структуры лейаута для данного экрана.",
+            "example": 1
+          },
+          "blocks": {
+            "type": "array",
+            "description": "Упорядоченный список блоков экрана. Каждый блок — свободный объект\nс полем `type` (дискриминатор на стороне клиента).\n",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Свободный JSON-объект блока. Обязательное поле `type` определяет\nрендерер на клиенте; остальные поля зависят от типа блока.\n"
+            }
           }
         }
       },

@@ -26,7 +26,7 @@ class PlantCard extends StatelessWidget {
   /// Чередование фона плашки иллюстрации (тёплый / мягко-зелёный) — как в дизайне.
   final bool tintWarm;
 
-  /// Тап по карточке (пока no-op/snackbar — маршрут /plant/:id в фиче 02).
+  /// Тап по ТЕЛУ карточки (напр. переход на карточку растения).
   final VoidCallback onTap;
 
   @override
@@ -47,6 +47,7 @@ class PlantCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Верхний ряд: вид растения (overline).
               if (plant.speciesName != null)
                 Text(
                   plant.speciesName!.toUpperCase(),

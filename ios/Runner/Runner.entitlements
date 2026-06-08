@@ -11,5 +11,21 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<!-- Associated Domains / Universal Links (issue #127):
+	     applinks: — включает Universal Links (iOS 9+), AASA-файл проверяется
+	     системой при установке с сервера.
+
+	     Хост-файл требует деплоя на backend'е:
+	       GET https://plants-care.up.railway.app/.well-known/apple-app-site-association
+	       → {"applinks":{"details":[{"appIDs":["<TEAM_ID>.com.plantcare.plantcareMobile"],
+	                                   "components":[{"/":" /auth/verify*"},
+	                                                 {"/":" /plants/*"}]}]}}
+	     TEAM_ID — 10-символьный Apple Developer Team ID (Apple Developer Console).
+	     Capability должна быть добавлена в Signing & Capabilities в Xcode
+	     (или через CODE_SIGN_ENTITLEMENTS уже подключённый project.pbxproj). -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:plants-care.up.railway.app</string>
+	</array>
 </dict>
 </plist>

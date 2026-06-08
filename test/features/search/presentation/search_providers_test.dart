@@ -9,23 +9,42 @@ import 'package:plantcare_mobile/features/catalog/data/catalog_repository_provid
 import 'package:plantcare_mobile/features/catalog/domain/catalog_repository.dart';
 import 'package:plantcare_mobile/features/catalog/domain/species.dart';
 import 'package:plantcare_mobile/features/catalog/domain/species_page.dart';
+import 'package:plantcare_mobile/features/disease_catalog/data/disease_catalog_repository_provider.dart';
+import 'package:plantcare_mobile/features/disease_catalog/domain/disease.dart'
+    as catalog;
+import 'package:plantcare_mobile/features/disease_catalog/domain/disease_repository.dart';
 import 'package:plantcare_mobile/features/home/domain/plant.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/search/presentation/search_providers.dart';
 
 class _MockCatalogRepo extends Mock implements CatalogRepository {}
 
+class _MockDiseaseRepo extends Mock implements DiseaseCatalogRepository {}
+
 Plant _plant(int id, String name, {String? location}) =>
     Plant(id: id, name: name, locationName: location);
+
+catalog.Disease _disease(int id, String name, {String? latinName}) =>
+    catalog.Disease(
+      id: id,
+      name: name,
+      latinName: latinName,
+      symptoms: 'симптомы',
+      treatment: 'лечение',
+      prevention: 'профилактика',
+    );
 
 ProviderContainer _containerWith({
   List<Plant> plants = const [],
   CatalogRepository? repo,
+  DiseaseCatalogRepository? diseaseRepo,
 }) {
   final container = ProviderContainer(
     overrides: [
       homePlantsProvider.overrideWith((ref) async => plants),
       if (repo != null) catalogRepositoryProvider.overrideWithValue(repo),
+      if (diseaseRepo != null)
+        diseaseCatalogRepositoryProvider.overrideWithValue(diseaseRepo),
     ],
   );
   addTearDown(container.dispose);
@@ -180,14 +199,74 @@ void main() {
     });
   });
 
-  group('diseaseSearchResultsProvider (stub до plants-care#225)', () {
-    test('should_always_return_empty_list', () async {
-      final container = _containerWith();
+  group('diseaseSearchResultsProvider', () {
+    late _MockDiseaseRepo repo;
+
+    setUp(() => repo = _MockDiseaseRepo());
+
+    test('should_return_empty_without_request_when_query_too_short', () async {
+      final container = _containerWith(diseaseRepo: repo);
+
+      final result =
+          await container.read(diseaseSearchResultsProvider('к').future);
+
+      expect(result, isEmpty);
+      verifyNever(() => repo.search(any()));
+    });
+
+    test('should_request_diseases_and_map_to_light_model', () async {
+      when(() => repo.search('клещ')).thenAnswer(
+        (_) async => Result.success([
+          _disease(7, 'Паутинный клещ', latinName: 'Tetranychus urticae'),
+          _disease(8, 'Тля'),
+        ]),
+      );
+      final container = _containerWith(diseaseRepo: repo);
 
       final result =
           await container.read(diseaseSearchResultsProvider('клещ').future);
 
-      expect(result, isEmpty);
+      expect(result.map((d) => d.id), [7, 8]);
+      expect(result.first.name, 'Паутинный клещ');
+      expect(result.first.latinName, 'Tetranychus urticae');
+      expect(result[1].latinName, isNull);
+      verify(() => repo.search('клещ')).called(1);
+    });
+
+    test('should_cap_results_at_limit', () async {
+      when(() => repo.search(any())).thenAnswer(
+        (_) async => Result.success(
+          List.generate(10, (i) => _disease(i, 'Болезнь $i')),
+        ),
+      );
+      final container = _containerWith(diseaseRepo: repo);
+
+      final result =
+          await container.read(diseaseSearchResultsProvider('бол').future);
+
+      expect(result.length, kSearchResultsLimit);
+    });
+
+    test('should_throw_ApiError_into_AsyncError_on_failure', () async {
+      when(() => repo.search(any()))
+          .thenAnswer((_) async => const Result.failure(ApiError.network()));
+      final container = _containerWith(diseaseRepo: repo);
+
+      // Подписка удерживает autoDispose-провайдер живым на время await
+      // (иначе он утилизируется в loading и `.future` падает StateError).
+      final completer = Completer<Object?>();
+      final sub = container.listen(
+        diseaseSearchResultsProvider('клещ'),
+        (_, next) {
+          if (next.hasError && !completer.isCompleted) {
+            completer.complete(next.error);
+          }
+        },
+        fireImmediately: true,
+      );
+      addTearDown(sub.close);
+
+      expect(await completer.future, const ApiError.network());
     });
   });
 }

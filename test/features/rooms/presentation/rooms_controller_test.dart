@@ -4,6 +4,10 @@ import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/core/locations/garden_location.dart';
+import 'package:plantcare_mobile/core/sdui/domain/sdui_repository.dart';
+import 'package:plantcare_mobile/core/sdui/domain/sdui_screen_layout.dart';
+import 'package:plantcare_mobile/core/sdui/data/sdui_repository_provider.dart';
+import 'package:plantcare_mobile/core/sdui/presentation/screen_layout_provider.dart';
 import 'package:plantcare_mobile/features/home/data/home_repository_provider.dart';
 import 'package:plantcare_mobile/features/home/domain/home_repository.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
@@ -15,17 +19,23 @@ class _MockRoomsRepo extends Mock implements RoomsRepository {}
 
 class _MockHomeRepo extends Mock implements HomeRepository {}
 
+class _MockSduiRepo extends Mock implements SduiRepository {}
+
 const _kitchen = GardenLocation(id: 1, name: 'Кухня', isDefault: true);
 const _balcony = GardenLocation(id: 2, name: 'Балкон', isDefault: false);
+
+const _layout = SduiScreenLayout(screenId: 'home', version: 1, blocks: []);
 
 ProviderContainer _container(
   _MockRoomsRepo repo, {
   HomeRepository? homeRepo,
+  SduiRepository? sduiRepo,
 }) {
   final container = ProviderContainer(
     overrides: [
       roomsRepositoryProvider.overrideWithValue(repo),
       if (homeRepo != null) homeRepositoryProvider.overrideWithValue(homeRepo),
+      if (sduiRepo != null) sduiRepositoryProvider.overrideWithValue(sduiRepo),
     ],
   );
   addTearDown(container.dispose);
@@ -211,6 +221,58 @@ void main() {
     });
   });
 
+  group('moveAndDelete', () {
+    test('should_return_success_and_refetch_list', () async {
+      var calls = 0;
+      when(repo.getLocations).thenAnswer((_) async {
+        calls++;
+        return calls == 1
+            ? const Result.success([_kitchen, _balcony])
+            : const Result.success([_kitchen]);
+      });
+      when(() => repo.movePlantsAndDelete(
+            fromLocationId: any(named: 'fromLocationId'),
+            targetLocationId: any(named: 'targetLocationId'),
+          )).thenAnswer((_) async => const Result.success(null));
+      final container = _container(repo);
+      await container.read(roomsControllerProvider.future);
+
+      final result = await container
+          .read(roomsControllerProvider.notifier)
+          .moveAndDelete(id: 2, targetLocationId: 1);
+
+      expect(result, isA<Success<void>>());
+      verify(() => repo.movePlantsAndDelete(
+            fromLocationId: 2,
+            targetLocationId: 1,
+          )).called(1);
+      // Список перечитан → осталась одна комната.
+      expect(container.read(roomsControllerProvider).value, [_kitchen]);
+      verify(repo.getLocations).called(2);
+    });
+
+    test('should_return_failure_and_not_refetch_when_move_fails', () async {
+      when(repo.getLocations)
+          .thenAnswer((_) async => const Result.success([_kitchen, _balcony]));
+      when(() => repo.movePlantsAndDelete(
+            fromLocationId: any(named: 'fromLocationId'),
+            targetLocationId: any(named: 'targetLocationId'),
+          )).thenAnswer((_) async => const Result.failure(ApiError.network()));
+      final container = _container(repo);
+      await container.read(roomsControllerProvider.future);
+
+      final result = await container
+          .read(roomsControllerProvider.notifier)
+          .moveAndDelete(id: 2, targetLocationId: 1);
+
+      expect(result, isA<Failure<void>>());
+      // Список не перечитан (мутация неуспешна) и остался цел.
+      final state = container.read(roomsControllerProvider);
+      expect(state.value, [_kitchen, _balcony]);
+      verify(repo.getLocations).called(1);
+    });
+  });
+
   group('home invalidation after mutation', () {
     test('should_refetch_homeLocations_after_successful_create', () async {
       // homeLocationsProvider ходит через homeRepository.getLocations(). После
@@ -243,6 +305,98 @@ void main() {
 
       // Инвалидация сработала → home-локации перечитаны.
       verify(homeRepo.getLocations).called(1);
+    });
+
+    test('should_rebuild_home_sdui_layout_after_successful_delete', () async {
+      // Регрессия #193: Home watch'ит homeScreenLayoutProvider (SDUI-витрина).
+      // После успешного delete контроллер инвалидирует его → сервер пересобирает
+      // лейаут (повторный getHomeLayout). Без фикса витрина висела старой.
+      when(repo.getLocations)
+          .thenAnswer((_) async => const Result.success([_kitchen, _balcony]));
+      when(() => repo.deleteLocation(
+            id: any(named: 'id'),
+            targetLocationId: any(named: 'targetLocationId'),
+          )).thenAnswer((_) async => const Result.success(null));
+
+      final sduiRepo = _MockSduiRepo();
+      when(sduiRepo.getHomeLayout)
+          .thenAnswer((_) async => const Result.success(_layout));
+
+      final container = _container(repo, sduiRepo: sduiRepo);
+      // Подписка держит autoDispose-провайдер живым, иначе invalidate его просто
+      // выкинет, а не перечитает.
+      final sub = container.listen(homeScreenLayoutProvider, (_, _) {});
+      addTearDown(sub.close);
+
+      await container.read(roomsControllerProvider.future);
+      await container.read(homeScreenLayoutProvider.future);
+      verify(sduiRepo.getHomeLayout).called(1);
+
+      await container.read(roomsControllerProvider.notifier).delete(id: 2);
+      await container.read(homeScreenLayoutProvider.future);
+
+      // Инвалидация сработала → SDUI-лейаут пересобран.
+      verify(sduiRepo.getHomeLayout).called(1);
+    });
+
+    test('should_rebuild_home_sdui_layout_after_successful_moveAndDelete',
+        () async {
+      // Тот же канал инвалидации для каскадного move+delete (issue #183).
+      when(repo.getLocations)
+          .thenAnswer((_) async => const Result.success([_kitchen, _balcony]));
+      when(() => repo.movePlantsAndDelete(
+            fromLocationId: any(named: 'fromLocationId'),
+            targetLocationId: any(named: 'targetLocationId'),
+          )).thenAnswer((_) async => const Result.success(null));
+
+      final sduiRepo = _MockSduiRepo();
+      when(sduiRepo.getHomeLayout)
+          .thenAnswer((_) async => const Result.success(_layout));
+
+      final container = _container(repo, sduiRepo: sduiRepo);
+      final sub = container.listen(homeScreenLayoutProvider, (_, _) {});
+      addTearDown(sub.close);
+
+      await container.read(roomsControllerProvider.future);
+      await container.read(homeScreenLayoutProvider.future);
+      verify(sduiRepo.getHomeLayout).called(1);
+
+      await container
+          .read(roomsControllerProvider.notifier)
+          .moveAndDelete(id: 2, targetLocationId: 1);
+      await container.read(homeScreenLayoutProvider.future);
+
+      verify(sduiRepo.getHomeLayout).called(1);
+    });
+
+    test('should_not_rebuild_home_sdui_layout_when_delete_fails', () async {
+      // Негатив: неуспешная мутация не инвалидирует SDUI-витрину.
+      when(repo.getLocations)
+          .thenAnswer((_) async => const Result.success([_kitchen, _balcony]));
+      when(() => repo.deleteLocation(
+            id: any(named: 'id'),
+            targetLocationId: any(named: 'targetLocationId'),
+          )).thenAnswer(
+        (_) async => const Result.failure(ApiError.locationNotEmpty()),
+      );
+
+      final sduiRepo = _MockSduiRepo();
+      when(sduiRepo.getHomeLayout)
+          .thenAnswer((_) async => const Result.success(_layout));
+
+      final container = _container(repo, sduiRepo: sduiRepo);
+      final sub = container.listen(homeScreenLayoutProvider, (_, _) {});
+      addTearDown(sub.close);
+
+      await container.read(roomsControllerProvider.future);
+      await container.read(homeScreenLayoutProvider.future);
+      verify(sduiRepo.getHomeLayout).called(1);
+
+      await container.read(roomsControllerProvider.notifier).delete(id: 2);
+      await container.read(homeScreenLayoutProvider.future);
+
+      // Мутация неуспешна → инвалидации не было, повторного fetch нет.
+      verifyNever(sduiRepo.getHomeLayout);
     });
   });
 }

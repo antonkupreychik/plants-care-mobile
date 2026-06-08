@@ -7,19 +7,15 @@ import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
+import 'package:plantcare_mobile/core/sdui/domain/sdui_action.dart';
+import 'package:plantcare_mobile/core/sdui/domain/sdui_block.dart';
+import 'package:plantcare_mobile/core/sdui/domain/sdui_screen_layout.dart';
+import 'package:plantcare_mobile/core/sdui/presentation/screen_layout_provider.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
 import 'package:plantcare_mobile/core/widgets/error_state.dart';
 import 'package:plantcare_mobile/core/widgets/offline_state.dart';
-import 'package:plantcare_mobile/features/home/presentation/widgets/home_loading_skeleton.dart';
-import 'package:plantcare_mobile/core/care/care_task.dart';
-import 'package:plantcare_mobile/core/care/care_task_type.dart';
-import 'package:plantcare_mobile/core/locations/garden_location.dart';
-import 'package:plantcare_mobile/features/home/domain/plant.dart';
-import 'package:plantcare_mobile/features/home/domain/today_tasks_result.dart';
-import 'package:plantcare_mobile/features/home/presentation/home_providers.dart';
 import 'package:plantcare_mobile/features/home/presentation/home_screen.dart';
-import 'package:plantcare_mobile/features/home/presentation/widgets/garden_empty.dart';
-import 'package:plantcare_mobile/features/home/presentation/widgets/location_chips.dart';
+import 'package:plantcare_mobile/features/home/presentation/widgets/home_loading_skeleton.dart';
 import 'package:plantcare_mobile/features/home/presentation/widgets/plant_card.dart';
 import 'package:plantcare_mobile/features/home/presentation/widgets/today_card.dart';
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
@@ -36,34 +32,20 @@ Future<T> _pending<T>() => Completer<T>().future;
 
 final _utcNow = DateTime.utc(2026, 5, 27, 9);
 
-typedef _Tasks = Future<List<CareTask>> Function();
-typedef _Plants = Future<List<Plant>> Function();
-typedef _Locations = Future<List<GardenLocation>> Function();
+typedef _Layout = Future<SduiScreenLayout> Function();
 
-/// Оборачивает список задач в [TodayTasksResult] с нулевым прогрессом.
-Future<TodayTasksResult> _tasksToResult(Future<List<CareTask>> tasksFuture) async {
-  final tasks = await tasksFuture;
-  return TodayTasksResult(tasks: tasks, completedCount: 0, totalCount: tasks.length);
-}
-
-Widget _wrap({
-  _Tasks? tasks,
-  _Plants? plants,
-  _Locations? locations,
-}) {
+Widget _wrap({_Layout? layout}) {
   return ProviderScope(
     overrides: [
       clockProvider.overrideWithValue(_FixedClock(_utcNow)),
-      // Stub: online, без реальных DNS-запросов и pending timers.
       connectivityProvider.overrideWith((_) => Stream.value(true)),
-      homeTasksProvider.overrideWith(
-        (ref) => _tasksToResult((tasks ?? () async => const <CareTask>[])()),
-      ),
-      homePlantsProvider.overrideWith(
-        (ref) => (plants ?? () async => const <Plant>[])(),
-      ),
-      homeLocationsProvider.overrideWith(
-        (ref) => (locations ?? () async => const <GardenLocation>[])(),
+      homeScreenLayoutProvider.overrideWith(
+        (ref) => (layout ??
+            () async => const SduiScreenLayout(
+                  screenId: 'home',
+                  version: 1,
+                  blocks: [],
+                ))(),
       ),
     ],
     child: MaterialApp(
@@ -77,118 +59,18 @@ Widget _wrap({
 }
 
 void main() {
-  group('HomeScreen loading', () {
-    // Сад уже загружен (content) → вторичные секции (задачи/локации) рисуют
-    // СВОИ скелетоны посекционно. Полноэкранный скелетон сюда не вмешивается:
-    // он только для coldLoading самого сада (см. homeViewStateProvider).
-    testWidgets('should_show_section_skeletons_when_secondary_providers_loading',
-        (tester) async {
-      await tester.pumpWidget(_wrap(
-        tasks: () => _pending<List<CareTask>>(),
-        plants: () async => const [Plant(id: 1, name: 'Фикус')],
-        locations: _pending<List<GardenLocation>>,
-      ));
+  group('HomeScreen SDUI states', () {
+    testWidgets('cold loading shows full-screen skeleton', (tester) async {
+      await tester.pumpWidget(_wrap(layout: _pending<SduiScreenLayout>));
       await tester.pump();
 
-      expect(find.byType(HomeLoadingSkeleton), findsNothing);
-      expect(find.byType(TodayCardSkeleton), findsOneWidget);
-      expect(find.byType(LocationChipsSkeleton), findsOneWidget);
-    });
-  });
-
-  group('HomeScreen error', () {
-    // Сад загружен (content); падает секция задач → её посекционный ErrorState.
-    // Сетевая ошибка САДА без кэша даёт полноэкранный офлайн (см. отдельный
-    // тест в 'top-level states'), поэтому здесь сад намеренно резолвится.
-    testWidgets('should_show_section_error_with_retry_when_tasks_fail',
-        (tester) async {
-      await tester.pumpWidget(_wrap(
-        tasks: () async => throw const ApiError.notFound(),
-        plants: () async => const [Plant(id: 1, name: 'Фикус')],
-      ));
-      await tester.pumpAndSettle();
-
-      final l10n =
-          AppLocalizations.of(tester.element(find.byType(HomeScreen)));
-      expect(find.byType(OfflineState), findsNothing);
-      expect(find.byType(ErrorState), findsOneWidget);
-      expect(find.text(l10n.retry), findsOneWidget);
-    });
-  });
-
-  group('HomeScreen empty', () {
-    testWidgets('should_show_GardenEmpty_when_plants_empty', (tester) async {
-      await tester.pumpWidget(_wrap());
-      await tester.pumpAndSettle();
-
-      final l10n =
-          AppLocalizations.of(tester.element(find.byType(HomeScreen)));
-      expect(find.byType(GardenEmpty), findsOneWidget);
-      expect(find.text(l10n.homeGardenEmptyHeading), findsOneWidget);
-    });
-
-    testWidgets('should_show_tasks_empty_hint_when_tasks_empty',
-        (tester) async {
-      await tester.pumpWidget(_wrap());
-      await tester.pumpAndSettle();
-
-      final l10n =
-          AppLocalizations.of(tester.element(find.byType(HomeScreen)));
-      expect(find.text(l10n.homeTasksEmptyHint), findsOneWidget);
-    });
-  });
-
-  group('HomeScreen data', () {
-    testWidgets('should_render_plant_cards_and_task_when_data_present',
-        (tester) async {
-      final task = CareTask(
-        scheduleId: 1,
-        plantId: 1,
-        plantName: 'Monstera',
-        type: CareTaskType.watering,
-        dueAt: _utcNow.add(const Duration(hours: 3)),
-      );
-      await tester.pumpWidget(_wrap(
-        tasks: () async => [task],
-        plants: () async => const [
-          Plant(id: 1, name: 'Фикус'),
-          Plant(id: 2, name: 'Кактус'),
-        ],
-      ));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(TodayCard), findsOneWidget);
-      expect(find.byType(PlantCard), findsNWidgets(2));
-      expect(find.text('Фикус'), findsOneWidget);
-      expect(find.text('Кактус'), findsOneWidget);
-      // Растения есть → пустого состояния нет.
-      expect(find.byType(GardenEmpty), findsNothing);
-    });
-  });
-
-  // Top-level состояния поверх посекционной логики (экраны 28/29).
-  // Ключуются ТОЛЬКО на homePlantsProvider (сад) — см. homeViewStateProvider.
-  group('HomeScreen top-level states', () {
-    testWidgets('should_show_loading_skeleton_when_plants_cold_loading',
-        (tester) async {
-      // Сад грузится без данных → полноэкранный скелетон (28).
-      await tester.pumpWidget(_wrap(plants: _pending<List<Plant>>));
-      await tester.pump();
-
-      final l10n =
-          AppLocalizations.of(tester.element(find.byType(HomeScreen)));
       expect(find.byType(HomeLoadingSkeleton), findsOneWidget);
-      expect(find.text(l10n.homeLoadingCaption), findsOneWidget);
-      // Это не контент и не офлайн.
       expect(find.byType(OfflineState), findsNothing);
-      expect(find.byType(TodayCard), findsNothing);
     });
 
-    testWidgets('should_show_offline_state_when_plants_network_error',
-        (tester) async {
-      // Сетевая ошибка сада без кэша → полноэкранный офлайн (29).
+    testWidgets('network error shows OfflineState', (tester) async {
       await tester.pumpWidget(_wrap(
-        plants: () async => throw const ApiError.network(),
+        layout: () async => throw const ApiError.network(),
       ));
       await tester.pumpAndSettle();
 
@@ -196,40 +78,137 @@ void main() {
           AppLocalizations.of(tester.element(find.byType(HomeScreen)));
       expect(find.byType(OfflineState), findsOneWidget);
       expect(find.text(l10n.offlineMessage), findsOneWidget);
-      expect(find.text(l10n.retry), findsOneWidget);
-      // Ни скелетона, ни посекционного контента/ErrorState.
       expect(find.byType(HomeLoadingSkeleton), findsNothing);
-      expect(find.byType(TodayCard), findsNothing);
-      expect(find.byType(ErrorState), findsNothing);
     });
 
-    testWidgets('should_show_content_when_plants_data_present',
+    testWidgets('non-network error shows ErrorState inside shell',
         (tester) async {
-      // Есть данные сада → контент (посекционная раскладка), не скелетон/офлайн.
       await tester.pumpWidget(_wrap(
-        plants: () async => const [Plant(id: 1, name: 'Фикус')],
+        layout: () async => throw const ApiError.unknown(),
       ));
       await tester.pumpAndSettle();
 
-      // Контент: посекционная раскладка с карточкой растения.
-      expect(find.byType(PlantCard), findsOneWidget);
+      expect(find.byType(ErrorState), findsOneWidget);
+      expect(find.byType(OfflineState), findsNothing);
+    });
+  });
+
+  group('HomeScreen SDUI data', () {
+    testWidgets('renders blocks from server layout', (tester) async {
+      await tester.pumpWidget(_wrap(
+        layout: () async => const SduiScreenLayout(
+          screenId: 'home',
+          version: 1,
+          blocks: [
+            SduiBlock.todaySummary(total: 3, done: 1, remaining: 2, overdue: 0),
+            SduiBlock.plantGrid(
+              plants: [
+                SduiPlantGridItem(id: 1, name: 'Фикус'),
+                SduiPlantGridItem(id: 2, name: 'Кактус'),
+              ],
+            ),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TodayCard), findsOneWidget);
+      expect(find.byType(PlantCard), findsNWidgets(2));
       expect(find.text('Фикус'), findsOneWidget);
+      expect(find.text('Кактус'), findsOneWidget);
       expect(find.byType(HomeLoadingSkeleton), findsNothing);
       expect(find.byType(OfflineState), findsNothing);
     });
 
-    testWidgets('should_show_content_when_plants_non_network_error',
+    testWidgets('guest_banner block renders title/body from l10n keys',
         (tester) async {
-      // Не-сетевая ошибка сада без кэша → content (посекционный ErrorState),
-      // НЕ полноэкранный офлайн.
       await tester.pumpWidget(_wrap(
-        plants: () async => throw const ApiError.unknown(),
+        layout: () async => const SduiScreenLayout(
+          screenId: 'home',
+          version: 1,
+          blocks: [
+            SduiBlock.guestBanner(
+              titleKey: 'home.guest.title',
+              bodyKey: 'home.guest.body',
+              ctaAction: SduiAction(
+                kind: SduiActionKind.navigate,
+                target: '/home/register',
+              ),
+            ),
+          ],
+        ),
       ));
       await tester.pumpAndSettle();
 
-      expect(find.byType(OfflineState), findsNothing);
-      expect(find.byType(HomeLoadingSkeleton), findsNothing);
-      expect(find.byType(ErrorState), findsWidgets);
+      final l10n = AppLocalizations.of(tester.element(find.byType(HomeScreen)));
+      expect(find.text(l10n.sduiHomeGuestTitle), findsOneWidget);
+      expect(find.text(l10n.sduiHomeGuestBody), findsOneWidget);
+    });
+
+    testWidgets('empty_state block renders title/body + CTA from l10n keys',
+        (tester) async {
+      await tester.pumpWidget(_wrap(
+        layout: () async => const SduiScreenLayout(
+          screenId: 'home',
+          version: 1,
+          blocks: [
+            SduiBlock.emptyState(
+              iconKey: 'home.empty.icon',
+              titleKey: 'home.empty.title',
+              bodyKey: 'home.empty.body',
+              ctaAction: SduiAction(
+                kind: SduiActionKind.navigate,
+                target: '/home/add',
+              ),
+            ),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      final l10n = AppLocalizations.of(tester.element(find.byType(HomeScreen)));
+      expect(find.text(l10n.sduiHomeEmptyTitle), findsOneWidget);
+      expect(find.text(l10n.sduiHomeEmptyBody), findsOneWidget);
+      // CTA-кнопка с подписью добавления растения.
+      expect(find.text(l10n.homeAddPlant), findsOneWidget);
+    });
+
+    testWidgets('unknown l10n key degrades to empty string (no crash)',
+        (tester) async {
+      await tester.pumpWidget(_wrap(
+        layout: () async => const SduiScreenLayout(
+          screenId: 'home',
+          version: 1,
+          blocks: [
+            SduiBlock.guestBanner(
+              titleKey: 'totally.unknown.key',
+              bodyKey: 'also.unknown',
+            ),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('unknown block is skipped, known ones render', (tester) async {
+      await tester.pumpWidget(_wrap(
+        layout: () async => const SduiScreenLayout(
+          screenId: 'home',
+          version: 1,
+          blocks: [
+            SduiBlock.todaySummary(total: 1, done: 0, remaining: 1, overdue: 0),
+            SduiBlock.unknown(),
+            SduiBlock.plantGrid(plants: [SduiPlantGridItem(id: 1, name: 'X')]),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(TodayCard), findsOneWidget);
+      expect(find.byType(PlantCard), findsOneWidget);
     });
   });
 }

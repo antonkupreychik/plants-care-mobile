@@ -66,7 +66,7 @@ final class AddPlantWizardControllerProvider
 }
 
 String _$addPlantWizardControllerHash() =>
-    r'5edcf13a7a21693d6a428f2b0f884126791c5828';
+    r'aee7552f685c08fedcb92793a662acd315acc65a';
 
 /// Контроллер мастера добавления растения (экран 04) — держит черновик и ведёт
 /// сабмит. Не family: один мастер за раз (autoDispose сбрасывает черновик при

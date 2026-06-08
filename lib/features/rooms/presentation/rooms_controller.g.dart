@@ -28,8 +28,9 @@ part of 'rooms_controller.dart';
 /// `result case Failure(error: LocationNotEmptyError())`, показывает пикер
 /// целевой локации и повторяет [delete] с заданным [targetLocationId].
 ///
-/// После любой успешной мутации список рефетчится и инвалидируется
-/// [homeLocationsProvider] (чипы комнат на главной).
+/// После любой успешной мутации список рефетчится и инвалидируются
+/// [homeScreenLayoutProvider] (серверная SDUI-витрина главной, MADR-015) и
+/// [homeLocationsProvider] (не-SDUI чипы комнат для add_plant/edit_plant).
 
 @ProviderFor(RoomsController)
 final roomsControllerProvider = RoomsControllerProvider._();
@@ -54,8 +55,9 @@ final roomsControllerProvider = RoomsControllerProvider._();
 /// `result case Failure(error: LocationNotEmptyError())`, показывает пикер
 /// целевой локации и повторяет [delete] с заданным [targetLocationId].
 ///
-/// После любой успешной мутации список рефетчится и инвалидируется
-/// [homeLocationsProvider] (чипы комнат на главной).
+/// После любой успешной мутации список рефетчится и инвалидируются
+/// [homeScreenLayoutProvider] (серверная SDUI-витрина главной, MADR-015) и
+/// [homeLocationsProvider] (не-SDUI чипы комнат для add_plant/edit_plant).
 final class RoomsControllerProvider
     extends $AsyncNotifierProvider<RoomsController, List<GardenLocation>> {
   /// State-слой фичи «Управление комнатами» (CRUD локаций).
@@ -78,8 +80,9 @@ final class RoomsControllerProvider
   /// `result case Failure(error: LocationNotEmptyError())`, показывает пикер
   /// целевой локации и повторяет [delete] с заданным [targetLocationId].
   ///
-  /// После любой успешной мутации список рефетчится и инвалидируется
-  /// [homeLocationsProvider] (чипы комнат на главной).
+  /// После любой успешной мутации список рефетчится и инвалидируются
+  /// [homeScreenLayoutProvider] (серверная SDUI-витрина главной, MADR-015) и
+  /// [homeLocationsProvider] (не-SDUI чипы комнат для add_plant/edit_plant).
   RoomsControllerProvider._()
     : super(
         from: null,
@@ -99,7 +102,7 @@ final class RoomsControllerProvider
   RoomsController create() => RoomsController();
 }
 
-String _$roomsControllerHash() => r'7ad7b64a1a6affa3bfaf0b2c5dffe6c75b585525';
+String _$roomsControllerHash() => r'4b1986d1e690a4a5a5a3db05fa5be5ce9cbccf56';
 
 /// State-слой фичи «Управление комнатами» (CRUD локаций).
 ///
@@ -121,8 +124,9 @@ String _$roomsControllerHash() => r'7ad7b64a1a6affa3bfaf0b2c5dffe6c75b585525';
 /// `result case Failure(error: LocationNotEmptyError())`, показывает пикер
 /// целевой локации и повторяет [delete] с заданным [targetLocationId].
 ///
-/// После любой успешной мутации список рефетчится и инвалидируется
-/// [homeLocationsProvider] (чипы комнат на главной).
+/// После любой успешной мутации список рефетчится и инвалидируются
+/// [homeScreenLayoutProvider] (серверная SDUI-витрина главной, MADR-015) и
+/// [homeLocationsProvider] (не-SDUI чипы комнат для add_plant/edit_plant).
 
 abstract class _$RoomsController extends $AsyncNotifier<List<GardenLocation>> {
   FutureOr<List<GardenLocation>> build();

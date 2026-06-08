@@ -3,6 +3,8 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/clock/clock_provider.dart';
 import '../../../core/error/result.dart';
+import '../../../core/observability/analytics_event.dart';
+import '../../../core/observability/observability_providers.dart';
 // Кросс-фичевая инвалидация после успешного POST (FLUTTER.md «Правила state» /
 // README §5). Импортируем именно presentation-провайдеры состояния home и
 // plant_card — это осознанное исключение из правила «фича не импортит
@@ -144,6 +146,10 @@ class LogCareEventController extends _$LogCareEventController {
       case Success(:final value):
         _attemptClientId = null;
         _invalidateAfterSuccess(state.plantId);
+        // Трекаем отметку ухода (issue #126). Тип — не PII.
+        ref.read(analyticsServiceProvider).track(
+              CareEventRecorded(careType: value.type.name),
+            );
         state = state.copyWith(
           status: CareEventSubmitStatus.success(
             wasFirstCare: wasFirstCare,

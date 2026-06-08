@@ -8,7 +8,9 @@
 > pubspec, базовые классы, flavors, CI — см. «План каркаса» в конце). Три развилки SPRINT-1
 > §0.5 решены владельцем 2026-05-27: **MADR-007 — кодген dart-dio из OpenAPI**, **MADR-012 —
 > ru-only (но всё через AppLocalizations)**, **MADR-013 — GitHub Actions → Codemagic** —
-> все **Accepted**. Остальные MADR (001–006, 008–011, 014) — **Proposed**.
+> все **Accepted**. **MADR-015 — гибридный Server-Driven UI (SDUI)** + **MADR-016 — опаковый
+> Map-контракт + таблица `ui_views`** — **Accepted** (пилот home). Остальные MADR
+> (001–006, 008–011, 014) — **Proposed**.
 
 Мобильный клиент к существующему Spring Boot бэкенду (`antonkupreychik/plants-care`).
 Второй клиент рядом с Telegram-ботом. Backend, доменная модель, шедулер — переиспользуются
@@ -24,6 +26,7 @@
 | **State / DI**        | Riverpod 3 (`flutter_riverpod` 3.3.1, `riverpod_annotation` 4.0.2) + codegen. Отдельный DI-контейнер не используется (MADR-004). |
 | **Архитектура**       | Clean Architecture + MVVM: data → domain → presentation (MADR-002) |
 | **Структура**         | feature-first (MADR-003)                                      |
+| **Server-Driven UI**  | Гибридный block-SDUI, **опаковый Map-контракт** (`GET /api/v1/ui/{screen}` → свободный объект; словарь блоков — проза, не OpenAPI-схема), композиция в таблице `ui_views` на backend; интерактив нативный (MADR-015 + MADR-016) |
 | **Навигация**         | `go_router` 17.2.3, StatefulShellRoute для табов (MADR-005)   |
 | **Сеть**              | `dio` 5.9.2 + `dio_smart_retry` 7.0.1; две «головы» заголовков, ApiError (MADR-006) |
 | **API-клиент**        | **Кодген dart-dio из OpenAPI** (`swagger_parser`, bundle `$ref`) — MADR-007 |
@@ -132,6 +135,52 @@ branch 3 `/profile` — таб «Профиль» активен, не coming-so
 - Списки — ленивые (`ListView.builder`), не `Column` в `SingleChildScrollView` для длинных.
 - Все UI-строки — через `AppLocalizations` (MADR-012), не строковые литералы в виджетах.
 - Sheet'ы ухода (water/spray/fert) — `showModalBottomSheet`, не роуты go_router (MADR-005).
+
+---
+
+## Server-Driven UI (MADR-015 + MADR-016) — учитывать при разработке экранов
+
+Приложение переходит на **гибридный block-SDUI** с **опаковым Map-контрактом** (MADR-016).
+При нарезке/реализации любой фичи определи, к какому классу относится экран, и следуй правилу:
+
+- **Read-heavy витрины** (списки карточек, деталки, ленты, отчёты: home, today, каталог,
+  отчёт, уведомления, справочники) — композицию задаёт сервер. Экран рендерится из
+  **`ScreenLayout`** (`GET /api/v1/ui/{screen}`) через **`BlockRegistry`** (`core/sdui/`):
+  диспатч по `type` блока → нативный виджет-обёртка. Не хардкодь композицию (порядок/видимость
+  блоков) в экране, если экран уже переведён на SDUI.
+- **Интерактивные флоу** (мастер добавления 04, sheet'ы ухода 06, auth 07/09, поиск 69,
+  редакторы расписаний/настроек 22/23/25/35) — **остаются нативными**, через SDUI НЕ гонятся.
+  Признак: локальный многошаговый state, валидация форм, идемпотентные мутации, модалки.
+
+**Жёсткие правила SDUI (опаковый контракт — MADR-016; серверное поведение — MADR-017):**
+- **Контракт опаковый.** `GET /api/v1/ui/{screen}` отдаёт свободный объект; `ui.yaml`
+  декларирует `ScreenLayout { screenId, version, blocks: array of object }` БЕЗ типизированных
+  схем блоков. Клиент получает `blocks: List<dynamic>` и парсит их **руками** в
+  `sdui_block_mapper.dart` (Map → domain `SduiBlock`). Кодген DTO под блоки НЕ используется.
+- **Словарь блоков — проза, не схема.** Форма каждого блок-типа описана в каталоге
+  **MADR-016** (и здесь). `contract-keeper` сторожит ЭТОТ документ ↔ что шлёт backend и парсит
+  client (не CI-схему). Новый блок-тип: **сперва в прозовый словарь → backend начинает слать →
+  client учится парсить/рендерить.** Композицию/порядок backend держит в таблице `ui_views`.
+- **Forward-compatibility.** `screenLayoutProvider` шлёт `X-UI-Catalog-Version` текущего
+  релиза; сервер не отдаёт блоки с `minCatalogVersion` выше неё. **Неизвестный `type` → маппер
+  возвращает `null`, блок скипается** без краша (graceful degradation, покрыть тестом).
+- **Действия — декларативно** (витрина, MADR-017). `ActionRunner` исполняет:
+  - `kind: "log_care"` — мутация (`method`/`path`/`payloadTemplate`); тип нормализован
+    (`WATER`/`SPRAY`/`FERTILIZE`/`SOIL_CHECK`); идемпотентность по `clientId` (MADR-006) — клиентская.
+  - `kind: "navigate"` — переход по `target` через `appRouterProvider` (go_router), `BuildContext`
+    не нужен. Клиент НЕ хардкодит карту роутов витрин. Неизвестный `kind`/пустой `target` → no-op + лог.
+  - `invalidates: [...]` — логические ключи (`home`/`today`/`plant`), клиент маппит ключ → провайдер.
+    НЕ хардкодить список инвалидаций — брать из действия.
+  - **Интерактив с локальным state** (тап задачи `today_tasks` → sheet ухода) — **нативный**, не через action.
+- **Серверная видимость** (MADR-017). Блоки `guest_banner`/`empty_state` инъектирует backend по
+  состоянию юзера; клиент их рендерит и **не ветвится** на `isGuest`/`isEmptyGarden`. Тексты блоков —
+  **ключи l10n** (`titleKey`/`bodyKey`/`iconKey`), не готовый текст: резолв через
+  `resolveSduiTextKey`/`resolveSduiIconKey`, неизвестный ключ → фолбэк без краша.
+- **Никакой логики в JSON.** Блоки/действия только параметризуются; ветвления/циклы — признак,
+  что фича должна быть нативной, а не SDUI.
+- Домен `SduiBlock`/`SduiScreenLayout`/`SduiAction` и presentation (`BlockRegistry`,
+  `ScreenLayoutView`, `ActionRunner`) развязаны от формата провода — типизированы внутри
+  клиента; меняется только слой маппера. Сеть/state/тема/ошибки — без изменений.
 
 ---
 
@@ -246,6 +295,9 @@ branch 3 `/profile` — таб «Профиль» активен, не coming-so
 - Не генерить care-event `clientId` на каждый build — один на действие.
 - Не тащить пакеты без обоснования; проверять, что пакет живой и поддерживает текущий SDK.
 - Не смешивать слои (Flutter-импорт в domain = отказ ревью); domain/data не бросают исключения наружу.
+- Не гнать интерактивные флоу (мастер/sheet'ы/auth/поиск/редакторы) через SDUI — только нативно (MADR-015).
+- Не вводить клиентский блок-тип, которого нет в прозовом словаре блоков (MADR-016); не класть логику (if/loop) в JSON-блоки.
+- Не типизировать блоки в OpenAPI и не править сгенерённый клиент под блоки — контракт опаковый, парсинг блоков руками в `sdui_block_mapper` (MADR-016).
 - Не апать мажорные версии пакетов без отдельной задачи.
 - Не использовать deprecated-виджеты и Skia-специфичные хаки (Impeller дефолтный).
 
@@ -253,7 +305,7 @@ branch 3 `/profile` — таб «Профиль» активен, не coming-so
 
 ## Источники правды
 
-- `docs/adr/` — MADR-001…014 (архитектурные решения мобилки).
+- `docs/adr/` — MADR-001…014 + **MADR-015 (гибридный SDUI)** + **MADR-016 (опаковый Map-контракт SDUI)** + **MADR-017 (серверно-управляемое поведение — Accepted)** — архитектурные решения мобилки.
 - `design_handoff_plantcare/api-contract.md` — REST-контракт backend (§1–11) + gaps (§12).
 - `design_handoff_plantcare/README.md` — продукт, 24 экрана, дизайн-токены.
 - `design_handoff_plantcare/SPRINT-1-flutter.md` — план первого спринта.

@@ -30,6 +30,7 @@ export 'clients/location_sharing_client.dart';
 export 'clients/devices_client.dart';
 export 'clients/sync_client.dart';
 export 'clients/photos_client.dart';
+export 'clients/ui_client.dart';
 // Data classes
 export 'models/location_dto.dart';
 export 'models/location_create_request.dart';
@@ -87,6 +88,7 @@ export 'models/guest_login_response.dart';
 export 'models/guest_convert_request.dart';
 export 'models/guest_convert_response.dart';
 export 'models/care_type_dto.dart';
+export 'models/screen_layout.dart';
 export 'models/vacation_request.dart';
 export 'models/vacation_response.dart';
 export 'models/weather_snapshot_dto.dart';

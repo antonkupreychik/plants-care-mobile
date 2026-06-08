@@ -236,31 +236,6 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String todayDoneTitle(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count выполнено сегодня',
-      many: '$count выполнено сегодня',
-      few: '$count выполнено сегодня',
-      one: '$count выполнено сегодня',
-      zero: 'Ничего не выполнено',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String todayDoneSubtitle(String plant, String action, String time) {
-    return '$plant · $action в $time';
-  }
-
-  @override
-  String get todayDoneExpand => 'Показать выполненные';
-
-  @override
-  String get todayDoneCollapse => 'Скрыть выполненные';
-
-  @override
   String careDonePast(String action, String time) {
     return '$action в $time';
   }
@@ -308,6 +283,22 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get homeRoomEmpty => 'В этой комнате пока нет растений';
+
+  @override
+  String get plantCardWaterAction => 'Полить';
+
+  @override
+  String get sduiHomeGuestTitle => 'Привяжите email, чтобы не потерять сад';
+
+  @override
+  String get sduiHomeGuestBody => 'Данные гостя удаляются при переустановке';
+
+  @override
+  String get sduiHomeEmptyTitle => 'Заведём первое растение?';
+
+  @override
+  String get sduiHomeEmptyBody =>
+      'Я подберу расписание ухода и буду напоминать — так, как ты любишь.';
 
   @override
   String get homeGardenEmptyEyebrow => 'Сад пока пуст';
@@ -761,6 +752,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get catalogHeadingAccent => 'растений';
 
   @override
+  String get catalogTabPlants => 'Растения';
+
+  @override
+  String get catalogTabDiseases => 'Болезни';
+
+  @override
   String get catalogBadgePopular => 'HIT';
 
   @override
@@ -794,6 +791,20 @@ class AppLocalizationsRu extends AppLocalizations {
       few: '$count вида',
       one: '$count вид',
       zero: 'Нет видов',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String diseaseCatalogCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count болезни',
+      many: '$count болезней',
+      few: '$count болезни',
+      one: '$count болезнь',
+      zero: 'Нет болезней',
     );
     return '$_temp0';
   }
@@ -909,6 +920,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String catalogSearchEmptyHint(String query) {
     return 'Попробуйте изменить запрос «$query»';
   }
+
+  @override
+  String get catalogLoadMore => 'Загружаем ещё…';
 
   @override
   String get catalogLoadMoreError => 'Не удалось загрузить ещё';
@@ -1083,6 +1097,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get addPlantSubmitGarden => 'Добавить в сад';
 
   @override
+  String get addPlantDuplicateTitle => 'Такое растение уже есть';
+
+  @override
+  String get addPlantDuplicateBody =>
+      'Похоже, такое растение уже есть в вашем саду. Всё равно добавить ещё одно?';
+
+  @override
+  String get addPlantDuplicateConfirm => 'Добавить всё равно';
+
+  @override
+  String get addPlantDuplicateCancel => 'Отмена';
+
+  @override
   String get addPlantRecognizeBadge => 'ФОТО';
 
   @override
@@ -1247,6 +1274,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get roomsDefaultBadge => 'По умолчанию';
+
+  @override
+  String get roomsActiveBadge => 'Основной';
 
   @override
   String get roomsAdd => 'Добавить комнату';

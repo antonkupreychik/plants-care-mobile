@@ -10,14 +10,27 @@ class CatalogLoadMoreIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Center(
-        child: SizedBox(
-          width: 22,
-          height: 22,
-          child: CircularProgressIndicator(strokeWidth: 2.4, color: c.primary),
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.4,
+              color: c.primary,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            l10n.catalogLoadMore,
+            style: TextStyle(fontSize: 13, color: c.inkSoft),
+          ),
+        ],
       ),
     );
   }

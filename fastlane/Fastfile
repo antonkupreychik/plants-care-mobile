@@ -1,0 +1,136 @@
+# fastlane/Fastfile — лейны сборки и деплоя PlantCare Mobile.
+#
+# Предусловия (выполняются в CI через GitHub Secrets, не здесь):
+#   Android:
+#     KEYSTORE_BASE64        — base64 от .jks файла
+#     KEYSTORE_PASSWORD      — пароль хранилища
+#     KEY_ALIAS              — алиас ключа
+#     KEY_PASSWORD           — пароль ключа
+#     GOOGLE_PLAY_JSON_KEY   — JSON-ключ сервисного аккаунта Play Console
+#   iOS:
+#     APPLE_CERTIFICATE_BASE64       — base64 .p12 дистрибьюторского сертификата
+#     APPLE_CERTIFICATE_PASSWORD     — пароль .p12
+#     PROVISIONING_PROFILE_BASE64    — base64 .mobileprovision App Store
+#     APPLE_ID                       — email Apple Developer
+#     APP_STORE_CONNECT_TEAM_ID      — App Store Connect team ID
+#     APPLE_TEAM_ID                  — Developer Portal team ID
+#     APP_STORE_CONNECT_API_KEY_ID   — Key ID для App Store Connect API
+#     APP_STORE_CONNECT_API_ISSUER   — Issuer ID
+#     APP_STORE_CONNECT_API_KEY_P8   — содержимое .p8 ключа (base64)
+
+default_platform(:ios)
+
+# ─────────────────────────────────────────────
+# Общие хелперы
+# ─────────────────────────────────────────────
+
+# Читает version и build_number из pubspec.yaml.
+# pubspec.yaml строка: version: X.Y.Z+N
+def pubspec_version
+  content = File.read("../pubspec.yaml")
+  match = content.match(/^version:\s+(\d+\.\d+\.\d+)\+(\d+)/)
+  raise "Cannot parse version from pubspec.yaml" unless match
+  { name: match[1], code: match[2].to_i }
+end
+
+# ─────────────────────────────────────────────
+# Android lanes
+# ─────────────────────────────────────────────
+
+platform :android do
+  # Сборка подписанного AAB и публикация в Play Console internal testing.
+  # Запускается CD-пайплайном по тегу v*.*.*.
+  lane :playstore do
+    # Версия из pubspec.yaml
+    ver = pubspec_version
+    UI.message "Building Android #{ver[:name]} (#{ver[:code]})"
+
+    # Сборка Flutter release AAB
+    sh("flutter build appbundle --release " \
+       "--dart-define API_URL=#{ENV.fetch('API_URL', 'https://plantcare-api.railway.app')} " \
+       "--build-name=#{ver[:name]} --build-number=#{ver[:code]}")
+
+    # Загрузка в Play internal testing
+    upload_to_play_store(
+      track: "internal",
+      aab: "../build/app/outputs/bundle/release/app-release.aab",
+      json_key_data: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "com.plantcare.plantcareMobile",
+      release_status: "draft",
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_changelogs: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
+  # Локальная/ручная сборка APK для smoke-теста (не публикует).
+  lane :build_debug do
+    sh("flutter build apk --debug")
+  end
+end
+
+# ─────────────────────────────────────────────
+# iOS lanes
+# ─────────────────────────────────────────────
+
+platform :ios do
+  # Установка сертификата и provisioning profile из переменных окружения.
+  # Используется в CD перед сборкой IPA.
+  private_lane :setup_signing do
+    # Импортируем дистрибьюторский сертификат (.p12) в keychain
+    cert_path = "/tmp/plantcare_dist.p12"
+    File.write(cert_path, Base64.decode64(ENV.fetch("APPLE_CERTIFICATE_BASE64")))
+
+    import_certificate(
+      certificate_path: cert_path,
+      certificate_password: ENV.fetch("APPLE_CERTIFICATE_PASSWORD"),
+      keychain_name: "login",
+      keychain_password: ENV.fetch("MATCH_KEYCHAIN_PASSWORD", ""),
+    )
+
+    # Устанавливаем provisioning profile
+    pp_path = "/tmp/plantcare_dist.mobileprovision"
+    File.write(pp_path, Base64.decode64(ENV.fetch("PROVISIONING_PROFILE_BASE64")))
+    install_provisioning_profile(path: pp_path)
+  end
+
+  # App Store Connect API Key — для загрузки на TestFlight без 2FA.
+  private_lane :setup_asc_api_key do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("APP_STORE_CONNECT_API_KEY_ID"),
+      issuer_id: ENV.fetch("APP_STORE_CONNECT_API_ISSUER"),
+      key_content: Base64.decode64(ENV.fetch("APP_STORE_CONNECT_API_KEY_P8")),
+      in_house: false,
+    )
+  end
+
+  # Сборка IPA и загрузка на TestFlight.
+  # Запускается CD-пайплайном по тегу v*.*.*.
+  lane :testflight do
+    setup_asc_api_key
+    setup_signing
+
+    ver = pubspec_version
+    UI.message "Building iOS #{ver[:name]} (#{ver[:code]})"
+
+    # Сборка Flutter release IPA
+    sh("flutter build ipa --release " \
+       "--dart-define API_URL=#{ENV.fetch('API_URL', 'https://plantcare-api.railway.app')} " \
+       "--build-name=#{ver[:name]} --build-number=#{ver[:code]} " \
+       "--export-options-plist=../ios/ExportOptions.plist")
+
+    # Загрузка на TestFlight
+    upload_to_testflight(
+      ipa: "../build/ios/ipa/plantcare_mobile.ipa",
+      skip_waiting_for_build_processing: true,
+      notify_external_testers: false,
+    )
+  end
+
+  # Локальная/ручная сборка для smoke-теста (не публикует).
+  lane :build_debug do
+    sh("flutter build ios --debug --no-codesign --simulator")
+  end
+end

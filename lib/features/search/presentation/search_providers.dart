@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/error/result.dart';
 import '../../catalog/data/catalog_repository_provider.dart';
 import '../../catalog/domain/species.dart';
+import '../../disease_catalog/data/disease_catalog_repository_provider.dart';
 import '../../home/domain/plant.dart';
 import '../../home/presentation/home_providers.dart';
 import '../domain/disease.dart';
@@ -84,13 +85,25 @@ Future<List<Species>> speciesSearchResults(Ref ref, String query) async {
   };
 }
 
-/// Результаты раздела «Болезни и вредители» — заглушка пустого списка.
+/// Результаты раздела «Болезни и вредители» — `GET /diseases?q=` через
+/// [diseaseCatalogRepositoryProvider] (полнотекстовый поиск на стороне backend).
+/// Запрос короче [kSearchMinChars] → пустой список (сетевой запрос не уходит).
+/// Ошибка репозитория пробрасывается в `AsyncError`.
 ///
-/// Эндпоинта `GET /diseases?q=&limit=5` ПОКА НЕТ на бэкенде (ждёт
-/// plants-care#225), поэтому провайдер всегда возвращает пустой список. Секция
-/// рендерится сразу (пустая) и подключится подменой реализации этого провайдера
-/// без правки UI, когда появятся эндпоинт (#225) и фича болезней (#68).
+/// Полная доменная модель справочника (`disease_catalog/domain/disease.dart`)
+/// маппится в лёгкую `search/domain/Disease` (только id/name/latinName), которой
+/// достаточно секции поиска; результат обрезается до [kSearchResultsLimit].
 @riverpod
 Future<List<Disease>> diseaseSearchResults(Ref ref, String query) async {
-  return const [];
+  final q = query.trim();
+  if (q.length < kSearchMinChars) return const [];
+
+  final result = await ref.watch(diseaseCatalogRepositoryProvider).search(q);
+  return switch (result) {
+    Success(:final value) => value
+        .take(kSearchResultsLimit)
+        .map((d) => Disease(id: d.id, name: d.name, latinName: d.latinName))
+        .toList(),
+    Failure(:final error) => throw error,
+  };
 }

@@ -376,30 +376,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{нет просроченных} one{{count} просрочена} few{{count} просрочены} many{{count} просрочено} other{{count} просрочено}}'**
   String todayProgressOverdue(int count);
 
-  /// Заголовок свёрнутой секции «Выполнено» на экране «Сегодня»
-  ///
-  /// In ru, this message translates to:
-  /// **'{count, plural, =0{Ничего не выполнено} one{{count} выполнено сегодня} few{{count} выполнено сегодня} many{{count} выполнено сегодня} other{{count} выполнено сегодня}}'**
-  String todayDoneTitle(int count);
-
-  /// Свёрнутая секция «Выполнено»: что и когда сделано (например «Колючка · полит в 7:42»)
-  ///
-  /// In ru, this message translates to:
-  /// **'{plant} · {action} в {time}'**
-  String todayDoneSubtitle(String plant, String action, String time);
-
-  /// Семантика/подсказка: раскрыть свёрнутую секцию «Выполнено»
-  ///
-  /// In ru, this message translates to:
-  /// **'Показать выполненные'**
-  String get todayDoneExpand;
-
-  /// Семантика/подсказка: свернуть секцию «Выполнено»
-  ///
-  /// In ru, this message translates to:
-  /// **'Скрыть выполненные'**
-  String get todayDoneCollapse;
-
   /// Подпись на карточке выполненной задачи: действие в прошедшем времени + время (например «Полито в 7:42»)
   ///
   /// In ru, this message translates to:
@@ -471,6 +447,36 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'В этой комнате пока нет растений'**
   String get homeRoomEmpty;
+
+  /// Подпись/семантика кнопки-иконки «полить» на карточке растения (SDUI waterAction)
+  ///
+  /// In ru, this message translates to:
+  /// **'Полить'**
+  String get plantCardWaterAction;
+
+  /// SDUI guest_banner: заголовок (резолвится по ключу home.guest.title)
+  ///
+  /// In ru, this message translates to:
+  /// **'Привяжите email, чтобы не потерять сад'**
+  String get sduiHomeGuestTitle;
+
+  /// SDUI guest_banner: подпись (резолвится по ключу home.guest.body)
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные гостя удаляются при переустановке'**
+  String get sduiHomeGuestBody;
+
+  /// SDUI empty_state: заголовок (резолвится по ключу home.empty.title)
+  ///
+  /// In ru, this message translates to:
+  /// **'Заведём первое растение?'**
+  String get sduiHomeEmptyTitle;
+
+  /// SDUI empty_state: подпись (резолвится по ключу home.empty.body)
+  ///
+  /// In ru, this message translates to:
+  /// **'Я подберу расписание ухода и буду напоминать — так, как ты любишь.'**
+  String get sduiHomeEmptyBody;
 
   /// Надзаголовок (eyebrow, uppercase) карточки пустого сада, экран 10
   ///
@@ -1168,6 +1174,18 @@ abstract class AppLocalizations {
   /// **'растений'**
   String get catalogHeadingAccent;
 
+  /// Метка переключателя Растения/Болезни — вкладка «Растения» в экране каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'Растения'**
+  String get catalogTabPlants;
+
+  /// Метка переключателя Растения/Болезни — вкладка «Болезни» в экране каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'Болезни'**
+  String get catalogTabDiseases;
+
   /// Бейдж популярного вида рядом с именем в списке каталога
   ///
   /// In ru, this message translates to:
@@ -1221,6 +1239,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'{count, plural, =0{Нет видов} one{{count} вид} few{{count} вида} many{{count} видов} other{{count} вида}}'**
   String catalogCount(int count);
+
+  /// Количество болезней в справочнике под заголовком вкладки «Болезни»
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет болезней} one{{count} болезнь} few{{count} болезни} many{{count} болезней} other{{count} болезни}}'**
+  String diseaseCatalogCount(int count);
 
   /// Индикатор текущего шага мастера добавления растения
   ///
@@ -1401,6 +1425,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Попробуйте изменить запрос «{query}»'**
   String catalogSearchEmptyHint(String query);
+
+  /// Подпись рядом со спиннером дозагрузки следующей страницы списка каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'Загружаем ещё…'**
+  String get catalogLoadMore;
 
   /// Текст компактной плашки ошибки дозагрузки страницы списка
   ///
@@ -1677,6 +1707,30 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Добавить в сад'**
   String get addPlantSubmitGarden;
+
+  /// Заголовок диалога дедупликации при создании растения (409)
+  ///
+  /// In ru, this message translates to:
+  /// **'Такое растение уже есть'**
+  String get addPlantDuplicateTitle;
+
+  /// Текст диалога дедупликации при создании растения (409)
+  ///
+  /// In ru, this message translates to:
+  /// **'Похоже, такое растение уже есть в вашем саду. Всё равно добавить ещё одно?'**
+  String get addPlantDuplicateBody;
+
+  /// Кнопка подтверждения повторного создания растения в диалоге дедупа
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить всё равно'**
+  String get addPlantDuplicateConfirm;
+
+  /// Кнопка отмены в диалоге дедупа — закрыть мастер
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get addPlantDuplicateCancel;
 
   /// Бейдж внутри поля поиска вида: распознать по фото (заглушка)
   ///
@@ -1977,6 +2031,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'По умолчанию'**
   String get roomsDefaultBadge;
+
+  /// Бейдж на активной (основной) локации/доме — мультидомность
+  ///
+  /// In ru, this message translates to:
+  /// **'Основной'**
+  String get roomsActiveBadge;
 
   /// Подпись кнопки добавления комнаты (FAB / пустое состояние)
   ///

@@ -2,6 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/care/care_task_type.dart';
 import '../../../core/error/result.dart';
+import '../../../core/observability/analytics_event.dart';
+import '../../../core/observability/observability_providers.dart';
 // Кросс-фичевая инвалидация после успешного POST: созданное растение должно
 // появиться в саду и графике. Импорт presentation-провайдеров home и schedule —
 // то же осознанное исключение из «фича не импортит presentation другой фичи»,
@@ -98,6 +100,15 @@ class AddPlantWizardController extends _$AddPlantWizardController {
       draft: state.draft.copyWith(acquiredAt: acquiredAt),
       status: const AddPlantSubmitStatus.idle(),
     );
+  }
+
+  /// Сбросить статус сабмита в [AddPlantSubmitStatus.idle].
+  ///
+  /// Используется UI после показа диалога дедупликации: пользователь прочитал
+  /// сообщение и принял решение — разблокируем кнопку для повторной попытки
+  /// или редактирования черновика.
+  void resetStatus() {
+    state = state.copyWith(status: const AddPlantSubmitStatus.idle());
   }
 
   /// Задать признак нового растения (шаг 6). null → пропустить шаг.
@@ -215,6 +226,14 @@ class AddPlantWizardController extends _$AddPlantWizardController {
     }
 
     state = state.copyWith(status: AddPlantSubmitStatus.success(plantId));
+    // Трекаем добавление растения (issue #126). speciesId — не PII.
+    ref.read(analyticsServiceProvider).track(
+          PlantAdded(
+            speciesId: draft.species?.id != null
+                ? draft.species!.id.toString()
+                : null,
+          ),
+        );
     return plantId;
   }
 }
