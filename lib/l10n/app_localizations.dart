@@ -1264,6 +1264,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Нет видов} one{{count} вид} few{{count} вида} many{{count} видов} other{{count} вида}}'**
   String catalogCount(int count);
 
+  /// Количество болезней в справочнике под заголовком вкладки «Болезни»
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет болезней} one{{count} болезнь} few{{count} болезни} many{{count} болезней} other{{count} болезни}}'**
+  String diseaseCatalogCount(int count);
+
   /// Индикатор текущего шага мастера добавления растения
   ///
   /// In ru, this message translates to:

@@ -977,6 +977,15 @@
       }
     }
   },
+  "diseaseCatalogCount": "{count, plural, =0{Нет болезней} one{{count} болезнь} few{{count} болезни} many{{count} болезней} other{{count} болезни}}",
+  "@diseaseCatalogCount": {
+    "description": "Количество болезней в справочнике под заголовком вкладки «Болезни»",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "addPlantStepIndicator": "Шаг {current} из {total}",
   "@addPlantStepIndicator": {
     "description": "Индикатор текущего шага мастера добавления растения",
