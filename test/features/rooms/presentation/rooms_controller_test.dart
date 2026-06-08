@@ -211,6 +211,58 @@ void main() {
     });
   });
 
+  group('moveAndDelete', () {
+    test('should_return_success_and_refetch_list', () async {
+      var calls = 0;
+      when(repo.getLocations).thenAnswer((_) async {
+        calls++;
+        return calls == 1
+            ? const Result.success([_kitchen, _balcony])
+            : const Result.success([_kitchen]);
+      });
+      when(() => repo.movePlantsAndDelete(
+            fromLocationId: any(named: 'fromLocationId'),
+            targetLocationId: any(named: 'targetLocationId'),
+          )).thenAnswer((_) async => const Result.success(null));
+      final container = _container(repo);
+      await container.read(roomsControllerProvider.future);
+
+      final result = await container
+          .read(roomsControllerProvider.notifier)
+          .moveAndDelete(id: 2, targetLocationId: 1);
+
+      expect(result, isA<Success<void>>());
+      verify(() => repo.movePlantsAndDelete(
+            fromLocationId: 2,
+            targetLocationId: 1,
+          )).called(1);
+      // Список перечитан → осталась одна комната.
+      expect(container.read(roomsControllerProvider).value, [_kitchen]);
+      verify(repo.getLocations).called(2);
+    });
+
+    test('should_return_failure_and_not_refetch_when_move_fails', () async {
+      when(repo.getLocations)
+          .thenAnswer((_) async => const Result.success([_kitchen, _balcony]));
+      when(() => repo.movePlantsAndDelete(
+            fromLocationId: any(named: 'fromLocationId'),
+            targetLocationId: any(named: 'targetLocationId'),
+          )).thenAnswer((_) async => const Result.failure(ApiError.network()));
+      final container = _container(repo);
+      await container.read(roomsControllerProvider.future);
+
+      final result = await container
+          .read(roomsControllerProvider.notifier)
+          .moveAndDelete(id: 2, targetLocationId: 1);
+
+      expect(result, isA<Failure<void>>());
+      // Список не перечитан (мутация неуспешна) и остался цел.
+      final state = container.read(roomsControllerProvider);
+      expect(state.value, [_kitchen, _balcony]);
+      verify(repo.getLocations).called(1);
+    });
+  });
+
   group('home invalidation after mutation', () {
     test('should_refetch_homeLocations_after_successful_create', () async {
       // homeLocationsProvider ходит через homeRepository.getLocations(). После

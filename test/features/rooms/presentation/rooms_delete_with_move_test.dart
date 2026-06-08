@@ -42,10 +42,11 @@ void main() {
     when(repo.getLocations)
         .thenAnswer((_) async => const Result.success([_kitchen, _balcony]));
 
-    // Первый delete (без target) → LOCATION_NOT_EMPTY. Второй (с target) → ok.
+    // Первый delete (без target) → LOCATION_NOT_EMPTY. После выбора target —
+    // клиентский каскад movePlantsAndDelete (issue #183) → ok.
     when(() => repo.deleteLocation(id: 2, targetLocationId: null))
         .thenAnswer((_) async => const Result.failure(ApiError.locationNotEmpty()));
-    when(() => repo.deleteLocation(id: 2, targetLocationId: 1))
+    when(() => repo.movePlantsAndDelete(fromLocationId: 2, targetLocationId: 1))
         .thenAnswer((_) async => const Result.success(null));
 
     await tester.pumpWidget(_wrap(repo));
@@ -70,9 +71,11 @@ void main() {
     await tester.tap(find.text('Кухня').last);
     await tester.pumpAndSettle();
 
-    // 5. Повторный delete с targetLocationId = 1 (id «Кухни»).
+    // 5. Первая попытка — delete без target (409); затем клиентский каскад
+    // movePlantsAndDelete с target = 1 (id «Кухни»).
     verify(() => repo.deleteLocation(id: 2, targetLocationId: null)).called(1);
-    verify(() => repo.deleteLocation(id: 2, targetLocationId: 1)).called(1);
+    verify(() => repo.movePlantsAndDelete(fromLocationId: 2, targetLocationId: 1))
+        .called(1);
     // Успех → SnackBar об удалении.
     expect(find.text(l10n.roomDeleted), findsOneWidget);
   });
