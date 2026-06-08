@@ -310,6 +310,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeRoomEmpty => 'В этой комнате пока нет растений';
 
   @override
+  String get plantCardWaterAction => 'Полить';
+
+  @override
+  String get sduiHomeGuestTitle => 'Привяжите email, чтобы не потерять сад';
+
+  @override
+  String get sduiHomeGuestBody => 'Данные гостя удаляются при переустановке';
+
+  @override
+  String get sduiHomeEmptyTitle => 'Заведём первое растение?';
+
+  @override
+  String get sduiHomeEmptyBody =>
+      'Я подберу расписание ухода и буду напоминать — так, как ты любишь.';
+
+  @override
   String get homeGardenEmptyEyebrow => 'Сад пока пуст';
 
   @override

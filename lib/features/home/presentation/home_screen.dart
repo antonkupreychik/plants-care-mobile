@@ -12,7 +12,6 @@ import '../../../core/widgets/error_state.dart';
 import '../../../core/widgets/offline_state.dart';
 import '../../../l10n/app_localizations.dart';
 import 'home_view_state.dart';
-import 'widgets/guest_banner.dart';
 import 'widgets/home_header.dart';
 import 'widgets/home_loading_skeleton.dart';
 
@@ -24,9 +23,11 @@ import 'widgets/home_loading_skeleton.dart';
 /// чипы локаций, сетка растений). Действие «полить» в блоке `plant_grid` идёт
 /// через `ActionRunner` → существующий care-event флоу.
 ///
-/// Нативными остаются «обвязка»: хедер (поиск/уведомления/профиль), гостевой
-/// баннер и FAB добавления растения — это интерактив, а не витрина (MADR-015:
-/// SDUI собирает read-heavy экраны, интерактивные флоу нативны).
+/// Нативными остаются «обвязка»: хедер (поиск/уведомления/профиль) и FAB
+/// добавления растения. Гостевой баннер и пустое состояние сада, наоборот, с
+/// MADR-017 пришли в SDUI — их видимость/тексты/CTA решает сервер (блоки
+/// `guest_banner` / `empty_state`), нативного ветвления по гостю/пустому саду
+/// в Home больше нет.
 ///
 /// Состояния сохранены: skeleton (28) при холодной загрузке лейаута,
 /// OfflineState (29) при сетевой ошибке без кэша, ErrorState при прочих
@@ -75,10 +76,11 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-/// Каркас контента Home: хедер + гостевой баннер + серверное тело + FAB.
+/// Каркас контента Home: хедер + серверное тело + FAB.
 ///
-/// Скроллируемая колонка. Хедер/баннер/FAB — нативный интерактив (не SDUI);
-/// [body] — серверная витрина ([ScreenLayoutView]) либо посекционный ErrorState.
+/// Скроллируемая колонка. Хедер/FAB — нативный интерактив (не SDUI); [body] —
+/// серверная витрина ([ScreenLayoutView]) (включая блоки `guest_banner` /
+/// `empty_state`) либо посекционный ErrorState.
 class _HomeShell extends ConsumerWidget {
   const _HomeShell({required this.body});
 
@@ -138,11 +140,10 @@ class _HomeShell extends ConsumerWidget {
                     ),
                   ),
 
-                  // GUEST BANNER — предложение привязать email гостевым юзерам.
-                  // Тихо скрывается для авторизованных.
-                  const GuestBanner(),
-
-                  // Серверное тело экрана (или посекционный ErrorState).
+                  // Гостевой баннер и пустое состояние больше НЕ нативные:
+                  // их видимость, тексты и место в лейауте решает сервер
+                  // (MADR-017) — они приходят как блоки `guest_banner` /
+                  // `empty_state` внутри [body].
                   body,
 
                   // Запас под плавающую навигацию и FAB.

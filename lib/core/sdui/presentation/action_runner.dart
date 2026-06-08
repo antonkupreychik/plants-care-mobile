@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -8,6 +10,7 @@ import '../../../features/plant_card/domain/care_event_kind.dart';
 import '../../../features/plant_card/presentation/plant_card_providers.dart';
 import '../../clock/clock_provider.dart';
 import '../../error/result.dart';
+import '../../router/app_router.dart';
 import '../domain/sdui_action.dart';
 import 'screen_layout_provider.dart';
 
@@ -37,10 +40,10 @@ enum SduiActionResult {
 /// (не на каждый build), чтобы ретрай той же попытки слал тот же clientId и
 /// backend дедуплицировал (FLUTTER.md «Идемпотентность»).
 ///
-/// После успеха инвалидирует затронутые чтения (как care-event sheet): сводку
-/// `today`, карточку растения, историю/стрик и — дополнительно для SDUI — сам
-/// серверный лейаут ([homeScreenLayoutProvider]), чтобы сервер пересобрал блоки
-/// (`today_summary`, доступность действий).
+/// После успеха инвалидирует затронутые чтения ДЕКЛАРАТИВНО (MADR-017): по
+/// логическим ключам [SduiAction.invalidates] (`home`/`today`/`plant`), которые
+/// маппятся в провайдеры в [_invalidateByKeys] — вместо прежнего хардкода
+/// набора провайдеров.
 class ActionRunner {
   ActionRunner(this._ref);
 
@@ -52,8 +55,33 @@ class ActionRunner {
   Future<SduiActionResult> run(SduiAction action) async {
     return switch (action.kind) {
       SduiActionKind.logCare => _runLogCare(action),
-      SduiActionKind.unknown => SduiActionResult.unsupported,
+      SduiActionKind.navigate => _runNavigate(action),
+      SduiActionKind.unknown => () {
+          // Неизвестный/новый kind — клиент его не исполняет (graceful).
+          developer.log(
+            'unsupported SDUI action kind (ignored)',
+            name: 'ActionRunner',
+          );
+          return SduiActionResult.unsupported;
+        }(),
     };
+  }
+
+  /// Навигация по [SduiAction.target] через go_router (`appRouterProvider`).
+  /// Роутер берётся из графа провайдеров — `ActionRunner` не нуждается в
+  /// `BuildContext`. Пустой/отсутствующий `target` → no-op + лог (graceful, не
+  /// краш): сервер прислал битое действие, UI не реагирует ошибкой.
+  SduiActionResult _runNavigate(SduiAction action) {
+    final target = action.target;
+    if (target == null || target.isEmpty) {
+      developer.log(
+        'navigate action without target (ignored)',
+        name: 'ActionRunner',
+      );
+      return SduiActionResult.unsupported;
+    }
+    _ref.read(appRouterProvider).push(target);
+    return SduiActionResult.success;
   }
 
   Future<SduiActionResult> _runLogCare(SduiAction action) async {
@@ -77,24 +105,45 @@ class ActionRunner {
     final result = await _ref.read(logCareEventProvider).call(draft);
     return switch (result) {
       Success() => () {
-          _invalidateAfterSuccess(plantId);
+          _invalidateByKeys(action.invalidates, plantId);
           return SduiActionResult.success;
         }(),
       Failure() => SduiActionResult.failure,
     };
   }
 
-  /// Инвалидация затронутых чтений после успеха (как care-event sheet,
-  /// FLUTTER.md «Правила state»), плюс серверный SDUI-лейаут — чтобы сервер
-  /// пересобрал блоки (`today_summary` и доступность действий).
-  void _invalidateAfterSuccess(int plantId) {
-    _ref
-      ..invalidate(homeScreenLayoutProvider)
-      ..invalidate(homeTasksProvider)
-      ..invalidate(plantDetailProvider(plantId))
-      ..invalidate(plantHistoryProvider(plantId))
-      ..invalidate(plantCardHistoryProvider(plantId))
-      ..invalidate(plantStreakProvider(plantId));
+  /// Декларативная инвалидация после успеха (MADR-017): вместо ХАРДКОДА ключей
+  /// инвалидируем по логическим ключам [SduiAction.invalidates], маппя каждый в
+  /// провайдер(ы). Неизвестный ключ → пропуск + лог (forward-compat). Ключ
+  /// `plant` требует [plantId] из payload — без него тихо пропускаем.
+  ///
+  /// Идемпотентность care-event (`clientId`) сохраняется — она в самом drafт'е,
+  /// инвалидация лишь перечитывает затронутые чтения.
+  void _invalidateByKeys(List<String> keys, int plantId) {
+    for (final key in keys) {
+      switch (key) {
+        case 'home':
+          // Серверный SDUI-лейаут — сервер пересоберёт блоки
+          // (`today_summary`, доступность действий).
+          _ref.invalidate(homeScreenLayoutProvider);
+        case 'today':
+          // `GET /today`: и Home-карточка, и экран «Сегодня» (todayView
+          // дериватив homeTasksList ← homeTasks).
+          _ref.invalidate(homeTasksProvider);
+        case 'plant':
+          // Карточка растения + история/стрик. Требует plantId из payload.
+          _ref
+            ..invalidate(plantDetailProvider(plantId))
+            ..invalidate(plantHistoryProvider(plantId))
+            ..invalidate(plantCardHistoryProvider(plantId))
+            ..invalidate(plantStreakProvider(plantId));
+        default:
+          developer.log(
+            'unknown invalidate key "$key" (skipped)',
+            name: 'ActionRunner',
+          );
+      }
+    }
   }
 
   /// Публичный тип ухода из payload (`WATER`/`SPRAY`/`FERTILIZE`) → domain.

@@ -58,14 +58,36 @@ sealed class SduiBlock with _$SduiBlock {
     required List<SduiPlantGridItem> plants,
   }) = SduiPlantGridBlock;
 
+  /// Гостевой баннер (`guest_banner`): приглашение привязать email.
+  /// Раньше был нативным (`GuestBanner`) — теперь его видимость и место в
+  /// лейауте решает сервер (MADR-017). [titleKey]/[bodyKey] — l10n-КЛЮЧИ
+  /// (резолвятся на клиенте), не готовый текст. CTA → [ctaAction].
+  const factory SduiBlock.guestBanner({
+    required String titleKey,
+    required String bodyKey,
+    SduiAction? ctaAction,
+  }) = SduiGuestBannerBlock;
+
+  /// Пустое состояние сада (`empty_state`): заменяет `plant_grid`, когда у
+  /// пользователя нет растений (решает сервер, MADR-017). [iconKey]/[titleKey]/
+  /// [bodyKey] — l10n-КЛЮЧИ. CTA → [ctaAction].
+  const factory SduiBlock.emptyState({
+    required String iconKey,
+    required String titleKey,
+    required String bodyKey,
+    SduiAction? ctaAction,
+  }) = SduiEmptyStateBlock;
+
   /// Нераспознанный тип блока — клиент его не рендерит.
   const factory SduiBlock.unknown() = SduiUnknownBlock;
 }
 
 /// Элемент сетки растений в блоке `plant_grid` (`PlantGridItem` → domain).
 ///
-/// Несёт минимум для карточки (`PlantCard`) + опциональное действие ухода
-/// ([action]), которое `ActionRunner` исполнит через care-event флоу.
+/// Несёт минимум для карточки (`PlantCard`) + два опциональных действия:
+/// [action] — тап по ТЕЛУ карточки (`navigate` на карточку растения), и
+/// [waterAction] — кнопка-иконка «полить» (`log_care`), которое `ActionRunner`
+/// исполнит через care-event флоу (MADR-017).
 @freezed
 abstract class SduiPlantGridItem with _$SduiPlantGridItem {
   const factory SduiPlantGridItem({
@@ -73,5 +95,6 @@ abstract class SduiPlantGridItem with _$SduiPlantGridItem {
     required String name,
     String? locationName,
     SduiAction? action,
+    SduiAction? waterAction,
   }) = _SduiPlantGridItem;
 }

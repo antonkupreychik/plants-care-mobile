@@ -7,6 +7,7 @@ import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/network/connectivity_provider.dart';
+import 'package:plantcare_mobile/core/sdui/domain/sdui_action.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_block.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_screen_layout.dart';
 import 'package:plantcare_mobile/core/sdui/presentation/screen_layout_provider.dart';
@@ -117,6 +118,78 @@ void main() {
       expect(find.text('Кактус'), findsOneWidget);
       expect(find.byType(HomeLoadingSkeleton), findsNothing);
       expect(find.byType(OfflineState), findsNothing);
+    });
+
+    testWidgets('guest_banner block renders title/body from l10n keys',
+        (tester) async {
+      await tester.pumpWidget(_wrap(
+        layout: () async => const SduiScreenLayout(
+          screenId: 'home',
+          version: 1,
+          blocks: [
+            SduiBlock.guestBanner(
+              titleKey: 'home.guest.title',
+              bodyKey: 'home.guest.body',
+              ctaAction: SduiAction(
+                kind: SduiActionKind.navigate,
+                target: '/home/register',
+              ),
+            ),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      final l10n = AppLocalizations.of(tester.element(find.byType(HomeScreen)));
+      expect(find.text(l10n.sduiHomeGuestTitle), findsOneWidget);
+      expect(find.text(l10n.sduiHomeGuestBody), findsOneWidget);
+    });
+
+    testWidgets('empty_state block renders title/body + CTA from l10n keys',
+        (tester) async {
+      await tester.pumpWidget(_wrap(
+        layout: () async => const SduiScreenLayout(
+          screenId: 'home',
+          version: 1,
+          blocks: [
+            SduiBlock.emptyState(
+              iconKey: 'home.empty.icon',
+              titleKey: 'home.empty.title',
+              bodyKey: 'home.empty.body',
+              ctaAction: SduiAction(
+                kind: SduiActionKind.navigate,
+                target: '/home/add',
+              ),
+            ),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      final l10n = AppLocalizations.of(tester.element(find.byType(HomeScreen)));
+      expect(find.text(l10n.sduiHomeEmptyTitle), findsOneWidget);
+      expect(find.text(l10n.sduiHomeEmptyBody), findsOneWidget);
+      // CTA-кнопка с подписью добавления растения.
+      expect(find.text(l10n.homeAddPlant), findsOneWidget);
+    });
+
+    testWidgets('unknown l10n key degrades to empty string (no crash)',
+        (tester) async {
+      await tester.pumpWidget(_wrap(
+        layout: () async => const SduiScreenLayout(
+          screenId: 'home',
+          version: 1,
+          blocks: [
+            SduiBlock.guestBanner(
+              titleKey: 'totally.unknown.key',
+              bodyKey: 'also.unknown',
+            ),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('unknown block is skipped, known ones render', (tester) async {

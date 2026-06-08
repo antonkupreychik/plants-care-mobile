@@ -9,6 +9,9 @@ enum SduiActionKind {
   /// `log_care` — отметить уход (переиспользует care-event флоу).
   logCare,
 
+  /// `navigate` — перейти на маршрут (`target`) через go_router.
+  navigate,
+
   /// Нераспознанный/новый вид действия — клиент его не исполняет.
   unknown;
 
@@ -16,6 +19,7 @@ enum SduiActionKind {
   /// (контракт мог добавить вид) → [unknown], не бросаем.
   static SduiActionKind fromApi(String? raw) => switch (raw) {
         'log_care' => SduiActionKind.logCare,
+        'navigate' => SduiActionKind.navigate,
         _ => SduiActionKind.unknown,
       };
 }
@@ -35,12 +39,23 @@ abstract class SduiAction with _$SduiAction {
     required SduiActionKind kind,
 
     /// HTTP-метод из дескриптора (метаданные; нативный флоу знает свой путь).
-    required String method,
+    /// Для [SduiActionKind.navigate] не используется — пустая строка.
+    @Default('') String method,
 
     /// Относительный путь из дескриптора (метаданные).
-    required String path,
+    /// Для [SduiActionKind.navigate] не используется — пустая строка.
+    @Default('') String path,
+
+    /// Маршрут навигации для [SduiActionKind.navigate] (`target`, напр.
+    /// `/plants/10` или `/home/register`). `null` для не-навигационных действий.
+    String? target,
 
     /// Шаблон тела запроса (свободная форма). Для `log_care` — `plantId`/`type`.
     Map<String, dynamic>? payload,
+
+    /// Логические ключи чтений, которые надо инвалидировать после успеха
+    /// (декларативная инвалидация, MADR-017): `home`/`today`/`plant`.
+    /// `ActionRunner` маппит каждый ключ в провайдер. Отсутствует → пустой.
+    @Default(<String>[]) List<String> invalidates,
   }) = _SduiAction;
 }

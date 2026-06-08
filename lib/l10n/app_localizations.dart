@@ -472,6 +472,36 @@ abstract class AppLocalizations {
   /// **'В этой комнате пока нет растений'**
   String get homeRoomEmpty;
 
+  /// Подпись/семантика кнопки-иконки «полить» на карточке растения (SDUI waterAction)
+  ///
+  /// In ru, this message translates to:
+  /// **'Полить'**
+  String get plantCardWaterAction;
+
+  /// SDUI guest_banner: заголовок (резолвится по ключу home.guest.title)
+  ///
+  /// In ru, this message translates to:
+  /// **'Привяжите email, чтобы не потерять сад'**
+  String get sduiHomeGuestTitle;
+
+  /// SDUI guest_banner: подпись (резолвится по ключу home.guest.body)
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные гостя удаляются при переустановке'**
+  String get sduiHomeGuestBody;
+
+  /// SDUI empty_state: заголовок (резолвится по ключу home.empty.title)
+  ///
+  /// In ru, this message translates to:
+  /// **'Заведём первое растение?'**
+  String get sduiHomeEmptyTitle;
+
+  /// SDUI empty_state: подпись (резолвится по ключу home.empty.body)
+  ///
+  /// In ru, this message translates to:
+  /// **'Я подберу расписание ухода и буду напоминать — так, как ты любишь.'**
+  String get sduiHomeEmptyBody;
+
   /// Надзаголовок (eyebrow, uppercase) карточки пустого сада, экран 10
   ///
   /// In ru, this message translates to:

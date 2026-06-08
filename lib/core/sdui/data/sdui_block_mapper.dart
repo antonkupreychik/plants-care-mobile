@@ -48,6 +48,19 @@ SduiBlock? sduiBlockFromJson(Map<String, Object?> json) {
             .map(_plantFromJson)
             .toList(growable: false),
       );
+    case 'guest_banner':
+      return SduiBlock.guestBanner(
+        titleKey: _asString(json['titleKey']) ?? '',
+        bodyKey: _asString(json['bodyKey']) ?? '',
+        ctaAction: _actionFromJson(json['ctaAction']),
+      );
+    case 'empty_state':
+      return SduiBlock.emptyState(
+        iconKey: _asString(json['iconKey']) ?? '',
+        titleKey: _asString(json['titleKey']) ?? '',
+        bodyKey: _asString(json['bodyKey']) ?? '',
+        ctaAction: _actionFromJson(json['ctaAction']),
+      );
     default:
       // Неизвестный/новый `type` — клиент его не рендерит.
       return null;
@@ -70,18 +83,21 @@ GardenLocation _locationFromJson(Map<String, Object?> json) => GardenLocation(
     );
 
 /// Элемент сетки (`plant_grid.plants[]`) → доменный [SduiPlantGridItem]
-/// (+ опциональное действие).
+/// (+ опциональные действия: тап тела → [action] (navigate), кнопка «полить» →
+/// [waterAction] (log_care)).
 SduiPlantGridItem _plantFromJson(Map<String, Object?> json) => SduiPlantGridItem(
       id: _asInt(json['id']) ?? 0,
       name: _asString(json['name']) ?? '',
       locationName: _asString(json['locationName']),
       action: _actionFromJson(json['action']),
+      waterAction: _actionFromJson(json['waterAction']),
     );
 
-/// `action` элемента сетки → доменный [SduiAction]. `kind` нормализуем через
-/// [SduiActionKind.fromApi]: нераспознанный → [SduiActionKind.unknown]
-/// (`ActionRunner` такое действие не исполняет, но и не падает). Без `action`
-/// или с битой формой → `null`.
+/// `action`/`waterAction`/`ctaAction` → доменный [SduiAction]. `kind`
+/// нормализуем через [SduiActionKind.fromApi]: нераспознанный →
+/// [SduiActionKind.unknown] (`ActionRunner` такое действие не исполняет, но и
+/// не падает). Парсим `navigate.target` и декларативные `invalidates` (ключи).
+/// Без объекта-действия или с битой формой → `null`.
 SduiAction? _actionFromJson(Object? raw) {
   if (raw is! Map) return null;
   final json = Map<String, Object?>.from(raw);
@@ -90,8 +106,20 @@ SduiAction? _actionFromJson(Object? raw) {
     kind: SduiActionKind.fromApi(_asString(json['kind'])),
     method: _asString(json['method']) ?? '',
     path: _asString(json['path']) ?? '',
+    target: _asString(json['target']),
     payload: payload is Map ? Map<String, dynamic>.from(payload) : null,
+    invalidates: _asStringList(json['invalidates']),
   );
+}
+
+/// `invalidates` → список строковых ключей, пропуская элементы иного типа.
+/// Отсутствует/иной формы → пустой список.
+List<String> _asStringList(Object? raw) {
+  if (raw is! List) return const <String>[];
+  return [
+    for (final e in raw)
+      if (e is String) e,
+  ];
 }
 
 /// Задача (`today_tasks.tasks[]`) → доменная [CareTask].

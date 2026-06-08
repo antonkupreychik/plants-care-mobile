@@ -202,6 +202,79 @@ void main() {
       expect(block.plants[1].action, isNull);
     });
 
+    test('plant_grid item maps navigate action + log_care waterAction', () {
+      final block = sduiBlockFromJson({
+        'type': 'plant_grid',
+        'plants': [
+          {
+            'id': 10,
+            'name': 'Монстера',
+            'action': {'kind': 'navigate', 'target': '/plants/10'},
+            'waterAction': {
+              'kind': 'log_care',
+              'method': 'POST',
+              'path': '/care-events',
+              'payloadTemplate': {'plantId': 10, 'type': 'WATER'},
+              'invalidates': ['home', 'today'],
+            },
+          },
+        ],
+      }) as SduiPlantGridBlock;
+
+      final item = block.plants.single;
+      // Тап тела → navigate.
+      expect(item.action!.kind, SduiActionKind.navigate);
+      expect(item.action!.target, '/plants/10');
+      // Кнопка «полить» → log_care с декларативной инвалидацией.
+      expect(item.waterAction!.kind, SduiActionKind.logCare);
+      expect(item.waterAction!.payload, {'plantId': 10, 'type': 'WATER'});
+      expect(item.waterAction!.invalidates, ['home', 'today']);
+    });
+
+    test('action without invalidates → empty list (not null)', () {
+      final block = sduiBlockFromJson({
+        'type': 'plant_grid',
+        'plants': [
+          {
+            'id': 1,
+            'name': 'X',
+            'action': {'kind': 'navigate', 'target': '/plants/1'},
+          },
+        ],
+      }) as SduiPlantGridBlock;
+
+      expect(block.plants.single.action!.invalidates, isEmpty);
+    });
+
+    test('guest_banner maps keys + navigate ctaAction', () {
+      final block = sduiBlockFromJson({
+        'type': 'guest_banner',
+        'titleKey': 'home.guest.title',
+        'bodyKey': 'home.guest.body',
+        'ctaAction': {'kind': 'navigate', 'target': '/home/register'},
+      }) as SduiGuestBannerBlock;
+
+      expect(block.titleKey, 'home.guest.title');
+      expect(block.bodyKey, 'home.guest.body');
+      expect(block.ctaAction!.kind, SduiActionKind.navigate);
+      expect(block.ctaAction!.target, '/home/register');
+    });
+
+    test('empty_state maps icon/title/body keys + navigate ctaAction', () {
+      final block = sduiBlockFromJson({
+        'type': 'empty_state',
+        'iconKey': 'home.empty.icon',
+        'titleKey': 'home.empty.title',
+        'bodyKey': 'home.empty.body',
+        'ctaAction': {'kind': 'navigate', 'target': '/home/add'},
+      }) as SduiEmptyStateBlock;
+
+      expect(block.iconKey, 'home.empty.icon');
+      expect(block.titleKey, 'home.empty.title');
+      expect(block.bodyKey, 'home.empty.body');
+      expect(block.ctaAction!.target, '/home/add');
+    });
+
     test('plant_grid action with unknown kind degrades to unknown', () {
       final block = sduiBlockFromJson({
         'type': 'plant_grid',

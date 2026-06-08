@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../features/care_event/data/mappers/task_type_mapper.dart';
 import '../../../features/care_event/presentation/log_care_event_sheet.dart';
 import '../../../features/home/domain/plant.dart';
+import '../../../features/home/presentation/widgets/guest_banner.dart';
 import '../../../features/home/presentation/widgets/location_chips.dart';
 import '../../../features/home/presentation/widgets/plant_card.dart';
 import '../../../features/home/presentation/widgets/today_card.dart';
@@ -11,9 +12,12 @@ import '../../../features/weather/presentation/widgets/weather_strip.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../care/care_task.dart';
 import '../../clock/clock_provider.dart';
+import '../../theme/app_theme.dart';
+import '../../theme/tokens.dart';
 import '../domain/sdui_action.dart';
 import '../domain/sdui_block.dart';
 import 'action_runner.dart';
+import 'sdui_l10n_keys.dart';
 
 /// Реестр SDUI-рендереров (MADR-015): отображение типа доменного блока
 /// ([SduiBlock]) в нативный виджет, который рисует СУЩЕСТВУЮЩИЕ виджеты home
@@ -69,9 +73,52 @@ class BlockRegistry {
           ),
         ),
       SduiPlantGridBlock(:final plants) => _PlantGrid(items: plants),
+      SduiGuestBannerBlock(:final titleKey, :final bodyKey, :final ctaAction) =>
+        _GuestBanner(
+          titleKey: titleKey,
+          bodyKey: bodyKey,
+          ctaAction: ctaAction,
+        ),
+      SduiEmptyStateBlock(
+        :final iconKey,
+        :final titleKey,
+        :final bodyKey,
+        :final ctaAction
+      ) =>
+        _EmptyState(
+          iconKey: iconKey,
+          titleKey: titleKey,
+          bodyKey: bodyKey,
+          ctaAction: ctaAction,
+        ),
       SduiUnknownBlock() => const SizedBox.shrink(),
     };
   }
+}
+
+/// Исполняет SDUI-[action] через [ActionRunner] и шумит тостом только при
+/// ошибке/успехе ухода (навигация/unsupported — тихо). Общий хелпер для CTA
+/// блоков и кнопки «полить».
+Future<void> _runSduiAction(
+  BuildContext context,
+  WidgetRef ref,
+  SduiAction? action, {
+  bool toastOnSuccess = false,
+}) async {
+  if (action == null) return;
+  final messenger = ScaffoldMessenger.of(context);
+  final l10n = AppLocalizations.of(context);
+  final result = await ref.read(actionRunnerProvider).run(action);
+  final message = switch (result) {
+    SduiActionResult.success => toastOnSuccess ? l10n.careDoneUnknown : null,
+    SduiActionResult.failure => l10n.errorGeneric,
+    // unsupported (неизвестный kind / навигация без target) — тихо игнорируем.
+    SduiActionResult.unsupported => null,
+  };
+  if (message == null) return;
+  messenger
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(message)));
 }
 
 /// Тапабельный список задач «Сегодня» из SDUI-блока `today_tasks`.
@@ -142,6 +189,7 @@ class _PlantGrid extends ConsumerWidget {
         itemCount: items.length,
         itemBuilder: (context, index) {
           final item = items[index];
+          final waterAction = item.waterAction;
           return PlantCard(
             // PlantCard ждёт domain Plant — собираем из элемента блока.
             plant: Plant(
@@ -150,33 +198,122 @@ class _PlantGrid extends ConsumerWidget {
               locationName: item.locationName,
             ),
             tintWarm: index.isEven,
-            // Тап по карточке = выполнить привязанное действие (полить).
+            // Тап по ТЕЛУ карточки = navigate-действие (карточка растения).
             // Нет действия → no-op (витрина без интерактива).
-            onTap: () => _runAction(context, ref, item.action),
+            onTap: () => _runSduiAction(context, ref, item.action),
+            // Кнопка-иконка «полить» = log_care-действие. Без waterAction
+            // кнопка не рисуется (onWater == null).
+            onWater: waterAction == null
+                ? null
+                : () => _runSduiAction(
+                      context,
+                      ref,
+                      waterAction,
+                      toastOnSuccess: true,
+                    ),
           );
         },
       ),
     );
   }
+}
 
-  Future<void> _runAction(
-    BuildContext context,
-    WidgetRef ref,
-    SduiAction? action,
-  ) async {
-    if (action == null) return;
-    final messenger = ScaffoldMessenger.of(context);
+/// SDUI-блок `guest_banner` (MADR-017): переиспользует визуал [GuestBannerCard],
+/// тексты резолвит из l10n-КЛЮЧЕЙ, CTA исполняет `ctaAction` через ActionRunner.
+class _GuestBanner extends ConsumerWidget {
+  const _GuestBanner({
+    required this.titleKey,
+    required this.bodyKey,
+    required this.ctaAction,
+  });
+
+  final String titleKey;
+  final String bodyKey;
+  final SduiAction? ctaAction;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final result = await ref.read(actionRunnerProvider).run(action);
-    // unsupported (неизвестный kind) — тихо игнорируем, не шумим тостом.
-    final message = switch (result) {
-      SduiActionResult.success => l10n.careDoneUnknown,
-      SduiActionResult.failure => l10n.errorGeneric,
-      SduiActionResult.unsupported => null,
-    };
-    if (message == null) return;
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    return GuestBannerCard(
+      title: resolveSduiTextKey(l10n, titleKey),
+      subtitle: resolveSduiTextKey(l10n, bodyKey),
+      onTap: () => _runSduiAction(context, ref, ctaAction),
+    );
+  }
+}
+
+/// SDUI-блок `empty_state` (MADR-017): аккуратное пустое состояние сада из
+/// l10n-КЛЮЧЕЙ (иконка/заголовок/подпись) + CTA → `ctaAction`. Не тащит тяжёлый
+/// нативный `GardenEmpty` (тот несёт собственные нативные CTA каталога/фото) —
+/// рисует лёгкий вариант на токенах под опаковый контракт.
+class _EmptyState extends ConsumerWidget {
+  const _EmptyState({
+    required this.iconKey,
+    required this.titleKey,
+    required this.bodyKey,
+    required this.ctaAction,
+  });
+
+  final String iconKey;
+  final String titleKey;
+  final String bodyKey;
+  final SduiAction? ctaAction;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(22, 24, 22, 0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: c.surface,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: c.line),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Icon(resolveSduiIconKey(iconKey), size: 64, color: c.primary),
+              const SizedBox(height: 16),
+              Text(
+                resolveSduiTextKey(l10n, titleKey),
+                textAlign: TextAlign.center,
+                style: AppTheme.serif(fontSize: 26, color: c.ink),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                resolveSduiTextKey(l10n, bodyKey),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, height: 1.4, color: c.inkSoft),
+              ),
+              if (ctaAction != null) ...[
+                const SizedBox(height: 20),
+                FilledButton.icon(
+                  onPressed: () => _runSduiAction(context, ref, ctaAction),
+                  icon: const Icon(Icons.add_rounded, size: 20),
+                  label: Text(l10n.homeAddPlant),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: c.fab,
+                    foregroundColor: c.fabInk,
+                    minimumSize: const Size.fromHeight(52),
+                    textStyle: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,10 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plantcare_mobile/core/clock/clock.dart';
 import 'package:plantcare_mobile/core/clock/clock_provider.dart';
 import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/core/router/app_router.dart';
 import 'package:plantcare_mobile/core/sdui/data/sdui_repository_provider.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_action.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_repository.dart';
@@ -81,6 +84,7 @@ void main() {
     method: 'POST',
     path: '/care-events',
     payload: {'plantId': 9, 'type': 'WATER'},
+    invalidates: ['home', 'today', 'plant'],
   );
 
   test('log_care calls care-event repo with idempotent clientId', () async {
@@ -165,5 +169,164 @@ void main() {
 
     expect(result, SduiActionResult.unsupported);
     verifyNever(() => careRepo.logCareEvent(any()));
+  });
+
+  group('declarative invalidation (MADR-017)', () {
+    test('only invalidates listed keys (home alone → today not refetched)',
+        () async {
+      careRepo = _MockCareEventRepo();
+      sduiRepo = _MockSduiRepo();
+      when(() => sduiRepo.getHomeLayout()).thenAnswer(
+        (_) async => const Result.success(
+          SduiScreenLayout(screenId: 'home', version: 1, blocks: []),
+        ),
+      );
+      when(() => careRepo.logCareEvent(any()))
+          .thenAnswer((_) async => Result.success(_logged('cid')));
+      final container = makeContainer();
+
+      final sub = container.listen(homeScreenLayoutProvider, (_, _) {});
+      addTearDown(sub.close);
+      await container.read(homeScreenLayoutProvider.future);
+      verify(() => sduiRepo.getHomeLayout()).called(1);
+
+      // Только 'home' в invalidates → лейаут перечитан.
+      const homeOnly = SduiAction(
+        kind: SduiActionKind.logCare,
+        method: 'POST',
+        path: '/care-events',
+        payload: {'plantId': 9, 'type': 'WATER'},
+        invalidates: ['home'],
+      );
+      await container.read(actionRunnerProvider).run(homeOnly);
+      await container.read(homeScreenLayoutProvider.future);
+      verify(() => sduiRepo.getHomeLayout()).called(1);
+    });
+
+    test('empty invalidates → success but layout NOT refetched', () async {
+      final container = makeContainer();
+      when(() => careRepo.logCareEvent(any()))
+          .thenAnswer((_) async => Result.success(_logged('cid')));
+
+      final sub = container.listen(homeScreenLayoutProvider, (_, _) {});
+      addTearDown(sub.close);
+      await container.read(homeScreenLayoutProvider.future);
+      clearInteractions(sduiRepo);
+
+      const noInval = SduiAction(
+        kind: SduiActionKind.logCare,
+        method: 'POST',
+        path: '/care-events',
+        payload: {'plantId': 9, 'type': 'WATER'},
+      );
+      final result = await container.read(actionRunnerProvider).run(noInval);
+
+      expect(result, SduiActionResult.success);
+      verifyNever(() => sduiRepo.getHomeLayout());
+    });
+
+    test('unknown invalidate key is skipped gracefully (still success)',
+        () async {
+      final container = makeContainer();
+      when(() => careRepo.logCareEvent(any()))
+          .thenAnswer((_) async => Result.success(_logged('cid')));
+
+      const weird = SduiAction(
+        kind: SduiActionKind.logCare,
+        method: 'POST',
+        path: '/care-events',
+        payload: {'plantId': 9, 'type': 'WATER'},
+        invalidates: ['galaxy', 'home'],
+      );
+      final result = await container.read(actionRunnerProvider).run(weird);
+
+      // Неизвестный ключ не роняет — действие успешно.
+      expect(result, SduiActionResult.success);
+    });
+  });
+
+  group('navigate action (MADR-017)', () {
+    /// Минимальный реальный GoRouter для проверки навигации (push меняет
+    /// текущий маршрут). Стартует на '/', есть маршрут '/plants/:id' с
+    /// findable-виджетом (проверяем по нему, а не по uri: imperative push в
+    /// go_router не всегда отражает целевой path в currentConfiguration.uri).
+    GoRouter buildRouter() => GoRouter(
+          initialLocation: '/',
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, _) => const Text('home', key: Key('homePage')),
+            ),
+            GoRoute(
+              path: '/plants/:id',
+              builder: (_, state) => Text(
+                'plant ${state.pathParameters['id']}',
+                key: const Key('plantPage'),
+              ),
+            ),
+          ],
+        );
+
+    testWidgets('navigate pushes target route', (tester) async {
+      final router = buildRouter();
+      final container = ProviderContainer(
+        overrides: [
+          clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
+          careEventRepositoryProvider.overrideWithValue(careRepo),
+          sduiRepositoryProvider.overrideWithValue(sduiRepo),
+          appRouterProvider.overrideWithValue(router),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Монтируем роутер, чтобы push реально отработал.
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+
+      const nav = SduiAction(
+        kind: SduiActionKind.navigate,
+        target: '/plants/10',
+      );
+      final result = await container.read(actionRunnerProvider).run(nav);
+      await tester.pumpAndSettle();
+
+      expect(result, SduiActionResult.success);
+      // Целевой экран запушен поверх (push '/plants/10').
+      expect(find.byKey(const Key('plantPage')), findsOneWidget);
+      expect(find.text('plant 10'), findsOneWidget);
+    });
+
+    testWidgets('navigate with empty target is no-op (unsupported, no push)',
+        (tester) async {
+      final router = buildRouter();
+      final container = ProviderContainer(
+        overrides: [
+          clockProvider.overrideWithValue(_FixedClock(_fixedNow)),
+          careEventRepositoryProvider.overrideWithValue(careRepo),
+          sduiRepositoryProvider.overrideWithValue(sduiRepo),
+          appRouterProvider.overrideWithValue(router),
+        ],
+      );
+      addTearDown(container.dispose);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+
+      const nav = SduiAction(kind: SduiActionKind.navigate);
+      final result = await container.read(actionRunnerProvider).run(nav);
+      await tester.pumpAndSettle();
+
+      expect(result, SduiActionResult.unsupported);
+      // Маршрут не изменился — целевой экран не запушен, остались на home.
+      expect(find.byKey(const Key('plantPage')), findsNothing);
+      expect(find.byKey(const Key('homePage')), findsOneWidget);
+    });
   });
 }

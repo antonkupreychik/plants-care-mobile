@@ -16,9 +16,16 @@ mixin _$SduiAction {
 
 /// Вид действия (по нему выбирается обработчик).
  SduiActionKind get kind;/// HTTP-метод из дескриптора (метаданные; нативный флоу знает свой путь).
+/// Для [SduiActionKind.navigate] не используется — пустая строка.
  String get method;/// Относительный путь из дескриптора (метаданные).
- String get path;/// Шаблон тела запроса (свободная форма). Для `log_care` — `plantId`/`type`.
- Map<String, dynamic>? get payload;
+/// Для [SduiActionKind.navigate] не используется — пустая строка.
+ String get path;/// Маршрут навигации для [SduiActionKind.navigate] (`target`, напр.
+/// `/plants/10` или `/home/register`). `null` для не-навигационных действий.
+ String? get target;/// Шаблон тела запроса (свободная форма). Для `log_care` — `plantId`/`type`.
+ Map<String, dynamic>? get payload;/// Логические ключи чтений, которые надо инвалидировать после успеха
+/// (декларативная инвалидация, MADR-017): `home`/`today`/`plant`.
+/// `ActionRunner` маппит каждый ключ в провайдер. Отсутствует → пустой.
+ List<String> get invalidates;
 /// Create a copy of SduiAction
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +36,16 @@ $SduiActionCopyWith<SduiAction> get copyWith => _$SduiActionCopyWithImpl<SduiAct
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SduiAction&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.method, method) || other.method == method)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other.payload, payload));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SduiAction&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.method, method) || other.method == method)&&(identical(other.path, path) || other.path == path)&&(identical(other.target, target) || other.target == target)&&const DeepCollectionEquality().equals(other.payload, payload)&&const DeepCollectionEquality().equals(other.invalidates, invalidates));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,kind,method,path,const DeepCollectionEquality().hash(payload));
+int get hashCode => Object.hash(runtimeType,kind,method,path,target,const DeepCollectionEquality().hash(payload),const DeepCollectionEquality().hash(invalidates));
 
 @override
 String toString() {
-  return 'SduiAction(kind: $kind, method: $method, path: $path, payload: $payload)';
+  return 'SduiAction(kind: $kind, method: $method, path: $path, target: $target, payload: $payload, invalidates: $invalidates)';
 }
 
 
@@ -49,7 +56,7 @@ abstract mixin class $SduiActionCopyWith<$Res>  {
   factory $SduiActionCopyWith(SduiAction value, $Res Function(SduiAction) _then) = _$SduiActionCopyWithImpl;
 @useResult
 $Res call({
- SduiActionKind kind, String method, String path, Map<String, dynamic>? payload
+ SduiActionKind kind, String method, String path, String? target, Map<String, dynamic>? payload, List<String> invalidates
 });
 
 
@@ -66,13 +73,15 @@ class _$SduiActionCopyWithImpl<$Res>
 
 /// Create a copy of SduiAction
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? kind = null,Object? method = null,Object? path = null,Object? payload = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? kind = null,Object? method = null,Object? path = null,Object? target = freezed,Object? payload = freezed,Object? invalidates = null,}) {
   return _then(_self.copyWith(
 kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as SduiActionKind,method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
 as String,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
-as String,payload: freezed == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,
+as String,target: freezed == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
+as String?,payload: freezed == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,invalidates: null == invalidates ? _self.invalidates : invalidates // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -157,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SduiActionKind kind,  String method,  String path,  Map<String, dynamic>? payload)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SduiActionKind kind,  String method,  String path,  String? target,  Map<String, dynamic>? payload,  List<String> invalidates)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SduiAction() when $default != null:
-return $default(_that.kind,_that.method,_that.path,_that.payload);case _:
+return $default(_that.kind,_that.method,_that.path,_that.target,_that.payload,_that.invalidates);case _:
   return orElse();
 
 }
@@ -178,10 +187,10 @@ return $default(_that.kind,_that.method,_that.path,_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SduiActionKind kind,  String method,  String path,  Map<String, dynamic>? payload)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SduiActionKind kind,  String method,  String path,  String? target,  Map<String, dynamic>? payload,  List<String> invalidates)  $default,) {final _that = this;
 switch (_that) {
 case _SduiAction():
-return $default(_that.kind,_that.method,_that.path,_that.payload);case _:
+return $default(_that.kind,_that.method,_that.path,_that.target,_that.payload,_that.invalidates);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +207,10 @@ return $default(_that.kind,_that.method,_that.path,_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SduiActionKind kind,  String method,  String path,  Map<String, dynamic>? payload)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SduiActionKind kind,  String method,  String path,  String? target,  Map<String, dynamic>? payload,  List<String> invalidates)?  $default,) {final _that = this;
 switch (_that) {
 case _SduiAction() when $default != null:
-return $default(_that.kind,_that.method,_that.path,_that.payload);case _:
+return $default(_that.kind,_that.method,_that.path,_that.target,_that.payload,_that.invalidates);case _:
   return null;
 
 }
@@ -213,15 +222,20 @@ return $default(_that.kind,_that.method,_that.path,_that.payload);case _:
 
 
 class _SduiAction implements SduiAction {
-  const _SduiAction({required this.kind, required this.method, required this.path, final  Map<String, dynamic>? payload}): _payload = payload;
+  const _SduiAction({required this.kind, this.method = '', this.path = '', this.target, final  Map<String, dynamic>? payload, final  List<String> invalidates = const <String>[]}): _payload = payload,_invalidates = invalidates;
   
 
 /// Вид действия (по нему выбирается обработчик).
 @override final  SduiActionKind kind;
 /// HTTP-метод из дескриптора (метаданные; нативный флоу знает свой путь).
-@override final  String method;
+/// Для [SduiActionKind.navigate] не используется — пустая строка.
+@override@JsonKey() final  String method;
 /// Относительный путь из дескриптора (метаданные).
-@override final  String path;
+/// Для [SduiActionKind.navigate] не используется — пустая строка.
+@override@JsonKey() final  String path;
+/// Маршрут навигации для [SduiActionKind.navigate] (`target`, напр.
+/// `/plants/10` или `/home/register`). `null` для не-навигационных действий.
+@override final  String? target;
 /// Шаблон тела запроса (свободная форма). Для `log_care` — `plantId`/`type`.
  final  Map<String, dynamic>? _payload;
 /// Шаблон тела запроса (свободная форма). Для `log_care` — `plantId`/`type`.
@@ -231,6 +245,19 @@ class _SduiAction implements SduiAction {
   if (_payload is EqualUnmodifiableMapView) return _payload;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(value);
+}
+
+/// Логические ключи чтений, которые надо инвалидировать после успеха
+/// (декларативная инвалидация, MADR-017): `home`/`today`/`plant`.
+/// `ActionRunner` маппит каждый ключ в провайдер. Отсутствует → пустой.
+ final  List<String> _invalidates;
+/// Логические ключи чтений, которые надо инвалидировать после успеха
+/// (декларативная инвалидация, MADR-017): `home`/`today`/`plant`.
+/// `ActionRunner` маппит каждый ключ в провайдер. Отсутствует → пустой.
+@override@JsonKey() List<String> get invalidates {
+  if (_invalidates is EqualUnmodifiableListView) return _invalidates;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_invalidates);
 }
 
 
@@ -244,16 +271,16 @@ _$SduiActionCopyWith<_SduiAction> get copyWith => __$SduiActionCopyWithImpl<_Sdu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SduiAction&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.method, method) || other.method == method)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other._payload, _payload));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SduiAction&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.method, method) || other.method == method)&&(identical(other.path, path) || other.path == path)&&(identical(other.target, target) || other.target == target)&&const DeepCollectionEquality().equals(other._payload, _payload)&&const DeepCollectionEquality().equals(other._invalidates, _invalidates));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,kind,method,path,const DeepCollectionEquality().hash(_payload));
+int get hashCode => Object.hash(runtimeType,kind,method,path,target,const DeepCollectionEquality().hash(_payload),const DeepCollectionEquality().hash(_invalidates));
 
 @override
 String toString() {
-  return 'SduiAction(kind: $kind, method: $method, path: $path, payload: $payload)';
+  return 'SduiAction(kind: $kind, method: $method, path: $path, target: $target, payload: $payload, invalidates: $invalidates)';
 }
 
 
@@ -264,7 +291,7 @@ abstract mixin class _$SduiActionCopyWith<$Res> implements $SduiActionCopyWith<$
   factory _$SduiActionCopyWith(_SduiAction value, $Res Function(_SduiAction) _then) = __$SduiActionCopyWithImpl;
 @override @useResult
 $Res call({
- SduiActionKind kind, String method, String path, Map<String, dynamic>? payload
+ SduiActionKind kind, String method, String path, String? target, Map<String, dynamic>? payload, List<String> invalidates
 });
 
 
@@ -281,13 +308,15 @@ class __$SduiActionCopyWithImpl<$Res>
 
 /// Create a copy of SduiAction
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? kind = null,Object? method = null,Object? path = null,Object? payload = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? kind = null,Object? method = null,Object? path = null,Object? target = freezed,Object? payload = freezed,Object? invalidates = null,}) {
   return _then(_SduiAction(
 kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as SduiActionKind,method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
 as String,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
-as String,payload: freezed == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,
+as String,target: freezed == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
+as String?,payload: freezed == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,invalidates: null == invalidates ? _self._invalidates : invalidates // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
