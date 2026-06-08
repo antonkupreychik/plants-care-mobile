@@ -2,6 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
+import '../../../core/observability/analytics_event.dart';
+import '../../../core/observability/observability_providers.dart';
 import '../data/auth_repository_provider.dart';
 
 part 'auth_verify_controller.g.dart';
@@ -26,6 +28,10 @@ class AuthVerifyController extends _$AuthVerifyController {
         await ref.read(authRepositoryProvider).verifyMagicLink(token);
     switch (result) {
       case Success():
+        // Трекаем вход через magic-link (issue #126).
+        ref
+            .read(analyticsServiceProvider)
+            .track(const UserLoggedIn(method: 'magic_link'));
         return;
       case Failure(:final error):
         throw error;

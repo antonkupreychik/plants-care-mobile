@@ -58,6 +58,13 @@ dependencies:
   # Системный share sheet — «Поделиться» отчётом (issue #72).
   share_plus: ^10.1.4
 
+  # Crash-репортинг + продуктовая аналитика (issue #126).
+  # Sentry выбран над Firebase Crashlytics: не требует google-services.json /
+  # GoogleService-Info.plist, работает из коробки без нативной конфигурации Firebase,
+  # поддерживает Flutter-изоляты, нативные крэши (Android NDK / iOS) и символизацию
+  # dSYM/ProGuard из CI. DSN передаётся через --dart-define=SENTRY_DSN=… (не в репозиторий).
+  sentry_flutter: ^9.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
