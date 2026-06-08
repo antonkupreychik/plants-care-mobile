@@ -65,13 +65,23 @@ MADR-015 заложил гибридный block-SDUI с **типизирова�
 | `today_tasks` | `completedCount`, `totalCount`, `tasks[]{scheduleId,plantId,plantName,type,dueAt}` | `TodayCard` (тапабельный список; тап → нативный sheet ухода, preset по `type`) | `TodayApiService` |
 | `today_summary` | `total`, `done`, `remaining`, `overdue` | `TodayCard` (только счётчики) | `TodayApiService` |
 | `location_chips` | `locations[]{id,name,emoji}` | `LocationChips` | `LocationService` |
-| `plant_grid` | `plants[]{id,name,locationName,action}` | `PlantCard` (сетка); тап → `action` через `ActionRunner` | `PlantService` |
+| `plant_grid` | `plants[]{id,name,locationName,action,waterAction}` | `PlantCard` (сетка); тап тела → `action` (navigate), кнопка → `waterAction` (log_care) | `PlantService` |
+| `guest_banner` ⁽MADR-017⁾ | `titleKey`, `bodyKey`, `ctaAction` | `GuestBannerCard` | инъектируется сервисом **только гостю** |
+| `empty_state` ⁽MADR-017⁾ | `iconKey`, `titleKey`, `bodyKey`, `ctaAction` | core-визуал пустого сада + CTA | инъектируется **вместо `plant_grid`** при пустом саде |
 
-- `tasks[].type` / `action.payloadTemplate.type` — **нормализованный** care-словарь:
+- `tasks[].type` / `payloadTemplate.type` — **нормализованный** care-словарь:
   `WATER`/`SPRAY`/`FERTILIZE`/`SOIL_CHECK` (backend маппит из доменного `WATERING/…`).
-- `action` (в `plant_grid`) — декларативный `{ kind, method, path, payloadTemplate }`,
-  исполняется `ActionRunner`. Интерактив с локальным состоянием (sheet `today_tasks`) —
-  **нативный**, не через action.
+- **Действие** (`action`/`waterAction`/`ctaAction`) — декларативный
+  `{ kind, [method, path, payloadTemplate], [target], [invalidates] }`, исполняется `ActionRunner`
+  (MADR-017):
+  - `kind: "log_care"` — мутация (`method`/`path`/`payloadTemplate`); `kind: "navigate"` —
+    переход (`target`, относительный путь).
+  - `invalidates: [...]` — логические ключи обновления после мутации (`home`/`today`/`plant`).
+  - `titleKey`/`bodyKey`/`iconKey` — **ключи l10n**, не готовый текст (текст-обвязка клиентская,
+    MADR-012); клиент резолвит через `resolveSduiTextKey`/`resolveSduiIconKey`.
+- Интерактив с локальным состоянием (sheet `today_tasks`) — **нативный**, не через action.
+  `navigate.target` карточек — витринный (`/plants/{id}`); CTA блоков видимости ведут в нативные
+  флоу (`/home/add`, `/home/register`) — навигация декларативна, флоу нативный.
 
 ## Причины
 

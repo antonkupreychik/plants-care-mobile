@@ -152,7 +152,7 @@ branch 3 `/profile` — таб «Профиль» активен, не coming-so
   редакторы расписаний/настроек 22/23/25/35) — **остаются нативными**, через SDUI НЕ гонятся.
   Признак: локальный многошаговый state, валидация форм, идемпотентные мутации, модалки.
 
-**Жёсткие правила SDUI (опаковый контракт — MADR-016):**
+**Жёсткие правила SDUI (опаковый контракт — MADR-016; серверное поведение — MADR-017):**
 - **Контракт опаковый.** `GET /api/v1/ui/{screen}` отдаёт свободный объект; `ui.yaml`
   декларирует `ScreenLayout { screenId, version, blocks: array of object }` БЕЗ типизированных
   схем блоков. Клиент получает `blocks: List<dynamic>` и парсит их **руками** в
@@ -164,12 +164,19 @@ branch 3 `/profile` — таб «Профиль» активен, не coming-so
 - **Forward-compatibility.** `screenLayoutProvider` шлёт `X-UI-Catalog-Version` текущего
   релиза; сервер не отдаёт блоки с `minCatalogVersion` выше неё. **Неизвестный `type` → маппер
   возвращает `null`, блок скипается** без краша (graceful degradation, покрыть тестом).
-- **Действия — декларативно** (витрина). `ActionDescriptor` (`{ kind, method, path,
-  payloadTemplate }`) исполняет `ActionRunner`. Тип в `payloadTemplate`/задачах нормализован
-  (`WATER`/`SPRAY`/`FERTILIZE`/`SOIL_CHECK`). Идемпотентность care-events по `clientId`
-  (MADR-006) остаётся клиентской. **Интерактив с локальным state** (тап задачи `today_tasks` →
-  sheet ухода) — **нативный**, через существующий флоу, НЕ через `ActionRunner`.
-- **Никакой логики в JSON.** Блоки только параметризуются данными; ветвления/циклы — признак,
+- **Действия — декларативно** (витрина, MADR-017). `ActionRunner` исполняет:
+  - `kind: "log_care"` — мутация (`method`/`path`/`payloadTemplate`); тип нормализован
+    (`WATER`/`SPRAY`/`FERTILIZE`/`SOIL_CHECK`); идемпотентность по `clientId` (MADR-006) — клиентская.
+  - `kind: "navigate"` — переход по `target` через `appRouterProvider` (go_router), `BuildContext`
+    не нужен. Клиент НЕ хардкодит карту роутов витрин. Неизвестный `kind`/пустой `target` → no-op + лог.
+  - `invalidates: [...]` — логические ключи (`home`/`today`/`plant`), клиент маппит ключ → провайдер.
+    НЕ хардкодить список инвалидаций — брать из действия.
+  - **Интерактив с локальным state** (тап задачи `today_tasks` → sheet ухода) — **нативный**, не через action.
+- **Серверная видимость** (MADR-017). Блоки `guest_banner`/`empty_state` инъектирует backend по
+  состоянию юзера; клиент их рендерит и **не ветвится** на `isGuest`/`isEmptyGarden`. Тексты блоков —
+  **ключи l10n** (`titleKey`/`bodyKey`/`iconKey`), не готовый текст: резолв через
+  `resolveSduiTextKey`/`resolveSduiIconKey`, неизвестный ключ → фолбэк без краша.
+- **Никакой логики в JSON.** Блоки/действия только параметризуются; ветвления/циклы — признак,
   что фича должна быть нативной, а не SDUI.
 - Домен `SduiBlock`/`SduiScreenLayout`/`SduiAction` и presentation (`BlockRegistry`,
   `ScreenLayoutView`, `ActionRunner`) развязаны от формата провода — типизированы внутри
