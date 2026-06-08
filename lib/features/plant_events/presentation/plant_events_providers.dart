@@ -2,6 +2,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/error/api_error.dart';
 import '../../../core/error/result.dart';
+// Кросс-фичевая инвалидация карточки растения (02) после успешного добавления
+// события: новое событие меняет «Историю ухода» и стрик на карточке. Импорт
+// presentation-провайдеров plant_card — то же осознанное исключение из границы
+// слоёв, что и в log_care_event_controller (см. его [_invalidateAfterSuccess]).
+import '../../plant_card/presentation/plant_card_providers.dart';
 import '../data/plant_event_repository_provider.dart';
 import '../domain/plant_event.dart';
 import '../domain/plant_event_type.dart';
@@ -93,7 +98,8 @@ class PlantEventsController extends _$PlantEventsController {
   }
 
   /// Записать событие [eventType] (POST). Оптимистично вставляет результат в
-  /// начало списка и инвалидирует «последние» провайдер для карточки растения.
+  /// начало списка и инвалидирует чтения карточки растения, которые событие
+  /// меняет: «последние события», «История ухода» и стрик.
   ///
   /// Возвращает `null` при успехе либо [ApiError] при неудаче (UI решает, какой
   /// тост показать — в т.ч. дедуп `ConflictError`). Список при ошибке не трогаем.
@@ -114,7 +120,14 @@ class PlantEventsController extends _$PlantEventsController {
             ),
           );
         }
-        ref.invalidate(recentPlantEventsProvider(plantId));
+        // Инвалидируем чтения, которые событие реально меняет на карточке (02):
+        // секцию последних событий, «Историю ухода» и стрик. Набор приведён к
+        // консистентности с log_care_event_controller (без homeTasks/plantDetail
+        // — добавление события их не затрагивает).
+        ref
+          ..invalidate(recentPlantEventsProvider(plantId))
+          ..invalidate(plantCardHistoryProvider(plantId))
+          ..invalidate(plantStreakProvider(plantId));
         return null;
       case Failure(:final error):
         return error;

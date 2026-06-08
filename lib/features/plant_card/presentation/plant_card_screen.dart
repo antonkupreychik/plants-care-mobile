@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../care_event/presentation/log_care_event_sheet.dart';
 import '../../home/domain/plant.dart';
 import '../../plant_events/presentation/add_plant_event_sheet.dart';
+import '../../plant_events/presentation/plant_events_providers.dart';
 import '../../plant_events/presentation/widgets/plant_events_section.dart';
 import '../domain/care_event_kind.dart';
 import '../domain/streak.dart';
@@ -73,6 +74,25 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
     });
   }
 
+  /// Pull-to-refresh: инвалидирует все провайдеры данных карточки (деталь,
+  /// «История ухода», стрик, последние события) и ждёт перезагрузки ключевого
+  /// провайдера, чтобы индикатор крутился до завершения. Ошибки рисуют секции
+  /// сами через свои `AsyncValue.when(...)`.
+  Future<void> _onRefresh() async {
+    final id = widget.plantId;
+    ref
+      ..invalidate(plantDetailProvider(id))
+      ..invalidate(plantCardHistoryProvider(id))
+      ..invalidate(plantStreakProvider(id))
+      ..invalidate(recentPlantEventsProvider(id));
+    try {
+      await ref.read(plantCardHistoryProvider(id).future);
+    } catch (_) {
+      // Ошибку покажет секция дневника через ErrorState — индикатору только
+      // нужно дождаться завершения запроса.
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
@@ -90,8 +110,13 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
         bottom: false,
         child: Stack(
           children: [
-            CustomScrollView(
-              slivers: [
+            RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: CustomScrollView(
+                // AlwaysScrollableScrollPhysics — чтобы pull-to-refresh работал
+                // и на коротком контенте (как в home_screen / plant_events).
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
                   sliver: SliverToBoxAdapter(
@@ -266,7 +291,8 @@ class _PlantCardScreenState extends ConsumerState<PlantCardScreen> {
 
                 // Запас под плавающую кнопку действия.
                 const SliverToBoxAdapter(child: SizedBox(height: 120)),
-              ],
+                ],
+              ),
             ),
 
             // Плавающая основная кнопка «Отметить уход» → sheet (фича 06).
