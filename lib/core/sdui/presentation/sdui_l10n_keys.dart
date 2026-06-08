@@ -16,6 +16,8 @@ String resolveSduiTextKey(AppLocalizations l10n, String key) => switch (key) {
       'home.guest.body' => l10n.sduiHomeGuestBody,
       'home.empty.title' => l10n.sduiHomeEmptyTitle,
       'home.empty.body' => l10n.sduiHomeEmptyBody,
+      'home.room.empty.title' => l10n.sduiHomeRoomEmptyTitle,
+      'home.room.empty.body' => l10n.sduiHomeRoomEmptyBody,
       _ => '',
     };
 

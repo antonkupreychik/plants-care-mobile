@@ -478,6 +478,18 @@ abstract class AppLocalizations {
   /// **'Я подберу расписание ухода и буду напоминать — так, как ты любишь.'**
   String get sduiHomeEmptyBody;
 
+  /// SDUI plant_grid: заголовок контекстного пустого стейта комнаты (резолвится по ключу home.room.empty.title)
+  ///
+  /// In ru, this message translates to:
+  /// **'В этой комнате пока пусто'**
+  String get sduiHomeRoomEmptyTitle;
+
+  /// SDUI plant_grid: подпись контекстного пустого стейта комнаты (резолвится по ключу home.room.empty.body)
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавьте сюда растение или выберите другую комнату.'**
+  String get sduiHomeRoomEmptyBody;
+
   /// Надзаголовок (eyebrow, uppercase) карточки пустого сада, экран 10
   ///
   /// In ru, this message translates to:

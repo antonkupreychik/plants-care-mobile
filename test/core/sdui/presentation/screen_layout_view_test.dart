@@ -12,6 +12,7 @@ import 'package:plantcare_mobile/core/locations/garden_location.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_action.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_block.dart';
 import 'package:plantcare_mobile/core/sdui/domain/sdui_screen_layout.dart';
+import 'package:plantcare_mobile/core/sdui/presentation/home_room_filter.dart';
 import 'package:plantcare_mobile/core/sdui/presentation/screen_layout_view.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
 import 'package:plantcare_mobile/features/care_event/data/care_event_repository_provider.dart';
@@ -119,7 +120,10 @@ void main() {
       await tester.pumpWidget(_wrap(_layout(const [
         SduiBlock.locationChips(
           locations: [
-            GardenLocation(id: 1, name: 'Кухня', isDefault: false),
+            SduiLocationChip(
+              location: GardenLocation(id: 1, name: 'Кухня', isDefault: false),
+              count: 2,
+            ),
           ],
         ),
       ])));
@@ -276,6 +280,158 @@ void main() {
       expect(find.text(l10n.sduiHomeEmptyTitle), findsOneWidget);
       expect(find.text(l10n.sduiHomeEmptyBody), findsOneWidget);
       expect(find.text(l10n.homeAddPlant), findsOneWidget);
+    });
+  });
+
+  group('location_chips room filter (MADR-016/017)', () {
+    Widget wrapWithContainer(ProviderContainer container, SduiScreenLayout l) {
+      return UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          locale: const Locale('ru'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.light(),
+          home: Scaffold(
+            body: SingleChildScrollView(child: ScreenLayoutView(layout: l)),
+          ),
+        ),
+      );
+    }
+
+    testWidgets('tapping a room chip requests that locationId', (tester) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      // Держим провайдер живым (autoDispose сбросил бы state между ридами).
+      container.listen(homeRoomFilterProvider, (_, _) {}, fireImmediately: true);
+
+      await tester.pumpWidget(wrapWithContainer(
+        container,
+        _layout(const [
+          SduiBlock.locationChips(
+            selectedLocationId: null,
+            totalCount: 5,
+            locations: [
+              SduiLocationChip(
+                location: GardenLocation(id: 7, name: 'Кухня', isDefault: false),
+                count: 3,
+              ),
+            ],
+          ),
+        ]),
+      ));
+      await tester.pumpAndSettle();
+
+      // До тапа фильтр пуст («Все»).
+      expect(container.read(homeRoomFilterProvider), isNull);
+
+      await tester.tap(find.text('Кухня'));
+      await tester.pump();
+
+      // Тап по комнате → запрошен её locationId (перезапрос делает провайдер).
+      expect(container.read(homeRoomFilterProvider), 7);
+    });
+
+    testWidgets('re-tapping the selected chip resets filter to null',
+        (tester) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container.listen(homeRoomFilterProvider, (_, _) {}, fireImmediately: true);
+      // Стартуем из состояния «запрошена комната 7» (как после первого тапа).
+      container.read(homeRoomFilterProvider.notifier).select(7);
+
+      await tester.pumpWidget(wrapWithContainer(
+        container,
+        _layout(const [
+          SduiBlock.locationChips(
+            // Сервер уже отфильтровал по комнате 7 (single source of truth).
+            selectedLocationId: 7,
+            totalCount: 3,
+            locations: [
+              SduiLocationChip(
+                location: GardenLocation(id: 7, name: 'Кухня', isDefault: false),
+                count: 3,
+              ),
+            ],
+          ),
+        ]),
+      ));
+      await tester.pumpAndSettle();
+
+      // Повторный тап по уже выбранной комнате → сброс на «Все» (null).
+      await tester.tap(find.text('Кухня'));
+      await tester.pump();
+      expect(container.read(homeRoomFilterProvider), isNull);
+    });
+
+    testWidgets('tapping «Все» resets filter to null', (tester) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container.listen(homeRoomFilterProvider, (_, _) {}, fireImmediately: true);
+      container.read(homeRoomFilterProvider.notifier).select(7);
+
+      await tester.pumpWidget(wrapWithContainer(
+        container,
+        _layout(const [
+          SduiBlock.locationChips(
+            selectedLocationId: 7,
+            totalCount: 3,
+            locations: [
+              SduiLocationChip(
+                location: GardenLocation(id: 7, name: 'Кухня', isDefault: false),
+                count: 3,
+              ),
+            ],
+          ),
+        ]),
+      ));
+      await tester.pumpAndSettle();
+
+      final l10n =
+          AppLocalizations.of(tester.element(find.byType(LocationChips)));
+      await tester.tap(find.text(l10n.homeLocationAll));
+      await tester.pump();
+      expect(container.read(homeRoomFilterProvider), isNull);
+    });
+
+    testWidgets('selected chip is highlighted by server selectedLocationId',
+        (tester) async {
+      await tester.pumpWidget(_wrap(_layout(const [
+        SduiBlock.locationChips(
+          selectedLocationId: 7,
+          totalCount: 3,
+          locations: [
+            SduiLocationChip(
+              location: GardenLocation(id: 7, name: 'Кухня', isDefault: false),
+              count: 3,
+            ),
+          ],
+        ),
+      ])));
+      await tester.pumpAndSettle();
+
+      // LocationChips подсвечивает чип по selectedLocationId (передан вниз).
+      final chips = tester.widget<LocationChips>(find.byType(LocationChips));
+      expect(chips.selectedLocationId, 7);
+    });
+
+    testWidgets('empty room renders contextual empty state, not a grid',
+        (tester) async {
+      await tester.pumpWidget(_wrap(_layout(const [
+        SduiBlock.plantGrid(
+          plants: [],
+          emptyTitleKey: 'home.room.empty.title',
+          emptyBodyKey: 'home.room.empty.body',
+        ),
+      ])));
+      await tester.pumpAndSettle();
+
+      final l10n =
+          AppLocalizations.of(tester.element(find.byType(ScreenLayoutView)));
+      expect(find.text(l10n.sduiHomeRoomEmptyTitle), findsOneWidget);
+      expect(find.text(l10n.sduiHomeRoomEmptyBody), findsOneWidget);
+      expect(find.byType(PlantCard), findsNothing);
     });
   });
 

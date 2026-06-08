@@ -301,6 +301,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Я подберу расписание ухода и буду напоминать — так, как ты любишь.';
 
   @override
+  String get sduiHomeRoomEmptyTitle => 'В этой комнате пока пусто';
+
+  @override
+  String get sduiHomeRoomEmptyBody =>
+      'Добавьте сюда растение или выберите другую комнату.';
+
+  @override
   String get homeGardenEmptyEyebrow => 'Сад пока пуст';
 
   @override

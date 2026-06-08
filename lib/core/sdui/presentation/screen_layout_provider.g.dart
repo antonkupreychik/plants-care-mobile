@@ -11,8 +11,14 @@ part of 'screen_layout_provider.dart';
 /// State-слой SDUI главного экрана (MADR-015).
 ///
 /// Отдаёт `AsyncValue<SduiScreenLayout>` (loading / error / data). В `AsyncError`
-/// лежит типизированный `ApiError` (см. [_unwrap]) — UI маппит его в текст через
+/// лежит типизированный `ApiError` — UI маппит его в текст через
 /// `AppLocalizations`, как остальные home-провайдеры.
+///
+/// Фильтр по комнате: провайдер `watch`-ит [homeRoomFilterProvider] (запрошенный
+/// `locationId`, `null` = «Все») и прокидывает его в
+/// `GET /api/v1/ui/home?locationId=`. Тап по чипу меняет [HomeRoomFilter] →
+/// провайдер автоматически перезапрашивает лейаут → сервер отдаёт
+/// отфильтрованную витрину + выделенный чип. Клиент сам список НЕ фильтрует.
 ///
 /// Инвалидируется после успешного действия ухода (см. `ActionRunner`), чтобы
 /// сервер пересобрал лейаут (`today_summary`, доступность действий).
@@ -23,8 +29,14 @@ final homeScreenLayoutProvider = HomeScreenLayoutProvider._();
 /// State-слой SDUI главного экрана (MADR-015).
 ///
 /// Отдаёт `AsyncValue<SduiScreenLayout>` (loading / error / data). В `AsyncError`
-/// лежит типизированный `ApiError` (см. [_unwrap]) — UI маппит его в текст через
+/// лежит типизированный `ApiError` — UI маппит его в текст через
 /// `AppLocalizations`, как остальные home-провайдеры.
+///
+/// Фильтр по комнате: провайдер `watch`-ит [homeRoomFilterProvider] (запрошенный
+/// `locationId`, `null` = «Все») и прокидывает его в
+/// `GET /api/v1/ui/home?locationId=`. Тап по чипу меняет [HomeRoomFilter] →
+/// провайдер автоматически перезапрашивает лейаут → сервер отдаёт
+/// отфильтрованную витрину + выделенный чип. Клиент сам список НЕ фильтрует.
 ///
 /// Инвалидируется после успешного действия ухода (см. `ActionRunner`), чтобы
 /// сервер пересобрал лейаут (`today_summary`, доступность действий).
@@ -40,8 +52,14 @@ final class HomeScreenLayoutProvider
   /// State-слой SDUI главного экрана (MADR-015).
   ///
   /// Отдаёт `AsyncValue<SduiScreenLayout>` (loading / error / data). В `AsyncError`
-  /// лежит типизированный `ApiError` (см. [_unwrap]) — UI маппит его в текст через
+  /// лежит типизированный `ApiError` — UI маппит его в текст через
   /// `AppLocalizations`, как остальные home-провайдеры.
+  ///
+  /// Фильтр по комнате: провайдер `watch`-ит [homeRoomFilterProvider] (запрошенный
+  /// `locationId`, `null` = «Все») и прокидывает его в
+  /// `GET /api/v1/ui/home?locationId=`. Тап по чипу меняет [HomeRoomFilter] →
+  /// провайдер автоматически перезапрашивает лейаут → сервер отдаёт
+  /// отфильтрованную витрину + выделенный чип. Клиент сам список НЕ фильтрует.
   ///
   /// Инвалидируется после успешного действия ухода (см. `ActionRunner`), чтобы
   /// сервер пересобрал лейаут (`today_summary`, доступность действий).
@@ -71,4 +89,4 @@ final class HomeScreenLayoutProvider
   }
 }
 
-String _$homeScreenLayoutHash() => r'2aa4626198ddfabda55bbea69b70118252acc13d';
+String _$homeScreenLayoutHash() => r'3f1056aac54d2a3e8b20ed7912622f3e2a828ba8';

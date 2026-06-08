@@ -17,6 +17,7 @@ import '../../theme/tokens.dart';
 import '../domain/sdui_action.dart';
 import '../domain/sdui_block.dart';
 import 'action_runner.dart';
+import 'home_room_filter.dart';
 import 'sdui_l10n_keys.dart';
 
 /// Реестр SDUI-рендереров (MADR-015): отображение типа доменного блока
@@ -61,18 +62,22 @@ class BlockRegistry {
           completedCount: completedCount,
           totalCount: totalCount,
         ),
-      SduiLocationChipsBlock(:final locations) => Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 14),
-          child: LocationChips(
-            locations: locations,
-            // Счётчики растений несёт нативная композиция, не SDUI-блок чипов.
-            plantCountByLocation: const {},
-            totalPlants: 0,
-            selectedLocationId: null,
-            onSelected: (_) {},
-          ),
+      SduiLocationChipsBlock(
+        :final locations,
+        :final selectedLocationId,
+        :final totalCount
+      ) =>
+        _LocationChips(
+          chips: locations,
+          selectedLocationId: selectedLocationId,
+          totalCount: totalCount,
         ),
-      SduiPlantGridBlock(:final plants) => _PlantGrid(items: plants),
+      SduiPlantGridBlock(:final plants, :final emptyTitleKey, :final emptyBodyKey) =>
+        // Пустая комната с контекстными ключами → контекстный пустой стейт
+        // комнаты (MADR-016), иначе — сетка растений.
+        (plants.isEmpty && emptyTitleKey != null && emptyBodyKey != null)
+            ? _RoomEmpty(titleKey: emptyTitleKey, bodyKey: emptyBodyKey)
+            : _PlantGrid(items: plants),
       SduiGuestBannerBlock(:final titleKey, :final bodyKey, :final ctaAction) =>
         _GuestBanner(
           titleKey: titleKey,
@@ -213,6 +218,86 @@ class _PlantGrid extends ConsumerWidget {
                     ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// Чипы комнат из SDUI-блока `location_chips`. Single source of truth выделения
+/// — серверный [selectedLocationId] (не локальный state): подсветка идёт по
+/// нему. Тап по чипу пишет выбранный `locationId` в [HomeRoomFilter] →
+/// `homeScreenLayout` перезапрашивает витрину с `?locationId=` → сервер отдаёт
+/// отфильтрованную сетку и новый `selectedLocationId`. Повторный тап по уже
+/// выбранному чипу и тап по «Все» дают `null` (сброс фильтра) — это делает сам
+/// [LocationChips] (он зовёт `onSelected(null)` для «Все», `onSelected(loc.id)`
+/// для комнаты; «повторный тап = сброс» решаем здесь).
+class _LocationChips extends ConsumerWidget {
+  const _LocationChips({
+    required this.chips,
+    required this.selectedLocationId,
+    required this.totalCount,
+  });
+
+  final List<SduiLocationChip> chips;
+  final int? selectedLocationId;
+  final int totalCount;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, bottom: 14),
+      child: LocationChips(
+        locations: [for (final c in chips) c.location],
+        plantCountByLocation: {
+          for (final c in chips) c.location.id: c.count,
+        },
+        totalPlants: totalCount,
+        // Выделение — по серверному ответу, не по локальному состоянию.
+        selectedLocationId: selectedLocationId,
+        onSelected: (locationId) {
+          // Повторный тап по уже выбранной комнате → сброс на «Все» (null).
+          final next = locationId == selectedLocationId ? null : locationId;
+          ref.read(homeRoomFilterProvider.notifier).select(next);
+        },
+      ),
+    );
+  }
+}
+
+/// Контекстный пустой стейт комнаты из блока `plant_grid` (MADR-016): когда
+/// фильтр по комнате дал пустую сетку. Тексты — l10n-КЛЮЧИ
+/// ([titleKey]/[bodyKey]), резолвятся через [resolveSduiTextKey] (неизвестный
+/// ключ → фолбэк без краша). Лёгкий, в стиле `_EmptyState`, но без CTA — это не
+/// пустой сад, а лишь пустая комната (выбор другой комнаты вернёт растения).
+class _RoomEmpty extends StatelessWidget {
+  const _RoomEmpty({required this.titleKey, required this.bodyKey});
+
+  final String titleKey;
+  final String bodyKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(22, 24, 22, 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.local_florist_outlined, size: 48, color: c.primary),
+          const SizedBox(height: 14),
+          Text(
+            resolveSduiTextKey(l10n, titleKey),
+            textAlign: TextAlign.center,
+            style: AppTheme.serif(fontSize: 22, color: c.ink),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            resolveSduiTextKey(l10n, bodyKey),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, height: 1.4, color: c.inkSoft),
+          ),
+        ],
       ),
     );
   }

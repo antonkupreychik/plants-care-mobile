@@ -163,10 +163,72 @@ void main() {
       }) as SduiLocationChipsBlock;
 
       expect(block.locations, hasLength(2));
-      expect(block.locations.first.id, 1);
-      expect(block.locations.first.name, 'Кухня');
-      expect(block.locations.first.emoji, '🍳');
-      expect(block.locations[1].emoji, isNull);
+      expect(block.locations.first.location.id, 1);
+      expect(block.locations.first.location.name, 'Кухня');
+      expect(block.locations.first.location.emoji, '🍳');
+      expect(block.locations[1].location.emoji, isNull);
+    });
+
+    test('location_chips maps selectedLocationId + per-chip count + total', () {
+      final block = sduiBlockFromJson({
+        'type': 'location_chips',
+        'selectedLocationId': 2,
+        'locations': [
+          {'id': 1, 'name': 'Кухня', 'emoji': '🍳', 'count': 3},
+          {'id': 2, 'name': 'Спальня', 'count': 5},
+        ],
+      }) as SduiLocationChipsBlock;
+
+      // Выбранный сервером чип — single source of truth выделения.
+      expect(block.selectedLocationId, 2);
+      expect(block.locations.first.count, 3);
+      expect(block.locations[1].count, 5);
+      // Счётчик «Все» = сумма по комнатам.
+      expect(block.totalCount, 8);
+    });
+
+    test(
+        'location_chips without selectedLocationId/count degrades gracefully '
+        '(old server)', () {
+      final block = sduiBlockFromJson({
+        'type': 'location_chips',
+        'locations': [
+          {'id': 1, 'name': 'Кухня'},
+          {'id': 2, 'name': 'Спальня'},
+        ],
+      }) as SduiLocationChipsBlock;
+
+      // Старый сервер без полей: выбор сброшен, счётчики 0 — не падает.
+      expect(block.selectedLocationId, isNull);
+      expect(block.locations.first.count, 0);
+      expect(block.locations[1].count, 0);
+      expect(block.totalCount, 0);
+    });
+
+    test('plant_grid empty room carries contextual empty l10n keys', () {
+      final block = sduiBlockFromJson({
+        'type': 'plant_grid',
+        'plants': <Object?>[],
+        'emptyTitleKey': 'home.room.empty.title',
+        'emptyBodyKey': 'home.room.empty.body',
+      }) as SduiPlantGridBlock;
+
+      expect(block.plants, isEmpty);
+      expect(block.emptyTitleKey, 'home.room.empty.title');
+      expect(block.emptyBodyKey, 'home.room.empty.body');
+    });
+
+    test('plant_grid without empty keys → null (no contextual empty state)',
+        () {
+      final block = sduiBlockFromJson({
+        'type': 'plant_grid',
+        'plants': [
+          {'id': 1, 'name': 'X'},
+        ],
+      }) as SduiPlantGridBlock;
+
+      expect(block.emptyTitleKey, isNull);
+      expect(block.emptyBodyKey, isNull);
     });
 
     test('plant_grid maps items with log_care action', () {
