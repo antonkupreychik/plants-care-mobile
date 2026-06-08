@@ -1,11 +1,16 @@
 # MADR-017 — SDUI: серверно-управляемое поведение (навигация, видимость, проводка)
 
-**Статус:** Proposed (2026-06-08)
+**Статус:** Accepted (2026-06-08, владельцем) · реализованы все три среза
 
 > Расширение [MADR-015](MADR-015-sdui.md) (гибридный block-SDUI) и
 > [MADR-016](MADR-016-sdui-opaque-map.md) (опаковый Map-контракт). Сквозное (mobile +
-> backend + оркестрация). **Ничего ещё не построено** — это предложение; инструктивные
-> правила в `FLUTTER.md` обновляются, только если статус станет Accepted.
+> backend + оркестрация).
+>
+> ✅ **Реализовано** в пилотных PR (ждут мержа человеком): backend
+> `antonkupreychik/plants-care#285`, mobile `antonkupreychik/plants-care-mobile#165`. Все три
+> среза (navigate-action, серверная видимость, декларативная инвалидация) — на home. Прозовый
+> словарь блоков (MADR-016) и инструктивные правила `FLUTTER.md` обновлены под фактические формы
+> (см. «Реализованные формы» ниже).
 
 ---
 
@@ -107,3 +112,44 @@
 > **Отвергнутая альтернатива: полный SDUI (дерево примитивов).** Дал бы и поведение, и вёрстку
 > с сервера, но ценой типобезопасности/кодгена/нативного фила (см. MADR-015). Уровень 2.5
 > (поведение декларативно, рендереры нативны) даёт большую часть выигрыша без этой цены.
+
+---
+
+## Реализованные формы (факт пилота)
+
+Опаковый ответ `GET /api/v1/ui/home` (фрагменты). Тексты блоков видимости — **ключи l10n**, не
+готовый текст (граница: текст-обвязка клиентская, MADR-012).
+
+**Срез 1 — navigate.** Элемент `plant_grid` несёт два действия:
+```json
+{ "id":10, "name":"Монстера", "locationName":"Гостиная",
+  "action":     { "kind":"navigate", "target":"/plants/10" },
+  "waterAction":{ "kind":"log_care", "method":"POST", "path":"/care-events",
+                  "payloadTemplate":{"plantId":10,"type":"WATER"}, "invalidates":["home","today"] } }
+```
+- `action` — тап тела карточки (навигация к деталям); `waterAction` — кнопка «полить».
+- Клиент: `ActionRunner` резолвит `target` через `appRouterProvider` (go_router), `BuildContext`
+  не нужен. Неизвестный `kind`/пустой `target` → no-op + лог.
+
+**Срез 2 — серверная видимость.** Сервис инъектирует блоки по состоянию юзера (в таблицу
+`ui_views` не выносится — это динамика):
+```json
+{ "type":"guest_banner", "titleKey":"home.guest.title", "bodyKey":"home.guest.body",
+  "ctaAction":{"kind":"navigate","target":"/home/register"} }
+{ "type":"empty_state", "iconKey":"home.empty.icon", "titleKey":"home.empty.title",
+  "bodyKey":"home.empty.body", "ctaAction":{"kind":"navigate","target":"/home/add"} }
+```
+- `guest_banner` — только гостю (после `weather_strip`). `empty_state` — **заменяет** `plant_grid`
+  при пустом саде. Клиент перестал держать `isGuest`/`isEmptyGarden`-ветвление в `home_screen`.
+- Ключи (`titleKey`/`bodyKey`/`iconKey`) резолвятся клиентом через `resolveSduiTextKey`/
+  `resolveSduiIconKey` (switch по известным ключам → `AppLocalizations`/`Icons`); неизвестный
+  ключ → пустая строка / дефолтная иконка, не краш.
+
+**Срез 3 — декларативная инвалидация.** Действия-мутации несут `invalidates` — логические ключи
+словаря `home` / `today` / `plant`. Клиент маппит ключ → провайдер (`home`→`homeScreenLayoutProvider`,
+`today`→`homeTasksProvider`, `plant`→`plantDetail/History/Streak(plantId)`); неизвестный ключ →
+пропуск. Прежний хардкод-список ключей инвалидации (MADR-004) на клиенте удалён.
+
+> **Граница CTA-навигации.** `navigate.target` карточек — витринный словарь (`/plants/{id}`).
+> CTA блоков видимости ведут в **нативные флоу** (`/home/add` — мастер, `/home/register` —
+> конвертация гостя): навигация туда декларативна, но сам флоу остаётся нативным (MADR-015).
