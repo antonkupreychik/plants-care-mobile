@@ -81,3 +81,14 @@ run-dev.sh
 screenshots/captured/
 screenshots/diff/
 screenshots/design_check_report.md
+
+# iOS signing artifacts — никогда не коммитить (сертификаты, PP)
+*.p12
+*.mobileprovision
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/screenshots/**/*.jpg
+fastlane/test_output/
