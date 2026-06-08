@@ -18,6 +18,7 @@ import 'package:plantcare_mobile/features/plant_card/presentation/plant_card_pro
 import 'package:plantcare_mobile/features/plant_card/presentation/plant_card_screen.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/widgets/plant_hero.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/widgets/plant_journal_card.dart';
+import 'package:plantcare_mobile/features/plant_card/presentation/widgets/plant_notes_card.dart';
 import 'package:plantcare_mobile/features/plant_card/presentation/widgets/plant_streak_card.dart';
 import 'package:plantcare_mobile/features/plant_events/domain/plant_event.dart';
 import 'package:plantcare_mobile/features/plant_events/presentation/plant_events_providers.dart';
@@ -238,6 +239,41 @@ void main() {
       expect(find.text('Полил утром'), findsOneWidget);
       expect(find.text(l10n.plantCardJournalEmptyBubble), findsNothing);
       expect(find.text(l10n.plantCardJournalWaterNow), findsNothing);
+    });
+  });
+
+  group('PlantCardScreen notes', () {
+    testWidgets('should_show_notes_card_when_plant_has_notes', (tester) async {
+      tester.view.physicalSize = const Size(1080, 3600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(_wrap(
+        detail: () async => const Plant(
+          id: _plantId,
+          name: 'Монстера',
+          notes: 'Стоит у окна, любит свет',
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      final l10n = _l10n(tester);
+      // Секция заметок отрендерилась с заголовком и текстом.
+      expect(find.byType(PlantNotesCard), findsOneWidget);
+      expect(find.text(l10n.plantCardNotesTitle.toUpperCase()), findsOneWidget);
+      expect(find.text('Стоит у окна, любит свет'), findsOneWidget);
+    });
+
+    testWidgets('should_hide_notes_card_when_plant_has_no_notes',
+        (tester) async {
+      await tester.pumpWidget(_wrap(
+        detail: () async => const Plant(id: _plantId, name: 'Монстера'),
+      ));
+      await tester.pumpAndSettle();
+
+      // Нет заметки — секция не рисуется.
+      expect(find.byType(PlantNotesCard), findsNothing);
     });
   });
 
