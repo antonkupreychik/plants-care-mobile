@@ -27,16 +27,49 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- Deep link для magic-link входа (MADR-008): возврат из письма по
-                 plantcare://auth/verify?token=… Custom scheme (без верификации
-                 домена). Захват URI — через app_links (см. PlantCareApp),
-                 роутинг — на /auth/verify. Формат ссылки должен совпадать с тем,
-                 что шлёт backend (см. docs/BACKEND-GAPS.md). -->
+            <!-- Custom-scheme deep link для magic-link входа (MADR-008):
+                 plantcare://auth/verify?token=… Захват URI — через app_links
+                 (см. PlantCareApp). Работает без верификации домена. -->
             <intent-filter android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="plantcare" android:host="auth"/>
+            </intent-filter>
+            <!-- Universal Links / Android App Links (issue #127):
+                 https://plants-care.up.railway.app/auth/verify?token=… и
+                 https://plants-care.up.railway.app/plants/:id открывают
+                 приложение напрямую (минуя браузер).
+                 android:autoVerify="true" — Android при установке проверяет
+                 Digital Asset Links на /.well-known/assetlinks.json хоста.
+
+                 Хост-файл требует деплоя на backend'е:
+                   GET https://plants-care.up.railway.app/.well-known/assetlinks.json
+                   → [{"relation":["delegate_permission/common.handle_all_urls"],
+                        "target":{"namespace":"android_app",
+                                  "package_name":"com.plantcare.plantcare_mobile",
+                                  "sha256_cert_fingerprints":["<RELEASE_SHA256>"]}}]
+                 SHA-256 для release-ключа получить через:
+                   keytool -list -v -keystore <release.jks> -alias <alias>
+                 или из Play Console (App signing → App signing key certificate).
+                 Захват URI — через app_links (PlantCareApp._handleDeepLink). -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="https"
+                    android:host="plants-care.up.railway.app"
+                    android:pathPattern="/auth/verify"/>
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="https"
+                    android:host="plants-care.up.railway.app"
+                    android:pathPattern="/plants/.*"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

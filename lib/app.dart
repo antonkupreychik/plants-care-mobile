@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/router/app_router.dart';
+import 'core/router/deep_link_resolver.dart';
 import 'core/theme/app_theme.dart';
 import 'features/language/presentation/language_providers.dart';
 import 'l10n/app_localizations.dart';
@@ -14,11 +15,16 @@ import 'l10n/app_localizations.dart';
 /// с router-guard по auth-статусу — MADR-008). Локализация — один локаль `ru`
 /// (MADR-012), все UI-строки через `AppLocalizations`.
 ///
-/// Deep links magic-link входа (MADR-008): слушаем custom-схему
-/// `plantcare://auth/verify?token=…` через [AppLinks] (и cold-start, и warm)
-/// и роутим на `/auth/verify`. Формат ссылки задаёт backend
-/// (см. docs/BACKEND-GAPS.md); в dev флоу проверяется через ручной ввод токена
-/// на verify-экране.
+/// Deep links (MADR-008, issue #127): слушаем два вида входящих ссылок через
+/// [AppLinks] (и cold-start, и warm):
+///   1. Custom scheme: `plantcare://auth/verify?token=…` — magic-link вход
+///      из письма, роутинг на `/auth/verify`.
+///   2. Universal links (HTTPS): `https://plants-care.up.railway.app/auth/verify?token=…`
+///      и `https://plants-care.up.railway.app/plants/:id` — открытие приложения
+///      напрямую (без браузера) при правильно настроенном хост-файле (issue #127).
+///
+/// Формат ссылок задаёт backend. Хост-файлы (assetlinks.json, AASA) — на стороне
+/// сервера, см. docs/DEEP-LINKS.md.
 class PlantCareApp extends ConsumerStatefulWidget {
   const PlantCareApp({super.key});
 
@@ -29,6 +35,7 @@ class PlantCareApp extends ConsumerStatefulWidget {
 class _PlantCareAppState extends ConsumerState<PlantCareApp> {
   final AppLinks _appLinks = AppLinks();
   StreamSubscription<Uri>? _linkSub;
+  final _resolver = const DeepLinkResolver();
 
   @override
   void initState() {
@@ -37,14 +44,15 @@ class _PlantCareAppState extends ConsumerState<PlantCareApp> {
     _linkSub = _appLinks.uriLinkStream.listen(_handleDeepLink);
   }
 
-  /// Magic-link из письма: `plantcare://auth/verify?token=<opaque>`. Толерантно
-  /// к host/path (формат бэкенда уточняется) — реагируем на любую ссылку нашей
-  /// схемы с непустым `token`, отдавая токен verify-экрану через роутер-гард.
+  /// Обрабатывает входящие deep-link / universal-link URI.
+  ///
+  /// Логика разрешения URI в app-путь — в [DeepLinkResolver] (unit-тестируется).
+  /// Неизвестные ссылки игнорируются (resolver возвращает null).
   void _handleDeepLink(Uri uri) {
-    if (uri.scheme != 'plantcare') return;
-    final token = uri.queryParameters['token'];
-    if (token == null || token.isEmpty) return;
-    ref.read(appRouterProvider).go('/auth/verify?token=$token');
+    final appPath = _resolver.resolve(uri);
+    if (appPath != null) {
+      ref.read(appRouterProvider).go(appPath);
+    }
   }
 
   @override
