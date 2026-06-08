@@ -293,22 +293,26 @@ final class SpeciesSearchResultsFamily extends $Family
   String toString() => r'speciesSearchResultsProvider';
 }
 
-/// Результаты раздела «Болезни и вредители» — заглушка пустого списка.
+/// Результаты раздела «Болезни и вредители» — `GET /diseases?q=` через
+/// [diseaseCatalogRepositoryProvider] (полнотекстовый поиск на стороне backend).
+/// Запрос короче [kSearchMinChars] → пустой список (сетевой запрос не уходит).
+/// Ошибка репозитория пробрасывается в `AsyncError`.
 ///
-/// Эндпоинта `GET /diseases?q=&limit=5` ПОКА НЕТ на бэкенде (ждёт
-/// plants-care#225), поэтому провайдер всегда возвращает пустой список. Секция
-/// рендерится сразу (пустая) и подключится подменой реализации этого провайдера
-/// без правки UI, когда появятся эндпоинт (#225) и фича болезней (#68).
+/// Полная доменная модель справочника (`disease_catalog/domain/disease.dart`)
+/// маппится в лёгкую `search/domain/Disease` (только id/name/latinName), которой
+/// достаточно секции поиска; результат обрезается до [kSearchResultsLimit].
 
 @ProviderFor(diseaseSearchResults)
 final diseaseSearchResultsProvider = DiseaseSearchResultsFamily._();
 
-/// Результаты раздела «Болезни и вредители» — заглушка пустого списка.
+/// Результаты раздела «Болезни и вредители» — `GET /diseases?q=` через
+/// [diseaseCatalogRepositoryProvider] (полнотекстовый поиск на стороне backend).
+/// Запрос короче [kSearchMinChars] → пустой список (сетевой запрос не уходит).
+/// Ошибка репозитория пробрасывается в `AsyncError`.
 ///
-/// Эндпоинта `GET /diseases?q=&limit=5` ПОКА НЕТ на бэкенде (ждёт
-/// plants-care#225), поэтому провайдер всегда возвращает пустой список. Секция
-/// рендерится сразу (пустая) и подключится подменой реализации этого провайдера
-/// без правки UI, когда появятся эндпоинт (#225) и фича болезней (#68).
+/// Полная доменная модель справочника (`disease_catalog/domain/disease.dart`)
+/// маппится в лёгкую `search/domain/Disease` (только id/name/latinName), которой
+/// достаточно секции поиска; результат обрезается до [kSearchResultsLimit].
 
 final class DiseaseSearchResultsProvider
     extends
@@ -318,12 +322,14 @@ final class DiseaseSearchResultsProvider
           FutureOr<List<Disease>>
         >
     with $FutureModifier<List<Disease>>, $FutureProvider<List<Disease>> {
-  /// Результаты раздела «Болезни и вредители» — заглушка пустого списка.
+  /// Результаты раздела «Болезни и вредители» — `GET /diseases?q=` через
+  /// [diseaseCatalogRepositoryProvider] (полнотекстовый поиск на стороне backend).
+  /// Запрос короче [kSearchMinChars] → пустой список (сетевой запрос не уходит).
+  /// Ошибка репозитория пробрасывается в `AsyncError`.
   ///
-  /// Эндпоинта `GET /diseases?q=&limit=5` ПОКА НЕТ на бэкенде (ждёт
-  /// plants-care#225), поэтому провайдер всегда возвращает пустой список. Секция
-  /// рендерится сразу (пустая) и подключится подменой реализации этого провайдера
-  /// без правки UI, когда появятся эндпоинт (#225) и фича болезней (#68).
+  /// Полная доменная модель справочника (`disease_catalog/domain/disease.dart`)
+  /// маппится в лёгкую `search/domain/Disease` (только id/name/latinName), которой
+  /// достаточно секции поиска; результат обрезается до [kSearchResultsLimit].
   DiseaseSearchResultsProvider._({
     required DiseaseSearchResultsFamily super.from,
     required String super.argument,
@@ -369,14 +375,16 @@ final class DiseaseSearchResultsProvider
 }
 
 String _$diseaseSearchResultsHash() =>
-    r'8321d352a1d8427cdcd3942b7e6e3a95ce152a52';
+    r'363b8589762f566595426d6c7eef8ea306674d62';
 
-/// Результаты раздела «Болезни и вредители» — заглушка пустого списка.
+/// Результаты раздела «Болезни и вредители» — `GET /diseases?q=` через
+/// [diseaseCatalogRepositoryProvider] (полнотекстовый поиск на стороне backend).
+/// Запрос короче [kSearchMinChars] → пустой список (сетевой запрос не уходит).
+/// Ошибка репозитория пробрасывается в `AsyncError`.
 ///
-/// Эндпоинта `GET /diseases?q=&limit=5` ПОКА НЕТ на бэкенде (ждёт
-/// plants-care#225), поэтому провайдер всегда возвращает пустой список. Секция
-/// рендерится сразу (пустая) и подключится подменой реализации этого провайдера
-/// без правки UI, когда появятся эндпоинт (#225) и фича болезней (#68).
+/// Полная доменная модель справочника (`disease_catalog/domain/disease.dart`)
+/// маппится в лёгкую `search/domain/Disease` (только id/name/latinName), которой
+/// достаточно секции поиска; результат обрезается до [kSearchResultsLimit].
 
 final class DiseaseSearchResultsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<List<Disease>>, String> {
@@ -389,12 +397,14 @@ final class DiseaseSearchResultsFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Результаты раздела «Болезни и вредители» — заглушка пустого списка.
+  /// Результаты раздела «Болезни и вредители» — `GET /diseases?q=` через
+  /// [diseaseCatalogRepositoryProvider] (полнотекстовый поиск на стороне backend).
+  /// Запрос короче [kSearchMinChars] → пустой список (сетевой запрос не уходит).
+  /// Ошибка репозитория пробрасывается в `AsyncError`.
   ///
-  /// Эндпоинта `GET /diseases?q=&limit=5` ПОКА НЕТ на бэкенде (ждёт
-  /// plants-care#225), поэтому провайдер всегда возвращает пустой список. Секция
-  /// рендерится сразу (пустая) и подключится подменой реализации этого провайдера
-  /// без правки UI, когда появятся эндпоинт (#225) и фича болезней (#68).
+  /// Полная доменная модель справочника (`disease_catalog/domain/disease.dart`)
+  /// маппится в лёгкую `search/domain/Disease` (только id/name/latinName), которой
+  /// достаточно секции поиска; результат обрезается до [kSearchResultsLimit].
 
   DiseaseSearchResultsProvider call(String query) =>
       DiseaseSearchResultsProvider._(argument: query, from: this);
