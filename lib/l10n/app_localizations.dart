@@ -376,30 +376,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{нет просроченных} one{{count} просрочена} few{{count} просрочены} many{{count} просрочено} other{{count} просрочено}}'**
   String todayProgressOverdue(int count);
 
-  /// Заголовок свёрнутой секции «Выполнено» на экране «Сегодня»
-  ///
-  /// In ru, this message translates to:
-  /// **'{count, plural, =0{Ничего не выполнено} one{{count} выполнено сегодня} few{{count} выполнено сегодня} many{{count} выполнено сегодня} other{{count} выполнено сегодня}}'**
-  String todayDoneTitle(int count);
-
-  /// Свёрнутая секция «Выполнено»: что и когда сделано (например «Колючка · полит в 7:42»)
-  ///
-  /// In ru, this message translates to:
-  /// **'{plant} · {action} в {time}'**
-  String todayDoneSubtitle(String plant, String action, String time);
-
-  /// Семантика/подсказка: раскрыть свёрнутую секцию «Выполнено»
-  ///
-  /// In ru, this message translates to:
-  /// **'Показать выполненные'**
-  String get todayDoneExpand;
-
-  /// Семантика/подсказка: свернуть секцию «Выполнено»
-  ///
-  /// In ru, this message translates to:
-  /// **'Скрыть выполненные'**
-  String get todayDoneCollapse;
-
   /// Подпись на карточке выполненной задачи: действие в прошедшем времени + время (например «Полито в 7:42»)
   ///
   /// In ru, this message translates to:

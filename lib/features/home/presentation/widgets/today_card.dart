@@ -13,6 +13,11 @@ import '../plant_illustration.dart';
 /// Без группировки «утро/вечер» (это экран 03) и без вычислений интервалов —
 /// только счётчик и список. Срок берётся из уже посчитанного backend `dueAt`.
 ///
+/// Выполненные задачи (`CareTask.isDone`) в списке НЕ показываются (UX «вариант
+/// 1»: отмеченная задача сразу исчезает). Прогресс при этом сохраняется —
+/// [completedCount]/[totalCount] приходят отдельно (`TodaySummary`), а не из
+/// [tasks].
+///
 /// Если [completedCount] > 0 и [totalCount] > 0, отображаются:
 /// - круглый бейдж «N%» в правом верхнем углу карточки;
 /// - тонкая прогресс-полоса (4dp) под заголовком, над списком задач.
@@ -51,6 +56,11 @@ class TodayCard extends StatelessWidget {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
 
+    // Выполненные задачи на главной не показываем (UX «вариант 1»): отмеченная
+    // задача сразу исчезает из списка. Прогресс при этом сохраняется —
+    // completedCount/totalCount приходят отдельно (TodaySummary), не из списка.
+    final pendingTasks = tasks.where((t) => !t.isDone).toList(growable: false);
+
     final showProgress = totalCount > 0 && completedCount > 0;
     final progressFraction =
         totalCount > 0 ? completedCount / totalCount : 0.0;
@@ -69,7 +79,7 @@ class TodayCard extends StatelessWidget {
         children: [
           _SectionHead(
             overline: l10n.homeTodayTitle,
-            title: l10n.homeTodayTasksCount(tasks.length),
+            title: l10n.homeTodayTasksCount(pendingTasks.length),
             onSeeAll: onSeeAll,
             seeAllLabel: l10n.homeTodaySeeAll,
           ),
@@ -91,7 +101,7 @@ class TodayCard extends StatelessWidget {
               ),
             ),
           ],
-          if (tasks.isEmpty)
+          if (pendingTasks.isEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 6),
               child: Text(
@@ -100,8 +110,8 @@ class TodayCard extends StatelessWidget {
               ),
             )
           else
-            ...List.generate(tasks.length, (i) {
-              final task = tasks[i];
+            ...List.generate(pendingTasks.length, (i) {
+              final task = pendingTasks[i];
               return _TaskRow(
                 task: task,
                 now: now,
