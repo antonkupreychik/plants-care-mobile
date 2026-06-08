@@ -1,0 +1,92 @@
+# Server-Driven UI (MADR-015). Backend отдаёт декларативный layout экрана
+# списком блоков; клиент рендерит их через registry, не зашивая структуру
+# экрана в код. Источник правды формы ответа — backend (PR #285).
+#
+# Контракт ОПАКОВЫЙ: backend не типизирует блоки (свободный JSON-объект), а
+# клиент парсит их динамически по полю `type` в data-слое (sdui_block_mapper).
+# Поэтому здесь нет типизированных block-схем (oneOf/discriminator) — есть лишь
+# обёртка ScreenLayout с массивом свободных объектов. Неизвестный `type` клиент
+# тихо пропускает (forward-compatibility).
+
+paths:
+  Screen:
+    get:
+      tags: [UI]
+      operationId: getUiScreen
+      summary: SDUI-лейаут экрана
+      description: |
+        Возвращает декларативное описание экрана (Server-Driven UI, MADR-015):
+        идентификатор экрана, версию и упорядоченный список блоков. Блоки —
+        свободные JSON-объекты с полем `type`; backend их не типизирует.
+        Клиент рендерит блоки через registry по полю `type`; неизвестные типы
+        пропускает (forward-compatibility).
+
+        Заголовок `X-UI-Catalog-Version` (опционально) сообщает серверу версию
+        каталога блоков, которую понимает клиент, — сервер может отдать
+        совместимый набор блоков.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: screen
+          in: path
+          required: true
+          description: Идентификатор экрана (например, `home`).
+          schema:
+            type: string
+          example: home
+        - name: X-UI-Catalog-Version
+          in: header
+          required: false
+          description: |
+            Версия каталога SDUI-блоков, поддерживаемая клиентом. Сервер
+            использует её для выдачи совместимого набора блоков. Если не
+            передана — сервер отдаёт актуальную версию.
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            example: 1
+      responses:
+        '200':
+          description: Лейаут экрана.
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/ScreenLayout'
+        '401':
+          $ref: '../_common/responses.yaml#/Unauthorized'
+        '404':
+          $ref: '../_common/responses.yaml#/NotFound'
+
+schemas:
+  ScreenLayout:
+    type: object
+    description: |
+      Декларативный лейаут одного экрана (Server-Driven UI, MADR-015).
+      Список `blocks` упорядочен — клиент рендерит блоки сверху вниз.
+
+      Опаковый контракт: каждый элемент `blocks` — свободный JSON-объект с
+      полем `type`. Форму конкретного блока задаёт backend; клиент парсит её
+      динамически (см. sdui_block_mapper).
+    required: [screenId, version, blocks]
+    properties:
+      screenId:
+        type: string
+        description: Идентификатор экрана (например, `home`).
+        example: home
+      version:
+        type: integer
+        format: int32
+        description: Версия структуры лейаута для данного экрана.
+        example: 1
+      blocks:
+        type: array
+        description: |
+          Упорядоченный список блоков экрана. Каждый блок — свободный объект
+          с полем `type` (дискриминатор на стороне клиента).
+        items:
+          type: object
+          additionalProperties: true
+          description: |
+            Свободный JSON-объект блока. Обязательное поле `type` определяет
+            рендерер на клиенте; остальные поля зависят от типа блока.

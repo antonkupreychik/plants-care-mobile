@@ -342,6 +342,26 @@
   "@homeRoomEmpty": {
     "description": "Подсказка: в выбранной комнате нет растений"
   },
+  "plantCardWaterAction": "Полить",
+  "@plantCardWaterAction": {
+    "description": "Подпись/семантика кнопки-иконки «полить» на карточке растения (SDUI waterAction)"
+  },
+  "sduiHomeGuestTitle": "Привяжите email, чтобы не потерять сад",
+  "@sduiHomeGuestTitle": {
+    "description": "SDUI guest_banner: заголовок (резолвится по ключу home.guest.title)"
+  },
+  "sduiHomeGuestBody": "Данные гостя удаляются при переустановке",
+  "@sduiHomeGuestBody": {
+    "description": "SDUI guest_banner: подпись (резолвится по ключу home.guest.body)"
+  },
+  "sduiHomeEmptyTitle": "Заведём первое растение?",
+  "@sduiHomeEmptyTitle": {
+    "description": "SDUI empty_state: заголовок (резолвится по ключу home.empty.title)"
+  },
+  "sduiHomeEmptyBody": "Я подберу расписание ухода и буду напоминать — так, как ты любишь.",
+  "@sduiHomeEmptyBody": {
+    "description": "SDUI empty_state: подпись (резолвится по ключу home.empty.body)"
+  },
   "homeGardenEmptyEyebrow": "Сад пока пуст",
   "@homeGardenEmptyEyebrow": {
     "description": "Надзаголовок (eyebrow, uppercase) карточки пустого сада, экран 10"
