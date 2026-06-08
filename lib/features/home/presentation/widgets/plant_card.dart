@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/tokens.dart';
 import '../../../../core/widgets/skeleton_box.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../../../plant_card/presentation/widgets/health_ring.dart';
 import '../../domain/plant.dart';
 import '../plant_illustration.dart';
@@ -20,7 +19,6 @@ class PlantCard extends StatelessWidget {
     required this.plant,
     required this.tintWarm,
     required this.onTap,
-    this.onWater,
   });
 
   final Plant plant;
@@ -30,11 +28,6 @@ class PlantCard extends StatelessWidget {
 
   /// Тап по ТЕЛУ карточки (напр. переход на карточку растения).
   final VoidCallback onTap;
-
-  /// Опциональная кнопка-иконка «полить» (SDUI `waterAction` → log_care).
-  /// `null` → кнопка не рисуется (карточка переиспользуется и без действия
-  /// ухода — напр. в чистой витрине).
-  final VoidCallback? onWater;
 
   @override
   Widget build(BuildContext context) {
@@ -54,33 +47,19 @@ class PlantCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Верхний ряд: слева — вид (overline), справа — индикатор «полить»
-              // (капля). Так капля не зажимает имя, как в эталоне дизайна
-              // (PLANT GRID, top row = space-between: species ↔ drop badge).
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: plant.speciesName != null
-                        ? Text(
-                            plant.speciesName!.toUpperCase(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.7,
-                              color: c.inkSoft,
-                            ),
-                          )
-                        : const SizedBox.shrink(),
+              // Верхний ряд: вид растения (overline).
+              if (plant.speciesName != null)
+                Text(
+                  plant.speciesName!.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.7,
+                    color: c.inkSoft,
                   ),
-                  if (onWater != null) ...[
-                    const SizedBox(width: 4),
-                    _WaterButton(onTap: onWater!),
-                  ],
-                ],
-              ),
+                ),
               const SizedBox(height: 2),
               Row(
                 children: [
@@ -132,38 +111,6 @@ class PlantCard extends StatelessWidget {
                 ),
               ],
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Кнопка-иконка «полить» на карточке растения (SDUI `waterAction`).
-/// Компактная, чтобы не ломать сетку; строка — через [AppLocalizations]
-/// (Semantics), цвета — токены.
-class _WaterButton extends StatelessWidget {
-  const _WaterButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = Theme.of(context).extension<PcColors>()!;
-    final l10n = AppLocalizations.of(context);
-    return Semantics(
-      button: true,
-      label: l10n.plantCardWaterAction,
-      child: Material(
-        color: c.primarySoft,
-        shape: const CircleBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: SizedBox(
-            width: 32,
-            height: 32,
-            child: Icon(Icons.water_drop_outlined, size: 16, color: c.primary),
           ),
         ),
       ),
