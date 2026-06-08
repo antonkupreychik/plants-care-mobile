@@ -189,7 +189,6 @@ class _PlantGrid extends ConsumerWidget {
         itemCount: items.length,
         itemBuilder: (context, index) {
           final item = items[index];
-          final waterAction = item.waterAction;
           return PlantCard(
             // PlantCard ждёт domain Plant — собираем из элемента блока.
             plant: Plant(
@@ -201,16 +200,6 @@ class _PlantGrid extends ConsumerWidget {
             // Тап по ТЕЛУ карточки = navigate-действие (карточка растения).
             // Нет действия → no-op (витрина без интерактива).
             onTap: () => _runSduiAction(context, ref, item.action),
-            // Кнопка-иконка «полить» = log_care-действие. Без waterAction
-            // кнопка не рисуется (onWater == null).
-            onWater: waterAction == null
-                ? null
-                : () => _runSduiAction(
-                      context,
-                      ref,
-                      waterAction,
-                      toastOnSuccess: true,
-                    ),
           );
         },
       ),
