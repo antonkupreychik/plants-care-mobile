@@ -298,7 +298,7 @@ branch 3 `/profile` — таб «Профиль» активен, не coming-so
 
 ## Источники правды
 
-- `docs/adr/` — MADR-001…014 + **MADR-015 (гибридный SDUI)** + **MADR-016 (опаковый Map-контракт SDUI)** — архитектурные решения мобилки.
+- `docs/adr/` — MADR-001…014 + **MADR-015 (гибридный SDUI)** + **MADR-016 (опаковый Map-контракт SDUI)** + **MADR-017 (серверно-управляемое поведение — Proposed)** — архитектурные решения мобилки.
 - `design_handoff_plantcare/api-contract.md` — REST-контракт backend (§1–11) + gaps (§12).
 - `design_handoff_plantcare/README.md` — продукт, 24 экрана, дизайн-токены.
 - `design_handoff_plantcare/SPRINT-1-flutter.md` — план первого спринта.
