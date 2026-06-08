@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/observability/analytics_event.dart';
+import '../../../core/observability/observability_providers.dart';
 import '../data/auth_repository_provider.dart';
 import '../domain/social_auth_outcome.dart';
 import 'auth_social_state.dart';
@@ -44,14 +46,20 @@ class AuthSocialController extends _$AuthSocialController {
 
     final outcome = await action();
 
-    state = switch (outcome) {
+    switch (outcome) {
       // Успех: сессия поднята, гард уведёт; просто гасим прогресс.
-      SocialAuthSuccess() => state.copyWith(inProgress: null),
+      case SocialAuthSuccess():
+        // Трекаем логин (issue #126). Метод — не PII.
+        ref.read(analyticsServiceProvider).track(
+              UserLoggedIn(method: provider.name),
+            );
+        state = state.copyWith(inProgress: null);
       // Отмена: тихо, без ошибки.
-      SocialAuthCancelled() => state.copyWith(inProgress: null),
+      case SocialAuthCancelled():
+        state = state.copyWith(inProgress: null);
       // Ошибка: показываем и гасим прогресс.
-      SocialAuthFailure(:final error) =>
-        state.copyWith(inProgress: null, error: error),
-    };
+      case SocialAuthFailure(:final error):
+        state = state.copyWith(inProgress: null, error: error);
+    }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/error/result.dart';
+import '../../../core/observability/analytics_event.dart';
+import '../../../core/observability/observability_providers.dart';
 import '../data/auth_repository_provider.dart';
 import 'auth_guest_state.dart';
 
@@ -26,9 +28,15 @@ class AuthGuestController extends _$AuthGuestController {
 
     final result = await ref.read(authRepositoryProvider).signInAsGuest();
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final error) => state.copyWith(isLoading: false, error: error),
-    };
+    switch (result) {
+      case Success():
+        // Трекаем гостевой вход (issue #126).
+        ref
+            .read(analyticsServiceProvider)
+            .track(const UserLoggedIn(method: 'guest'));
+        state = state.copyWith(isLoading: false);
+      case Failure(:final error):
+        state = state.copyWith(isLoading: false, error: error);
+    }
   }
 }

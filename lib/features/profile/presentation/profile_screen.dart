@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/observability/analytics_event.dart';
+import '../../../core/observability/observability_providers.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/data/auth_repository_provider.dart';
@@ -45,6 +47,8 @@ class ProfileScreen extends ConsumerWidget {
       ),
     );
     if (confirmed != true) return;
+    // Трекаем выход до signOut (после — провайдеры могут диспоузнуться).
+    ref.read(analyticsServiceProvider).track(const UserLoggedOut());
     await ref.read(authRepositoryProvider).signOut();
   }
 
