@@ -146,7 +146,8 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                     ref.read(speciesQueryProvider.notifier).setQuery(name),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+              // Запас под плавающую навигацию (как на home_screen).
+              const SliverToBoxAdapter(child: SizedBox(height: 120)),
             ],
           ),
         ),
@@ -243,13 +244,13 @@ class _DiseaseCatalogBody extends ConsumerWidget {
                 color: c.primary,
                 child: listState.when(
                   loading: () => ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(22, 4, 22, 24),
+                    padding: const EdgeInsets.fromLTRB(22, 4, 22, 120),
                     itemCount: 6,
                     separatorBuilder: (_, _) => const SizedBox(height: 10),
                     itemBuilder: (_, _) => const _DiseaseTileSkeleton(),
                   ),
                   error: (error, _) => ListView(
-                    padding: const EdgeInsets.fromLTRB(22, 24, 22, 24),
+                    padding: const EdgeInsets.fromLTRB(22, 24, 22, 120),
                     children: [
                       ErrorState(
                         message: l10n.messageForError(error),
@@ -261,14 +262,14 @@ class _DiseaseCatalogBody extends ConsumerWidget {
                   data: (diseases) {
                     if (diseases.isEmpty) {
                       return ListView(
-                        padding: const EdgeInsets.fromLTRB(22, 24, 22, 24),
+                        padding: const EdgeInsets.fromLTRB(22, 24, 22, 120),
                         children: [
                           DiseaseEmpty(title: l10n.diseaseCatalogEmpty),
                         ],
                       );
                     }
                     return ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(22, 4, 22, 24),
+                      padding: const EdgeInsets.fromLTRB(22, 4, 22, 120),
                       itemCount: diseases.length,
                       separatorBuilder: (_, _) => const SizedBox(height: 10),
                       itemBuilder: (context, index) {

@@ -1120,6 +1120,10 @@
       }
     }
   },
+  "catalogLoadMore": "Загружаем ещё…",
+  "@catalogLoadMore": {
+    "description": "Подпись рядом со спиннером дозагрузки следующей страницы списка каталога"
+  },
   "catalogLoadMoreError": "Не удалось загрузить ещё",
   "@catalogLoadMoreError": {
     "description": "Текст компактной плашки ошибки дозагрузки страницы списка"

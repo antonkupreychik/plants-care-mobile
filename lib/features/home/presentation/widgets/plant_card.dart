@@ -54,18 +54,33 @@ class PlantCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (plant.speciesName != null)
-                Text(
-                  plant.speciesName!.toUpperCase(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.7,
-                    color: c.inkSoft,
+              // Верхний ряд: слева — вид (overline), справа — индикатор «полить»
+              // (капля). Так капля не зажимает имя, как в эталоне дизайна
+              // (PLANT GRID, top row = space-between: species ↔ drop badge).
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: plant.speciesName != null
+                        ? Text(
+                            plant.speciesName!.toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.7,
+                              color: c.inkSoft,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
-                ),
+                  if (onWater != null) ...[
+                    const SizedBox(width: 4),
+                    _WaterButton(onTap: onWater!),
+                  ],
+                ],
+              ),
               const SizedBox(height: 2),
               Row(
                 children: [
@@ -79,10 +94,6 @@ class PlantCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   HealthRing(plantId: plant.id),
-                  if (onWater != null) ...[
-                    const SizedBox(width: 4),
-                    _WaterButton(onTap: onWater!),
-                  ],
                 ],
               ),
               const SizedBox(height: 8),

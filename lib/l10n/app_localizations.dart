@@ -1444,6 +1444,12 @@ abstract class AppLocalizations {
   /// **'Попробуйте изменить запрос «{query}»'**
   String catalogSearchEmptyHint(String query);
 
+  /// Подпись рядом со спиннером дозагрузки следующей страницы списка каталога
+  ///
+  /// In ru, this message translates to:
+  /// **'Загружаем ещё…'**
+  String get catalogLoadMore;
+
   /// Текст компактной плашки ошибки дозагрузки страницы списка
   ///
   /// In ru, this message translates to:
