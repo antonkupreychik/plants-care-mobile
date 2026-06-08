@@ -933,6 +933,9 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get catalogLoadMore => 'Загружаем ещё…';
+
+  @override
   String get catalogLoadMoreError => 'Не удалось загрузить ещё';
 
   @override
