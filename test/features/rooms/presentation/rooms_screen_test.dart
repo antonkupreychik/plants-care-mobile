@@ -18,7 +18,8 @@ import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 class _MockRoomsRepo extends Mock implements RoomsRepository {}
 
-const _kitchen = GardenLocation(id: 1, name: 'Кухня', isDefault: true);
+const _kitchen =
+    GardenLocation(id: 1, name: 'Кухня', isDefault: true, isActive: true);
 const _balcony = GardenLocation(id: 2, name: 'Балкон', isDefault: false);
 
 Future<T> _pending<T>() => Completer<T>().future;
@@ -120,5 +121,18 @@ void main() {
     // кнопка удаления скрыта). Считаем по иконкам действий.
     expect(find.byIcon(Icons.edit_outlined), findsNWidgets(2));
     expect(find.byIcon(Icons.delete_outline_rounded), findsOneWidget);
+  });
+
+  testWidgets('should_show_active_badge_only_on_active_location',
+      (tester) async {
+    when(repo.getLocations)
+        .thenAnswer((_) async => const Result.success([_kitchen, _balcony]));
+
+    await tester.pumpWidget(_wrap(repo));
+    await tester.pumpAndSettle();
+
+    // Бейдж «ОСНОВНОЙ» (uppercase) — только у активной локации (Кухня).
+    final l10n = _l10n(tester);
+    expect(find.text(l10n.roomsActiveBadge.toUpperCase()), findsOneWidget);
   });
 }

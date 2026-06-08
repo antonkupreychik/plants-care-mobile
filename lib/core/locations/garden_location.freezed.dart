@@ -15,7 +15,12 @@ T _$identity<T>(T value) => value;
 mixin _$GardenLocation {
 
  int get id; String get name;/// Является ли локация дефолтной у пользователя.
- bool get isDefault;/// Эмодзи-иконка локации (если задана).
+ bool get isDefault;/// Является ли локация текущей активной («основной») локацией
+/// пользователя (`users.active_location_id`). Источник мультидомности
+/// (issue #92 Part 2): отдельной сущности «дом» на backend нет, поэтому
+/// «основной дом» = активная локация. `@Default(false)` сохраняет
+/// обратную совместимость существующих конструкторов/тестов.
+ bool get isActive;/// Эмодзи-иконка локации (если задана).
  String? get emoji; DateTime? get createdAt;
 /// Create a copy of GardenLocation
 /// with the given fields replaced by the non-null parameter values.
@@ -27,16 +32,16 @@ $GardenLocationCopyWith<GardenLocation> get copyWith => _$GardenLocationCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GardenLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.isDefault, isDefault) || other.isDefault == isDefault)&&(identical(other.emoji, emoji) || other.emoji == emoji)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GardenLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.isDefault, isDefault) || other.isDefault == isDefault)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.emoji, emoji) || other.emoji == emoji)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,isDefault,emoji,createdAt);
+int get hashCode => Object.hash(runtimeType,id,name,isDefault,isActive,emoji,createdAt);
 
 @override
 String toString() {
-  return 'GardenLocation(id: $id, name: $name, isDefault: $isDefault, emoji: $emoji, createdAt: $createdAt)';
+  return 'GardenLocation(id: $id, name: $name, isDefault: $isDefault, isActive: $isActive, emoji: $emoji, createdAt: $createdAt)';
 }
 
 
@@ -47,7 +52,7 @@ abstract mixin class $GardenLocationCopyWith<$Res>  {
   factory $GardenLocationCopyWith(GardenLocation value, $Res Function(GardenLocation) _then) = _$GardenLocationCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, bool isDefault, String? emoji, DateTime? createdAt
+ int id, String name, bool isDefault, bool isActive, String? emoji, DateTime? createdAt
 });
 
 
@@ -64,11 +69,12 @@ class _$GardenLocationCopyWithImpl<$Res>
 
 /// Create a copy of GardenLocation
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? isDefault = null,Object? emoji = freezed,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? isDefault = null,Object? isActive = null,Object? emoji = freezed,Object? createdAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,isDefault: null == isDefault ? _self.isDefault : isDefault // ignore: cast_nullable_to_non_nullable
+as bool,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,emoji: freezed == emoji ? _self.emoji : emoji // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
@@ -156,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  bool isDefault,  String? emoji,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  bool isDefault,  bool isActive,  String? emoji,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GardenLocation() when $default != null:
-return $default(_that.id,_that.name,_that.isDefault,_that.emoji,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.isDefault,_that.isActive,_that.emoji,_that.createdAt);case _:
   return orElse();
 
 }
@@ -177,10 +183,10 @@ return $default(_that.id,_that.name,_that.isDefault,_that.emoji,_that.createdAt)
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  bool isDefault,  String? emoji,  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  bool isDefault,  bool isActive,  String? emoji,  DateTime? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _GardenLocation():
-return $default(_that.id,_that.name,_that.isDefault,_that.emoji,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.isDefault,_that.isActive,_that.emoji,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +203,10 @@ return $default(_that.id,_that.name,_that.isDefault,_that.emoji,_that.createdAt)
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  bool isDefault,  String? emoji,  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  bool isDefault,  bool isActive,  String? emoji,  DateTime? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _GardenLocation() when $default != null:
-return $default(_that.id,_that.name,_that.isDefault,_that.emoji,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.isDefault,_that.isActive,_that.emoji,_that.createdAt);case _:
   return null;
 
 }
@@ -212,13 +218,19 @@ return $default(_that.id,_that.name,_that.isDefault,_that.emoji,_that.createdAt)
 
 
 class _GardenLocation implements GardenLocation {
-  const _GardenLocation({required this.id, required this.name, required this.isDefault, this.emoji, this.createdAt});
+  const _GardenLocation({required this.id, required this.name, required this.isDefault, this.isActive = false, this.emoji, this.createdAt});
   
 
 @override final  int id;
 @override final  String name;
 /// Является ли локация дефолтной у пользователя.
 @override final  bool isDefault;
+/// Является ли локация текущей активной («основной») локацией
+/// пользователя (`users.active_location_id`). Источник мультидомности
+/// (issue #92 Part 2): отдельной сущности «дом» на backend нет, поэтому
+/// «основной дом» = активная локация. `@Default(false)` сохраняет
+/// обратную совместимость существующих конструкторов/тестов.
+@override@JsonKey() final  bool isActive;
 /// Эмодзи-иконка локации (если задана).
 @override final  String? emoji;
 @override final  DateTime? createdAt;
@@ -233,16 +245,16 @@ _$GardenLocationCopyWith<_GardenLocation> get copyWith => __$GardenLocationCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GardenLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.isDefault, isDefault) || other.isDefault == isDefault)&&(identical(other.emoji, emoji) || other.emoji == emoji)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GardenLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.isDefault, isDefault) || other.isDefault == isDefault)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.emoji, emoji) || other.emoji == emoji)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,isDefault,emoji,createdAt);
+int get hashCode => Object.hash(runtimeType,id,name,isDefault,isActive,emoji,createdAt);
 
 @override
 String toString() {
-  return 'GardenLocation(id: $id, name: $name, isDefault: $isDefault, emoji: $emoji, createdAt: $createdAt)';
+  return 'GardenLocation(id: $id, name: $name, isDefault: $isDefault, isActive: $isActive, emoji: $emoji, createdAt: $createdAt)';
 }
 
 
@@ -253,7 +265,7 @@ abstract mixin class _$GardenLocationCopyWith<$Res> implements $GardenLocationCo
   factory _$GardenLocationCopyWith(_GardenLocation value, $Res Function(_GardenLocation) _then) = __$GardenLocationCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, bool isDefault, String? emoji, DateTime? createdAt
+ int id, String name, bool isDefault, bool isActive, String? emoji, DateTime? createdAt
 });
 
 
@@ -270,11 +282,12 @@ class __$GardenLocationCopyWithImpl<$Res>
 
 /// Create a copy of GardenLocation
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? isDefault = null,Object? emoji = freezed,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? isDefault = null,Object? isActive = null,Object? emoji = freezed,Object? createdAt = freezed,}) {
   return _then(_GardenLocation(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,isDefault: null == isDefault ? _self.isDefault : isDefault // ignore: cast_nullable_to_non_nullable
+as bool,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,emoji: freezed == emoji ? _self.emoji : emoji // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,

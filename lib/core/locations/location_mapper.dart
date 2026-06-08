@@ -9,6 +9,7 @@ extension LocationDtoMapper on LocationDto {
         id: id,
         name: name,
         isDefault: defaultLocation,
+        isActive: isActive,
         emoji: emoji,
         createdAt: createdAt,
       );
