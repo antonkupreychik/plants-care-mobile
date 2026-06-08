@@ -215,7 +215,7 @@ class _DiseaseCatalogBody extends ConsumerWidget {
             // Шапка с заголовком
             Padding(
               padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
-              child: const _DiseasesHeader(),
+              child: _DiseasesHeader(count: listState.value?.length),
             ),
             // Переключатель Растения / Болезни
             Padding(
@@ -292,32 +292,48 @@ class _DiseaseCatalogBody extends ConsumerWidget {
   }
 }
 
-/// Шапка вкладки «Болезни»: серифный заголовок с акцентом.
+/// Шапка вкладки «Болезни»: серифный заголовок с акцентом и счётчик болезней
+/// под ним (по образцу [_CatalogHeader] вкладки «Растения»).
 class _DiseasesHeader extends StatelessWidget {
-  const _DiseasesHeader();
+  const _DiseasesHeader({this.count});
+
+  /// Число болезней в справочнике; null пока список не загружен.
+  final int? count;
 
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
 
-    return Text.rich(
-      TextSpan(
-        children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text.rich(
           TextSpan(
-            text: l10n.catalogHeadingLead,
-            style: AppTheme.serif(fontSize: 38, color: c.ink),
+            children: [
+              TextSpan(
+                text: l10n.catalogHeadingLead,
+                style: AppTheme.serif(fontSize: 38, color: c.ink),
+              ),
+              TextSpan(
+                text: l10n.catalogTabDiseases.toLowerCase(),
+                style: AppTheme.serif(
+                  fontSize: 38,
+                  color: c.primary,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
           ),
-          TextSpan(
-            text: l10n.catalogTabDiseases.toLowerCase(),
-            style: AppTheme.serif(
-              fontSize: 38,
-              color: c.primary,
-              fontStyle: FontStyle.italic,
-            ),
+        ),
+        if (count != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            l10n.diseaseCatalogCount(count!),
+            style: TextStyle(fontSize: 13, color: c.inkSoft),
           ),
         ],
-      ),
+      ],
     );
   }
 }

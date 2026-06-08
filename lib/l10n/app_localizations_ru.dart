@@ -821,6 +821,20 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String diseaseCatalogCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count болезни',
+      many: '$count болезней',
+      few: '$count болезни',
+      one: '$count болезнь',
+      zero: 'Нет болезней',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String addPlantStepIndicator(int current, int total) {
     return 'Шаг $current из $total';
   }
