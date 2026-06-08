@@ -1,0 +1,193 @@
+name: CD
+
+# CD-пайплайн: сборка релиза → Play internal testing / TestFlight по тегу v*.*.*.
+#
+# Запуск: git tag v1.0.0 && git push origin v1.0.0
+# Версионирование: version: X.Y.Z+N в pubspec.yaml
+#   - X.Y.Z (versionName) = human-readable версия из тега (без 'v')
+#   - N (versionCode/build number) = GITHUB_RUN_NUMBER (монотонно растёт)
+#
+# Необходимые GitHub Secrets (Settings → Secrets → Actions):
+#   Android:
+#     KEYSTORE_BASE64           — base64(release.jks)
+#     KEYSTORE_PASSWORD         — storePassword
+#     KEY_ALIAS                 — keyAlias
+#     KEY_PASSWORD              — keyPassword
+#     GOOGLE_PLAY_JSON_KEY      — JSON сервисного аккаунта Play Console
+#   iOS (macOS runner):
+#     APPLE_CERTIFICATE_BASE64  — base64(distribution.p12)
+#     APPLE_CERTIFICATE_PASSWORD
+#     PROVISIONING_PROFILE_BASE64 — base64(AppStore.mobileprovision)
+#     MATCH_KEYCHAIN_PASSWORD   — пароль login keychain на раннере
+#     APPLE_ID
+#     APPLE_TEAM_ID
+#     APP_STORE_CONNECT_TEAM_ID
+#     APP_STORE_CONNECT_API_KEY_ID
+#     APP_STORE_CONNECT_API_ISSUER
+#     APP_STORE_CONNECT_API_KEY_P8 — base64(.p8)
+#   Общее:
+#     API_URL                   — боевой API URL
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: false   # не отменяем: уже стартовавший релиз завершаем
+
+env:
+  FLUTTER_VERSION: '3.44.0'
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Обновление pubspec.yaml: versionName = тег, versionCode = GITHUB_RUN_NUMBER
+  # ─────────────────────────────────────────────
+  bump-version:
+    name: Bump version in pubspec.yaml
+    runs-on: ubuntu-latest
+    outputs:
+      version_name: ${{ steps.parse.outputs.version_name }}
+      version_code: ${{ steps.parse.outputs.version_code }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse tag and set build number
+        id: parse
+        run: |
+          VERSION_NAME="${GITHUB_REF_NAME#v}"
+          VERSION_CODE="${{ github.run_number }}"
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "version_code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "Tag: v$VERSION_NAME, build number: $VERSION_CODE"
+
+      - name: Update pubspec.yaml version
+        run: |
+          VERSION_NAME="${{ steps.parse.outputs.version_name }}"
+          VERSION_CODE="${{ steps.parse.outputs.version_code }}"
+          sed -i "s/^version: .*/version: ${VERSION_NAME}+${VERSION_CODE}/" pubspec.yaml
+          grep "^version:" pubspec.yaml
+
+      - name: Upload patched pubspec.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: pubspec-versioned
+          path: pubspec.yaml
+          retention-days: 1
+
+  # ─────────────────────────────────────────────
+  # Android: сборка AAB → Play internal testing
+  # ─────────────────────────────────────────────
+  deploy-android:
+    name: Deploy Android → Play Internal Testing
+    needs: bump-version
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply versioned pubspec.yaml
+        uses: actions/download-artifact@v4
+        with:
+          name: pubspec-versioned
+          path: .
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test --exclude-tags=integration
+
+      # Восстанавливаем keystore из GitHub Secret (base64)
+      - name: Restore Android keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/release.jks
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=../android/release.jks
+          EOF
+
+      - name: Build release AAB
+        env:
+          API_URL: ${{ secrets.API_URL }}
+        run: |
+          flutter build appbundle --release \
+            --dart-define API_URL="$API_URL" \
+            --build-name="${{ needs.bump-version.outputs.version_name }}" \
+            --build-number="${{ needs.bump-version.outputs.version_code }}"
+
+      - name: Setup Ruby for fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Deploy to Play Store internal testing
+        env:
+          GOOGLE_PLAY_JSON_KEY: ${{ secrets.GOOGLE_PLAY_JSON_KEY }}
+        run: bundle exec fastlane android playstore
+
+      - name: Clean up keystore
+        if: always()
+        run: rm -f android/release.jks android/key.properties
+
+  # ─────────────────────────────────────────────
+  # iOS: сборка IPA → TestFlight
+  # ─────────────────────────────────────────────
+  deploy-ios:
+    name: Deploy iOS → TestFlight
+    needs: bump-version
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply versioned pubspec.yaml
+        uses: actions/download-artifact@v4
+        with:
+          name: pubspec-versioned
+          path: .
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Setup Ruby for fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Deploy to TestFlight
+        env:
+          APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+          MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APP_STORE_CONNECT_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER: ${{ secrets.APP_STORE_CONNECT_API_ISSUER }}
+          APP_STORE_CONNECT_API_KEY_P8: ${{ secrets.APP_STORE_CONNECT_API_KEY_P8 }}
+          API_URL: ${{ secrets.API_URL }}
+        run: bundle exec fastlane ios testflight

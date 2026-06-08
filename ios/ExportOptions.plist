@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  ExportOptions.plist — параметры экспорта IPA для TestFlight / App Store.
+
+  Перед использованием убедитесь, что значения ниже соответствуют вашему Apple Developer аккаунту:
+    - teamID: 10-символьный Team ID (https://developer.apple.com/account → Membership).
+    - provisioningProfiles: bundle ID → имя Provisioning Profile из Apple Developer Portal.
+    - method: app-store (TestFlight + App Store), ad-hoc, enterprise или development.
+
+  В CI эти значения должны быть согласованы с секретами сертификата/PP, передаваемыми через
+  GitHub Secrets (см. .github/workflows/cd.yml и fastlane/Fastfile).
+-->
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>app-store</string>
+
+    <key>teamID</key>
+    <string>XXXXXXXXXX</string>
+
+    <key>uploadBitcode</key>
+    <false/>
+
+    <key>compileBitcode</key>
+    <false/>
+
+    <key>uploadSymbols</key>
+    <true/>
+
+    <key>signingStyle</key>
+    <string>manual</string>
+
+    <key>signingCertificate</key>
+    <string>Apple Distribution</string>
+
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.plantcare.plantcareMobile</key>
+        <string>PlantCare AppStore Distribution</string>
+    </dict>
+
+    <key>destination</key>
+    <string>export</string>
+</dict>
+</plist>
