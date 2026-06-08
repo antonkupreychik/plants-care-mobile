@@ -1978,6 +1978,12 @@ abstract class AppLocalizations {
   /// **'По умолчанию'**
   String get roomsDefaultBadge;
 
+  /// Бейдж на активной (основной) локации/доме — мультидомность
+  ///
+  /// In ru, this message translates to:
+  /// **'Основной'**
+  String get roomsActiveBadge;
+
   /// Подпись кнопки добавления комнаты (FAB / пустое состояние)
   ///
   /// In ru, this message translates to:

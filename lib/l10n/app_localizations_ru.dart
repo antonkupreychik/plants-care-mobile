@@ -1249,6 +1249,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get roomsDefaultBadge => 'По умолчанию';
 
   @override
+  String get roomsActiveBadge => 'Основной';
+
+  @override
   String get roomsAdd => 'Добавить комнату';
 
   @override

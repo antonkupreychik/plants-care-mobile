@@ -10,7 +10,7 @@ void main() {
         id: 8,
         name: 'Спальня',
         defaultLocation: true,
-        isActive: false,
+        isActive: true,
         emoji: '🛏️',
         createdAt: created,
       );
@@ -20,6 +20,7 @@ void main() {
       expect(loc.id, 8);
       expect(loc.name, 'Спальня');
       expect(loc.isDefault, isTrue);
+      expect(loc.isActive, isTrue);
       expect(loc.emoji, '🛏️');
       expect(loc.createdAt, created);
     });
@@ -37,6 +38,7 @@ void main() {
       expect(loc.id, 1);
       expect(loc.name, 'Балкон');
       expect(loc.isDefault, isFalse);
+      expect(loc.isActive, isFalse);
       expect(loc.emoji, isNull);
       expect(loc.createdAt, isNull);
     });
