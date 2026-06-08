@@ -136,6 +136,17 @@ tags:
       Пользовательские шаблоны растений (issue #254): сохранение набора интервалов
       ухода из существующего растения, быстрое создание нового растения по шаблону.
       Максимум 30 шаблонов на пользователя.
+  - name: Photos
+    description: |
+      Хранилище фото в S3-совместимом бакете (issue #90, Slice A): загрузка
+      (multipart), выдача через presigned URL (302 redirect) и soft-delete.
+      Все эндпоинты требуют bearer-токен.
+  - name: PhotoProgress
+    description: |
+      Фото-дневник развития растения (issue #253): загрузка снимков прогресса
+      (multipart в S3), история с датами и presigned URL, сравнение двух
+      снимков «до/после» и частота напоминаний о фото. REST поверх
+      `PhotoProgressService`; растение должно принадлежать пользователю.
   - name: UI
     description: |
       Server-Driven UI (MADR-015): backend отдаёт декларативный лейаут экрана
@@ -193,6 +204,12 @@ paths:
     $ref: './resources/schedules.yaml#/paths/Item'
   /api/v1/plants/{id}/schedules/{type}/postpone:
     $ref: './resources/schedules.yaml#/paths/ItemPostpone'
+  /api/v1/plants/{id}/photo-progress:
+    $ref: './resources/plant-photo-progress.yaml#/paths/Collection'
+  /api/v1/plants/{id}/photo-progress/compare:
+    $ref: './resources/plant-photo-progress.yaml#/paths/Compare'
+  /api/v1/plants/{id}/photo-progress/frequency:
+    $ref: './resources/plant-photo-progress.yaml#/paths/Frequency'
 
   /api/v1/plant-templates:
     $ref: './resources/plant-templates.yaml#/paths/Collection'
@@ -294,6 +311,11 @@ paths:
 
   /api/v1/sync:
     $ref: './resources/sync.yaml#/paths/Collection'
+
+  /api/v1/photos:
+    $ref: './resources/photos.yaml#/paths/Collection'
+  /api/v1/photos/{id}:
+    $ref: './resources/photos.yaml#/paths/Item'
 
   /api/v1/ui/{screen}:
     $ref: './resources/ui.yaml#/paths/Screen'
@@ -534,6 +556,22 @@ components:
       $ref: './resources/plant-templates.yaml#/schemas/PlantTemplateCreateRequest'
     PlantTemplateInstantiateRequest:
       $ref: './resources/plant-templates.yaml#/schemas/PlantTemplateInstantiateRequest'
+
+    PhotoUploadResponse:
+      $ref: './resources/photos.yaml#/schemas/PhotoUploadResponse'
+
+    PhotoProgressFrequencyValue:
+      $ref: './resources/plant-photo-progress.yaml#/schemas/PhotoProgressFrequencyValue'
+    PhotoProgressItemDto:
+      $ref: './resources/plant-photo-progress.yaml#/schemas/PhotoProgressItemDto'
+    PhotoProgressHistoryResponse:
+      $ref: './resources/plant-photo-progress.yaml#/schemas/PhotoProgressHistoryResponse'
+    PhotoProgressCompareResponse:
+      $ref: './resources/plant-photo-progress.yaml#/schemas/PhotoProgressCompareResponse'
+    PhotoProgressFrequencyRequest:
+      $ref: './resources/plant-photo-progress.yaml#/schemas/PhotoProgressFrequencyRequest'
+    PhotoProgressFrequencyResponse:
+      $ref: './resources/plant-photo-progress.yaml#/schemas/PhotoProgressFrequencyResponse'
 
     ScreenLayout:
       $ref: './resources/ui.yaml#/schemas/ScreenLayout'

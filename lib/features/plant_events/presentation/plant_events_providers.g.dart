@@ -69,7 +69,7 @@ final class PlantEventsControllerProvider
 }
 
 String _$plantEventsControllerHash() =>
-    r'8cdbb00042dedc16e84ae0d2afbaa3f3fbf14cb2';
+    r'd933f8b13dbccf2e1a549dbc6830f00355ee2d98';
 
 /// Контроллер ленты событий с накоплением страниц.
 ///
