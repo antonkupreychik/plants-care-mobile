@@ -3788,5 +3788,173 @@
   "editProfileEditButton": "Редактировать",
   "@editProfileEditButton": {
     "description": "Кнопка «Редактировать» в шапке профиля (перейти на экран редактирования)"
+  },
+
+  "plantTemplatesTitle": "Шаблоны растений",
+  "@plantTemplatesTitle": {
+    "description": "Серифный заголовок экрана шаблонов растений"
+  },
+
+  "plantTemplatesOverline": "МОИ ШАБЛОНЫ",
+  "@plantTemplatesOverline": {
+    "description": "Надзаголовок-капс в шапке экрана шаблонов"
+  },
+
+  "plantTemplatesBack": "Назад",
+  "@plantTemplatesBack": {
+    "description": "Семантика кнопки возврата на экране шаблонов"
+  },
+
+  "plantTemplatesCount": "{count, plural, =0{Нет шаблонов} one{{count} шаблон} few{{count} шаблона} many{{count} шаблонов} other{{count} шаблона}}",
+  "@plantTemplatesCount": {
+    "description": "Количество шаблонов под заголовком",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "plantTemplatesEmptyTitle": "Шаблонов пока нет",
+  "@plantTemplatesEmptyTitle": {
+    "description": "Заголовок пустого состояния списка шаблонов"
+  },
+
+  "plantTemplatesEmptyHint": "Сохраните растение как шаблон, чтобы быстро добавлять похожие",
+  "@plantTemplatesEmptyHint": {
+    "description": "Подсказка в пустом состоянии списка шаблонов"
+  },
+
+  "plantTemplatesAdd": "Новый шаблон",
+  "@plantTemplatesAdd": {
+    "description": "Кнопка создания нового шаблона"
+  },
+
+  "plantTemplatesCreateSheetTitle": "Создать шаблон",
+  "@plantTemplatesCreateSheetTitle": {
+    "description": "Заголовок sheet'а создания шаблона"
+  },
+
+  "plantTemplatesCreateNameLabel": "Название шаблона",
+  "@plantTemplatesCreateNameLabel": {
+    "description": "Метка поля имени при создании шаблона"
+  },
+
+  "plantTemplatesCreateNameHint": "Например: Суккулент базовый",
+  "@plantTemplatesCreateNameHint": {
+    "description": "Подсказка в поле имени шаблона"
+  },
+
+  "plantTemplatesCreateAction": "Создать",
+  "@plantTemplatesCreateAction": {
+    "description": "Кнопка подтверждения создания шаблона"
+  },
+
+  "plantTemplatesDeleteConfirmTitle": "Удалить шаблон?",
+  "@plantTemplatesDeleteConfirmTitle": {
+    "description": "Заголовок диалога подтверждения удаления шаблона"
+  },
+
+  "plantTemplatesDeleteConfirmMessage": "Шаблон «{name}» будет удалён. Растения, созданные из него, не изменятся.",
+  "@plantTemplatesDeleteConfirmMessage": {
+    "description": "Текст диалога удаления шаблона",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "plantTemplatesDeleteConfirmCancel": "Отмена",
+  "@plantTemplatesDeleteConfirmCancel": {
+    "description": "Кнопка отмены удаления шаблона"
+  },
+
+  "plantTemplatesDeleteConfirmDelete": "Удалить",
+  "@plantTemplatesDeleteConfirmDelete": {
+    "description": "Кнопка подтверждения удаления шаблона"
+  },
+
+  "plantTemplatesDeleted": "Шаблон удалён",
+  "@plantTemplatesDeleted": {
+    "description": "SnackBar после успешного удаления шаблона"
+  },
+
+  "plantTemplatesInstantiateSheetTitle": "Новое растение из шаблона",
+  "@plantTemplatesInstantiateSheetTitle": {
+    "description": "Заголовок sheet'а инстанцирования шаблона"
+  },
+
+  "plantTemplatesInstantiateNameLabel": "Имя растения",
+  "@plantTemplatesInstantiateNameLabel": {
+    "description": "Метка поля имени растения при инстанцировании"
+  },
+
+  "plantTemplatesInstantiateNameHint": "Например: Монстера",
+  "@plantTemplatesInstantiateNameHint": {
+    "description": "Подсказка в поле имени нового растения"
+  },
+
+  "plantTemplatesInstantiateAction": "Создать растение",
+  "@plantTemplatesInstantiateAction": {
+    "description": "Кнопка создания растения из шаблона"
+  },
+
+  "plantTemplatesInstantiateSuccess": "Растение «{name}» создано",
+  "@plantTemplatesInstantiateSuccess": {
+    "description": "SnackBar после успешного создания растения из шаблона",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "plantTemplatesCareRule": "{careType} — каждые {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дней}}",
+  "@plantTemplatesCareRule": {
+    "description": "Строка правила ухода в карточке шаблона",
+    "placeholders": {
+      "careType": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+
+  "plantTemplatesSaveFromPlant": "Сохранить как шаблон",
+  "@plantTemplatesSaveFromPlant": {
+    "description": "Кнопка/действие сохранения текущего растения как шаблона (с карточки растения)"
+  },
+
+  "plantTemplatesActionInstantiate": "Создать растение",
+  "@plantTemplatesActionInstantiate": {
+    "description": "Действие инстанцирования шаблона в списке"
+  },
+
+  "plantTemplatesActionDelete": "Удалить шаблон",
+  "@plantTemplatesActionDelete": {
+    "description": "Действие удаления шаблона в списке"
+  },
+
+  "plantTemplatesCareTypeWatering": "Полив",
+  "@plantTemplatesCareTypeWatering": {
+    "description": "Локализованное название типа ухода: полив"
+  },
+
+  "plantTemplatesCareTypeMisting": "Опрыскивание",
+  "@plantTemplatesCareTypeMisting": {
+    "description": "Локализованное название типа ухода: опрыскивание"
+  },
+
+  "plantTemplatesCareTypeFertilizing": "Удобрение",
+  "@plantTemplatesCareTypeFertilizing": {
+    "description": "Локализованное название типа ухода: удобрение"
+  },
+
+  "plantTemplatesCareTypeSoilCheck": "Проверка почвы",
+  "@plantTemplatesCareTypeSoilCheck": {
+    "description": "Локализованное название типа ухода: проверка почвы"
   }
 }

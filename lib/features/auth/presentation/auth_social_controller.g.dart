@@ -75,7 +75,7 @@ final class AuthSocialControllerProvider
 }
 
 String _$authSocialControllerHash() =>
-    r'824a87e414ed27b82ecfb8d5ce24ae6017d6b90e';
+    r'691dd8ed6571fc32b7cb4df478d7ca13ea9975f5';
 
 /// Контроллер кнопок социального входа (Google / Apple).
 ///

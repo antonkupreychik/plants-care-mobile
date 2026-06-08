@@ -4917,6 +4917,180 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Редактировать'**
   String get editProfileEditButton;
+
+  /// Серифный заголовок экрана шаблонов растений
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблоны растений'**
+  String get plantTemplatesTitle;
+
+  /// Надзаголовок-капс в шапке экрана шаблонов
+  ///
+  /// In ru, this message translates to:
+  /// **'МОИ ШАБЛОНЫ'**
+  String get plantTemplatesOverline;
+
+  /// Семантика кнопки возврата на экране шаблонов
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get plantTemplatesBack;
+
+  /// Количество шаблонов под заголовком
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{Нет шаблонов} one{{count} шаблон} few{{count} шаблона} many{{count} шаблонов} other{{count} шаблона}}'**
+  String plantTemplatesCount(int count);
+
+  /// Заголовок пустого состояния списка шаблонов
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблонов пока нет'**
+  String get plantTemplatesEmptyTitle;
+
+  /// Подсказка в пустом состоянии списка шаблонов
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохраните растение как шаблон, чтобы быстро добавлять похожие'**
+  String get plantTemplatesEmptyHint;
+
+  /// Кнопка создания нового шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Новый шаблон'**
+  String get plantTemplatesAdd;
+
+  /// Заголовок sheet'а создания шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Создать шаблон'**
+  String get plantTemplatesCreateSheetTitle;
+
+  /// Метка поля имени при создании шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Название шаблона'**
+  String get plantTemplatesCreateNameLabel;
+
+  /// Подсказка в поле имени шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Суккулент базовый'**
+  String get plantTemplatesCreateNameHint;
+
+  /// Кнопка подтверждения создания шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Создать'**
+  String get plantTemplatesCreateAction;
+
+  /// Заголовок диалога подтверждения удаления шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить шаблон?'**
+  String get plantTemplatesDeleteConfirmTitle;
+
+  /// Текст диалога удаления шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблон «{name}» будет удалён. Растения, созданные из него, не изменятся.'**
+  String plantTemplatesDeleteConfirmMessage(String name);
+
+  /// Кнопка отмены удаления шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get plantTemplatesDeleteConfirmCancel;
+
+  /// Кнопка подтверждения удаления шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get plantTemplatesDeleteConfirmDelete;
+
+  /// SnackBar после успешного удаления шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблон удалён'**
+  String get plantTemplatesDeleted;
+
+  /// Заголовок sheet'а инстанцирования шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Новое растение из шаблона'**
+  String get plantTemplatesInstantiateSheetTitle;
+
+  /// Метка поля имени растения при инстанцировании
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя растения'**
+  String get plantTemplatesInstantiateNameLabel;
+
+  /// Подсказка в поле имени нового растения
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Монстера'**
+  String get plantTemplatesInstantiateNameHint;
+
+  /// Кнопка создания растения из шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Создать растение'**
+  String get plantTemplatesInstantiateAction;
+
+  /// SnackBar после успешного создания растения из шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'Растение «{name}» создано'**
+  String plantTemplatesInstantiateSuccess(String name);
+
+  /// Строка правила ухода в карточке шаблона
+  ///
+  /// In ru, this message translates to:
+  /// **'{careType} — каждые {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дней}}'**
+  String plantTemplatesCareRule(String careType, int days);
+
+  /// Кнопка/действие сохранения текущего растения как шаблона (с карточки растения)
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить как шаблон'**
+  String get plantTemplatesSaveFromPlant;
+
+  /// Действие инстанцирования шаблона в списке
+  ///
+  /// In ru, this message translates to:
+  /// **'Создать растение'**
+  String get plantTemplatesActionInstantiate;
+
+  /// Действие удаления шаблона в списке
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить шаблон'**
+  String get plantTemplatesActionDelete;
+
+  /// Локализованное название типа ухода: полив
+  ///
+  /// In ru, this message translates to:
+  /// **'Полив'**
+  String get plantTemplatesCareTypeWatering;
+
+  /// Локализованное название типа ухода: опрыскивание
+  ///
+  /// In ru, this message translates to:
+  /// **'Опрыскивание'**
+  String get plantTemplatesCareTypeMisting;
+
+  /// Локализованное название типа ухода: удобрение
+  ///
+  /// In ru, this message translates to:
+  /// **'Удобрение'**
+  String get plantTemplatesCareTypeFertilizing;
+
+  /// Локализованное название типа ухода: проверка почвы
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверка почвы'**
+  String get plantTemplatesCareTypeSoilCheck;
 }
 
 class _AppLocalizationsDelegate

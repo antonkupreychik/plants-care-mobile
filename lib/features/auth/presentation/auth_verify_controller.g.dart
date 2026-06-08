@@ -78,7 +78,7 @@ final class AuthVerifyControllerProvider
 }
 
 String _$authVerifyControllerHash() =>
-    r'257606af2433d113008024139f436dab8057c7d5';
+    r'6d74bb7e08ae358891c915377912f25516769632';
 
 /// Контроллер экрана проверки magic-link токена (deep link `/auth/verify`).
 /// Family по [token] (значение из query-параметра ссылки).
