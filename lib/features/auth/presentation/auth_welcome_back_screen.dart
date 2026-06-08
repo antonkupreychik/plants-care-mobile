@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/presentation/plant_illustration.dart';
+import '../../profile/domain/profile_summary.dart';
+import '../../profile/presentation/profile_summary_provider.dart';
 import 'widgets/auth_primary_button.dart';
 
-/// Экран 09 «С возвращением» — финал превью-флоу входа (визуальная заглушка).
+/// Экран 09 «С возвращением» — пост-логин celebration после Telegram-входа.
 ///
-/// Имя пользователя статично (`authWelcomeBackName`, заглушка). CTA «Добавить
-/// первое растение» закрывает auth-флоу и уходит в мастер (`context.go`,
-/// `/home/add`); вторичная ссылка «Я просто посмотрю» — на главную (`/home`).
-/// Оба — `go`, т.к. выходим из превью-стека обратно в приложение.
-class AuthWelcomeBackScreen extends StatelessWidget {
+/// Имя и аватар берутся из профиля (`GET /api/v1/me` через
+/// [profileSummaryProvider]). Деградация мягкая: пока грузится — запасное имя и
+/// initials-плейсхолдер, при ошибке — то же (вход не блокируем). CTA зависит от
+/// числа растений: есть растения → «В мой сад» (`/home`), нет → «Добавить первое
+/// растение» (`/home/add`); пока неизвестно — показываем «добавить» (онбординг
+/// нового входа). Оба — `context.go` (выходим из auth-стека в приложение).
+class AuthWelcomeBackScreen extends ConsumerWidget {
   const AuthWelcomeBackScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = Theme.of(context).extension<PcColors>()!;
     final l10n = AppLocalizations.of(context);
+    final summary = ref.watch(profileSummaryProvider);
+
+    final ProfileSummary? profile = summary.value;
+    // Имя: из профиля, иначе запасное (граница профиля недоступна → не блокируем).
+    final name = (profile?.name?.trim().isNotEmpty ?? false)
+        ? profile!.name!.trim()
+        : l10n.authWelcomeBackName;
+    // CTA: растения есть → в сад; нет/неизвестно → добавить первое.
+    final hasPlants = (profile?.plantsTotal ?? 0) > 0;
 
     return Scaffold(
       backgroundColor: c.bg,
@@ -30,7 +44,7 @@ class AuthWelcomeBackScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(28, 24, 28, 8),
                 children: [
-                  const _Avatar(),
+                  _Avatar(name: name, avatarUrl: profile?.avatar),
                   const SizedBox(height: 16),
                   Text(
                     l10n.authWelcomeBackOverline.toUpperCase(),
@@ -44,7 +58,7 @@ class AuthWelcomeBackScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    l10n.authWelcomeBackTitle(l10n.authWelcomeBackName),
+                    l10n.authWelcomeBackTitle(name),
                     textAlign: TextAlign.center,
                     style: AppTheme.serif(fontSize: 40, color: c.ink),
                   ),
@@ -73,9 +87,12 @@ class AuthWelcomeBackScreen extends StatelessWidget {
               child: Column(
                 children: [
                   AuthPrimaryButton(
-                    label: l10n.authAddFirstPlant,
-                    icon: Icons.add_rounded,
-                    onTap: () => context.go('/home/add'),
+                    label: hasPlants
+                        ? l10n.authGoToGarden
+                        : l10n.authAddFirstPlant,
+                    icon: hasPlants ? Icons.yard_outlined : Icons.add_rounded,
+                    onTap: () =>
+                        context.go(hasPlants ? '/home' : '/home/add'),
                   ),
                   const SizedBox(height: 8),
                   _GoHomeLink(label: l10n.authGoHome),
@@ -89,17 +106,19 @@ class AuthWelcomeBackScreen extends StatelessWidget {
   }
 }
 
-/// Аватар-плейсхолдер: кружок с инициалом + бейдж-галочка «привязано».
+/// Аватар: фото из профиля (если есть), иначе кружок с инициалом имени +
+/// бейдж-галочка «привязано». Сбой загрузки фото → initials-фолбэк.
 class _Avatar extends StatelessWidget {
-  const _Avatar();
+  const _Avatar({required this.name, this.avatarUrl});
+
+  final String name;
+  final String? avatarUrl;
 
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context).extension<PcColors>()!;
-    final l10n = AppLocalizations.of(context);
-    final initial = l10n.authWelcomeBackName.isNotEmpty
-        ? l10n.authWelcomeBackName.characters.first
-        : '?';
+    final initial =
+        name.trim().isNotEmpty ? name.characters.first.toUpperCase() : '?';
 
     return Center(
       child: SizedBox(
@@ -112,15 +131,21 @@ class _Avatar extends StatelessWidget {
               width: 92,
               height: 92,
               alignment: Alignment.center,
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 color: c.surface,
                 shape: BoxShape.circle,
                 border: Border.all(color: c.bg, width: 3),
               ),
-              child: Text(
-                initial,
-                style: AppTheme.serif(fontSize: 40, color: c.primary),
-              ),
+              child: (avatarUrl != null && avatarUrl!.isNotEmpty)
+                  ? Image.network(
+                      avatarUrl!,
+                      width: 92,
+                      height: 92,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => _Initial(initial: initial),
+                    )
+                  : _Initial(initial: initial),
             ),
             Positioned(
               right: 0,
@@ -138,6 +163,24 @@ class _Avatar extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Инициал имени в центре аватара (плейсхолдер без фото).
+class _Initial extends StatelessWidget {
+  const _Initial({required this.initial});
+
+  final String initial;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Center(
+      child: Text(
+        initial,
+        style: AppTheme.serif(fontSize: 40, color: c.primary),
       ),
     );
   }

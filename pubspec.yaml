@@ -27,6 +27,10 @@ dependencies:
   # plantcare://auth/verify?token=… и роутинг на /auth/verify.
   app_links: ^6.4.0
 
+  # Открытие внешних ссылок: deep link Telegram-бота при входе через Telegram
+  # (экран 08, issue #84) — `t.me/<bot>?start=auth_<sessionId>` в externalApplication.
+  url_launcher: ^6.3.1
+
   # Сеть (MADR-006).
   dio: ^5.9.2
   dio_smart_retry: ^7.0.1

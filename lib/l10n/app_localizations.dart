@@ -2338,6 +2338,60 @@ abstract class AppLocalizations {
   /// **'@PlantCareBot'**
   String get authCodeBot;
 
+  /// Сплеш экрана 08, пока создаётся сессия и открывается бот
+  ///
+  /// In ru, this message translates to:
+  /// **'Открываем Telegram…'**
+  String get authTelegramStarting;
+
+  /// Текст ошибки старта входа через Telegram (start не удался)
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось начать вход. Проверьте соединение и попробуйте снова.'**
+  String get authTelegramStartError;
+
+  /// Кнопка повтора старта входа через Telegram после ошибки
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробовать снова'**
+  String get authTelegramStartRetry;
+
+  /// Индикатор проверки введённого кода на экране 08
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверяем код…'**
+  String get authTelegramVerifying;
+
+  /// Подсказка под кодом: как получить код, если бот не открылся автоматически
+  ///
+  /// In ru, this message translates to:
+  /// **'Не открылся Telegram? Откройте чат с ботом вручную и пришлите команду, чтобы получить код.'**
+  String get authTelegramOpenBotHint;
+
+  /// Инлайн-ошибка: код не совпал (invalid_code)
+  ///
+  /// In ru, this message translates to:
+  /// **'Неверный код. Проверьте цифры из чата с ботом.'**
+  String get authTelegramErrorInvalidCode;
+
+  /// Инлайн-ошибка: сессия входа истекла (session_expired)
+  ///
+  /// In ru, this message translates to:
+  /// **'Время сессии истекло. Запросите новый код.'**
+  String get authTelegramErrorSessionExpired;
+
+  /// Инлайн-ошибка: превышен лимит попыток (too_many_attempts)
+  ///
+  /// In ru, this message translates to:
+  /// **'Слишком много попыток. Запросите новый код.'**
+  String get authTelegramErrorTooManyAttempts;
+
+  /// Сообщение при telegram_user_not_found — возврат на Welcome
+  ///
+  /// In ru, this message translates to:
+  /// **'Аккаунта с этим Telegram нет. Сначала зарегистрируйтесь в боте, затем войдите.'**
+  String get authTelegramUserNotFound;
+
   /// Текст обратного отсчёта до повторной отправки кода (mm:ss)
   ///
   /// In ru, this message translates to:
@@ -2374,10 +2428,10 @@ abstract class AppLocalizations {
   /// **'Аккаунт привязан · Telegram'**
   String get authWelcomeBackOverline;
 
-  /// Имя пользователя на экране приветствия (статичная заглушка превью-флоу)
+  /// Запасное имя на экране 09, когда профиль без имени недоступен
   ///
   /// In ru, this message translates to:
-  /// **'Алина'**
+  /// **'Садовод'**
   String get authWelcomeBackName;
 
   /// Приветственный заголовок экрана 09 с именем пользователя
@@ -2415,6 +2469,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Добавить первое растение'**
   String get authAddFirstPlant;
+
+  /// Основная кнопка экрана 09, когда у пользователя уже есть растения: уйти в сад
+  ///
+  /// In ru, this message translates to:
+  /// **'В мой сад'**
+  String get authGoToGarden;
 
   /// Вторичная ссылка экрана 09: уйти на главную без добавления растения
   ///

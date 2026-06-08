@@ -87,6 +87,13 @@ class AuthWelcomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 22),
                   AuthSocialButton(
+                    label: l10n.authContinueTelegram,
+                    icon: Icons.send_rounded,
+                    accent: true,
+                    onTap: isBusy ? null : () => context.push('/auth/code'),
+                  ),
+                  const SizedBox(height: 10),
+                  AuthSocialButton(
                     label: l10n.authContinueGoogle,
                     icon: Icons.account_circle_outlined,
                     loading: socialState.inProgress == SocialProvider.google,
@@ -111,7 +118,6 @@ class AuthWelcomeScreen extends ConsumerWidget {
                   AuthSocialButton(
                     label: l10n.authEmailTitle,
                     icon: Icons.mail_outline_rounded,
-                    accent: true,
                     onTap: isBusy ? null : () => context.push('/auth/email'),
                   ),
                   const SizedBox(height: 6),

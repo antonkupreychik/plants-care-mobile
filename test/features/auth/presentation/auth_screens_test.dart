@@ -4,16 +4,22 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:plantcare_mobile/core/error/api_error.dart';
+import 'package:plantcare_mobile/core/error/result.dart';
+import 'package:plantcare_mobile/core/platform/link_launcher.dart';
 import 'package:plantcare_mobile/core/theme/app_theme.dart';
 import 'package:plantcare_mobile/features/auth/data/auth_repository_provider.dart';
 import 'package:plantcare_mobile/features/auth/domain/auth_repository.dart';
 import 'package:plantcare_mobile/features/auth/domain/social_auth_outcome.dart';
-import 'package:plantcare_mobile/features/auth/presentation/auth_code_screen.dart';
+import 'package:plantcare_mobile/features/auth/domain/telegram_login.dart';
+import 'package:plantcare_mobile/features/auth/presentation/auth_telegram_screen.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_welcome_back_screen.dart';
 import 'package:plantcare_mobile/features/auth/presentation/auth_welcome_screen.dart';
 import 'package:plantcare_mobile/features/auth/presentation/widgets/auth_keypad.dart';
 import 'package:plantcare_mobile/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:plantcare_mobile/features/auth/presentation/widgets/auth_social_button.dart';
+import 'package:plantcare_mobile/features/profile/domain/profile_summary.dart';
+import 'package:plantcare_mobile/features/profile/presentation/profile_summary_provider.dart';
 import 'package:plantcare_mobile/l10n/app_localizations.dart';
 
 /// Монтирует [child] на корневом маршруте через настоящий GoRouter — экраны
@@ -21,6 +27,16 @@ import 'package:plantcare_mobile/l10n/app_localizations.dart';
 /// Заглушки-маршруты `/auth/email`, `/auth/code`, `/auth/welcome-back`,
 /// `/home`, `/home/add` дают навигации куда уходить, не падая.
 class _MockAuthRepo extends Mock implements AuthRepository {}
+
+/// Fake launcher: не бьётся в платформенный канал, фиксирует открытые ссылки.
+class _FakeLinkLauncher implements LinkLauncher {
+  final List<String> opened = [];
+  @override
+  Future<bool> open(String url) async {
+    opened.add(url);
+    return true;
+  }
+}
 
 Future<void> _pump(
   WidgetTester tester,
@@ -92,14 +108,23 @@ void main() {
       when(authRepo.signInWithGoogle)
           .thenAnswer((_) async => const SocialAuthCancelled());
 
+      // Высокий вьюпорт + ensureVisible: welcome — длинный ListView, Google-
+      // кнопка ниже Telegram-CTA и иллюстрации, может быть за кадром.
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       await _pump(
         tester,
         const AuthWelcomeScreen(),
         overrides: [authRepositoryProvider.overrideWithValue(authRepo)],
       );
       final l10n = _l10n(tester, AuthWelcomeScreen);
-      await tester.tap(
-          find.widgetWithText(AuthSocialButton, l10n.authContinueGoogle));
+      final googleCta =
+          find.widgetWithText(AuthSocialButton, l10n.authContinueGoogle);
+      await tester.ensureVisible(googleCta);
+      await tester.tap(googleCta);
       await tester.pump();
 
       // Google-кнопка запускает реальный соц-вход (не coming-soon).
@@ -130,11 +155,7 @@ void main() {
     });
   });
 
-  group('AuthCodeScreen (08)', () {
-    // ВНИМАНИЕ: экран держит активный Timer.periodic — pumpAndSettle зависнет.
-    // Используем точечный pump(). Перед завершением теста уводим экран на
-    // другой маршрут (context.go), чтобы AutoDispose-контроллер отменил таймер.
-
+  group('AuthTelegramScreen (08)', () {
     /// Тапает цифры на клавиатуре. Ищем текст цифры именно внутри [AuthKeypad]
     /// (в ячейках кода те же цифры тоже появляются — отделяем по поддереву).
     Future<void> enterDigits(
@@ -150,21 +171,69 @@ void main() {
       }
     }
 
-    /// Размонтирует экран, чтобы AutoDispose отменил Timer.periodic и тест не
-    /// упал с «Timer still pending».
+    const session = TelegramStartSession(
+      sessionId: 's-1',
+      deepLink: 'https://t.me/PlantCareBot?start=auth_s-1',
+      codeLength: 6,
+      resendAfterSec: 60,
+    );
+
+    /// Монтирует экран 08 с замоканным repo (start → success) и fake-лаунчером.
+    /// Возвращает (repo, launcher) для проверок.
+    Future<(_MockAuthRepo, _FakeLinkLauncher)> pumpTelegram(
+      WidgetTester tester, {
+      TelegramVerifyOutcome? verifyOutcome,
+      Result<TelegramStartSession>? startResult,
+    }) async {
+      final repo = _MockAuthRepo();
+      final launcher = _FakeLinkLauncher();
+      when(repo.startTelegramLogin).thenAnswer(
+        (_) async => startResult ?? const Result.success(session),
+      );
+      when(() => repo.verifyTelegramLogin(
+            sessionId: any(named: 'sessionId'),
+            code: any(named: 'code'),
+          )).thenAnswer(
+        (_) async => verifyOutcome ?? const TelegramVerifyOutcome.success(),
+      );
+      await _pump(
+        tester,
+        const AuthTelegramScreen(),
+        overrides: [
+          authRepositoryProvider.overrideWithValue(repo),
+          linkLauncherProvider.overrideWithValue(launcher),
+        ],
+      );
+      // Прокрутить microtask (_start) + первый кадр фазы ввода.
+      await tester.pump();
+      await tester.pump();
+      return (repo, launcher);
+    }
+
+    /// Размонтирует экран, чтобы AutoDispose отменил Timer.periodic ресенда.
     Future<void> disposeScreen(WidgetTester tester) async {
-      final ctx = tester.element(find.byType(AuthCodeScreen));
+      final ctx = tester.element(find.byType(AuthTelegramScreen));
       GoRouter.of(ctx).go('/home');
       await tester.pump();
       await tester.pump();
     }
 
+    testWidgets('should_open_deep_link_and_show_code_entry_after_start',
+        (tester) async {
+      final (_, launcher) = await pumpTelegram(tester);
+
+      // Бот открыт по deep link, видна клавиатура ввода кода.
+      expect(launcher.opened, contains(session.deepLink));
+      expect(find.byType(AuthKeypad), findsOneWidget);
+
+      await disposeScreen(tester);
+    });
+
     testWidgets('should_fill_cells_as_digits_are_entered', (tester) async {
-      await _pump(tester, const AuthCodeScreen());
+      await pumpTelegram(tester);
 
       await enterDigits(tester, const ['1', '2', '3']);
 
-      // Введённые цифры отрисованы в ячейках кода.
       expect(find.text('1'), findsWidgets);
       expect(find.text('2'), findsWidgets);
       expect(find.text('3'), findsWidgets);
@@ -172,93 +241,133 @@ void main() {
       await disposeScreen(tester);
     });
 
-    testWidgets('should_keep_continue_disabled_until_six_digits',
+    testWidgets('should_auto_verify_and_go_welcome_back_on_full_code',
         (tester) async {
-      await _pump(tester, const AuthCodeScreen());
+      final (repo, _) = await pumpTelegram(tester);
 
-      // До шести цифр CTA «Продолжить» disabled.
-      await enterDigits(tester, const ['1', '2', '3', '4', '5']);
-      var btn = tester.widget<AuthPrimaryButton>(
-        find.byType(AuthPrimaryButton),
-      );
-      expect(btn.enabled, isFalse);
-
-      // Шестая цифра → CTA активна.
-      await enterDigits(tester, const ['6']);
-      btn = tester.widget<AuthPrimaryButton>(find.byType(AuthPrimaryButton));
-      expect(btn.enabled, isTrue);
-
-      await disposeScreen(tester);
-    });
-
-    testWidgets('should_remove_digit_when_backspace_tapped', (tester) async {
-      await _pump(tester, const AuthCodeScreen());
       await enterDigits(tester, const ['1', '2', '3', '4', '5', '6']);
-      expect(
-        tester.widget<AuthPrimaryButton>(find.byType(AuthPrimaryButton)).enabled,
-        isTrue,
-      );
-
-      await tester.tap(
-        find.descendant(
-          of: find.byType(AuthKeypad),
-          matching: find.byIcon(Icons.backspace_outlined),
-        ),
-      );
-      await tester.pump();
-
-      // Удалили одну цифру → снова неполный код, CTA disabled.
-      expect(
-        tester.widget<AuthPrimaryButton>(find.byType(AuthPrimaryButton)).enabled,
-        isFalse,
-      );
-
-      await disposeScreen(tester);
-    });
-
-    testWidgets('should_navigate_to_welcome_back_when_continue_tapped_full_code',
-        (tester) async {
-      await _pump(tester, const AuthCodeScreen());
-      await enterDigits(tester, const ['1', '2', '3', '4', '5', '6']);
-
-      await tester.tap(find.byType(AuthPrimaryButton));
+      // Авто-верификация по шестой цифре + переход на экран 09.
       await tester.pump();
       await tester.pump();
 
-      // CTA «Продолжить» (push) открыла заглушку приветствия поверх стека.
+      verify(() => repo.verifyTelegramLogin(sessionId: 's-1', code: '123456'))
+          .called(1);
       expect(find.text('welcome-back-route'), findsOneWidget);
+    });
 
-      // Уводим стек на /home (go), чтобы AutoDispose отменил Timer.periodic
-      // экрана кода — иначе «Timer still pending» в конце теста.
-      final ctx = tester.element(find.text('welcome-back-route'));
-      GoRouter.of(ctx).go('/home');
+    testWidgets('should_show_inline_error_and_clear_code_on_invalid_code',
+        (tester) async {
+      await pumpTelegram(
+        tester,
+        verifyOutcome: const TelegramVerifyOutcome.invalidCode(),
+      );
+
+      await enterDigits(tester, const ['1', '2', '3', '4', '5', '6']);
       await tester.pump();
-      // Дать route-анимации завершиться (без pumpAndSettle — таймер ещё жив до
-      // размонтирования экрана кода).
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.byType(AuthCodeScreen), findsNothing);
-      expect(find.text('home-route'), findsOneWidget);
+      await tester.pump();
+
+      final l10n = _l10n(tester, AuthTelegramScreen);
+      expect(find.text(l10n.authTelegramErrorInvalidCode), findsOneWidget);
+      // Остаёмся на экране 08 (не ушли на welcome-back).
+      expect(find.text('welcome-back-route'), findsNothing);
+
+      await disposeScreen(tester);
+    });
+
+    testWidgets('should_show_retry_when_start_fails', (tester) async {
+      await pumpTelegram(
+        tester,
+        startResult: const Result.failure(ApiError.network()),
+      );
+
+      final l10n = _l10n(tester, AuthTelegramScreen);
+      expect(
+        find.widgetWithText(
+            AuthPrimaryButton, l10n.authTelegramStartRetry),
+        findsOneWidget,
+      );
     });
   });
 
   group('AuthWelcomeBackScreen (09)', () {
-    testWidgets('should_render_greeting_and_add_first_plant_cta',
+    ProfileSummary summary({String? name, int plantsTotal = 0}) =>
+        ProfileSummary(
+          name: name,
+          createdAt: DateTime.utc(2026, 1, 1),
+          plantsTotal: plantsTotal,
+        );
+
+    testWidgets('should_render_profile_name_and_add_first_plant_cta_when_empty',
         (tester) async {
-      await _pump(tester, const AuthWelcomeBackScreen());
+      await _pump(
+        tester,
+        const AuthWelcomeBackScreen(),
+        overrides: [
+          profileSummaryProvider
+              .overrideWith((ref) async => summary(name: 'Анна')),
+        ],
+      );
+      await tester.pump();
       final l10n = _l10n(tester, AuthWelcomeBackScreen);
 
-      expect(
-        find.text(l10n.authWelcomeBackTitle(l10n.authWelcomeBackName)),
-        findsOneWidget,
-      );
+      // Имя из профиля попало в приветствие.
+      expect(find.text(l10n.authWelcomeBackTitle('Анна')), findsOneWidget);
+      // Без растений → CTA «Добавить первое растение».
       expect(
         find.widgetWithText(AuthPrimaryButton, l10n.authAddFirstPlant),
         findsOneWidget,
       );
     });
 
-    testWidgets('should_navigate_home_add_when_cta_tapped', (tester) async {
-      await _pump(tester, const AuthWelcomeBackScreen());
+    testWidgets('should_fall_back_to_default_name_when_profile_fails',
+        (tester) async {
+      await _pump(
+        tester,
+        const AuthWelcomeBackScreen(),
+        overrides: [
+          profileSummaryProvider
+              .overrideWith((ref) async => throw const ApiError.network()),
+        ],
+      );
+      await tester.pump();
+      final l10n = _l10n(tester, AuthWelcomeBackScreen);
+
+      // Профиль недоступен → запасное имя, вход не блокируется.
+      expect(
+        find.text(l10n.authWelcomeBackTitle(l10n.authWelcomeBackName)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('should_show_go_to_garden_cta_when_user_has_plants',
+        (tester) async {
+      await _pump(
+        tester,
+        const AuthWelcomeBackScreen(),
+        overrides: [
+          profileSummaryProvider
+              .overrideWith((ref) async => summary(plantsTotal: 3)),
+        ],
+      );
+      await tester.pump();
+      final l10n = _l10n(tester, AuthWelcomeBackScreen);
+
+      expect(
+        find.widgetWithText(AuthPrimaryButton, l10n.authGoToGarden),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('should_navigate_home_add_when_add_cta_tapped',
+        (tester) async {
+      await _pump(
+        tester,
+        const AuthWelcomeBackScreen(),
+        overrides: [
+          profileSummaryProvider.overrideWith((ref) async => summary()),
+        ],
+      );
+      await tester.pump();
       final l10n = _l10n(tester, AuthWelcomeBackScreen);
 
       await tester.tap(

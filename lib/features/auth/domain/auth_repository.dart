@@ -1,5 +1,6 @@
 import '../../../core/error/result.dart';
 import 'social_auth_outcome.dart';
+import 'telegram_login.dart';
 
 /// Контракт data-слоя авторизации по email magic-link (MADR-008).
 ///
@@ -73,4 +74,25 @@ abstract interface class AuthRepository {
   /// `POST /auth/guest/convert { provider: APPLE, idToken }`.
   /// По успеху поднимает новую сессию с обновлёнными токенами.
   Future<SocialAuthOutcome> convertGuestWithApple();
+
+  /// Начать вход через Telegram (`POST /auth/telegram/start`).
+  ///
+  /// Создаёт одноразовую сессию входа и возвращает [TelegramStartSession]
+  /// (`sessionId`, `deepLink` на бота, `codeLength`, `resendAfterSec`). Сессию
+  /// НЕ поднимает — это лишь старт. Публичный запрос (без bearer). При ошибке —
+  /// `Result.failure(ApiError)` (наружу не бросает).
+  Future<Result<TelegramStartSession>> startTelegramLogin();
+
+  /// Подтвердить код входа Telegram (`POST /auth/telegram/verify`).
+  ///
+  /// По [sessionId] (из [startTelegramLogin]) и введённому [code] обменивает их
+  /// на пару JWT и поднимает сессию. Доменно-значимые ветви backend
+  /// (`invalid_code`/`session_expired`/`too_many_attempts`/
+  /// `telegram_user_not_found`) возвращаются как [TelegramVerifyOutcome], не
+  /// бросаются. По [TelegramVerifySuccess] сессия уже поднята (router-guard
+  /// уведёт с экрана входа).
+  Future<TelegramVerifyOutcome> verifyTelegramLogin({
+    required String sessionId,
+    required String code,
+  });
 }
