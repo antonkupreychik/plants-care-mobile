@@ -236,31 +236,6 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String todayDoneTitle(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count выполнено сегодня',
-      many: '$count выполнено сегодня',
-      few: '$count выполнено сегодня',
-      one: '$count выполнено сегодня',
-      zero: 'Ничего не выполнено',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String todayDoneSubtitle(String plant, String action, String time) {
-    return '$plant · $action в $time';
-  }
-
-  @override
-  String get todayDoneExpand => 'Показать выполненные';
-
-  @override
-  String get todayDoneCollapse => 'Скрыть выполненные';
-
-  @override
   String careDonePast(String action, String time) {
     return '$action в $time';
   }

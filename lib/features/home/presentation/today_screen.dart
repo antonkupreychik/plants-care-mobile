@@ -15,7 +15,6 @@ import 'home_providers.dart';
 import 'today_filter.dart';
 import 'today_providers.dart';
 import 'today_view.dart';
-import 'widgets/today_done_section.dart';
 import 'widgets/today_filter_pills.dart';
 import 'widgets/today_progress_card.dart';
 import 'widgets/today_task_card.dart';
@@ -29,10 +28,11 @@ import 'widgets/today_task_card.dart';
 /// TODO(nav): позже Today переедет под таб «Расписание» (StatefulShellRoute) —
 /// сейчас это push-маршрут `/home/today`, реструктуризацию табов не делаем.
 ///
-/// Прогресс-карточка «X из N выполнено» и свёрнутая секция «Выполнено»
-/// питаются `TaskDto.doneAt` (backend gap G11 закрыт): выполненные задачи
-/// `/today` приходят с `doneAt != null` — `buildTodayView` отделяет их в
-/// `doneItems`. Иллюстрация по виду (G6) — `TaskDto.speciesName`.
+/// Прогресс-карточка «X из N выполнено» питается `TaskDto.doneAt` (backend
+/// gap G11 закрыт): выполненные задачи `/today` приходят с `doneAt != null` —
+/// `buildTodayView` считает их в `doneCount`, но из `groups` исключает, так что
+/// отмеченная задача сразу пропадает с экрана. Иллюстрация по виду (G6) —
+/// `TaskDto.speciesName`.
 /// Скрыто (BACKEND-GAPS, см. задача 03): voice line / mood растения (G2).
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
@@ -160,8 +160,7 @@ class _BackButton extends StatelessWidget {
   }
 }
 
-/// Контент data-состояния: шапка + прогресс + пилюли + секции (или empty) +
-/// свёрнутая секция «Выполнено».
+/// Контент data-состояния: шапка + прогресс + пилюли + секции (или empty).
 class _TodayContent extends StatelessWidget {
   const _TodayContent({
     required this.view,
@@ -205,16 +204,6 @@ class _TodayContent extends StatelessWidget {
           )
         else
           ..._sections(),
-        if (view.hasDone)
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            sliver: SliverToBoxAdapter(
-              child: TodayDoneSection(
-                items: view.doneItems,
-                onTaskTap: onTaskTap,
-              ),
-            ),
-          ),
         const SliverToBoxAdapter(child: SizedBox(height: 32)),
       ],
     );
