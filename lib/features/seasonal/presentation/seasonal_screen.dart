@@ -14,6 +14,10 @@ import '../domain/seasonal_settings.dart';
 import 'current_season_provider.dart';
 import 'seasonal_controller.dart';
 
+// API value constants — используем строковые значения из DTO (Season enum).
+const _kSummerApiValue = 'SUMMER';
+const _kWinterApiValue = 'WINTER';
+
 /// Экран 35 «Сезонные интервалы».
 ///
 /// Потребляет `seasonalControllerProvider` → `AsyncValue<SeasonalState>` и
@@ -181,6 +185,22 @@ class _DataBody extends ConsumerWidget {
         _SectionLabel(text: l10n.seasonalSeasonsSection),
         const SizedBox(height: 10),
         _SeasonsChart(current: season, dimmed: !settings.enabled),
+        const SizedBox(height: 24),
+        _SectionLabel(text: l10n.seasonalSettingsSection),
+        const SizedBox(height: 10),
+        _SeasonSettingsCard(
+          label: l10n.seasonalSummerLabel,
+          setting: settings.summer,
+          seasonApiValue: _kSummerApiValue,
+          saving: saving,
+        ),
+        const SizedBox(height: 10),
+        _SeasonSettingsCard(
+          label: l10n.seasonalWinterLabel,
+          setting: settings.winter,
+          seasonApiValue: _kWinterApiValue,
+          saving: saving,
+        ),
         const SizedBox(height: 16),
         const _NoteCard(),
         const SizedBox(height: 16),
@@ -558,6 +578,137 @@ class _SectionLabel extends StatelessWidget {
         fontWeight: FontWeight.w600,
         letterSpacing: 0.6,
         color: c.inkSoft,
+      ),
+    );
+  }
+}
+
+/// Карточка per-season настроек (множитель + фиксированный интервал + кнопка сброса).
+///
+/// Показывает текущий [multiplier] и [intervalDays] для одного сезона.
+/// Кнопка «Сбросить» вызывает `DELETE /me/seasonal/{season}` — сбрасывает
+/// [intervalDays] в `null` (возврат к базовому интервалу растения).
+/// Кнопка неактивна во время [saving].
+class _SeasonSettingsCard extends ConsumerWidget {
+  const _SeasonSettingsCard({
+    required this.label,
+    required this.setting,
+    required this.seasonApiValue,
+    required this.saving,
+  });
+
+  final String label;
+  final SeasonSetting? setting;
+  final String seasonApiValue;
+  final bool saving;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+
+    final multiplierText = setting != null
+        ? '×${setting!.multiplier.toStringAsFixed(2)}'
+        : '—';
+    final intervalText = setting?.intervalDays != null
+        ? l10n.seasonalIntervalDays(setting!.intervalDays!)
+        : l10n.seasonalIntervalNotSet;
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: c.line),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: c.ink,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    _InfoChip(
+                      label: l10n.seasonalMultiplierLabel,
+                      value: multiplierText,
+                    ),
+                    const SizedBox(width: 8),
+                    _InfoChip(
+                      label: l10n.seasonalIntervalLabel,
+                      value: intervalText,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          if (setting?.intervalDays != null)
+            Tooltip(
+              message: l10n.seasonalResetTooltip,
+              child: TextButton(
+                onPressed: saving
+                    ? null
+                    : () => ref
+                        .read(seasonalControllerProvider.notifier)
+                        .resetSeason(seasonApiValue),
+                child: Text(
+                  l10n.seasonalResetButton,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: saving ? c.inkSoft : c.primary,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Маленький инфо-чип «label: value» для карточки сезона.
+class _InfoChip extends StatelessWidget {
+  const _InfoChip({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: c.surfaceWarm,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: '$label: ',
+              style: TextStyle(fontSize: 11, color: c.inkSoft),
+            ),
+            TextSpan(
+              text: value,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: c.ink,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

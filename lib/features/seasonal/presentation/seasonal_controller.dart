@@ -8,17 +8,18 @@ import 'seasonal_state.dart';
 
 part 'seasonal_controller.g.dart';
 
-/// Контроллер экрана 35 «Сезонные интервалы». Не family (настройки текущего
-/// пользователя одни).
+/// Контроллер экрана 35 «Сезонные настройки» (/me/seasonal). Не family
+/// (настройки текущего пользователя одни).
 ///
 /// Контракт для UI:
 /// - провайдер `seasonalControllerProvider` → `AsyncValue<SeasonalState>`.
-/// - `build` грузит `GET /api/v1/me` → [SeasonalState] (`saving=false`). Ошибка
+/// - `build` грузит `GET /api/v1/me/seasonal` → [SeasonalState]. Ошибка
 ///   загрузки → `AsyncError(ApiError)` (UI: ErrorState + retry через
 ///   `ref.invalidate`).
 /// - [toggle] оптимистично меняет тумблер и PATCH'ит `seasonalEnabled`. По
 ///   успеху фиксирует серверное состояние; по ошибке откатывает `enabled` и
 ///   кладёт `saveError` (UI: снэкбар). No-op, если уже идёт сохранение.
+/// - [resetSeason] сбрасывает intervalDays сезона через DELETE.
 @riverpod
 class SeasonalController extends _$SeasonalController {
   @override
@@ -63,8 +64,31 @@ class SeasonalController extends _$SeasonalController {
     };
   }
 
-  /// Успех PATCH: серверное состояние становится подтверждённым. Возвращает
-  /// `null`.
+  /// Сбрасывает фиксированный интервал [seasonApiValue] сезона
+  /// (`DELETE /me/seasonal/{season}`). No-op если уже идёт сохранение.
+  /// Возвращает [ApiError] при неудаче, `null` при успехе.
+  Future<ApiError?> resetSeason(String seasonApiValue) async {
+    final current = state.value;
+    if (current == null || current.saving) return null;
+
+    final previous = current.settings;
+    state = AsyncData(
+      current.copyWith(saving: true, saveError: null),
+    );
+
+    final result = await ref
+        .read(seasonalSettingsRepositoryProvider)
+        .resetSeason(seasonApiValue: seasonApiValue);
+    if (!ref.mounted) return null;
+
+    return switch (result) {
+      Success(:final value) => _onSaved(value),
+      Failure(:final error) => _onSaveError(error, previous),
+    };
+  }
+
+  /// Успех PATCH/DELETE: серверное состояние становится подтверждённым.
+  /// Возвращает `null`.
   ApiError? _onSaved(SeasonalSettings value) {
     final latest = state.value;
     if (latest == null) return null;
@@ -74,7 +98,7 @@ class SeasonalController extends _$SeasonalController {
     return null;
   }
 
-  /// Ошибка PATCH: откат тумблера на [previous], кладём `saveError`.
+  /// Ошибка PATCH/DELETE: откат на [previous], кладём `saveError`.
   ApiError? _onSaveError(ApiError error, SeasonalSettings previous) {
     final latest = state.value;
     if (latest == null) return error;

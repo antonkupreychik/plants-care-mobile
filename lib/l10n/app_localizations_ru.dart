@@ -2498,6 +2498,36 @@ class AppLocalizationsRu extends AppLocalizations {
       'Точные интервалы по сезонам считаются для каждого растения индивидуально на основе его расписания ухода.';
 
   @override
+  String get seasonalSettingsSection => 'Коэффициенты по сезонам';
+
+  @override
+  String get seasonalSummerLabel => 'Лето ☀️';
+
+  @override
+  String get seasonalWinterLabel => 'Зима ❄️';
+
+  @override
+  String get seasonalMultiplierLabel => 'Множитель';
+
+  @override
+  String get seasonalIntervalLabel => 'Фикс. интервал';
+
+  @override
+  String seasonalIntervalDays(int days) {
+    return '$days дн.';
+  }
+
+  @override
+  String get seasonalIntervalNotSet => 'не задан';
+
+  @override
+  String get seasonalResetButton => 'Сбросить';
+
+  @override
+  String get seasonalResetTooltip =>
+      'Сбросить фиксированный интервал сезона к дефолту';
+
+  @override
   String get plantEventTypeTransplant => 'Пересадка';
 
   @override

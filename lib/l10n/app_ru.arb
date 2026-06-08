@@ -3128,6 +3128,45 @@
   "@seasonalNote": {
     "description": "Сноска про per-plant интервалы на экране 35"
   },
+  "seasonalSettingsSection": "Коэффициенты по сезонам",
+  "@seasonalSettingsSection": {
+    "description": "Заголовок секции per-season настроек на экране 35"
+  },
+  "seasonalSummerLabel": "Лето ☀️",
+  "@seasonalSummerLabel": {
+    "description": "Метка сезона Лето в карточке per-season настроек"
+  },
+  "seasonalWinterLabel": "Зима ❄️",
+  "@seasonalWinterLabel": {
+    "description": "Метка сезона Зима в карточке per-season настроек"
+  },
+  "seasonalMultiplierLabel": "Множитель",
+  "@seasonalMultiplierLabel": {
+    "description": "Метка поля множителя в карточке сезона (экран 35)"
+  },
+  "seasonalIntervalLabel": "Фикс. интервал",
+  "@seasonalIntervalLabel": {
+    "description": "Метка поля фиксированного интервала в карточке сезона (экран 35)"
+  },
+  "seasonalIntervalDays": "{days} дн.",
+  "@seasonalIntervalDays": {
+    "description": "Значение фиксированного интервала в днях",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "seasonalIntervalNotSet": "не задан",
+  "@seasonalIntervalNotSet": {
+    "description": "Значение когда фиксированный интервал не задан (null)"
+  },
+  "seasonalResetButton": "Сбросить",
+  "@seasonalResetButton": {
+    "description": "Кнопка сброса фиксированного интервала сезона"
+  },
+  "seasonalResetTooltip": "Сбросить фиксированный интервал сезона к дефолту",
+  "@seasonalResetTooltip": {
+    "description": "Tooltip кнопки сброса сезона (экран 35)"
+  },
   "plantEventTypeTransplant": "Пересадка",
   "@plantEventTypeTransplant": {
     "description": "Тип события журнала растения: пересадка (TRANSPLANT)"
