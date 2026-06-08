@@ -168,6 +168,10 @@ paths:
     $ref: './resources/auth.yaml#/paths/Logout'
   /api/v1/auth/logout-all:
     $ref: './resources/auth.yaml#/paths/LogoutAll'
+  /api/v1/auth/telegram/start:
+    $ref: './resources/auth.yaml#/paths/TelegramStart'
+  /api/v1/auth/telegram/verify:
+    $ref: './resources/auth.yaml#/paths/TelegramVerify'
   /api/v1/auth/guest:
     $ref: './resources/guest.yaml#/paths/GuestLogin'
   /api/v1/auth/guest/convert:
@@ -374,6 +378,12 @@ components:
       $ref: './resources/auth.yaml#/schemas/LogoutRequest'
     TokenPairResponse:
       $ref: './resources/auth.yaml#/schemas/TokenPairResponse'
+    TelegramStartRequest:
+      $ref: './resources/auth.yaml#/schemas/TelegramStartRequest'
+    TelegramStartResponse:
+      $ref: './resources/auth.yaml#/schemas/TelegramStartResponse'
+    TelegramVerifyRequest:
+      $ref: './resources/auth.yaml#/schemas/TelegramVerifyRequest'
     GuestLoginRequest:
       $ref: './resources/guest.yaml#/schemas/GuestLoginRequest'
     GuestLoginResponse:

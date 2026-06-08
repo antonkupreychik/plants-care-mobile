@@ -15,6 +15,9 @@ import '../models/guest_login_response.dart';
 import '../models/logout_request.dart';
 import '../models/magic_link_verify_request.dart';
 import '../models/refresh_request.dart';
+import '../models/telegram_start_request.dart';
+import '../models/telegram_start_response.dart';
+import '../models/telegram_verify_request.dart';
 import '../models/token_pair_response.dart';
 
 part 'auth_client.g.dart';
@@ -99,6 +102,42 @@ abstract class AuthClient {
   /// ротации старый refresh получит `401 TOKEN_REVOKED`.
   @POST('/api/v1/auth/logout-all')
   Future<void> logoutAll({
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Начать вход через Telegram-бота (issue.
+  ///
+  /// Создаёт одноразовую сессию входа и возвращает `deepLink` на Telegram-бота.
+  /// вида `t.me/<botUsername>?start=auth_<sessionId>`. Пользователь открывает.
+  /// ссылку, бот присылает короткий код, который затем подтверждается через.
+  /// `POST /api/v1/auth/telegram/verify`.
+  ///
+  /// Тело запроса опционально: `deviceId` сейчас игнорируется сервером, можно.
+  /// слать пустое тело или не слать его вовсе. Эндпоинт публичный (токена ещё нет).
+  /// Ограничен rate-limit'ом по IP.
+  @POST('/api/v1/auth/telegram/start')
+  Future<TelegramStartResponse> authTelegramStart({
+    @Body() TelegramStartRequest? body,
+    @Extras() Map<String, dynamic>? extras,
+  });
+
+  /// Подтвердить код входа через Telegram (issue.
+  ///
+  /// Принимает `sessionId` (из ответа `telegram/start`) и `code` (присланный.
+  /// ботом). При успехе выдаёт стандартную пару токенов `TokenPairResponse` —.
+  /// ту же, что и apple/google/refresh. `telegram_chat_id` сервер берёт из.
+  /// сессии и НЕ принимает от клиента.
+  ///
+  /// Коды ошибок в `error.code`:.
+  /// - `telegram_user_not_found` (404) — к Telegram-аккаунту не привязан пользователь;.
+  /// - `invalid_code` (401) — код не совпал;.
+  /// - `session_expired` (410) — сессия истекла или не существует;.
+  /// - `too_many_attempts` (429) — превышен лимит попыток, сессия погашена.
+  ///
+  /// Эндпоинт публичный (это точка получения токенов).
+  @POST('/api/v1/auth/telegram/verify')
+  Future<TokenPairResponse> authTelegramVerify({
+    @Body() required TelegramVerifyRequest body,
     @Extras() Map<String, dynamic>? extras,
   });
 

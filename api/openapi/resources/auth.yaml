@@ -112,6 +112,112 @@ paths:
         '401':
           $ref: '../_common/responses.yaml#/Unauthorized'
 
+  TelegramStart:
+    post:
+      tags: [Auth]
+      operationId: authTelegramStart
+      summary: Начать вход через Telegram-бота (issue #318)
+      description: |
+        Создаёт одноразовую сессию входа и возвращает `deepLink` на Telegram-бота
+        вида `t.me/<botUsername>?start=auth_<sessionId>`. Пользователь открывает
+        ссылку, бот присылает короткий код, который затем подтверждается через
+        `POST /api/v1/auth/telegram/verify`.
+
+        Тело запроса опционально: `deviceId` сейчас игнорируется сервером, можно
+        слать пустое тело или не слать его вовсе. Эндпоинт публичный (токена ещё нет).
+        Ограничен rate-limit'ом по IP.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/TelegramStartRequest'
+      responses:
+        '200':
+          description: Сессия входа создана.
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/TelegramStartResponse'
+        '400':
+          $ref: '../_common/responses.yaml#/BadRequest'
+        '429':
+          $ref: '../_common/responses.yaml#/TooManyRequests'
+
+  TelegramVerify:
+    post:
+      tags: [Auth]
+      operationId: authTelegramVerify
+      summary: Подтвердить код входа через Telegram (issue #318)
+      description: |
+        Принимает `sessionId` (из ответа `telegram/start`) и `code` (присланный
+        ботом). При успехе выдаёт стандартную пару токенов `TokenPairResponse` —
+        ту же, что и apple/google/refresh. `telegram_chat_id` сервер берёт из
+        сессии и НЕ принимает от клиента.
+
+        Коды ошибок в `error.code`:
+        - `telegram_user_not_found` (404) — к Telegram-аккаунту не привязан пользователь;
+        - `invalid_code` (401) — код не совпал;
+        - `session_expired` (410) — сессия истекла или не существует;
+        - `too_many_attempts` (429) — превышен лимит попыток, сессия погашена.
+
+        Эндпоинт публичный (это точка получения токенов).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/TelegramVerifyRequest'
+      responses:
+        '200':
+          description: Пара токенов выдана.
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/TokenPairResponse'
+        '400':
+          $ref: '../_common/responses.yaml#/BadRequest'
+        '401':
+          description: Код не совпал (`invalid_code`).
+          content:
+            application/json:
+              schema:
+                $ref: '../_common/errors.yaml#/schemas/ApiErrorResponse'
+              example:
+                error:
+                  code: invalid_code
+                  message: Verification code is invalid
+        '404':
+          description: К Telegram-аккаунту не привязан пользователь (`telegram_user_not_found`).
+          content:
+            application/json:
+              schema:
+                $ref: '../_common/errors.yaml#/schemas/ApiErrorResponse'
+              example:
+                error:
+                  code: telegram_user_not_found
+                  message: No user is linked to this Telegram account
+        '410':
+          description: Сессия входа истекла или не существует (`session_expired`).
+          content:
+            application/json:
+              schema:
+                $ref: '../_common/errors.yaml#/schemas/ApiErrorResponse'
+              example:
+                error:
+                  code: session_expired
+                  message: Login session expired or not found
+        '429':
+          description: Превышен лимит попыток подтверждения (`too_many_attempts`).
+          content:
+            application/json:
+              schema:
+                $ref: '../_common/errors.yaml#/schemas/ApiErrorResponse'
+              example:
+                error:
+                  code: too_many_attempts
+                  message: Too many verification attempts
+
   Refresh:
     post:
       tags: [Auth]
@@ -244,6 +350,56 @@ schemas:
         type: string
         minLength: 1
         description: Refresh-токен текущей сессии, который нужно отозвать.
+
+  TelegramStartRequest:
+    type: object
+    description: |
+      Тело POST /api/v1/auth/telegram/start. Опционально: `deviceId` сейчас
+      игнорируется сервером, тело можно не отправлять.
+    properties:
+      deviceId:
+        type: string
+        nullable: true
+        description: Идентификатор устройства. Пока игнорируется сервером.
+
+  TelegramStartResponse:
+    type: object
+    description: Ответ POST /api/v1/auth/telegram/start (issue #318).
+    required: [sessionId, deepLink, codeLength, resendAfterSec]
+    properties:
+      sessionId:
+        type: string
+        description: Идентификатор сессии входа. Передаётся обратно в telegram/verify.
+      deepLink:
+        type: string
+        description: |
+          Ссылка на Telegram-бота вида `t.me/<botUsername>?start=auth_<sessionId>`.
+        example: t.me/PlantsCareBot?start=auth_8f1c2b3a
+      codeLength:
+        type: integer
+        description: Длина кода подтверждения, который пришлёт бот.
+        example: 6
+      resendAfterSec:
+        type: integer
+        format: int64
+        description: Через сколько секунд можно повторно запросить код.
+        example: 60
+
+  TelegramVerifyRequest:
+    type: object
+    description: |
+      Тело POST /api/v1/auth/telegram/verify. `telegram_chat_id` сервер берёт из
+      сессии и НЕ принимает от клиента.
+    required: [sessionId, code]
+    properties:
+      sessionId:
+        type: string
+        minLength: 1
+        description: Идентификатор сессии входа из ответа telegram/start.
+      code:
+        type: string
+        minLength: 1
+        description: Код подтверждения, присланный ботом.
 
   TokenPairResponse:
     type: object
