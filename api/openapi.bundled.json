@@ -3960,6 +3960,18 @@
             "example": "home"
           },
           {
+            "name": "locationId",
+            "in": "query",
+            "required": false,
+            "description": "Необязательный серверный фильтр витрины по комнате (локации).\nПрименяется экранами, поддерживающими фильтр по комнате (`home`).\nОтсутствие параметра или `null` = «Все комнаты» (фильтр не\nприменяется). При заданном `locationId` динамические блоки\n(`location_chips.selectedLocationId`, `plant_grid`) гидрируются с\nучётом выбранной комнаты; пустая комната даёт контекстный пустой\nстейт `plant_grid` (см. словарь блоков, MADR-016), а не глобальный\n`empty_state`. Аддитивно и обратносовместимо: старые клиенты\nпараметр не шлют и получают прежнее поведение «Все комнаты».\n",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true,
+              "example": 1
+            }
+          },
+          {
             "name": "X-UI-Catalog-Version",
             "in": "header",
             "required": false,

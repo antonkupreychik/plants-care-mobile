@@ -137,14 +137,14 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)?  weatherStrip,TResult Function( int total,  int done,  int remaining,  int overdue)?  todaySummary,TResult Function( int completedCount,  int totalCount,  List<CareTask> tasks)?  todayTasks,TResult Function( List<GardenLocation> locations)?  locationChips,TResult Function( List<SduiPlantGridItem> plants)?  plantGrid,TResult Function( String titleKey,  String bodyKey,  SduiAction? ctaAction)?  guestBanner,TResult Function( String iconKey,  String titleKey,  String bodyKey,  SduiAction? ctaAction)?  emptyState,TResult Function()?  unknown,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)?  weatherStrip,TResult Function( int total,  int done,  int remaining,  int overdue)?  todaySummary,TResult Function( int completedCount,  int totalCount,  List<CareTask> tasks)?  todayTasks,TResult Function( List<SduiLocationChip> locations,  int? selectedLocationId,  int totalCount)?  locationChips,TResult Function( List<SduiPlantGridItem> plants,  String? emptyTitleKey,  String? emptyBodyKey)?  plantGrid,TResult Function( String titleKey,  String bodyKey,  SduiAction? ctaAction)?  guestBanner,TResult Function( String iconKey,  String titleKey,  String bodyKey,  SduiAction? ctaAction)?  emptyState,TResult Function()?  unknown,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SduiWeatherStripBlock() when weatherStrip != null:
 return weatherStrip(_that.available,_that.humidityPercent,_that.recommendation);case SduiTodaySummaryBlock() when todaySummary != null:
 return todaySummary(_that.total,_that.done,_that.remaining,_that.overdue);case SduiTodayTasksBlock() when todayTasks != null:
 return todayTasks(_that.completedCount,_that.totalCount,_that.tasks);case SduiLocationChipsBlock() when locationChips != null:
-return locationChips(_that.locations);case SduiPlantGridBlock() when plantGrid != null:
-return plantGrid(_that.plants);case SduiGuestBannerBlock() when guestBanner != null:
+return locationChips(_that.locations,_that.selectedLocationId,_that.totalCount);case SduiPlantGridBlock() when plantGrid != null:
+return plantGrid(_that.plants,_that.emptyTitleKey,_that.emptyBodyKey);case SduiGuestBannerBlock() when guestBanner != null:
 return guestBanner(_that.titleKey,_that.bodyKey,_that.ctaAction);case SduiEmptyStateBlock() when emptyState != null:
 return emptyState(_that.iconKey,_that.titleKey,_that.bodyKey,_that.ctaAction);case SduiUnknownBlock() when unknown != null:
 return unknown();case _:
@@ -165,14 +165,14 @@ return unknown();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)  weatherStrip,required TResult Function( int total,  int done,  int remaining,  int overdue)  todaySummary,required TResult Function( int completedCount,  int totalCount,  List<CareTask> tasks)  todayTasks,required TResult Function( List<GardenLocation> locations)  locationChips,required TResult Function( List<SduiPlantGridItem> plants)  plantGrid,required TResult Function( String titleKey,  String bodyKey,  SduiAction? ctaAction)  guestBanner,required TResult Function( String iconKey,  String titleKey,  String bodyKey,  SduiAction? ctaAction)  emptyState,required TResult Function()  unknown,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)  weatherStrip,required TResult Function( int total,  int done,  int remaining,  int overdue)  todaySummary,required TResult Function( int completedCount,  int totalCount,  List<CareTask> tasks)  todayTasks,required TResult Function( List<SduiLocationChip> locations,  int? selectedLocationId,  int totalCount)  locationChips,required TResult Function( List<SduiPlantGridItem> plants,  String? emptyTitleKey,  String? emptyBodyKey)  plantGrid,required TResult Function( String titleKey,  String bodyKey,  SduiAction? ctaAction)  guestBanner,required TResult Function( String iconKey,  String titleKey,  String bodyKey,  SduiAction? ctaAction)  emptyState,required TResult Function()  unknown,}) {final _that = this;
 switch (_that) {
 case SduiWeatherStripBlock():
 return weatherStrip(_that.available,_that.humidityPercent,_that.recommendation);case SduiTodaySummaryBlock():
 return todaySummary(_that.total,_that.done,_that.remaining,_that.overdue);case SduiTodayTasksBlock():
 return todayTasks(_that.completedCount,_that.totalCount,_that.tasks);case SduiLocationChipsBlock():
-return locationChips(_that.locations);case SduiPlantGridBlock():
-return plantGrid(_that.plants);case SduiGuestBannerBlock():
+return locationChips(_that.locations,_that.selectedLocationId,_that.totalCount);case SduiPlantGridBlock():
+return plantGrid(_that.plants,_that.emptyTitleKey,_that.emptyBodyKey);case SduiGuestBannerBlock():
 return guestBanner(_that.titleKey,_that.bodyKey,_that.ctaAction);case SduiEmptyStateBlock():
 return emptyState(_that.iconKey,_that.titleKey,_that.bodyKey,_that.ctaAction);case SduiUnknownBlock():
 return unknown();}
@@ -189,14 +189,14 @@ return unknown();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)?  weatherStrip,TResult? Function( int total,  int done,  int remaining,  int overdue)?  todaySummary,TResult? Function( int completedCount,  int totalCount,  List<CareTask> tasks)?  todayTasks,TResult? Function( List<GardenLocation> locations)?  locationChips,TResult? Function( List<SduiPlantGridItem> plants)?  plantGrid,TResult? Function( String titleKey,  String bodyKey,  SduiAction? ctaAction)?  guestBanner,TResult? Function( String iconKey,  String titleKey,  String bodyKey,  SduiAction? ctaAction)?  emptyState,TResult? Function()?  unknown,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool available,  int? humidityPercent,  WateringRecommendation? recommendation)?  weatherStrip,TResult? Function( int total,  int done,  int remaining,  int overdue)?  todaySummary,TResult? Function( int completedCount,  int totalCount,  List<CareTask> tasks)?  todayTasks,TResult? Function( List<SduiLocationChip> locations,  int? selectedLocationId,  int totalCount)?  locationChips,TResult? Function( List<SduiPlantGridItem> plants,  String? emptyTitleKey,  String? emptyBodyKey)?  plantGrid,TResult? Function( String titleKey,  String bodyKey,  SduiAction? ctaAction)?  guestBanner,TResult? Function( String iconKey,  String titleKey,  String bodyKey,  SduiAction? ctaAction)?  emptyState,TResult? Function()?  unknown,}) {final _that = this;
 switch (_that) {
 case SduiWeatherStripBlock() when weatherStrip != null:
 return weatherStrip(_that.available,_that.humidityPercent,_that.recommendation);case SduiTodaySummaryBlock() when todaySummary != null:
 return todaySummary(_that.total,_that.done,_that.remaining,_that.overdue);case SduiTodayTasksBlock() when todayTasks != null:
 return todayTasks(_that.completedCount,_that.totalCount,_that.tasks);case SduiLocationChipsBlock() when locationChips != null:
-return locationChips(_that.locations);case SduiPlantGridBlock() when plantGrid != null:
-return plantGrid(_that.plants);case SduiGuestBannerBlock() when guestBanner != null:
+return locationChips(_that.locations,_that.selectedLocationId,_that.totalCount);case SduiPlantGridBlock() when plantGrid != null:
+return plantGrid(_that.plants,_that.emptyTitleKey,_that.emptyBodyKey);case SduiGuestBannerBlock() when guestBanner != null:
 return guestBanner(_that.titleKey,_that.bodyKey,_that.ctaAction);case SduiEmptyStateBlock() when emptyState != null:
 return emptyState(_that.iconKey,_that.titleKey,_that.bodyKey,_that.ctaAction);case SduiUnknownBlock() when unknown != null:
 return unknown();case _:
@@ -429,16 +429,18 @@ as List<CareTask>,
 
 
 class SduiLocationChipsBlock implements SduiBlock {
-  const SduiLocationChipsBlock({required final  List<GardenLocation> locations}): _locations = locations;
+  const SduiLocationChipsBlock({required final  List<SduiLocationChip> locations, this.selectedLocationId, this.totalCount = 0}): _locations = locations;
   
 
- final  List<GardenLocation> _locations;
- List<GardenLocation> get locations {
+ final  List<SduiLocationChip> _locations;
+ List<SduiLocationChip> get locations {
   if (_locations is EqualUnmodifiableListView) return _locations;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_locations);
 }
 
+ final  int? selectedLocationId;
+@JsonKey() final  int totalCount;
 
 /// Create a copy of SduiBlock
 /// with the given fields replaced by the non-null parameter values.
@@ -450,16 +452,16 @@ $SduiLocationChipsBlockCopyWith<SduiLocationChipsBlock> get copyWith => _$SduiLo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SduiLocationChipsBlock&&const DeepCollectionEquality().equals(other._locations, _locations));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SduiLocationChipsBlock&&const DeepCollectionEquality().equals(other._locations, _locations)&&(identical(other.selectedLocationId, selectedLocationId) || other.selectedLocationId == selectedLocationId)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_locations));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_locations),selectedLocationId,totalCount);
 
 @override
 String toString() {
-  return 'SduiBlock.locationChips(locations: $locations)';
+  return 'SduiBlock.locationChips(locations: $locations, selectedLocationId: $selectedLocationId, totalCount: $totalCount)';
 }
 
 
@@ -470,7 +472,7 @@ abstract mixin class $SduiLocationChipsBlockCopyWith<$Res> implements $SduiBlock
   factory $SduiLocationChipsBlockCopyWith(SduiLocationChipsBlock value, $Res Function(SduiLocationChipsBlock) _then) = _$SduiLocationChipsBlockCopyWithImpl;
 @useResult
 $Res call({
- List<GardenLocation> locations
+ List<SduiLocationChip> locations, int? selectedLocationId, int totalCount
 });
 
 
@@ -487,10 +489,12 @@ class _$SduiLocationChipsBlockCopyWithImpl<$Res>
 
 /// Create a copy of SduiBlock
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? locations = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? locations = null,Object? selectedLocationId = freezed,Object? totalCount = null,}) {
   return _then(SduiLocationChipsBlock(
 locations: null == locations ? _self._locations : locations // ignore: cast_nullable_to_non_nullable
-as List<GardenLocation>,
+as List<SduiLocationChip>,selectedLocationId: freezed == selectedLocationId ? _self.selectedLocationId : selectedLocationId // ignore: cast_nullable_to_non_nullable
+as int?,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -501,7 +505,7 @@ as List<GardenLocation>,
 
 
 class SduiPlantGridBlock implements SduiBlock {
-  const SduiPlantGridBlock({required final  List<SduiPlantGridItem> plants}): _plants = plants;
+  const SduiPlantGridBlock({required final  List<SduiPlantGridItem> plants, this.emptyTitleKey, this.emptyBodyKey}): _plants = plants;
   
 
  final  List<SduiPlantGridItem> _plants;
@@ -511,6 +515,8 @@ class SduiPlantGridBlock implements SduiBlock {
   return EqualUnmodifiableListView(_plants);
 }
 
+ final  String? emptyTitleKey;
+ final  String? emptyBodyKey;
 
 /// Create a copy of SduiBlock
 /// with the given fields replaced by the non-null parameter values.
@@ -522,16 +528,16 @@ $SduiPlantGridBlockCopyWith<SduiPlantGridBlock> get copyWith => _$SduiPlantGridB
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SduiPlantGridBlock&&const DeepCollectionEquality().equals(other._plants, _plants));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SduiPlantGridBlock&&const DeepCollectionEquality().equals(other._plants, _plants)&&(identical(other.emptyTitleKey, emptyTitleKey) || other.emptyTitleKey == emptyTitleKey)&&(identical(other.emptyBodyKey, emptyBodyKey) || other.emptyBodyKey == emptyBodyKey));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_plants));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_plants),emptyTitleKey,emptyBodyKey);
 
 @override
 String toString() {
-  return 'SduiBlock.plantGrid(plants: $plants)';
+  return 'SduiBlock.plantGrid(plants: $plants, emptyTitleKey: $emptyTitleKey, emptyBodyKey: $emptyBodyKey)';
 }
 
 
@@ -542,7 +548,7 @@ abstract mixin class $SduiPlantGridBlockCopyWith<$Res> implements $SduiBlockCopy
   factory $SduiPlantGridBlockCopyWith(SduiPlantGridBlock value, $Res Function(SduiPlantGridBlock) _then) = _$SduiPlantGridBlockCopyWithImpl;
 @useResult
 $Res call({
- List<SduiPlantGridItem> plants
+ List<SduiPlantGridItem> plants, String? emptyTitleKey, String? emptyBodyKey
 });
 
 
@@ -559,10 +565,12 @@ class _$SduiPlantGridBlockCopyWithImpl<$Res>
 
 /// Create a copy of SduiBlock
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? plants = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? plants = null,Object? emptyTitleKey = freezed,Object? emptyBodyKey = freezed,}) {
   return _then(SduiPlantGridBlock(
 plants: null == plants ? _self._plants : plants // ignore: cast_nullable_to_non_nullable
-as List<SduiPlantGridItem>,
+as List<SduiPlantGridItem>,emptyTitleKey: freezed == emptyTitleKey ? _self.emptyTitleKey : emptyTitleKey // ignore: cast_nullable_to_non_nullable
+as String?,emptyBodyKey: freezed == emptyBodyKey ? _self.emptyBodyKey : emptyBodyKey // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -1080,6 +1088,284 @@ $SduiActionCopyWith<$Res>? get waterAction {
 
   return $SduiActionCopyWith<$Res>(_self.waterAction!, (value) {
     return _then(_self.copyWith(waterAction: value));
+  });
+}
+}
+
+/// @nodoc
+mixin _$SduiLocationChip {
+
+ GardenLocation get location; int get count;
+/// Create a copy of SduiLocationChip
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SduiLocationChipCopyWith<SduiLocationChip> get copyWith => _$SduiLocationChipCopyWithImpl<SduiLocationChip>(this as SduiLocationChip, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SduiLocationChip&&(identical(other.location, location) || other.location == location)&&(identical(other.count, count) || other.count == count));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,location,count);
+
+@override
+String toString() {
+  return 'SduiLocationChip(location: $location, count: $count)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SduiLocationChipCopyWith<$Res>  {
+  factory $SduiLocationChipCopyWith(SduiLocationChip value, $Res Function(SduiLocationChip) _then) = _$SduiLocationChipCopyWithImpl;
+@useResult
+$Res call({
+ GardenLocation location, int count
+});
+
+
+$GardenLocationCopyWith<$Res> get location;
+
+}
+/// @nodoc
+class _$SduiLocationChipCopyWithImpl<$Res>
+    implements $SduiLocationChipCopyWith<$Res> {
+  _$SduiLocationChipCopyWithImpl(this._self, this._then);
+
+  final SduiLocationChip _self;
+  final $Res Function(SduiLocationChip) _then;
+
+/// Create a copy of SduiLocationChip
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? location = null,Object? count = null,}) {
+  return _then(_self.copyWith(
+location: null == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as GardenLocation,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+/// Create a copy of SduiLocationChip
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$GardenLocationCopyWith<$Res> get location {
+  
+  return $GardenLocationCopyWith<$Res>(_self.location, (value) {
+    return _then(_self.copyWith(location: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [SduiLocationChip].
+extension SduiLocationChipPatterns on SduiLocationChip {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SduiLocationChip value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SduiLocationChip() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SduiLocationChip value)  $default,){
+final _that = this;
+switch (_that) {
+case _SduiLocationChip():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SduiLocationChip value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SduiLocationChip() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( GardenLocation location,  int count)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SduiLocationChip() when $default != null:
+return $default(_that.location,_that.count);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( GardenLocation location,  int count)  $default,) {final _that = this;
+switch (_that) {
+case _SduiLocationChip():
+return $default(_that.location,_that.count);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( GardenLocation location,  int count)?  $default,) {final _that = this;
+switch (_that) {
+case _SduiLocationChip() when $default != null:
+return $default(_that.location,_that.count);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _SduiLocationChip implements SduiLocationChip {
+  const _SduiLocationChip({required this.location, this.count = 0});
+  
+
+@override final  GardenLocation location;
+@override@JsonKey() final  int count;
+
+/// Create a copy of SduiLocationChip
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SduiLocationChipCopyWith<_SduiLocationChip> get copyWith => __$SduiLocationChipCopyWithImpl<_SduiLocationChip>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SduiLocationChip&&(identical(other.location, location) || other.location == location)&&(identical(other.count, count) || other.count == count));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,location,count);
+
+@override
+String toString() {
+  return 'SduiLocationChip(location: $location, count: $count)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SduiLocationChipCopyWith<$Res> implements $SduiLocationChipCopyWith<$Res> {
+  factory _$SduiLocationChipCopyWith(_SduiLocationChip value, $Res Function(_SduiLocationChip) _then) = __$SduiLocationChipCopyWithImpl;
+@override @useResult
+$Res call({
+ GardenLocation location, int count
+});
+
+
+@override $GardenLocationCopyWith<$Res> get location;
+
+}
+/// @nodoc
+class __$SduiLocationChipCopyWithImpl<$Res>
+    implements _$SduiLocationChipCopyWith<$Res> {
+  __$SduiLocationChipCopyWithImpl(this._self, this._then);
+
+  final _SduiLocationChip _self;
+  final $Res Function(_SduiLocationChip) _then;
+
+/// Create a copy of SduiLocationChip
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? location = null,Object? count = null,}) {
+  return _then(_SduiLocationChip(
+location: null == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as GardenLocation,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+/// Create a copy of SduiLocationChip
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$GardenLocationCopyWith<$Res> get location {
+  
+  return $GardenLocationCopyWith<$Res>(_self.location, (value) {
+    return _then(_self.copyWith(location: value));
   });
 }
 }

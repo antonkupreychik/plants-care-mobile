@@ -49,13 +49,29 @@ sealed class SduiBlock with _$SduiBlock {
   }) = SduiTodayTasksBlock;
 
   /// Чипы локаций (`location_chips`).
+  ///
+  /// [selectedLocationId] — id комнаты, по которой сервер ОТФИЛЬТРОВАЛ витрину
+  /// (`null` = выбран чип «Все»). Это single source of truth выделения: клиент
+  /// подсвечивает чип по нему, а не по локальному состоянию. Каждый элемент
+  /// ([SduiLocationChip]) несёт `count` — число растений в комнате; чип «Все»
+  /// показывает сумму (несёт [totalCount]). Старый сервер без этих полей →
+  /// `selectedLocationId == null`, `count == 0` (graceful, см. маппер).
   const factory SduiBlock.locationChips({
-    required List<GardenLocation> locations,
+    required List<SduiLocationChip> locations,
+    int? selectedLocationId,
+    @Default(0) int totalCount,
   }) = SduiLocationChipsBlock;
 
   /// Сетка растений (`plant_grid`) с привязанным действием ухода.
+  ///
+  /// При серверном фильтре по ПУСТОЙ комнате backend отдаёт `plants: []` плюс
+  /// [emptyTitleKey]/[emptyBodyKey] (l10n-КЛЮЧИ контекстного пустого стейта
+  /// комнаты, MADR-016) — рендерер рисует их вместо сетки. Глобальный пустой сад
+  /// по-прежнему приходит отдельным блоком `empty_state` (MADR-017).
   const factory SduiBlock.plantGrid({
     required List<SduiPlantGridItem> plants,
+    String? emptyTitleKey,
+    String? emptyBodyKey,
   }) = SduiPlantGridBlock;
 
   /// Гостевой баннер (`guest_banner`): приглашение привязать email.
@@ -97,4 +113,17 @@ abstract class SduiPlantGridItem with _$SduiPlantGridItem {
     SduiAction? action,
     SduiAction? waterAction,
   }) = _SduiPlantGridItem;
+}
+
+/// Чип комнаты в блоке `location_chips` (`location_chips.locations[]` → domain).
+///
+/// Несёт доменную [location] (для рендера чипа: имя/эмодзи) и [count] — число
+/// растений в этой комнате (отображение счётчика на чипе). `count` приходит от
+/// сервера; старый сервер без поля → `0` (graceful, см. маппер).
+@freezed
+abstract class SduiLocationChip with _$SduiLocationChip {
+  const factory SduiLocationChip({
+    required GardenLocation location,
+    @Default(0) int count,
+  }) = _SduiLocationChip;
 }

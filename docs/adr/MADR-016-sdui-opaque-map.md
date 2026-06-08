@@ -64,8 +64,8 @@ MADR-015 заложил гибридный block-SDUI с **типизирова�
 | `weather_strip` | `available`, `humidityPercent`, `recommendation`, `fetchedAt`, `fromCache` | `WeatherStripContent` | `WeatherService` |
 | `today_tasks` | `completedCount`, `totalCount`, `tasks[]{scheduleId,plantId,plantName,type,dueAt}` | `TodayCard` (тапабельный список; тап → нативный sheet ухода, preset по `type`) | `TodayApiService` |
 | `today_summary` | `total`, `done`, `remaining`, `overdue` | `TodayCard` (только счётчики) | `TodayApiService` |
-| `location_chips` | `locations[]{id,name,emoji}` | `LocationChips` | `LocationService` |
-| `plant_grid` | `plants[]{id,name,locationName,action,waterAction}` | `PlantCard` (сетка); тап тела → `action` (navigate), кнопка → `waterAction` (log_care) | `PlantService` |
+| `location_chips` | `selectedLocationId` (Long\|null), `locations[]{id,name,emoji,count}` | `LocationChips` | `LocationService` |
+| `plant_grid` | `plants[]{id,name,locationName,action,waterAction}`; при фильтре по пустой комнате — `plants: []` + `emptyTitleKey`/`emptyBodyKey` (ключи l10n) | `PlantCard` (сетка); тап тела → `action` (navigate), кнопка → `waterAction` (log_care); при пустом `plants` и заданных `emptyTitleKey`/`emptyBodyKey` — контекстный пустой стейт комнаты | `PlantService` |
 | `guest_banner` ⁽MADR-017⁾ | `titleKey`, `bodyKey`, `ctaAction` | `GuestBannerCard` | инъектируется сервисом **только гостю** |
 | `empty_state` ⁽MADR-017⁾ | `iconKey`, `titleKey`, `bodyKey`, `ctaAction` | core-визуал пустого сада + CTA | инъектируется **вместо `plant_grid`** при пустом саде |
 
@@ -82,6 +82,37 @@ MADR-015 заложил гибридный block-SDUI с **типизирова�
 - Интерактив с локальным состоянием (sheet `today_tasks`) — **нативный**, не через action.
   `navigate.target` карточек — витринный (`/plants/{id}`); CTA блоков видимости ведут в нативные
   флоу (`/home/add`, `/home/register`) — навигация декларативна, флоу нативный.
+
+### Серверный фильтр витрины home по комнате (backend PR #316)
+
+Витрина `home` поддерживает серверный фильтр по комнате (локации). Контракт аддитивный и
+обратносовместимый — старые клиенты, не знающие фильтра, получают прежнее поведение.
+
+- **Запрос.** `GET /api/v1/ui/{screen}` принимает опциональный query-параметр
+  `locationId` (`integer`, `int64`, nullable, **не required**). Отсутствие / `null` =
+  «Все комнаты» (фильтр не применяется). Передаёт его только экран `home`.
+- **`location_chips`** расширен (аддитивно, тот же `type`):
+  - `selectedLocationId` (`Long | null`) — id выбранного чипа; `null` = выбран чип «Все».
+  - в каждом `locations[]` добавлено `count` (`int`) — число активных растений в комнате.
+  - Полная форма:
+    `{ "type": "location_chips", "selectedLocationId": <Long|null>,
+       "locations": [ { "id": <Long>, "name": <String>, "emoji": <String>, "count": <int> } ] }`.
+- **`plant_grid` — контекстный пустой стейт комнаты.** При заданном `locationId` и пустой
+  комнате backend отдаёт **не** глобальный `empty_state`, а сам `plant_grid` с пустым списком
+  и l10n-ключами контекста:
+  `{ "type": "plant_grid", "plants": [], "emptyTitleKey": "home.room.empty.title",
+     "emptyBodyKey": "home.room.empty.body" }`.
+  `emptyTitleKey`/`emptyBodyKey` — **ключи l10n**, не готовый текст (MADR-012); клиент резолвит
+  через `resolveSduiTextKey`. Глобальный `empty_state` (MADR-017) отдаётся **только** при
+  `locationId == null` (пустой сад целиком).
+- **Версия каталога — bump НЕ требуется.** Изменение чисто аддитивное: новые опциональные поля
+  на существующих блок-типах (`location_chips.selectedLocationId/count`,
+  `plant_grid.emptyTitleKey/emptyBodyKey`) и опциональный query-параметр. Новых *типов* блоков
+  не вводится. По правилу MADR-016 `minCatalogVersion`/`X-UI-Catalog-Version` гейтят только
+  блок-типы, которые старый клиент не умеет рендерить; неизвестные *поля* клиент игнорирует
+  (graceful degradation). Старый клиент без бампа продолжает рисовать `location_chips` без
+  счётчиков/выделения и игнорировать `empty*Key` — поведение деградирует мягко, не ломается.
+  Поэтому версия каталога SDUI остаётся прежней.
 
 ## Причины
 

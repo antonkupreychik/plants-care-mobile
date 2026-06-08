@@ -22,12 +22,13 @@ class _UiClient implements UiClient {
   @override
   Future<ScreenLayout> getUiScreen({
     required String screen,
+    int? locationId,
     int? xUiCatalogVersion,
     Map<String, dynamic>? extras,
   }) async {
     final _extra = <String, dynamic>{};
     _extra.addAll(extras ?? <String, dynamic>{});
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'locationId': locationId};
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{
       r'X-UI-Catalog-Version': xUiCatalogVersion,

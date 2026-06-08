@@ -330,6 +330,14 @@
   "@sduiHomeEmptyBody": {
     "description": "SDUI empty_state: подпись (резолвится по ключу home.empty.body)"
   },
+  "sduiHomeRoomEmptyTitle": "В этой комнате пока пусто",
+  "@sduiHomeRoomEmptyTitle": {
+    "description": "SDUI plant_grid: заголовок контекстного пустого стейта комнаты (резолвится по ключу home.room.empty.title)"
+  },
+  "sduiHomeRoomEmptyBody": "Добавьте сюда растение или выберите другую комнату.",
+  "@sduiHomeRoomEmptyBody": {
+    "description": "SDUI plant_grid: подпись контекстного пустого стейта комнаты (резолвится по ключу home.room.empty.body)"
+  },
   "homeGardenEmptyEyebrow": "Сад пока пуст",
   "@homeGardenEmptyEyebrow": {
     "description": "Надзаголовок (eyebrow, uppercase) карточки пустого сада, экран 10"

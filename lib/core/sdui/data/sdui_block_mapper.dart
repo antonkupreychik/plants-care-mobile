@@ -37,16 +37,26 @@ SduiBlock? sduiBlockFromJson(Map<String, Object?> json) {
             .toList(growable: false),
       );
     case 'location_chips':
+      final chips = _asMapList(json['locations'])
+          .map(_locationChipFromJson)
+          .toList(growable: false);
       return SduiBlock.locationChips(
-        locations: _asMapList(json['locations'])
-            .map(_locationFromJson)
-            .toList(growable: false),
+        locations: chips,
+        // `selectedLocationId` — id отфильтрованной комнаты (single source of
+        // truth выделения); отсутствует/null → чип «Все».
+        selectedLocationId: _asInt(json['selectedLocationId']),
+        // Счётчик чипа «Все» = сумма растений по комнатам (сервер-derived).
+        totalCount: chips.fold<int>(0, (sum, c) => sum + c.count),
       );
     case 'plant_grid':
       return SduiBlock.plantGrid(
         plants: _asMapList(json['plants'])
             .map(_plantFromJson)
             .toList(growable: false),
+        // Контекстный пустой стейт комнаты (MADR-016): l10n-КЛЮЧИ, не текст.
+        // Отсутствуют → null (нет контекстного пустого стейта).
+        emptyTitleKey: _asString(json['emptyTitleKey']),
+        emptyBodyKey: _asString(json['emptyBodyKey']),
       );
     case 'guest_banner':
       return SduiBlock.guestBanner(
@@ -73,13 +83,19 @@ SduiBlock? sduiBlockFromJson(Map<String, Object?> json) {
 WateringRecommendation? _recommendation(Object? raw) =>
     raw is String ? WateringRecommendation.fromApi(raw) : null;
 
-/// Чип локации (`location_chips.locations[]`) → доменная [GardenLocation].
-/// SDUI-чип не несёт `isDefault` (для рендера чипа он не нужен) — ставим `false`.
-GardenLocation _locationFromJson(Map<String, Object?> json) => GardenLocation(
-      id: _asInt(json['id']) ?? 0,
-      name: _asString(json['name']) ?? '',
-      emoji: _asString(json['emoji']),
-      isDefault: false,
+/// Чип локации (`location_chips.locations[]`) → доменный [SduiLocationChip]
+/// (доменная [GardenLocation] + `count` растений в комнате). SDUI-чип не несёт
+/// `isDefault` (для рендера чипа он не нужен) — ставим `false`. Отсутствующий
+/// `count` → 0 (graceful: старый сервер без поля счётчик не показывает).
+SduiLocationChip _locationChipFromJson(Map<String, Object?> json) =>
+    SduiLocationChip(
+      location: GardenLocation(
+        id: _asInt(json['id']) ?? 0,
+        name: _asString(json['name']) ?? '',
+        emoji: _asString(json['emoji']),
+        isDefault: false,
+      ),
+      count: _asInt(json['count']) ?? 0,
     );
 
 /// Элемент сетки (`plant_grid.plants[]`) → доменный [SduiPlantGridItem]

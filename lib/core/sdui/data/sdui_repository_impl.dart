@@ -35,10 +35,13 @@ class SduiRepositoryImpl implements SduiRepository {
   static const String _homeScreen = 'home';
 
   @override
-  Future<Result<SduiScreenLayout>> getHomeLayout() async {
+  Future<Result<SduiScreenLayout>> getHomeLayout({int? locationId}) async {
     try {
       final layout = await _api.ui.getUiScreen(
         screen: _homeScreen,
+        // Серверный фильтр витрины по комнате: null = «Все» (параметр опускается
+        // на проводе → прежнее поведение «Все комнаты», обратносовместимо).
+        locationId: locationId,
         xUiCatalogVersion: kUiCatalogVersion,
         extras: authScopeExtra(AuthScope.chat),
       );

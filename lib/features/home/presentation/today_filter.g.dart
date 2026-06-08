@@ -11,8 +11,8 @@ part of 'today_filter.dart';
 /// UI-состояние: выбранная пилюля-фильтр на экране 03. Дефолт — [TodayFilter.all].
 ///
 /// Presentation-only (выбор чипа), не доменные данные. Через codegen —
-/// **autoDispose**: при уходе с экрана фильтр сбрасывается на «Всё» (по образцу
-/// [SelectedLocation] из `home_filter.dart`). Сама фильтрация делается чистой
+/// **autoDispose**: при уходе с экрана фильтр сбрасывается на «Всё». Сама
+/// фильтрация делается чистой
 /// функцией в `today_view.dart` над уже загруженным из `homeTasksProvider`
 /// списком — без сети.
 
@@ -22,8 +22,8 @@ final selectedTodayFilterProvider = SelectedTodayFilterProvider._();
 /// UI-состояние: выбранная пилюля-фильтр на экране 03. Дефолт — [TodayFilter.all].
 ///
 /// Presentation-only (выбор чипа), не доменные данные. Через codegen —
-/// **autoDispose**: при уходе с экрана фильтр сбрасывается на «Всё» (по образцу
-/// [SelectedLocation] из `home_filter.dart`). Сама фильтрация делается чистой
+/// **autoDispose**: при уходе с экрана фильтр сбрасывается на «Всё». Сама
+/// фильтрация делается чистой
 /// функцией в `today_view.dart` над уже загруженным из `homeTasksProvider`
 /// списком — без сети.
 final class SelectedTodayFilterProvider
@@ -31,8 +31,8 @@ final class SelectedTodayFilterProvider
   /// UI-состояние: выбранная пилюля-фильтр на экране 03. Дефолт — [TodayFilter.all].
   ///
   /// Presentation-only (выбор чипа), не доменные данные. Через codegen —
-  /// **autoDispose**: при уходе с экрана фильтр сбрасывается на «Всё» (по образцу
-  /// [SelectedLocation] из `home_filter.dart`). Сама фильтрация делается чистой
+  /// **autoDispose**: при уходе с экрана фильтр сбрасывается на «Всё». Сама
+  /// фильтрация делается чистой
   /// функцией в `today_view.dart` над уже загруженным из `homeTasksProvider`
   /// списком — без сети.
   SelectedTodayFilterProvider._()
@@ -68,8 +68,8 @@ String _$selectedTodayFilterHash() =>
 /// UI-состояние: выбранная пилюля-фильтр на экране 03. Дефолт — [TodayFilter.all].
 ///
 /// Presentation-only (выбор чипа), не доменные данные. Через codegen —
-/// **autoDispose**: при уходе с экрана фильтр сбрасывается на «Всё» (по образцу
-/// [SelectedLocation] из `home_filter.dart`). Сама фильтрация делается чистой
+/// **autoDispose**: при уходе с экрана фильтр сбрасывается на «Всё». Сама
+/// фильтрация делается чистой
 /// функцией в `today_view.dart` над уже загруженным из `homeTasksProvider`
 /// списком — без сети.
 
