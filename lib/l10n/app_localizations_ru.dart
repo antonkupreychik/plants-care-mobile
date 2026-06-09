@@ -1441,6 +1441,39 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authCodeBot => '@PlantCareBot';
 
   @override
+  String get authTelegramStarting => 'Открываем Telegram…';
+
+  @override
+  String get authTelegramStartError =>
+      'Не удалось начать вход. Проверьте соединение и попробуйте снова.';
+
+  @override
+  String get authTelegramStartRetry => 'Попробовать снова';
+
+  @override
+  String get authTelegramVerifying => 'Проверяем код…';
+
+  @override
+  String get authTelegramOpenBotHint =>
+      'Не открылся Telegram? Откройте чат с ботом вручную и пришлите команду, чтобы получить код.';
+
+  @override
+  String get authTelegramErrorInvalidCode =>
+      'Неверный код. Проверьте цифры из чата с ботом.';
+
+  @override
+  String get authTelegramErrorSessionExpired =>
+      'Время сессии истекло. Запросите новый код.';
+
+  @override
+  String get authTelegramErrorTooManyAttempts =>
+      'Слишком много попыток. Запросите новый код.';
+
+  @override
+  String get authTelegramUserNotFound =>
+      'Аккаунта с этим Telegram нет. Сначала зарегистрируйтесь в боте, затем войдите.';
+
+  @override
   String authResendIn(String seconds) {
     return 'Отправить новый код через $seconds';
   }
@@ -1463,7 +1496,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authWelcomeBackOverline => 'Аккаунт привязан · Telegram';
 
   @override
-  String get authWelcomeBackName => 'Алина';
+  String get authWelcomeBackName => 'Садовод';
 
   @override
   String authWelcomeBackTitle(String name) {
@@ -1485,6 +1518,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get authAddFirstPlant => 'Добавить первое растение';
+
+  @override
+  String get authGoToGarden => 'В мой сад';
 
   @override
   String get authGoHome => 'Я просто посмотрю';

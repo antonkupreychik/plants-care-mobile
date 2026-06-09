@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/tokens.dart';
-import '../auth_code_state.dart';
 
-/// Ряд из [kAuthCodeLength] ячеек кода (экран 08).
+/// Ряд из [length] ячеек кода (экран 08).
 ///
 /// Рисует буфер [code]: заполненные ячейки — цифрой и primary-рамкой, пустые —
 /// точкой и тонкой [PcColors.line]-рамкой. Первая пустая ячейка (позиция ввода)
-/// подсвечивается primary-рамкой как «фокус».
+/// подсвечивается primary-рамкой как «фокус». [length] берётся из ответа
+/// backend (`codeLength`).
 class AuthCodeCells extends StatelessWidget {
-  const AuthCodeCells({super.key, required this.code});
+  const AuthCodeCells({super.key, required this.code, this.length = 6});
 
   final String code;
+
+  /// Сколько ячеек рисовать (длина кода из `telegram/start.codeLength`).
+  final int length;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,7 @@ class AuthCodeCells extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        for (var i = 0; i < kAuthCodeLength; i++) ...[
+        for (var i = 0; i < length; i++) ...[
           if (i > 0) const SizedBox(width: 8),
           _Cell(
             char: i < filled ? code[i] : null,

@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/add_plant/presentation/add_plant_wizard_screen.dart';
 import '../../features/archive/presentation/archive_screen.dart';
 import '../../features/report/presentation/monthly_report_screen.dart';
-import '../../features/auth/presentation/auth_code_screen.dart';
+import '../../features/auth/presentation/auth_telegram_screen.dart';
 import '../../features/auth/presentation/auth_email_screen.dart';
 import '../../features/auth/presentation/auth_verify_screen.dart';
 import '../../features/auth/presentation/auth_welcome_back_screen.dart';
@@ -85,9 +85,13 @@ GoRouter appRouter(Ref ref) {
     refreshListenable: authStatus,
     redirect: (context, state) {
       final authed = ref.read(authStatusProvider).isAuthenticated;
-      final atAuth = state.matchedLocation.startsWith('/auth');
+      final loc = state.matchedLocation;
+      final atAuth = loc.startsWith('/auth');
       if (!authed) return atAuth ? null : '/auth/welcome';
-      if (atAuth) return '/home';
+      // Экран 09 «С возвращением» — пост-логин celebration: показывается уже
+      // авторизованному (после telegram-verify), поэтому guard НЕ выбрасывает
+      // его на /home. Остальные `/auth/*` авторизованному недоступны.
+      if (atAuth && loc != '/auth/welcome-back') return '/home';
       return null;
     },
     routes: [
@@ -114,7 +118,7 @@ GoRouter appRouter(Ref ref) {
         path: '/auth/code',
         name: 'authCode',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const AuthCodeScreen(),
+        builder: (context, state) => const AuthTelegramScreen(),
       ),
       GoRoute(
         path: '/auth/welcome-back',

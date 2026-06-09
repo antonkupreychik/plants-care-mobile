@@ -5,7 +5,7 @@ import '../../../../l10n/app_localizations.dart';
 
 /// Цифровая клавиатура экрана 08: 1–9, 0 и backspace.
 ///
-/// Колбэки [onDigit] / [onBackspace] идут в `AuthCodeController`
+/// Колбэки [onDigit] / [onBackspace] идут в `TelegramAuthController`
 /// (appendDigit/removeDigit). Каждая клавиша — тап-зона ≥ 56dp, помечена
 /// [Semantics]. Пустая ячейка (левый-нижний угол) — невидимая распорка для
 /// выравнивания сетки 3×4.

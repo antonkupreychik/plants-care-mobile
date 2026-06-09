@@ -11,6 +11,7 @@ import '../../../core/api/generated/models/guest_convert_response_status.dart';
 import '../../../core/api/generated/models/guest_login_request.dart';
 import '../../../core/api/generated/models/logout_request.dart';
 import '../../../core/api/generated/models/magic_link_verify_request.dart';
+import '../../../core/api/generated/models/telegram_verify_request.dart';
 import '../../../core/api/generated/models/token_pair_response.dart';
 import '../../../core/api/generated/plants_care_api.dart';
 import '../../../core/auth/auth_status_notifier.dart';
@@ -21,6 +22,7 @@ import '../../../core/error/result.dart';
 import '../domain/auth_repository.dart';
 import '../domain/social_auth_outcome.dart';
 import '../domain/social_sign_in.dart';
+import '../domain/telegram_login.dart';
 
 /// Ключ в [FlutterSecureStorage] для хранения гостевого deviceId.
 const _guestDeviceIdKey = 'guest_device_id';
@@ -250,6 +252,62 @@ class AuthRepositoryImpl implements AuthRepository {
     } on DioException catch (e) {
       return SocialAuthFailure(_toApiError(e));
     }
+  }
+
+  @override
+  Future<Result<TelegramStartSession>> startTelegramLogin() async {
+    try {
+      // Публичный запрос (scope none по умолчанию): телу токен не нужен,
+      // сессия ещё не поднята. Тело опционально — не отправляем.
+      final res = await _api.auth.authTelegramStart();
+      return Result.success(
+        TelegramStartSession(
+          sessionId: res.sessionId,
+          deepLink: res.deepLink,
+          codeLength: res.codeLength,
+          resendAfterSec: res.resendAfterSec,
+        ),
+      );
+    } on DioException catch (e) {
+      return Result.failure(_toApiError(e));
+    }
+  }
+
+  @override
+  Future<TelegramVerifyOutcome> verifyTelegramLogin({
+    required String sessionId,
+    required String code,
+  }) async {
+    try {
+      final pair = await _api.auth.authTelegramVerify(
+        body: TelegramVerifyRequest(sessionId: sessionId, code: code),
+      );
+      await _raiseSession(pair);
+      return const TelegramVerifyOutcome.success();
+    } on DioException catch (e) {
+      // Доменно-значимые ветви различаем по сырому `error.code` из тела
+      // (ErrorInterceptor уже положил ApiError в e.error, но коды
+      // telegram_*/invalid_code/… в общий ApiError не маппятся — читаем тело).
+      return switch (_rawErrorCode(e)) {
+        'invalid_code' => const TelegramVerifyOutcome.invalidCode(),
+        'session_expired' => const TelegramVerifyOutcome.sessionExpired(),
+        'too_many_attempts' => const TelegramVerifyOutcome.tooManyAttempts(),
+        'telegram_user_not_found' =>
+          const TelegramVerifyOutcome.userNotFound(),
+        _ => TelegramVerifyOutcome.failure(_toApiError(e)),
+      };
+    }
+  }
+
+  /// Сырой `error.code` из тела ответа backend (`{error:{code,...}}`), если он
+  /// есть. `ErrorInterceptor` нормализует тело в [ApiError], но telegram-коды
+  /// в общий тип не маппятся — для них читаем оригинал из `e.response`.
+  String? _rawErrorCode(DioException e) {
+    final data = e.response?.data;
+    if (data is Map && data['error'] is Map) {
+      return (data['error'] as Map)['code'] as String?;
+    }
+    return null;
   }
 
   /// Возвращает существующий `deviceId` из secure storage или генерирует новый

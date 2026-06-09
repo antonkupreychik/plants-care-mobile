@@ -379,6 +379,143 @@
         }
       }
     },
+    "/api/v1/auth/telegram/start": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "authTelegramStart",
+        "summary": "Начать вход через Telegram-бота (issue",
+        "description": "Создаёт одноразовую сессию входа и возвращает `deepLink` на Telegram-бота\nвида `t.me/<botUsername>?start=auth_<sessionId>`. Пользователь открывает\nссылку, бот присылает короткий код, который затем подтверждается через\n`POST /api/v1/auth/telegram/verify`.\n\nТело запроса опционально: `deviceId` сейчас игнорируется сервером, можно\nслать пустое тело или не слать его вовсе. Эндпоинт публичный (токена ещё нет).\nОграничен rate-limit'ом по IP.\n",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramStartRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Сессия входа создана.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelegramStartResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/telegram/verify": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "authTelegramVerify",
+        "summary": "Подтвердить код входа через Telegram (issue",
+        "description": "Принимает `sessionId` (из ответа `telegram/start`) и `code` (присланный\nботом). При успехе выдаёт стандартную пару токенов `TokenPairResponse` —\nту же, что и apple/google/refresh. `telegram_chat_id` сервер берёт из\nсессии и НЕ принимает от клиента.\n\nКоды ошибок в `error.code`:\n- `telegram_user_not_found` (404) — к Telegram-аккаунту не привязан пользователь;\n- `invalid_code` (401) — код не совпал;\n- `session_expired` (410) — сессия истекла или не существует;\n- `too_many_attempts` (429) — превышен лимит попыток, сессия погашена.\n\nЭндпоинт публичный (это точка получения токенов).\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramVerifyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Пара токенов выдана.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenPairResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Код не совпал (`invalid_code`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_code",
+                    "message": "Verification code is invalid"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "К Telegram-аккаунту не привязан пользователь (`telegram_user_not_found`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "telegram_user_not_found",
+                    "message": "No user is linked to this Telegram account"
+                  }
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Сессия входа истекла или не существует (`session_expired`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "session_expired",
+                    "message": "Login session expired or not found"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Превышен лимит попыток подтверждения (`too_many_attempts`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "too_many_attempts",
+                    "message": "Too many verification attempts"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/guest": {
       "post": {
         "tags": [
@@ -6779,6 +6916,69 @@
             "type": "string",
             "minLength": 1,
             "description": "Refresh-токен текущей сессии, который нужно отозвать."
+          }
+        }
+      },
+      "TelegramStartRequest": {
+        "type": "object",
+        "description": "Тело POST /api/v1/auth/telegram/start. Опционально: `deviceId` сейчас\nигнорируется сервером, тело можно не отправлять.\n",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Идентификатор устройства. Пока игнорируется сервером."
+          }
+        }
+      },
+      "TelegramStartResponse": {
+        "type": "object",
+        "description": "Ответ POST /api/v1/auth/telegram/start (issue",
+        "required": [
+          "sessionId",
+          "deepLink",
+          "codeLength",
+          "resendAfterSec"
+        ],
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "Идентификатор сессии входа. Передаётся обратно в telegram/verify."
+          },
+          "deepLink": {
+            "type": "string",
+            "description": "Ссылка на Telegram-бота вида `t.me/<botUsername>?start=auth_<sessionId>`.\n",
+            "example": "t.me/PlantsCareBot?start=auth_8f1c2b3a"
+          },
+          "codeLength": {
+            "type": "integer",
+            "description": "Длина кода подтверждения, который пришлёт бот.",
+            "example": 6
+          },
+          "resendAfterSec": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Через сколько секунд можно повторно запросить код.",
+            "example": 60
+          }
+        }
+      },
+      "TelegramVerifyRequest": {
+        "type": "object",
+        "description": "Тело POST /api/v1/auth/telegram/verify. `telegram_chat_id` сервер берёт из\nсессии и НЕ принимает от клиента.\n",
+        "required": [
+          "sessionId",
+          "code"
+        ],
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Идентификатор сессии входа из ответа telegram/start."
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Код подтверждения, присланный ботом."
           }
         }
       },

@@ -8,6 +8,8 @@ import 'package:plantcare_mobile/core/api/generated/models/guest_login_request.d
 import 'package:plantcare_mobile/core/api/generated/models/guest_login_response.dart';
 import 'package:plantcare_mobile/core/api/generated/models/logout_request.dart';
 import 'package:plantcare_mobile/core/api/generated/models/magic_link_verify_request.dart';
+import 'package:plantcare_mobile/core/api/generated/models/telegram_start_response.dart';
+import 'package:plantcare_mobile/core/api/generated/models/telegram_verify_request.dart';
 import 'package:plantcare_mobile/core/api/generated/models/token_pair_response.dart';
 import 'package:plantcare_mobile/core/api/generated/plants_care_api.dart';
 import 'package:plantcare_mobile/core/auth/auth_status_notifier.dart';
@@ -17,6 +19,7 @@ import 'package:plantcare_mobile/core/error/api_error.dart';
 import 'package:plantcare_mobile/core/error/result.dart';
 import 'package:plantcare_mobile/features/auth/data/auth_repository_impl.dart';
 import 'package:plantcare_mobile/features/auth/domain/social_sign_in.dart';
+import 'package:plantcare_mobile/features/auth/domain/telegram_login.dart';
 
 class _MockApi extends Mock implements PlantsCareApi {}
 
@@ -125,6 +128,24 @@ DioException _dioWith(Object? error) => DioException(
       error: error,
     );
 
+/// DioException, имитирующий ответ backend `{error:{code}}` + HTTP-статус,
+/// как после `ErrorInterceptor` (он кладёт ApiError в .error, но тело с сырым
+/// `code` остаётся на response — репозиторий читает его для telegram-ветвей).
+DioException _dioWithCode(String code, int status, ApiError apiError) {
+  final req = RequestOptions(path: '/api/v1/auth/telegram/verify');
+  return DioException(
+    requestOptions: req,
+    error: apiError,
+    response: Response<dynamic>(
+      requestOptions: req,
+      statusCode: status,
+      data: {
+        'error': {'code': code, 'message': 'x'},
+      },
+    ),
+  );
+}
+
 const _pair = TokenPairResponse(
   accessToken: 'access-123',
   refreshToken: 'refresh-456',
@@ -146,6 +167,8 @@ void main() {
     registerFallbackValue(const MagicLinkVerifyRequest(token: 't'));
     registerFallbackValue(const LogoutRequest(refreshToken: 'r'));
     registerFallbackValue(const GuestLoginRequest(deviceId: 'test-device-id'));
+    registerFallbackValue(
+        const TelegramVerifyRequest(sessionId: 's', code: 'c'));
   });
 
   late _MockApi api;
@@ -379,6 +402,113 @@ void main() {
 
       expect((result as Failure).error, const ApiError.network());
       expect(session.isAuthenticated, isFalse);
+    });
+  });
+
+  group('startTelegramLogin', () {
+    const startRes = TelegramStartResponse(
+      sessionId: 'sess-1',
+      deepLink: 'https://t.me/Bot?start=auth_sess-1',
+      codeLength: 6,
+      resendAfterSec: 45,
+    );
+
+    test('should_map_response_to_session_on_success', () async {
+      when(() => auth.authTelegramStart(body: any(named: 'body')))
+          .thenAnswer((_) async => startRes);
+
+      final result = await repo.startTelegramLogin();
+
+      final telegramSession = (result as Success<TelegramStartSession>).value;
+      expect(telegramSession.sessionId, 'sess-1');
+      expect(telegramSession.deepLink, startRes.deepLink);
+      expect(telegramSession.codeLength, 6);
+      expect(telegramSession.resendAfterSec, 45);
+    });
+
+    test('should_return_failure_on_dio_error', () async {
+      when(() => auth.authTelegramStart(body: any(named: 'body')))
+          .thenThrow(_dioWith(const ApiError.network()));
+
+      final result = await repo.startTelegramLogin();
+
+      expect((result as Failure).error, const ApiError.network());
+    });
+  });
+
+  group('verifyTelegramLogin', () {
+    void stubVerifyThrow(DioException e) {
+      when(() => auth.authTelegramVerify(body: any(named: 'body')))
+          .thenThrow(e);
+    }
+
+    test('should_raise_session_and_return_success', () async {
+      when(() => auth.authTelegramVerify(body: any(named: 'body')))
+          .thenAnswer((_) async => _pair);
+
+      final outcome =
+          await repo.verifyTelegramLogin(sessionId: 's', code: '123456');
+
+      expect(outcome, isA<TelegramVerifySuccess>());
+      expect(session.isAuthenticated, isTrue);
+      expect(status.isAuthenticated, isTrue);
+      // sessionId/code уходят в тело (идентичность не хардкодится).
+      final body = verify(() => auth.authTelegramVerify(
+            body: captureAny(named: 'body'),
+          )).captured.single as TelegramVerifyRequest;
+      expect(body.sessionId, 's');
+      expect(body.code, '123456');
+    });
+
+    test('should_map_invalid_code_to_TelegramInvalidCode', () async {
+      stubVerifyThrow(
+          _dioWithCode('invalid_code', 401, const ApiError.unauthorized()));
+
+      final outcome =
+          await repo.verifyTelegramLogin(sessionId: 's', code: '000000');
+
+      expect(outcome, isA<TelegramInvalidCode>());
+      expect(session.isAuthenticated, isFalse);
+    });
+
+    test('should_map_session_expired_to_TelegramSessionExpired', () async {
+      stubVerifyThrow(
+          _dioWithCode('session_expired', 410, const ApiError.unknown()));
+
+      final outcome =
+          await repo.verifyTelegramLogin(sessionId: 's', code: '000000');
+
+      expect(outcome, isA<TelegramSessionExpired>());
+    });
+
+    test('should_map_too_many_attempts_to_TelegramTooManyAttempts', () async {
+      stubVerifyThrow(
+          _dioWithCode('too_many_attempts', 429, const ApiError.unknown()));
+
+      final outcome =
+          await repo.verifyTelegramLogin(sessionId: 's', code: '000000');
+
+      expect(outcome, isA<TelegramTooManyAttempts>());
+    });
+
+    test('should_map_user_not_found_to_TelegramUserNotFound', () async {
+      stubVerifyThrow(_dioWithCode(
+          'telegram_user_not_found', 404, const ApiError.notFound()));
+
+      final outcome =
+          await repo.verifyTelegramLogin(sessionId: 's', code: '000000');
+
+      expect(outcome, isA<TelegramUserNotFound>());
+    });
+
+    test('should_map_unrecognised_error_to_TelegramVerifyFailure', () async {
+      stubVerifyThrow(_dioWith(const ApiError.network()));
+
+      final outcome =
+          await repo.verifyTelegramLogin(sessionId: 's', code: '000000');
+
+      expect(outcome, isA<TelegramVerifyFailure>());
+      expect((outcome as TelegramVerifyFailure).error, const ApiError.network());
     });
   });
 }
