@@ -14,11 +14,13 @@ import 'package:plantcare_mobile/features/auth/presentation/telegram_auth_state.
 class _MockAuthRepo extends Mock implements AuthRepository {}
 
 class _FakeLinkLauncher implements LinkLauncher {
+  /// Что возвращает [open] (false = Telegram не открылся). Меняется по месту.
+  bool result = true;
   final List<String> opened = [];
   @override
   Future<bool> open(String url) async {
     opened.add(url);
-    return true;
+    return result;
   }
 }
 
@@ -92,7 +94,43 @@ void main() {
       expect(s.sessionId, 's-1');
       expect(s.codeLength, 6);
       expect(s.resendSeconds, 60);
+      expect(s.launchFailed, isFalse);
       expect(launcher.opened, contains(_session.deepLink));
+    });
+
+    test('should_flag_launchFailed_when_telegram_does_not_open', () async {
+      _stubStartSuccess(repo);
+      launcher.result = false; // Telegram не открылся.
+      final container = _container(repo, launcher);
+      container.read(telegramAuthControllerProvider.notifier);
+
+      await Future<void>.delayed(Duration.zero);
+
+      final s = container.read(telegramAuthControllerProvider);
+      // Остаёмся в фазе ввода (код можно ввести вручную), но НЕ молча:
+      // launchFailed поднят, UI покажет блок «не удалось открыть Telegram».
+      expect(s.phase, TelegramAuthPhase.entering);
+      expect(s.launchFailed, isTrue);
+      expect(s.deepLink, _session.deepLink);
+      expect(launcher.opened, contains(_session.deepLink));
+    });
+
+    test('should_reopen_and_clear_launchFailed_on_openDeepLink', () async {
+      _stubStartSuccess(repo);
+      launcher.result = false;
+      final container = _container(repo, launcher);
+      final notifier = container.read(telegramAuthControllerProvider.notifier);
+      await Future<void>.delayed(Duration.zero);
+      expect(container.read(telegramAuthControllerProvider).launchFailed, isTrue);
+
+      // Повторное открытие теперь успешно → флаг сбрасывается.
+      launcher.result = true;
+      await notifier.openDeepLink();
+
+      final s = container.read(telegramAuthControllerProvider);
+      expect(s.launchFailed, isFalse);
+      // Открывали дважды: при старте и по кнопке.
+      expect(launcher.opened, [_session.deepLink, _session.deepLink]);
     });
 
     test('should_enter_start_failed_phase_on_start_error', () async {

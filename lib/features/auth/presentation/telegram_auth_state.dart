@@ -47,6 +47,11 @@ abstract class TelegramAuthState with _$TelegramAuthState {
     /// Идентификатор сессии входа из `telegram/start` (`null` до старта).
     String? sessionId,
 
+    /// Deep link бота из `telegram/start` (`null` до старта). Хранится, чтобы по
+    /// кнопке «Открыть Telegram» можно было повторить открытие без ре-старта
+    /// сессии (deep link приходит с backend — клиент его не конструирует).
+    String? deepLink,
+
     /// Длина ожидаемого кода (из `codeLength`).
     @Default(kTelegramCodeLength) int codeLength,
 
@@ -64,6 +69,13 @@ abstract class TelegramAuthState with _$TelegramAuthState {
 
     /// Ошибка старта (фаза [TelegramAuthPhase.startFailed]) — для текста ретрая.
     ApiError? startError,
+
+    /// Старт прошёл (сессия есть, фаза `entering`), но открыть Telegram по deep
+    /// link не удалось (`LinkLauncher.open` вернул `false`: нет приложения /
+    /// система не пустила). UI показывает заметный блок «не удалось открыть
+    /// Telegram» с кнопкой повтора открытия — вместо молчаливого экрана ввода.
+    /// Сбрасывается при повторной попытке открытия и при старте новой сессии.
+    @Default(false) bool launchFailed,
 
     /// `telegram_user_not_found` (404) — к Telegram-аккаунту не привязан юзер.
     /// Экран по этому флагу уводит на Welcome с поясняющим текстом про бота

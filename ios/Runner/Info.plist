@@ -79,6 +79,14 @@
 	        TODO(social-auth): заменить на reversed-форму GIDClientID, т.е.
 	        com.googleusercontent.apps.<id> (без .apps.googleusercontent.com).
 	        НЕ удалять схему plantcare. -->
+	<!-- Схемы, которые приложение спрашивает у системы перед открытием
+	     (canOpenURL/url_launcher). Без них launchUrl('tg://…') на iOS вернёт
+	     false и вход через Telegram «молча» не откроется (см. экран 08). -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tg</string>
+		<string>telegram</string>
+	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

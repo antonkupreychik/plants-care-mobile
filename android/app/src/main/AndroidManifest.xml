@@ -88,5 +88,19 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Android 11+ package visibility: без этих <intent>/<package> запросов
+             url_launcher не «видит» Telegram, canLaunch/launchUrl для tg:// и
+             https://t.me/… возвращает false и вход через Telegram (экран 08) не
+             открывает приложение. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="tg"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https" android:host="t.me"/>
+        </intent>
+        <package android:name="org.telegram.messenger"/>
+        <package android:name="org.telegram.messenger.web"/>
     </queries>
 </manifest>

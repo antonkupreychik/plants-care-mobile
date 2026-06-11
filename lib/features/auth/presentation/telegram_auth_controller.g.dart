@@ -108,7 +108,7 @@ final class TelegramAuthControllerProvider
 }
 
 String _$telegramAuthControllerHash() =>
-    r'407484541b60d530e8534faef7bfff958593f856';
+    r'7957208415d38b3e8ac68953de6b7e3854ef1684';
 
 /// State-слой экрана 08 «Вход через Telegram».
 ///

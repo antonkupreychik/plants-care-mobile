@@ -56,6 +56,7 @@ class TelegramAuthController extends _$TelegramAuthController {
       codeError: null,
       startError: null,
       verifying: false,
+      launchFailed: false,
     );
 
     final result = await ref.read(authRepositoryProvider).startTelegramLogin();
@@ -66,21 +67,42 @@ class TelegramAuthController extends _$TelegramAuthController {
         state = state.copyWith(
           phase: TelegramAuthPhase.entering,
           sessionId: value.sessionId,
+          deepLink: value.deepLink,
           codeLength: value.codeLength,
           resendSeconds: value.resendAfterSec,
           code: '',
           codeError: null,
+          launchFailed: false,
         );
         _startTimer();
-        // Открываем бота во внешнем приложении (best-effort: если не открылось,
-        // пользователь всё равно может ввести код вручную из чата).
-        await ref.read(linkLauncherProvider).open(value.deepLink);
+        // Открываем бота во внешнем приложении. Результат НЕ игнорируем: если
+        // открыть не удалось (нет Telegram / система не пустила), поднимаем
+        // launchFailed — UI покажет заметный блок «не удалось открыть Telegram»
+        // с кнопкой повтора, а не молчаливо оставит на экране ввода кода.
+        await _openDeepLink(value.deepLink);
       case Failure(:final error):
         state = state.copyWith(
           phase: TelegramAuthPhase.startFailed,
           startError: error,
         );
     }
+  }
+
+  /// Открыть deep link бота во внешнем приложении и отразить исход в state:
+  /// неуспех (`open` вернул `false`) → `launchFailed = true`; успех сбрасывает
+  /// флаг. Не бросает наружу (launcher сам глотает платформенные сбои).
+  Future<void> _openDeepLink(String deepLink) async {
+    final opened = await ref.read(linkLauncherProvider).open(deepLink);
+    if (!ref.mounted) return;
+    state = state.copyWith(launchFailed: !opened);
+  }
+
+  /// Повторно открыть Telegram по сохранённому deep link (кнопка «Открыть
+  /// Telegram» после `launchFailed`). No-op, если deep link ещё не получен.
+  Future<void> openDeepLink() async {
+    final deepLink = state.deepLink;
+    if (deepLink == null) return;
+    await _openDeepLink(deepLink);
   }
 
   /// Повторить старт после ошибки (`startFailed`).
