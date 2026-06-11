@@ -1458,6 +1458,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Не открылся Telegram? Откройте чат с ботом вручную и пришлите команду, чтобы получить код.';
 
   @override
+  String get authTelegramLaunchFailed =>
+      'Не удалось открыть Telegram. Убедитесь, что приложение установлено, и попробуйте снова.';
+
+  @override
+  String get authTelegramOpenButton => 'Открыть Telegram';
+
+  @override
   String get authTelegramErrorInvalidCode =>
       'Неверный код. Проверьте цифры из чата с ботом.';
 

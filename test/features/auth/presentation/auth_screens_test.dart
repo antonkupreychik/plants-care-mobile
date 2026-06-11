@@ -30,11 +30,15 @@ class _MockAuthRepo extends Mock implements AuthRepository {}
 
 /// Fake launcher: не бьётся в платформенный канал, фиксирует открытые ссылки.
 class _FakeLinkLauncher implements LinkLauncher {
+  _FakeLinkLauncher({this.result = true});
+
+  /// Что вернёт [open] (false = Telegram не открылся).
+  bool result;
   final List<String> opened = [];
   @override
   Future<bool> open(String url) async {
     opened.add(url);
-    return true;
+    return result;
   }
 }
 
@@ -184,9 +188,10 @@ void main() {
       WidgetTester tester, {
       TelegramVerifyOutcome? verifyOutcome,
       Result<TelegramStartSession>? startResult,
+      bool launchOpens = true,
     }) async {
       final repo = _MockAuthRepo();
-      final launcher = _FakeLinkLauncher();
+      final launcher = _FakeLinkLauncher(result: launchOpens);
       when(repo.startTelegramLogin).thenAnswer(
         (_) async => startResult ?? const Result.success(session),
       );
@@ -270,6 +275,27 @@ void main() {
       expect(find.text(l10n.authTelegramErrorInvalidCode), findsOneWidget);
       // Остаёмся на экране 08 (не ушли на welcome-back).
       expect(find.text('welcome-back-route'), findsNothing);
+
+      await disposeScreen(tester);
+    });
+
+    testWidgets('should_show_open_telegram_block_when_launch_fails',
+        (tester) async {
+      final (_, launcher) = await pumpTelegram(tester, launchOpens: false);
+
+      final l10n = _l10n(tester, AuthTelegramScreen);
+      // Не молчим: показан блок «не удалось открыть Telegram» + кнопка повтора,
+      // юзер остаётся в фазе ввода (клавиатура есть), но видит явный выход.
+      expect(find.text(l10n.authTelegramLaunchFailed), findsOneWidget);
+      expect(
+        find.widgetWithText(AuthPrimaryButton, l10n.authTelegramOpenButton),
+        findsOneWidget,
+      );
+      expect(find.byType(AuthKeypad), findsOneWidget);
+      // Пассивный хинт в этом состоянии не показываем (его заменяет блок).
+      expect(find.text(l10n.authTelegramOpenBotHint), findsNothing);
+      // Открыть пытались (deep link), но launcher вернул false → блок.
+      expect(launcher.opened, contains(session.deepLink));
 
       await disposeScreen(tester);
     });

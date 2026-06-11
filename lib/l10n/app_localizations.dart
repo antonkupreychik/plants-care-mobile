@@ -2368,6 +2368,18 @@ abstract class AppLocalizations {
   /// **'Не открылся Telegram? Откройте чат с ботом вручную и пришлите команду, чтобы получить код.'**
   String get authTelegramOpenBotHint;
 
+  /// Сообщение блока, когда deep link бота не открылся (launchFailed) на экране 08
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось открыть Telegram. Убедитесь, что приложение установлено, и попробуйте снова.'**
+  String get authTelegramLaunchFailed;
+
+  /// Кнопка повторного открытия Telegram после неудачного открытия deep link
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть Telegram'**
+  String get authTelegramOpenButton;
+
   /// Инлайн-ошибка: код не совпал (invalid_code)
   ///
   /// In ru, this message translates to:

@@ -1771,6 +1771,14 @@
   "@authTelegramOpenBotHint": {
     "description": "Подсказка под кодом: как получить код, если бот не открылся автоматически"
   },
+  "authTelegramLaunchFailed": "Не удалось открыть Telegram. Убедитесь, что приложение установлено, и попробуйте снова.",
+  "@authTelegramLaunchFailed": {
+    "description": "Сообщение блока, когда deep link бота не открылся (launchFailed) на экране 08"
+  },
+  "authTelegramOpenButton": "Открыть Telegram",
+  "@authTelegramOpenButton": {
+    "description": "Кнопка повторного открытия Telegram после неудачного открытия deep link"
+  },
   "authTelegramErrorInvalidCode": "Неверный код. Проверьте цифры из чата с ботом.",
   "@authTelegramErrorInvalidCode": {
     "description": "Инлайн-ошибка: код не совпал (invalid_code)"

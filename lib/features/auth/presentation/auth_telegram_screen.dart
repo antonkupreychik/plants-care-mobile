@@ -215,11 +215,16 @@ class _CodeEntry extends ConsumerWidget {
                   onResend: notifier.resend,
                 ),
               const SizedBox(height: 14),
-              Text(
-                l10n.authTelegramOpenBotHint,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, height: 1.4, color: c.inkMute),
-              ),
+              if (state.launchFailed)
+                _LaunchFailed(
+                  onOpen: notifier.openDeepLink,
+                )
+              else
+                Text(
+                  l10n.authTelegramOpenBotHint,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, height: 1.4, color: c.inkMute),
+                ),
             ],
           ),
         ),
@@ -307,6 +312,51 @@ class _InlineError extends StatelessWidget {
       text,
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: 13, height: 1.35, color: c.terracotta),
+    );
+  }
+}
+
+/// Блок «не удалось открыть Telegram»: deep link не открылся
+/// ([TelegramAuthState.launchFailed]). Заметное сообщение + кнопка повтора
+/// открытия — чтобы юзер не застревал молча на вводе кода.
+class _LaunchFailed extends StatelessWidget {
+  const _LaunchFailed({required this.onOpen});
+
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).extension<PcColors>()!;
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      decoration: BoxDecoration(
+        color: c.surfaceWarm,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.open_in_new_rounded, size: 18, color: c.terracotta),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  l10n.authTelegramLaunchFailed,
+                  style: TextStyle(fontSize: 13, height: 1.4, color: c.ink),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          AuthPrimaryButton(
+            label: l10n.authTelegramOpenButton,
+            icon: Icons.send_rounded,
+            onTap: onOpen,
+          ),
+        ],
+      ),
     );
   }
 }
